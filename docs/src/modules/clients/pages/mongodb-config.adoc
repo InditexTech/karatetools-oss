@@ -1,0 +1,36 @@
+
+Configuration parameters for the MongoDB clients. These values can be overwritten by the corresponding (DB specific) system properties. System properties can be injected by CI/CD.
+
+NOTE: If the project has been generated using the xref:archetype:index.adoc[Karate Tools Archetype] the archetype would have prompted for the creation of the configuration files.
+
+This client can be configured for multi-environment execution with a *config file per environment*:
+
+[source,plaintext,subs="+attributes"]
+----
+\---src
+    \---test
+        \---resources
+            \---config
+                \---db
+                    mongodb-config-local.yml
+                    ...
+                    mongodb-config-pre.yml
+----
+
+=== MongoDB Client Configuration Properties
+
+⚙️ *`hosts`*: comma separated host names
+
+⚙️ *`port`*: mongodb port
+
+⚙️ *`db-name`*: database name
+
+⚙️ *`user`*: user name to connect
+
+⚙️ *`password`*: password to connect
+
+⚙️ *`connect-timeout`*: number of milliseconds the driver will wait before a new connection attempt is aborted
+
+⚙️ *`server-selection-timeout`*: number of milliseconds the mongo driver will wait to select a server for an operation before giving up and raising an error
+
+⚙️ *`socket-timeout`*: number of milliseconds a send or receive on a socket can take before timeout

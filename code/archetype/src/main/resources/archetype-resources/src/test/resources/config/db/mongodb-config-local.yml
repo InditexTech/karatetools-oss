@@ -1,0 +1,10 @@
+# docker-compose environment variables:  <MONGO_INITDB_ROOT_USERNAME> <MONGO_INITDB_ROOT_PASSWORD>
+# docker-compose folder structure:       mongo/<DB_NAME>/data
+hosts: localhost
+port: 27017
+db-name: <DB_NAME>
+user: admin
+password: password
+connect-timeout: 10000
+server-selection-timeout: 10000
+socket-timeout: 10000

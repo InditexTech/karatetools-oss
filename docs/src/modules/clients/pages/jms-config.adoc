@@ -1,0 +1,31 @@
+Configuration parameters for the JMS Clients. These values can be overwritten by the corresponding system properties. System properties can be injected by CI/CD.
+
+NOTE: If the project has been generated using the xref:archetype:index.adoc[Karate Tools Archetype] the archetype would have prompted for the creation of the configuration files.
+
+This client can be configured for multi-environment execution with a *config file per environment*:
+
+[source,plaintext,subs="+attributes"]
+----
+\---src
+    \---test
+        \---resources
+            \---config
+                \---jms
+                    <provider>-config-local.yml
+                    ...
+                    <provider>-config-pre.yml
+----
+
+For example:
+
+[source,plaintext,subs="+attributes"]
+----
+\---src
+    \---test
+        \---resources
+            \---config
+                \---jms
+                    activemq-config-local.yml
+                    ...
+                    activemq-config-pre.yml
+----

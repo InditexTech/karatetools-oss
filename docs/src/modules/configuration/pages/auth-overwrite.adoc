@@ -1,0 +1,26 @@
+Each of the auth default settings can be overwritten at request level using the corresponding `auth.xxx` field.
+
+* `auth.authMode`
+* `auth.username`
+* `auth.password`
+
+For example, for authentication and authorization tests at test data level:
+
+* test-data\<operation>_<returncode>.yml
++
+[source,yaml,subs="+attributes"]
+----
+auth:
+  authMode: 'basic'
+  username: 'usernameA'
+  password: 'passwordA'
+----
++
+[source,yaml,subs="+attributes"]
+----
+auth:
+  authMode: 'jwt'
+  username: 'usernameA'
+----
+
+IMPORTANT: The specific values that can be overwritten (`auth.XXX`) for each supported authentication type are defined in the corresponding section.

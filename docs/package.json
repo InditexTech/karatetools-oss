@@ -1,0 +1,23 @@
+{
+  "name": "karatetools-oss",
+  "version": "4.1.0-SNAPSHOT",
+  "description": "InditexTech Karate Tools OSS",
+  "scripts": {
+    "start": "npx antora --clean --stacktrace --fetch antora-playbook-local.yml && npx http-server build/site -c-1 -p 0",
+    "build": "npx -y antora --clean --fetch antora-playbook.yml --stacktrace",
+    "verify": "npm ci && npm run build",
+    "publish": "npm run build",
+    "post:provisioning": "npm i",
+    "release:prepare": "npm run build",
+    "version:development": "npm version $(npm version minor --no-git-tag-version)-SNAPSHOT --no-git-tag-version && npm run antoradocs:development",
+    "version:release": "npm --tag-version-prefix \"\" version $RELEASE_VERSION --allow-same-version --no-git-tag-version && npm run antoradocs:release",
+    "antoradocs:release": "yq eval \".prerelease = false\" -i src/antora.yml",
+    "antoradocs:development": "yq eval \".prerelease = true\" -i src/antora.yml"
+  },
+  "devDependencies": {
+    "@antora/lunr-extension": "1.0.0-alpha.8",
+    "antora": "3.1.9",
+    "asciidoctor-kroki": "0.18.1",
+    "http-server": "14.1.1"
+  }
+}

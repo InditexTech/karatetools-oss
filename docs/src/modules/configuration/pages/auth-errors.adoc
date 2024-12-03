@@ -1,0 +1,29 @@
+When Karate Tools Authentication fails it can be identified through the karate logs and the karate reports.
+
+For example:
+
+image::auth-error-example.png[role="no-border, zoom-in"]
+
+
+* `invalid authMode`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no authMode or invalid authMode. auth.authMode:BASIC
+----
+
+* `no username`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no username. auth.authMode:basic auth.username:null
+----
+
+* `no password`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no password. auth.authMode:basic auth.username:username100 auth.password:undefined
+----
+
+IMPORTANT: The specific error messages for each supported authentication type are defined in the corresponding section.

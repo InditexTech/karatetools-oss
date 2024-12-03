@@ -1,0 +1,14 @@
+The `karatetools-oss-openapi-test` module contains two submodules that represent the two APIs to be tested:
+
+[source,subs="attributes+"]
+----
+include::example$openapi-test-tree.txt[]
+----
+
+NOTE: Both APIs are identical, but they are used to demonstrate the testing of two different APIs (self and external APIs).
+
+The `xxx-api-rest-stable` and `xxx-external-api-rest-stable` api structure is as follows:
+
+image::karatetools-oss-open-api.png[role="no-border, zoom-in"]
+
+image::karatetools-oss-open-api-swager.png[role="no-border, zoom-in"]

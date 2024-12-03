@@ -1,0 +1,38 @@
+<properties>
+  ...
+  <!-- Test Execution & Reporting -->
+  <maven-surefire-plugin.version>X.X.X</maven-surefire-plugin.version>
+  <maven-surefire-report-plugin.version>X.X.X</maven-surefire-report-plugin.version>
+  <maven-site-plugin.version>X.X.X</maven-site-plugin.version>
+  ...
+</properties>
+
+<build>
+  <plugins>
+    <!-- Test Execution & Reporting -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>${maven-surefire-plugin.version}</version>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-report-plugin</artifactId>
+      <version>${maven-surefire-report-plugin.version}</version>
+      <configuration>
+        <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
+        <!-- Enable this line if using Karate v1.0.0 -->
+        <xrefLocation>${project.build.directory}/karate-reports</xrefLocation>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-site-plugin</artifactId>
+      <version>${maven-site-plugin.version}</version>
+      <configuration>
+        <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
+      </configuration>
+    </plugin>
+    ...
+  </plugins>
+</build>

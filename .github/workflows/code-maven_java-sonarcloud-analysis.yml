@@ -1,0 +1,148 @@
+---
+name: code-maven-sonarcloud-analysis
+run-name: Sonarcloud analysis on ${{ github.base_ref || github.ref_name }} branch
+
+concurrency:
+  group: sonarcloud-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches: ['develop', 'develop-*', 'main', 'main-*']
+    paths: ['code/**', '.github/workflows/code-*-sonarcloud-analysis.yml']
+  release:
+    types:
+      - published
+
+env:
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+jobs:
+  unit-tests:
+    name: SonarCloud / Unit Tests
+    timeout-minutes: 30
+    if: ${{ ((github.event.pull_request.merged == true && (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.base_ref == 'develop' || startsWith(github.base_ref, 'develop-'))) ||
+        (vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.base_ref == 'main' || startsWith(github.base_ref, 'main-')))) ||
+        github.event_name == 'workflow_dispatch' ||
+        github.event_name == 'release')
+        && vars.IS_INDITEXTECH_REPO == 'true' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Maven Cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+    
+      - name: Setup asdf Cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Save tool-versions content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat code/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Maven / Setup asdf tools
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+  
+      - name: Setup Java environment vars
+        working-directory: code
+        run: |
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+      - name: Maven / Run unit tests with release event
+        if: github.event_name == 'release'
+        working-directory: code
+        run: |
+          mvn -B clean verify -Djacoco.skip=false -DskipEnforceSnapshots -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
+
+      - name: Maven / Run unit tests
+        if: github.event_name != 'release'
+        working-directory: code
+        run: |
+          mvn -B clean verify -Djacoco.skip=false -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
+
+      - name: Store project information
+        id: version
+        run: |
+          echo "app-version=$(yq -oy '.project.version' code/pom.xml)" >> "$GITHUB_OUTPUT"
+          echo "app-name=$(yq -oy '.project.artifactId' code/pom.xml)" >> "$GITHUB_OUTPUT"
+
+      - name: SonarCloud / Setup asdf tools
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: |
+            java temurin-17.0.8+7
+            nodejs 20.10.0
+            maven 3.9.4
+
+      - name: SonarCloud / Set asdf versions
+        working-directory: code
+        run: |
+          asdf local java temurin-17.0.8+7
+          asdf local nodejs 20.10.0
+          asdf local maven 3.9.4
+
+      - name: Setup Java environment vars
+        working-directory: code
+        run: |
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+      - name: SonarCloud / Run Maven Sonar goal with release event
+        env:
+          LOGIN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_SCANNER_OPTS: ''
+        if: ${{ github.event_name == 'release' }}
+        working-directory: code
+        run: |
+          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
+            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectVersion="${{ github.event.release.tag_name }}" \
+            -Dsonar.branch.name="release/${{ github.event.release.tag_name }}" \
+            -Dsonar.host.url="https://sonarcloud.io/" \
+            -Dsonar.organization=inditextech \
+            -Dsonar.token="${LOGIN}" \
+            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
+  
+      - name: SonarCloud / Run Maven Sonar goal
+        env:
+          LOGIN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_SCANNER_OPTS: ''
+        if: ${{ github.event_name != 'release' }}
+        working-directory: code
+        run: |
+          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
+            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
+            -Dsonar.branch.name="${{ github.base_ref || github.ref_name }}" \
+            -Dsonar.host.url="https://sonarcloud.io/" \
+            -Dsonar.organization=inditextech \
+            -Dsonar.token="${LOGIN}" \
+            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"

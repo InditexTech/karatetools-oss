@@ -1,0 +1,26 @@
+*karatetools-starter* already includes the corresponding MongoDB dependency.
+
+.*If you need to change the dependency version*, you can include it in the pom as follows:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - MongoDB -->
+    <mongodb-driver-sync.version>X.X.X</mongodb-driver-sync.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - MongoDB -->
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>${mongodb-driver-sync.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

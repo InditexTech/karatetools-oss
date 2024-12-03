@@ -1,0 +1,1 @@
+"#[] read('classpath:apis/dev/inditex/karate/openapi/test/BasicApi/listItems/schema/Items_200.schema.yml')"

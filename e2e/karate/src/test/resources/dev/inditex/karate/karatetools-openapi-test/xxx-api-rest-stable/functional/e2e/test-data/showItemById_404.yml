@@ -1,0 +1,8 @@
+---
+operationId: "showItemById"
+statusCode: 404
+params:
+  itemId: 0
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/showItemById/schema/showItemById_404.schema.yml'))"

@@ -1,0 +1,44 @@
+= Logging
+
+To be able to see karate HTTP requests and responses (including headers) in the logs the logger lever for `com.intuit.karate` is to be set to `DEBUG`.
+
+Since this is not recommended as default configuration, you can create another logback configuration file, for example `logback-test-debug.xml` with this setting as well as any other Debugging, for example karate tools.
+
+[source,xml,subs="+attributes"]
+----
+  <logger name="com.intuit.karate" level="DEBUG" />
+  <logger name="{karatetools-package}" level="DEBUG" />
+----
+
+Karate Tools include two `karate.report.options` flags to control the verbosity of the reports
+
+* `--showLog true/false`: HTTP requests and responses (including headers) will appear in the HTML report.
+** *Default set to false*.
+
+* `--showAllSteps true/false`: If false, any step that starts with `*` instead of `Given, When, Then etc.` will not appear in the HTML report.
+** *Default set to true.*
+
+These flags can be enabled or disabled locally by using them in the `karate.report.options`
+
+* Enable HTTP requests and responses:
+** `--showLog true`
+
+* Disable HTTP requests and responses:
+** `--showLog false`
+
+* Enable logging of all steps:
+** `--showAllSteps true`
+
+* Disable logging of all steps:
+** `--showAllSteps false`
+
+During execution in a local machine `--showLog true` can be set to true by adding it to the command line *karate.report.options* together with a `logging.config` pointing to the debug logback configuration file.
+
+For example:
+
+* Execute all tests with local extra logging (HTTP requests and responses (including headers) will appear in the HTML report)
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.env=local -Dkarate.options="..." -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml
+----

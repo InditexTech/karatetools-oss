@@ -1,0 +1,26 @@
+# Maven / Java
+*target*
+*.jar
+*.war
+*.ear
+*.class
+log/
+
+# Eclipse
+.project
+.metadata
+.classpath
+.settings/
+.checkstyle
+*.launch
+
+# IntelliJ specific git ignore
+.idea
+*.iml
+
+# VS Code specific git ignore
+.vscode/
+*.code-workspace
+
+# SpotBugs specific git ignore
+.fbExcludeFilterFile

@@ -1,0 +1,21 @@
+This guide is intended to explain the process of *implementing new features* or *fixing bugs* in the Karate Tools Ecosystem.
+
+The steps to follow are:
+
+* *Implement* the new *feature* or *fix* the *bug*
+* Perform the necessary tests
+** Create or Update the corresponding *unit tests*, execute them and verify that they pass and that the *code coverage* is over the established threshold *{karatetools-unit-coverage-threshold}*
+** Execute the *mutation tests*, verify that they pass and that the *mutation coverage* is over the established threshold *{karatetools-mutation-coverage-threshold}*
+** Create or Update the corresponding *integration tests*, execute them and verify that they pass and that the *code coverage* is over the established threshold *{karatetools-integration-coverage-threshold}*
+** Create or Update the corresponding *karate tests*, execute them and verify that they pass and that the *code coverage* is over the established threshold *{karatetools-karate-coverage-threshold}*
+* Update the relevant *documentation*
+
+.Karate Tools Development Process
+[plantuml,development-guide-process,png,role="no-border, zoom-in",subs="+attributes"]
+....
+include::puml:partial$dev-process.puml[]
+....
+
+The following sections will describe the *code structure*, to be able to *find easily the location of the code to be added or modified*, how to *execute and verify the tests* and how to *update the documentation*.
+
+At the end of the guide, you will find a *step-by-step guide* that will help you to follow the process of *implementing new features* or *fixing bugs* for the Karate Tools.

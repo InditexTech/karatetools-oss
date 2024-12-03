@@ -1,0 +1,23 @@
+Go to the folder where you want to create the karate project, for example `e2e` and run the following command:
+
+[source,bash,subs="+attributes"]
+----
+mvn archetype:generate -DarchetypeGroupId={karatetools-package} -DarchetypeArtifactId=karatetools-archetype -DinteractiveMode=true -DaskForDefaultPropertyValues=true -DarchetypeVersion={karatetools-version}
+----
+
+It will prompt for the *standard archetype properties*:
+
+[source,plaintext,subs="+attributes"]
+----
+Define value for property 'groupId' com.mypackage: :
+Define value for property 'artifactId' karate: :
+Define value for property 'version' 0.1.0-SNAPSHOT: :
+Define value for property 'package' com.mypackage.karate: :
+----
+
+For the generated karate project we *recommend to use*:
+
+* Same *group ID* as the target artifact.
+* *artifact ID*: `karate`
+* Same *version* as the target artifact.
+* *package* with the same value as the target artifact with suffix `.karate`, for example: `com.mypackage.karate`

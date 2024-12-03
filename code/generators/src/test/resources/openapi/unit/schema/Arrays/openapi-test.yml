@@ -1,0 +1,101 @@
+openapi: 3.0.6
+
+info:
+  title: User Details
+  description: User Details
+  version: 1.0.0
+
+paths:
+  /object:
+    get:
+      operationId: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  responses:
+    Forbidden:
+      description: forbidden
+    Unauthorized:
+      description: unauthorized
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ErrorDTO"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorDTO"
+  schemas:
+    ObjectResponse:
+      type: object
+      properties:
+        defaultArray:
+          type: array
+          items:
+            $ref: "#/components/schemas/ObjectResponse2"
+        requiredArray:
+          type: array
+          items:
+            $ref: "#/components/schemas/ObjectResponse2"
+        nullableArray:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/ObjectResponse2"
+        nestedArray:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/ObjectResponse2"
+        simpleType:
+          type: array
+          items:
+            type: string
+        simpleType2:
+          type: array
+          items:
+            type: string
+            nullable: true
+        simpleType3:
+          type: array
+          items:
+            type: object
+          example:
+            - hello: world
+        simpleType4:
+          type: array
+      required:
+        - requiredArray
+
+    ObjectResponse2:
+      type: object
+      properties:
+        stringResponse:
+          type: string
+          nullable: true
+        integerResponse:
+          type: number
+      required:
+        - stringResponse
+        - integerResponse

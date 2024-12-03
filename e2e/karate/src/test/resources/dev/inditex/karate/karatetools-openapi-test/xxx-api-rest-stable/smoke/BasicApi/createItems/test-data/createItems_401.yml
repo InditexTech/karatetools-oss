@@ -1,0 +1,14 @@
+---
+operationId: "createItems"
+statusCode: 401
+auth:
+  authMode: basic
+  username: username200
+  password: username200p
+params: null
+body:
+  id: 1
+  name: "item1"
+  tag: "tag1"
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/createItems/schema/createItems_401.schema.yml'))"

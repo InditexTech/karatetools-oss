@@ -1,0 +1,47 @@
+@startuml karatetools-oss-runner
+skinparam componentStyle rectangle
+left to right direction
+scale 2
+
+frame "karatetools-oss-runner" {
+  package "dev.inditex.karate.jwt" {
+    [JWTGenerator.java]
+  }
+  package "dev.inditex.karate.results" {
+    [KarateOperationsStatsHook.java]
+    [KarateReportsGenerator.java]
+  }
+  package "dev.inditex.karate.test" {
+    [KarateCache.java]
+    [KarateRunner.java]
+  }
+  frame "resources" {
+    [karate-base.js]
+    [karate-utils.js]
+    [karate-auth.feature]
+    [karate-auth.js]
+    frame "mocks" {
+      [mock-templates.feature]
+      [mock-templates-functions.js]
+      [mock-templates-inline.feature]
+      [mock-templates-standalone.feature]
+    }
+  }
+}
+
+' Relationships
+
+[dev.inditex.karate.jwt] .[hidden]. [dev.inditex.karate.results]
+[dev.inditex.karate.results] .[hidden]. [dev.inditex.karate.test]
+
+[karate-base.js] -[hidden]left- [karate-utils.js]
+[karate-utils.js] -[hidden]left- [karate-auth.js]
+[karate-auth.js] -left-> [karate-auth.feature] : calls
+
+[karate-base.js] -[hidden]- [mocks]
+
+[mock-templates.feature] -left-> [mock-templates-functions.js] : calls
+[mock-templates-inline.feature] -down-> [mock-templates.feature] : calls
+[mock-templates-standalone.feature] -down-> [mock-templates.feature] : calls
+
+@enduml

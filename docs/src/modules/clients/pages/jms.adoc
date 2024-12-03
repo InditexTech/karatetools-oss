@@ -1,0 +1,41 @@
+= Karate Clients - JMS
+
+include::jms-summary.adoc[]
+
+The Supported JMS Providers are:
+
+include::jms-providers.adoc[]
+
+== POM Configuration
+
+=== POM Karate Tools
+
+include::jms-pom.adoc[]
+
+=== POM Client Factory
+
+==== Apache Active MQ POM
+
+include::jms-pom-activemq.adoc[]
+
+=== POM JMS Object
+
+include::jms-pom-objects.adoc[]
+
+== Client Configuration
+
+include::jms-config.adoc[]
+
+=== JMS Client Configuration Properties - Apache Active MQ
+
+include::jms-config-activemq.adoc[]
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$activemq-config-local.yml[]
+----
+
+== Client Features and Usage
+
+include::jms-features.adoc[]

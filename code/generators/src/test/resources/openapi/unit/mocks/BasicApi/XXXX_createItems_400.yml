@@ -1,0 +1,16 @@
+---
+operationId: "createItems"
+method: "POST"
+path: "/items"
+params: null
+request:
+  id: 0
+  name: "string"
+  tag: "string"
+responseStatus: 400
+responseHeaders:
+  Content-Type: "application/json"
+response:
+  code: 0
+  message: "string"
+  stack: "string"

@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>dev.inditex.karate</groupId>
+  <artifactId>karatetools</artifactId>
+  <version>4.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>InditexOSS Karate Tools</description>
+  <url>https://inditextech.github.io/karatetools-oss</url>
+  <inceptionYear>2023</inceptionYear>
+  <organization>
+    <name>Industria de Diseño Textil, S.A.</name>
+    <url>https://inditex.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://github.com/InditexTech/karatetools-oss/blob/develop/LICENSES/Apache-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Inditex Open Source Office</name>
+      <email>oso@inditex.com</email>
+      <organization>Industria de Diseño Textil, S.A.</organization>
+      <organizationUrl>https://inditex.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>clients</module>
+    <module>generators</module>
+    <module>runner</module>
+    <module>starter</module>
+    <module>archetype</module>
+    <module>openapi-test</module>
+    <module>boot</module>
+    <module>jacoco-report-aggregate</module>
+    <!-- Module to create the karate release only -->
+    <module>karate-release</module>
+  </modules>
+
+  <scm>
+    <connection>${scm-connection}</connection>
+    <developerConnection>${scm-developer-connection}</developerConnection>
+    <url>${scm-url}</url>
+    <tag>${scm-tag}</tag>
+  </scm>
+
+  <properties>
+    <!-- Java Version -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <java.version>17</java.version>
+
+    <!-- Source Encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- SCM -->
+    <scm-developer-connection>scm:git:https://github.com/InditexTech/karatetools-oss.git</scm-developer-connection>
+    <scm-connection>scm:git:https://github.com/InditexTech/karatetools-oss.git</scm-connection>
+    <scm-url>https://github.com/InditexTech/karatetools-oss</scm-url>
+    <scm-tag>HEAD</scm-tag>
+    <project.scm.id>inditextech-scm-github</project.scm.id>
+
+    <!-- Maven -->
+    <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
+    <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
+    <maven-release-strategies.version>0.7.1</maven-release-strategies.version>
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <release.strategy.multibaseline>false</release.strategy.multibaseline>
+    <release.strategy.developmentBranch>develop</release.strategy.developmentBranch>
+    <release.strategy.syncPullReqLabels>kind/internal</release.strategy.syncPullReqLabels>
+    <release.strategy.createSyncPR>true</release.strategy.createSyncPR>
+    <central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
+
+    <!-- Code Format and Style -->
+    <project.parent.relativePath />
+    <!-- Code Format and Style - SortPom -->
+    <sortpom-maven-plugin.version>4.0.0</sortpom-maven-plugin.version>
+    <sortpom-maven-plugin.sortOrderFile>${project.basedir}/${project.parent.relativePath}/src/main/config/pom-code-convention.xml</sortpom-maven-plugin.sortOrderFile>
+
+    <!-- Code Format and Style - Checkstyle -->
+    <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
+    <com.puppycrawl.tools.checkstyle.version>10.20.1</com.puppycrawl.tools.checkstyle.version>
+    <maven-checkstyle-plugin.configLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-java-google-style.xml</maven-checkstyle-plugin.configLocation>
+    <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
+
+    <!-- Static code analysis - Spotbugs -->
+    <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
+    <com.github.spotbugs.spotbugs.version>4.8.6</com.github.spotbugs.spotbugs.version>
+    <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
+    <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
+
+    <!-- Common -->
+    <karate.version>1.4.0</karate.version>
+    <lombok.version>1.18.36</lombok.version>
+    <jackson.version>2.18.1</jackson.version>
+    <gson.version>2.11.0</gson.version>
+    <commons-io.version>2.18.0</commons-io.version>
+    <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+
+    <!-- Logging -->
+    <logback.version>1.5.12</logback.version>
+    <slf4j.version>2.0.13</slf4j.version>
+
+    <!-- Test -->
+    <junit.version>5.11.3</junit.version>
+    <assertj.version>3.25.3</assertj.version>
+    <mockito.version>5.14.2</mockito.version>
+
+    <!-- Jacoco / Surefire -->
+    <jacoco.version>0.8.12</jacoco.version>
+    <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.3.1</maven-surefire-report-plugin.version>
+    <jacoco.excludes>**/*DTO.class</jacoco.excludes>
+
+    <!-- Pitest -->
+    <pitest.version>1.16.1</pitest.version>
+    <pitest-junit5-plugin.version>1.2.1</pitest-junit5-plugin.version>
+    <pitest-skip>false</pitest-skip>
+
+    <!-- Spring Boot  -->
+    <spring-boot.version>3.3.3</spring-boot.version>
+
+    <!-- Kafka - Avro Generation for Testing purposes -->
+    <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
+
+    <!-- Open Api Source Generator -->
+    <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
+    <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
+    <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+    <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
+
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC -->
+    <postgresql.version>42.7.4</postgresql.version>
+    <mariadb-java-client.version>3.5.0</mariadb-java-client.version>
+    <!-- Karate Clients - MongoDB -->
+    <mongodb-driver-sync.version>5.2.1</mongodb-driver-sync.version>
+    <!-- Karate Clients - JMS -->
+    <!-- Karate Clients - JMS - ActiveMQ -->
+    <artemis-jms-client.version>2.38.0</artemis-jms-client.version>
+    <!-- Karate Clients - Kafka  -->
+    <kafka-clients.version>3.9.0</kafka-clients.version>
+    <kafka-avro-serializer.version>7.6.2</kafka-avro-serializer.version>
+
+    <!-- Karate Generators -->
+    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <spring-core.version>6.1.13</spring-core.version>
+    <!-- Karate Generators - Console -->
+    <consoleui.version>0.0.13</consoleui.version>
+    <!-- Karate Generators - Open Api -->
+    <maven-model.version>3.9.9</maven-model.version>
+    <swagger-parser.version>2.1.24</swagger-parser.version>
+    <swagger-inflector.version>2.0.12</swagger-inflector.version>
+
+    <!-- Karate Runner - JWTGenerator -->
+    <jsonwebtoken.version>0.12.6</jsonwebtoken.version>
+
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Common -->
+      <dependency>
+        <groupId>com.intuit.karate</groupId>
+        <artifactId>karate-core</artifactId>
+        <version>${karate.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+      </dependency>
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <!-- Test -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Spring Boot  -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-docker-compose</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
+      </dependency>
+
+      <!-- Karate Clients -->
+      <!-- Karate Clients - JDBC -->
+      <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>${mariadb-java-client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
+      </dependency>
+      <!-- Karate Clients - MongoDB -->
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-sync</artifactId>
+        <version>${mongodb-driver-sync.version}</version>
+      </dependency>
+      <!-- Karate Clients - JMS -->
+      <!-- Karate Clients - JMS - ActiveMQ -->
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>artemis-jms-client</artifactId>
+        <version>${artemis-jms-client.version}</version>
+      </dependency>
+      <!-- Karate Clients - Kafka -->
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${kafka-clients.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-avro-serializer</artifactId>
+        <version>${kafka-avro-serializer.version}</version>
+      </dependency>
+      <!-- Karate Generators -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <!-- Karate Generators - Console -->
+      <dependency>
+        <groupId>de.codeshelf.consoleui</groupId>
+        <artifactId>consoleui</artifactId>
+        <version>${consoleui.version}</version>
+      </dependency>
+      <!-- Karate Generators - Open Api -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven-model.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.parser.v3</groupId>
+        <artifactId>swagger-parser</artifactId>
+        <version>${swagger-parser.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-inflector</artifactId>
+        <version>${swagger-inflector.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- Karate Runner - JWTGenerator -->
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>${jsonwebtoken.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>${jsonwebtoken.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-gson</artifactId>
+        <version>${jsonwebtoken.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>com.intuit.karate</groupId>
+      <artifactId>karate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Test -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <!-- Located at top to try the central repo first and then others for faster dependency resolution -->
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <failOnError>false</failOnError>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Maven Release -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.release</groupId>
+              <artifactId>maven-release-semver-policy</artifactId>
+              <version>${maven-release-plugin.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <arguments>-DskipEnforceSnapshots -DskipITs -DskipTests -DskipUTs</arguments>
+            <goals>install gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish</goals>
+            <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
+            <scmReleaseCommitComment>@{prefix} Prepare release @{releaseLabel}</scmReleaseCommitComment>
+            <scmDevelopmentCommitComment>@{prefix} Prepare for next development iteration</scmDevelopmentCommitComment>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+            <!-- Karate release -->
+            <preparationGoals>-Prelease-prepare clean verify</preparationGoals>
+            <completionGoals>-pl karate-release exec:exec@sync-karate-version scm:add@sync-karate-version</completionGoals>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Pitest -->
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <dependencies>
+            <!--!! needed if using junit5 !! -->
+            <dependency>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-junit5-plugin</artifactId>
+              <version>${pitest-junit5-plugin.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <!--The number of threads to use when mutation testing. By default a single thread will be used. -->
+            <threads>4</threads>
+            <timeoutFactor>3.0</timeoutFactor>
+            <timeoutConstant>60000</timeoutConstant>
+            <outputFormats>
+              <outputFormat>XML</outputFormat>
+              <outputFormat>HTML</outputFormat>
+              <!--OPTIONAL -->
+              <outputFormat>CSV</outputFormat>
+              <!--OPTIONAL -->
+            </outputFormats>
+            <exportLineCoverage>true</exportLineCoverage>
+            <failWhenNoMutations>false</failWhenNoMutations>
+            <timestampedReports>false</timestampedReports>
+            <excludedTestClasses>
+              <param>dev.inditex.**.*IT</param>
+            </excludedTestClasses>
+            <targetClasses>
+              <param>dev.inditex.karate.*</param>
+            </targetClasses>
+            <excludedClasses>
+              <param>dev.inditex.**.*DTO</param>
+            </excludedClasses>
+            <avoidCallsTo>
+              <avoidCallsTo>java.util.logging</avoidCallsTo>
+              <avoidCallsTo>org.apache.log4j</avoidCallsTo>
+              <avoidCallsTo>org.slf4j</avoidCallsTo>
+              <avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+              <avoidCallsTo>dev.inditex.karate.logging</avoidCallsTo>
+            </avoidCallsTo>
+            <verbose>true</verbose>
+            <!-- Flag to exclude mutation in module with no tests  -->
+            <skip>${pitest-skip}</skip>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>${central-publishing-maven-plugin.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <publishingServerId>central</publishingServerId>
+            <autoPublish>true</autoPublish>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!-- Code Format and Style - SortPom -->
+      <plugin>
+        <groupId>com.github.ekryd.sortpom</groupId>
+        <artifactId>sortpom-maven-plugin</artifactId>
+        <version>${sortpom-maven-plugin.version}</version>
+        <configuration>
+          <sortOrderFile>${sortpom-maven-plugin.sortOrderFile}</sortOrderFile>
+          <keepBlankLines>true</keepBlankLines>
+          <nrOfIndentSpace>2</nrOfIndentSpace>
+          <expandEmptyElements>false</expandEmptyElements>
+          <createBackupFile>false</createBackupFile>
+          <sortPlugins>groupId,artifactId</sortPlugins>
+          <verifyFail>stop</verifyFail>
+        </configuration>
+        <executions>
+          <execution>
+            <id>sort-pom-files</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Static code analysis - Spotbugs -->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs-maven-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>${com.github.spotbugs.spotbugs.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <addSourceDirs>true</addSourceDirs>
+          <excludeFilterFile>${com.github.spotbugs.spotbugs.excludeFilterFile}</excludeFilterFile>
+          <includeTests>true</includeTests>
+          <onlyAnalyze>${project.groupId}.-</onlyAnalyze>
+          <plugins>
+            <plugin>
+              <groupId>com.h3xstream.findsecbugs</groupId>
+              <artifactId>findsecbugs-plugin</artifactId>
+              <version>${com.h3xstream.findsecbugs.version}</version>
+            </plugin>
+          </plugins>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+        <executions>
+          <execution>
+            <id>quality-metric-spotbugs</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Code Format and Style - Checkstyle -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${com.puppycrawl.tools.checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
+          <suppressionsLocation>${maven-checkstyle-plugin.suppressionsLocation}</suppressionsLocation>
+          <failOnViolation>true</failOnViolation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <resourceIncludes>**/*.json, **/*.properties, **/*.proto, **/*.sql, **/*.xml, **/*.wsdl, **/*.yaml, **/*.yml</resourceIncludes>
+          <sourceDirectories>
+            <sourceDirectory>src/main/java</sourceDirectory>
+          </sourceDirectories>
+          <testSourceDirectories>
+            <testSourceDirectory>src/test/java</testSourceDirectory>
+          </testSourceDirectories>
+        </configuration>
+        <executions>
+          <execution>
+            <id>quality-metric-checkstyle</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Maven Enforcer -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.9.4]</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[17,18)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-snapshots</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <skip>${skipEnforceSnapshots}</skip>
+              <rules>
+                <requireSnapshotVersion>
+                  <failWhenParentIsRelease>false</failWhenParentIsRelease>
+                  <message>Final versions not allowed</message>
+                </requireSnapshotVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Failsafe -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <argLine>${failsafeArgLine}</argLine>
+              <!-- Skips integration tests based on -DskipITs -->
+              <skipTests>${skipITs}</skipTests>
+              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Surefire -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <!-- Sets the VM argument line used when unit tests are run. -->
+          <argLine>${surefireArgLine}</argLine>
+          <!-- Skips unit tests based on -DskipUTs -->
+          <skipTests>${skipUTs}</skipTests>
+          <!-- Excludes integration tests when unit tests are run. -->
+          <excludes>
+            <exclude>**/IT*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <!-- Surefire Report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven-surefire-report-plugin.version}</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <!-- Jacoco -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <configuration>
+          <excludes>
+            <exclude>${jacoco.excludes}</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+              <!-- Sets the name of the property containing the settings for JaCoCo runtime agent. -->
+              <propertyName>failsafeArgLine</propertyName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting />
+
+  <profiles />
+</project>

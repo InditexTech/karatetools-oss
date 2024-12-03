@@ -1,0 +1,26 @@
+The `karatetools-oss-boot` module includes the following packages:
+
+* 📦 `dev.inditex.karate`: *Spring Boot Application*
+* 📦 `dev.inditex.karate.config`: *Spring Boot Application configuration*
+* 📦 `dev.inditex.karate.controller`: *Spring Boot Application controllers* implementing the *Open API* test specification and *docker containers* to be used as target for the *karate tools tests* (runner, rest, auth, jdbc, mongodb, kafka, jms, ...). The controller package includes the following classes:
+
+** `BasicApiController.java`: Controller implementing the *Open API test specification*.
+** `DockerHealthController.java`: Controller to check the status of the *docker containers*.
+
+The docker containers are defined in the `docker-compose.yml` file and are started automatically when the application is started.
+
+.Karate Tools Boot Overview
+[plantuml,development-guide-karatetools-oss-boot,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-boot.puml[]
+....
+
+The `karatetools-oss-boot` module includes all the *integration tests* for the *karate tools*.
+
+IMPORTANT: Any changes made in the Karate Tools *codebase* must be reflected in the corresponding *integration tests* in this module, both as *java tests* and as *karate scenarios* (when applicable).
+
+.Karate Tools Boot Integration Tests
+[plantuml,development-guide-karatetools-oss-boot-integration-tests,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-boot-integration-tests.puml[]
+....

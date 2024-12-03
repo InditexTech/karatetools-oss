@@ -1,0 +1,12 @@
+Karate *tags* and *classpath* can be combined.
+
+For example:
+
+* Execute tests on a specified *classpath* folder with a specific *tag*
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @op.showItemById classpath:com/mypackage/api/xxx-api-rest-stable/functional"
+----
++
+CAUTION: The *classpath* filter should be at the end of the `karate.options`

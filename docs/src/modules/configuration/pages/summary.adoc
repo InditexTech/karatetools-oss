@@ -1,0 +1,27 @@
+The following files are responsible for managing the test configuration. Custom configurations are specified in the respective files.
+
+* `config.yml`: Configuration file that contains the common test configurations.
+** `config-<env>.yml`: Configuration file that contains the environment-specific settings.
+* `karate-config.js`: Runs on bootstrap (before every Scenario or Examples row in a Scenario Outline).
+** `karate-config-<env>.js`: Runs on bootstrap for a specific environment.
+* `logback-test.xml`: Logback configuration for Karate.
+
+For more information, see the *xref:configuration:karate-config.adoc[Karate Config]*.
+
+Karate Tools include the following custom configurations:
+
+* *Logging* to control the level of log verbosity
+** See *xref:configuration:logging.adoc[Logging]*
+
+* *Environment URLs* for the target servers.
+** See *xref:configuration:urls.adoc[Environment URLs]*
+
+* *Authentication and credentials management*
+** See *xref:configuration:auth.adoc[Environment Authentication and Credentials Management]*
+
+** *Local Machine Secrets Management*
+*** See *xref:configuration:local-machine-secrets.adoc[Authentication - Local Machine Secrets Management]*
+
+** The supported authentication mechanisms are:
+*** *Basic*: See *xref:configuration:auth-basic.adoc[Authentication - Basic]*
+*** *JWT*: See *xref:configuration:auth-jwt.adoc[Authentication - JWT]*

@@ -1,0 +1,185 @@
+This module `karatetools-oss-karate-test` is a *karate module* to *test* the *karate tools*.
+
+* This module has been generated using the xref:archetype:index.adoc[⚙️ Karate Tools - Archetype]
+* Includes auto-generated tests and mocks for sample api (`karatetools-oss-openapi-test`)
+* uses the `karatetools-oss-starter` to test the karate clients and the sample application (`karatetools-oss-boot`) and containers.
+
+IMPORTANT: Any changes made in the Karate Tools *codebase* must be reflected in the corresponding *karate tests* in this module.
+
+The structure of the module is as follows:
+
+.Karate Tools Test Overview
+[plantuml,development-guide-karatetools-oss-karate-test,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-karate-test.puml[]
+....
+
+* *src/test/java*: Java Code
++
+[source,subs="attributes+"]
+----
+include::example$e2e-karate-tree.txt[lines="1..14"]
+----
+include::example$e2e-karate-tree-callouts-java.txt[]
+
+* *src/test/resources*: Base and Config files
++
+[source,subs="attributes+"]
+----
+include::example$e2e-karate-tree.txt[lines="1..5,15,101..123"]
+----
+include::example$e2e-karate-tree-callouts-resources-config.txt[]
+
+* *src/test/resources/dev/inditex/karate*: Tests related to Karate Tools features
++
+[source,subs="attributes+"]
+----
+include::example$e2e-karate-tree.txt[lines="1..5,15,45..65"]
+----
+include::example$e2e-karate-tree-callouts-resources-karate-tests.txt[]
+
+* *src/test/resources/apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable*: Root folder for the *operation(s) feature* files and *validation schemas* for the test api *xxx-api-rest-stable*
++
+[source,subs="attributes+"]
+----
+include::example$e2e-karate-tree.txt[lines="1..5,15..44"]
+----
+include::example$e2e-karate-tree-callouts-resources-apis.txt[]
+
+* *src/test/resources/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable*: REST Api tests
++
+[source,subs="attributes+"]
+----
+include::example$e2e-karate-tree.txt[lines="1..5,15,45..47,66..100"]
+----
+include::example$e2e-karate-tree-callouts-resources-api-tests.txt[]
+
+The tests to be executed are:
+
+* *Karate Tests*:
+** Karate tests are used to test the karate tools in the context of a Karate project.
+** These tests are executed against the test application Rest Api and the `docker containers` provided by the `karatetools-oss-boot` module.
+
+IMPORTANT: Karate tests are required as status checks in the CI/CD pipeline pull request approval process. The *level of coverage for the karate tests must reach at least the defined threshold*.
+
+[#karate-local-execution]
+.Tests Execution (Locally)
+[cols="1,3,2,2"]
+|===
+|test|command|report|verification
+
+|Build app
+a|
+`cd code`
+
+`mvn clean install -DskipTests -DskipITs -DskipUTs`
+|NA
+|no errors
+
+|Start app
+a|
+`cd code`
+
+`java -jar boot/target/karatetools-boot-X.X.X-SNAPSHOT.jar --server.port=8888`
+|NA
+|no errors
+
+|karate
+a|
+`cd e2e/karate`
+
+`mvn clean verify -DAPP_PORT=8888 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore"`
+|`e2e/karate/target/karate-reports/karate-summary.html`
+|all tests pass
+|===
+
+.Tests Execution (Github)
+[cols="1,3,2,2"]
+|===
+|test|command|report|verification
+
+|karate
+a|* workflow dispatch
+* automatically on PR
+|workflow execution reports
+|automatically on workflow execution
+|===
+
+[#karate-local-execution-with-code-coverage]
+.Tests Execution (Locally with Code Coverage)
+[cols="1,5,1"]
+|===
+|step|commands|expected output
+
+|Build app
+a|
+`cd code`
+
+`mvn clean install -DskipTests -DskipITs -DskipUTs`
+|build without errors
+
+|Download JaCoCo agent and client
+a|
+`cd code`
+
+`JACOCO_VERSION="0.8.12"`
+
+`curl -k -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar`
+
+`curl -k -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar`
+
+`ls -l target/jacoco*`
+|JaCoCo agent and client downloaded
+
+|Start app with JaCoCo agent
+a|
+`cd code`
+
+`APP_PATH_TO_JAR="boot/target/karatetools-boot-X.X.X-SNAPSHOT.jar"`
+
+`APP_OPTIONS="--server.port=8080"`
+
+`JACOCO_AGENT_OPTIONS="-javaagent:target/jacocoagent.jar=dumponexit=true,output=file,destfile=target/jacoco-e2e/jacoco-e2e.exec,classdumpdir=target/jacoco-e2e/classes,excludes=*SpringCGLIB*:*HibernateProxy*:*MessagePostProcessor*:*_Accessor_*:*_Instantiator_*:**.invoker.**:**.*DTO,includes=dev.inditex.*"`
+
+`java "$JACOCO_AGENT_OPTIONS" -jar "$APP_PATH_TO_JAR" "$APP_OPTIONS"`
+|App started with JaCoCo agent
+
+|Wait for app to start
+a|
+`APP_HEALTH_CHECK_URL="http://localhost:8080/karatetools/health/docker"`
+
+`curl -s -o /dev/null -w \"%{http_code}\" $APP_HEALTH_CHECK_URL`
+|Status code 200
+
+|Check docker containers are up
+a|`docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Status}}\t{{.Image}}"`
+|All docker containers are up in `healthy` state
+
+|Execute Karate tests
+a|
+`cd e2e/karate`
+
+`mvn clean verify -DAPP_PORT=8080 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore"`
+|all tests pass
+
+|Stop app
+a|
+`cd code`
+
+`CTRL-C`
+|App stopped
+
+|Generate JaCoCo report
+a|
+`cd code`
+
+`JACOCO_CLI_REPORT_OPTIONS="target/jacoco-e2e/jacoco-e2e.exec --html target/jacoco-e2e --classfiles target/jacoco-e2e/classes --sourcefiles clients/src/main/java --sourcefiles generators/src/main/java --sourcefiles runner/src/main/java --sourcefiles boot/src/main/java"`
+
+`java -jar target/jacococli.jar report $JACOCO_CLI_REPORT_OPTIONS`
+|JaCoCo report generated
+
+|Check JaCoCo report
+|`target/jacoco-e2e/index.html`
+|*code coverage* generated by *karate* tests is at least *{karatetools-karate-coverage-threshold}*
+
+|===

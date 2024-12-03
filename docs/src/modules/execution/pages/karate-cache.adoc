@@ -1,0 +1,24 @@
+= Karate Cache
+
+*Karate Tools* includes a *`KarateCache` class* to be able to share variables across tests.
+
+* The KarateCache is included by default by the Karate Tools Archetype and accessible through the global variable `cache`
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public static void put(final String key, final Object value)
+public static Object get(final String key)
+public static void remove(final String key)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+Then cache.put('var', value)
+
+Given req.params.XXX = cache.get('var')
+Given req.body.XXX = cache.get('var')
+
+Given cache.remove('var')
+----

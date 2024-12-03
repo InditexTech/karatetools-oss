@@ -1,0 +1,6 @@
+spring:
+  docker:
+    compose:
+      # spring.docker.compose.enabled: Whether docker compose support is enabled.
+      #   Default: true
+      enabled: false

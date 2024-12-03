@@ -1,0 +1,28 @@
+The documentation module `karatetools-oss-docs` follows standard structure for Antora documentation:
+
+[source,subs="+attributes"]
+----
+include::example$docs-tree.txt[]
+----
+include::example$docs-tree-callouts.txt[]
+
+[#docs-local-build]
+To locally build the documentation, you can use the following command:
+
+[source,shell,subs="+attributes"]
+----
+# Change to the docs directory
+cd docs
+# Install the required dependencies
+npm install
+# Start the local kroki server
+docker run -p8000:8000 -d yuzutech/kroki
+# Build the documentation and start the local server to serve it
+npm start
+----
+
+This command will start a local server that will serve the documentation at `http://localhost:8080`. If port `8080` is already in use, the server will use the next available port, such as `8081` or `8082`.
+
+image::karatetools-oss-antora-npm-start.png[role="no-border, zoom-in"]
+
+image::karatetools-oss-localhost-8080.png[role="no-border, zoom-in"]

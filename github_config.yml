@@ -1,0 +1,92 @@
+# Unit test configuration
+unit:
+  # Default test report configuration
+  report:
+    # Surefire report folder, used to upload the report
+    folder: code/target/site
+  # JaCoCo configuration
+  jacoco:
+    report:
+      # JaCoCo report folder, used to verify the coverage and upload the report
+      folder: code/jacoco-report-aggregate/target/site/jacoco-aggregate
+  # Coverage configuration
+  coverage:
+    # Coverage threshold: The minimum coverage threshold to pass the unit tests
+    threshold: 90
+
+# Mutation test configuration
+mutation:
+  # Default test report configuration
+  report:
+    # Pitest report folder, used to verify the coverage and upload the report
+    folder: code/target/pit-reports
+  # Coverage configuration
+  coverage:
+    # Coverage threshold: The minimum coverage threshold to pass the mutation tests
+    threshold: 90
+
+# Integration test configuration
+integration:
+  # Default test report configuration
+  report:
+    # Failsafe report folder, used to upload the report
+    folder: code/target/site
+  # JaCoCo configuration
+  jacoco:
+    report:
+      # JaCoCo report folder, used to verify the coverage and upload the report
+      folder: code/jacoco-report-aggregate/target/site/jacoco-aggregate-it
+  # Coverage configuration
+  coverage:
+    # Coverage threshold: The minimum coverage threshold to pass the integration tests
+    threshold: 80
+
+# Karate test configuration
+karate:
+  # Environment: The environment to run the karate tests
+  env: local
+  # Karate options: The options to run the karate tests
+  options: "-t ~@mock.templates.inline -t ~@ignore --threads 1"
+  # Default test report configuration
+  report:
+    # Karate report folder, used to upload the report
+    folder: e2e/karate/target/karate-reports
+  # App configuration
+  app:
+    # Enabled: The flag to enable the build and launch of the app
+    enabled : true
+    # Jar file: The jar file to launch the app - relative path from 'code'
+    jar: boot/target/karatetools-boot
+    # Port: The port to launch the app
+    port: 8080
+    # Log file: The log file to store the app logs
+    logfile: app.log
+    # Health probe: The health probe to check the app status
+    health_probe: karatetools/health/docker
+  # JaCoCo configuration
+  jacoco:
+    # JaCoCo includes: The classes to include in the coverage
+    includes:
+      - dev.inditex.*
+    # JaCoCo excludes: The classes to exclude from the coverage
+    excludes:
+      - "*SpringCGLIB*"
+      - "*HibernateProxy*"
+      - "*MessagePostProcessor*"
+      - "*_Accessor_*"
+      - "*_Instantiator_*"
+      - "**.invoker.**"
+      - "**.*DTO"
+    # JaCoCo source files: The source files to include in the coverage
+    sourcefiles:
+      - clients/src/main/java
+      - generators/src/main/java
+      - runner/src/main/java
+      - boot/src/main/java
+    # JaCoCo report folder, used to verify the coverage and upload the report
+    report:
+      folder: code/target/jacoco-e2e
+  # Coverage configuration
+  coverage:
+    # Coverage threshold: The minimum coverage threshold to pass the karate tests
+    threshold: 80

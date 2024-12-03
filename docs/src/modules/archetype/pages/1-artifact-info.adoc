@@ -1,0 +1,14 @@
+In the *artifact's main `pom.xml`* file, you will find the artifact's *group ID* and *version* for which the Karate tests are to be created.
+
+[source,xml,subs="+attributes"]
+----
+  <groupId>com.mypackage</groupId>
+  <version>X.X.X</version>
+----
+
+In the *artifact's code*, you will find the artifact's main package.
+
+[source,java,subs="+attributes"]
+----
+package com.mypackage;
+----

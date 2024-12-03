@@ -1,0 +1,27 @@
+docs
+├── antora-playbook-local.yml <1>
+├── antora-playbook.yml <1>
+├── build <2>
+├── node_modules <3>
+├── package-lock.json <4>
+├── package.json <4>
+├── src <5>
+│   ├── antora.yml <6>
+│   └── modules <7>
+│       ├── HOME
+│       ├── archetype
+│       ├── clients
+│       ├── configuration
+│       ├── contributing
+│       ├── execution
+│       ├── open-api-generator
+│       ├── overview
+│       ├── prerequisites
+│       ├── puml
+│       └── release
+├── supplemental-ui <8>
+│   ├── css
+│   ├── img
+│   ├── js
+│   └── partials
+└── ui-bundle.zip <9>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.inditex.karate</groupId>
+    <artifactId>karatetools</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>karatetools-starter</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>InditexOSS Karate Tools - Starter</description>
+
+  <developers>
+    <developer>
+      <name>Inditex Open Source Office</name>
+      <email>oso@inditex.com</email>
+      <organization>Industria de Diseño Textil, S.A.</organization>
+      <organizationUrl>https://inditex.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <properties>
+    <!-- This module has no junit tests -->
+    <pitest-skip>true</pitest-skip>
+  </properties>
+
+  <dependencyManagement />
+
+  <dependencies>
+    <!-- Karate Tools -->
+    <!-- Karate Tools - Clients - Java -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-clients</artifactId>
+      <version>${project.version}</version>
+      <classifier>java</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Generators - Java -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-generators</artifactId>
+      <version>${project.version}</version>
+      <classifier>java</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Generators - Templates -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-generators</artifactId>
+      <version>${project.version}</version>
+      <classifier>templates</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Runner - Java -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+      <classifier>java</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Runner - Karate JS - Auth -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+      <classifier>karate-js-auth</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Runner - Karate JS - Base -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+      <classifier>karate-js-base</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Runner - Karate JS - Utils -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+      <classifier>karate-js-utils</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Karate Tools - Runner - Karate Mocks -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+      <classifier>karate-mocks</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Common -->
+    <dependency>
+      <groupId>com.intuit.karate</groupId>
+      <artifactId>karate-core</artifactId>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Test -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Generators -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Generators - Console -->
+    <dependency>
+      <groupId>de.codeshelf.consoleui</groupId>
+      <artifactId>consoleui</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Generators - JWT -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-gson</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Generators - Open Api -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger.parser.v3</groupId>
+      <artifactId>swagger-parser</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-inflector</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <build />
+
+  <reporting />
+
+  <profiles />
+
+</project>

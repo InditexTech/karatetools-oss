@@ -1,0 +1,15 @@
+This will automatically create the karate artifact folder structure, the test runner, the configuration and support files.
+
+image::archetype-execution.png[role="no-border, zoom-in"]
+
+[source,xml,subs="+attributes"]
+----
+  <groupId>com.mypackage</groupId>
+  <artifactId>karate</artifactId>
+  <version>X.X.X</version>
+----
+
+[source,java,subs="+attributes"]
+----
+package com.mypackage.karate;
+----

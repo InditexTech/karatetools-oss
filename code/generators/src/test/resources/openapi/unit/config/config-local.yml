@@ -1,0 +1,9 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  janusAuthUrl: TO_BE_COMPLETED
+  openAMAuthUrl: TO_BE_COMPLETED
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultUsername: default username
+# defaultAuthMode: basic | janus | jwt | openAM
+# credentials: pairs of username: password

@@ -1,0 +1,25 @@
+<properties>
+  ...
+  <!-- APIs -->
+  <xxx-api-rest-stable.version>X.X.X</xxx-api-rest-stable.version>
+  <!-- Third Party APIs -->
+  <xxx-external-api-rest-stable.version>X.X.X</xxx-external-api-rest-stable.version>
+  ...
+</properties>
+
+<dependencies>
+  ...
+  <!-- APIs -->
+  <dependency>
+    <groupId>com.mypackage.api</groupId>
+    <artifactId>xxx-api-rest-stable</artifactId>
+    <version>${xxx-api-rest-stable.version}</version>
+  </dependency>
+  <!-- Third Party APIs -->
+  <dependency>
+    <groupId>com.mypackage.api</groupId>
+    <artifactId>xxx-external-api-rest-stable</artifactId>
+    <version>${xxx-external-api-rest-stable.version}</version>
+  </dependency>
+  ...
+</dependencies>

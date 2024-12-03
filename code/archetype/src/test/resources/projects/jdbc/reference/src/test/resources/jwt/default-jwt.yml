@@ -1,0 +1,11 @@
+secret: 'aaaa1111-bb22-cc33-dd44-eeeeee555555'
+headers:
+  alg: 'HS256'
+  kid: 'test'
+  typ: 'JWT'
+payloads:
+  id: '1234'
+  sub: 'username'
+  iss: 'https://www.inditex.com/jwt-token'
+  exp: 2147483647
+  iat: 1704067200

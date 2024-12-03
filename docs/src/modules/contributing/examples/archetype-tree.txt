@@ -1,0 +1,57 @@
+code/archetype/
+├── pom.xml
+└── src
+    ├── main
+    │   └── resources
+    │       ├── META-INF
+    │       │   ├── archetype-post-generate.groovy <1>
+    │       │   └── maven
+    │       │       └── archetype-metadata.xml <2>
+    │       └── archetype-resources <3>
+    │           ├── .gitignore <4>
+    │           ├── .tool-versions <5>
+    │           ├── pom.xml <6>
+    │           └── src
+    │               └── test
+    │                   ├── java
+    │                   │   └── KarateRunnerTest.java <7>
+    │                   └── resources
+    │                       ├── config <8>
+    │                       │   ├── db
+    │                       │   │   ├── mariadb-config-local.yml
+    │                       │   │   ├── mongodb-config-local.yml
+    │                       │   │   └── postgresql-config-local.yml
+    │                       │   ├── jms
+    │                       │   │   └── activemq-config-local.yml
+    │                       │   └── kafka
+    │                       │       └── kafka-config-local.yml
+    │                       ├── config-local.yml <9>
+    │                       ├── config.yml <9>
+    │                       ├── jwt
+    │                       │   └── default-jwt.yml <10>
+    │                       ├── karate-config.js <11>
+    │                       ├── logback-test.xml <12>
+    │                       └── mocks
+    │                           └── templates
+    │                               └── standalone <13>
+    │                                   └── .gitkeep
+    └── test
+        └── resources
+            └── projects <14>
+                ├── all <15>
+                │   ├── archetype.properties <16>
+                │   ├── goal.txt <17>
+                │   └── reference <18>
+                │       ├── .gitignore
+                │       ├── .tool-versions
+                │       ├── pom.xml
+                │       └── ...
+                ├── default <15>
+                │   ├── archetype.properties <16>
+                │   ├── goal.txt <17>
+                │   └── reference <18>
+                │       ├── .gitignore
+                │       ├── .tool-versions
+                │       ├── pom.xml
+                │       └── ...
+                ...

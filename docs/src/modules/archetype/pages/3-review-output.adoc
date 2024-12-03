@@ -1,0 +1,25 @@
+image::archetype-output.png[role="no-border, zoom-in"]
+
+... Tools version manager file:
+* .tool-versions
+... Git Ignore file:
+* .gitingore
+... Karate pom file:
+* pom.xml
+... Java Test Runner:
+* src/test/java/com/mypackage/karate/KarateRunnerTest.java
+... Configuration Files (general and environment specific):
+* src/test/resources/config.yml
+* src/test/resources/config-<env>.yml
+... Karate-config files:
+* src/test/resources/karate-config.js
+... Karate Authentication Default JWT:
+* src/test/resources/jwt/default-jwt.yml
+... logback configuration:
+* src/test/resources/logback-test.xml
+... karate clients configuration files as per archetype properties (includeJDBCClient_MariaDB, ...)
+* src/test/resources/config/db
+* src/test/resources/config/jms
+* src/test/resources/config/kafka
+... karate mocks folder to define standalone mock templates
+* src/test/resources/mocks/templates/standalone

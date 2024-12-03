@@ -1,0 +1,19 @@
+* Execute tests on a specified *classpath folder* using `karate.options` `classpath:`
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="classpath:com/.../xxx-api-rest-stable/functional"
+----
++
+The execution will include all the tests in the contained feature files in the folder and subfolders
+
+* Execute tests on a specified *classpath file* using `karate.options` `classpath:`
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="classpath:com/.../xxx-api-rest-stable/functional/e2e/e2e.feature"
+----
++
+The execution will include only the tests in the specified feature file
+
+CAUTION: The *classpath* filter should be at the end of the `karate.options`

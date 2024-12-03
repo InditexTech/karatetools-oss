@@ -1,0 +1,143 @@
+---
+name: docs-publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'Version to publish'
+        required: false
+      AUTODEPLOY_BRANCH:
+        description: 'Branch to autodeploy'
+        required: false
+      ENVIRONMENT:
+        description: 'Environment to deploy'
+        required: true
+
+concurrency:
+  group: docs-publish-${{ github.event.inputs.VERSION }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Docs / Publish
+    runs-on: ubuntu-24.04
+    environment:
+      name: ${{ github.event.inputs.ENVIRONMENT }}
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Decide reference branch
+      id: decide-branch
+      run: |
+        if [ -n "${{ github.event.inputs.AUTODEPLOY_BRANCH }}" ]; then
+          echo "REFERENCE_BRANCH=${{ github.event.inputs.AUTODEPLOY_BRANCH }}" >> "$GITHUB_ENV"
+        else
+          echo "REFERENCE_BRANCH=docs/v${{ github.event.inputs.VERSION }}" >> "$GITHUB_ENV"
+        fi
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ steps.decide-branch.outputs.REFERENCE_BRANCH }}
+
+    - name: Configure Pages
+      uses: actions/configure-pages@v5
+
+    - name: NPM / Setup Dependencies Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Setup asdf Cache
+      id: asdf-cache
+      uses: actions/cache@v4
+      continue-on-error: true
+      with:
+        path: ~/.asdf/data
+        key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+        restore-keys: |
+          ${{ runner.os }}-asdf-
+
+    - name: Save tool-versions content
+      run: |
+        {
+          echo "TOOL_VERSIONS<<EOF"
+          cat docs/.tool-versions
+          echo "EOF"
+        } >> "$GITHUB_ENV"
+
+    - name: Node / Setup asdf environment
+      uses: asdf-vm/actions/install@v3
+      # https://github.com/asdf-vm/actions/issues/356
+      if: steps.asdf-cache.outputs.cache-hit != 'true'
+      with:
+        tool_versions: ${{ env.TOOL_VERSIONS }}
+
+    - name: Configure Git
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SCM_COMMITTER_PGP_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+      run: |
+        git config --global credential.helper store
+        cat <<EOT >> ~/.git-credentials
+        https://ci-user:$GITHUB_TOKEN@github.com
+        EOT
+
+        echo "$SCM_COMMITTER_PGP_KEY" | gpg --batch --import
+        git config user.name "InditexTech CI"
+        git config user.email "oso@inditex.com"
+
+    - name: Docker / Execute Kroki server
+      run: |
+        docker run \
+          -p 8000:8000 \
+          --name krokiserver \
+          --health-cmd="curl -s --fail http://localhost:8000/health || exit 1" \
+          --health-interval=2s \
+          --health-retries=5 \
+          --health-timeout=1s \
+          -d yuzutech/kroki
+
+        max_attempts=5
+        attempt=1
+        backoff=2
+
+        while ! docker inspect --format='{{json .State.Health.Status}}' krokiserver | grep -q "healthy"; do
+          echo "Kroki server is not ready yet. Waiting for $backoff seconds..."
+          sleep $backoff
+
+          attempt=$((attempt + 1))
+
+          if [ $attempt -gt $max_attempts ]; then
+            echo "Kroki server failed to start after $max_attempts attempts. Exiting..."
+            exit 1
+          fi
+        done
+
+    - name: NPM / Verify
+      working-directory: docs
+      run: |
+        npm run verify
+
+    - name: NPM / Publish
+      working-directory: docs
+      run: |
+        npm run publish
+
+    - name: Upload Artifacts
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/build/site
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

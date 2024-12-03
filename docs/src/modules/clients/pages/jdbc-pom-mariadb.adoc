@@ -1,0 +1,26 @@
+*karatetools-starter* already includes the *Maria DB* JDBC dependencies.
+
+.*If you need to change the dependency version*, you can include it in the pom as follows:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - MariaDB -->
+    <mariadb-java-client.version>X.X.X</mariadb-java-client.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - MariaDB -->
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>${mariadb-java-client.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

@@ -1,0 +1,32 @@
+name: Configuration Resolver
+description: 'Resolv configuration from files and variables'
+
+inputs:
+  files:
+    description: "List of files (one on each line) to load into the output JSON object"
+    required: true
+  input-vars:
+    description: 'List of variables in format KEY=VALUE. Key can contains indentation-char'
+    required: false
+    default: "" # empty list
+  indentation-char:
+    description: "Indentation token in input-vars variable names"
+    required: false
+    default: "_"
+  search-string:
+    description: 'if an input var contains this value, it will look for a default value in configuratio files. It will fail if not found.'
+    required: false
+    default: "DEFAULT"
+  create-annotations:
+    description: 'Create annotations into the run that shows information about: Input Vars (from inputs.input-vars), Resolved Input Vars (from outputs.inputs) and Resolved Config (from outputs.config).'
+  debug:
+    description: "Specify debug mode. It adds more output. Take care, it can publish sensitive invormation if it's not properly cypher in your env variables"
+    default: true
+outputs:
+  inputs:
+    description: "Same inputs with same name and with replaced value in case of contains search-string, same input value otherwise"
+  config:
+    description: "A JSON object that contains all the processed files as JSON objects with replaced properties from input-vars"
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

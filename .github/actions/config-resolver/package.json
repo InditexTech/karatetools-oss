@@ -1,0 +1,37 @@
+{
+    "name": "testing-config-resolver",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Resolve testing configurations",
+    "main": "src/index.js",
+    "scripts": {
+        "lint": "eslint .",
+        "prepare": "ncc build src/index.js -o dist --source-map --license licenses.txt",
+        "test": "jest",
+        "test:verbose": "jest --verbose",
+        "all": "npm run lint && npm run prepare && npm run test"
+    },
+    "keywords": [
+        "actions",
+        "configuration",
+        "testing"
+    ],
+    "author": "QA team",
+    "license": "Inditex",
+    "dependencies": {
+        "@actions/core": "^1.10.0",
+        "dot-object": "^2.1.4",
+        "js-yaml": "^4.1.0",
+        "lodash.merge": "^4.6.2",
+        "lodash.clonedeep": "^4.5.0"
+    },
+    "devDependencies": {
+        "@vercel/ncc": "^0.38.1",
+        "eslint": "^7.4.0",
+        "jest": "^26.6.3"
+    },
+    "engines": {
+      "node": ">=20.10.0",
+      "npm": ">=10.2.3"
+    }
+}

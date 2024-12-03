@@ -1,0 +1,12 @@
+---
+operationId: "listItems"
+statusCode: 401
+auth:
+  authMode: basic
+  username: username200
+  password: username200p
+params:
+  limit: 0
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/listItems/schema/listItems_401.schema.yml'))"

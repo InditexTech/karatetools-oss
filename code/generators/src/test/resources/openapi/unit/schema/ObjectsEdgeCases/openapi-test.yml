@@ -1,0 +1,41 @@
+openapi: 3.0.6
+
+info:
+  title: User Details
+  description: User Details
+  version: 1.0.0
+
+paths:
+  /object:
+    get:
+      operationId: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+
+components:
+  schemas:
+    ObjectResponse:
+      type: object
+      properties:
+        mapProperty:
+          type: object
+          additionalProperties: true
+        objectProperty:
+          type: object
+          example:
+            hello: world
+        objectPropertyTitle:
+          $ref: '#/components/schemas/ObjectResponse2'
+        objectPropertyTitle2:
+          $ref: '#/components/schemas/ObjectResponse2'
+    ObjectResponse2:
+      title: ObjectResponse2
+      type: object
+      properties:
+        hello:
+          type: string

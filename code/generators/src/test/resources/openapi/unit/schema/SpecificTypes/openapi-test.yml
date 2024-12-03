@@ -1,0 +1,46 @@
+openapi: 3.0.6
+
+info:
+  title: User Details
+  description: User Details
+  version: 1.0.0
+
+paths:
+  /object:
+    get:
+      operationId: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+components:
+  schemas:
+    ObjectResponse:
+      type: object
+      properties:
+        uuidSchema:
+          type: string
+          format: uuid
+        emailSchema:
+          type: string
+          format: email
+        passwordSchema:
+          type: string
+          format: password
+        dateSchema:
+          type: string
+          format: date
+        datetimeSchema:
+          type: string
+          format: date-time
+        byteSchema:
+          type: string
+          format: byte
+        binarySchema:
+          type: string
+          format: byte
+        booleanSchema:
+          type: boolean

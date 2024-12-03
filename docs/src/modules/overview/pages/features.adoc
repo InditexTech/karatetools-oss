@@ -1,0 +1,13 @@
+Using an archetype (*karatetools-archetype*), it will generate a karate project from scratch with the necessary configurations and utilities for the generation and execution of karate tests.
+
+* *Configuration files* (karate, auth, jdbc, kafka, ...)
+
+* *JavaScript and Karate utilities* which include:
+** the management of *files and payloads*
+** *Authentication* (basic, jwt, ...) allowing to change from one to another via the test configuration.
+** Initialization and management of Karate *mock servers for external services*
+
+* *Java* dependencies to the *karatetools-starter* which include:
+** *open-api-generator* Java Command Line Interface for the *automatic generation* of tests in Gherkin, with their related data sets and schemas for response validation as well as data to mock external services from *Open Api definitions*.
+** Java *Clients* to interact with Relational Databases (*JDBC*), Non-relational Database (*Mongo*), Event Messaging (*Kafka Consumer and Producer*) and JMS Messaging (*JMS Send and JMS Consume*)
+** Java *KarateCache* to be able to share variables across tests.

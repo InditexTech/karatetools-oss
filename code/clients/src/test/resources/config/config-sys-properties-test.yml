@@ -1,0 +1,29 @@
+number-fixed: 100
+number-system: ${number-var:100}
+boolean-fixed: true
+boolean-system: ${boolean-var:true}
+string-fixed: fixed
+string-system: ${string-var:fixed}
+mask-password-fixed: pass01
+mask-password-system: ${password-var:pass01}
+mask-username-fixed: user01
+mask-username-system: ${username-var:user01}
+basic.auth.user.info: user01:pass01
+auth-fixed: username=user01 password=pass01
+auth-system: username=${username-var:user01} password=${password-var:pass01}
+map:
+  number-fixed: 100
+  number-system: ${number-var:100}
+  boolean-fixed: true
+  boolean-system: ${boolean-var:true}
+  string-fixed: fixed
+  string-system: ${string-var:fixed}
+  mask-password-fixed: pass01
+  mask-password-system: ${password-var:pass01}
+  mask-username-fixed: user01
+  mask-username-system: ${username-var:user01}
+  basic.auth.user.info: ${username-var:user01}:${password-var:pass01}
+  auth-fixed: username=user01 password=pass01
+  auth-system: username=${username-var:user01} password=${password-var:pass01}
+  map:
+    basic.auth.user.info: ${username-var:user01}:${password-var:pass01}

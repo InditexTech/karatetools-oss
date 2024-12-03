@@ -1,0 +1,1 @@
+* xref:#jms-client-configuration-properties-apache-active-mq[Apache Active MQ]

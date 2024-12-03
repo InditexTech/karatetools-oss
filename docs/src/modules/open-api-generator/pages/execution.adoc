@@ -1,0 +1,22 @@
+Execute *open-api-generator* and enter the requested inputs, starting by the *generation mode*.
+
+[source,bash,subs="+attributes"]
+----
+mvn exec:java@open-api-generator
+----
+
+TIP: Select *generation mode* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-operations-select.txt[]
+----
+
+image::open-api-generator-cmd-operations.png[role="no-border, zoom-in"]
+
+Once the *generation mode* has been selected you can proceeed the chosen mode:
+
+. xref:open-api-generator:open-api-generator-operations.adoc[Karate Open Api Generator - Operations]
+. xref:open-api-generator:open-api-generator-smoke.adoc[Karate Open Api Generator - Smoke Tests]
+. xref:open-api-generator:open-api-generator-functional.adoc[Karate Open Api Generator - Functional Test]
+. xref:open-api-generator:open-api-generator-mock.adoc[Karate Open Api Generator - Mock Data]

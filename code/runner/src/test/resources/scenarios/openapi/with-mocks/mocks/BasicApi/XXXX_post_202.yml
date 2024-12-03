@@ -1,0 +1,7 @@
+---
+operationId: "post"
+method: "POST"
+path: "/post"
+params: "#string"
+request: "#ignore"
+responseStatus: 202

@@ -1,0 +1,72 @@
+@startuml karatetools-oss-boot
+skinparam componentStyle rectangle
+left to right direction
+scale 2
+
+frame "karatetools-oss-boot" {
+  package "dev.inditex.karate" {
+    [BasicApplication.java]
+  }
+  package "dev.inditex.karate.config" {
+    [AppConfiguration.java]
+  }
+  package "dev.inditex.karate.controller" {
+    [BasicApiController.java]
+    [DockerHealthController.java]
+    [RunningServiceDTO.java]
+    [RunningServiceMapper.java]
+  }
+  package "dev.inditex.karate.openapitest.service" {
+    [BasicApiInterface.java]
+  }
+  package "dev.inditex.karate.openapitest.dto" {
+    [ErrorDTO.java]
+    [ItemDTO.java]
+  }
+}
+
+' Relationships
+
+[dev.inditex.karate] .[hidden]. [dev.inditex.karate.controller]
+[dev.inditex.karate.controller] .left[hidden]. [dev.inditex.karate.openapitest.service]
+[dev.inditex.karate.openapitest.service] .[hidden]. [dev.inditex.karate.openapitest.dto]
+
+[ErrorDTO.java] .down[hidden]. [ItemDTO.java]
+
+[BasicApplication.java] -left-> [AppConfiguration.java]
+[BasicApplication.java] --> [BasicApiController.java] : runs
+[BasicApplication.java] --> [DockerHealthController.java] : runs
+
+[BasicApiController.java] -down-> [BasicApiInterface.java] : implements
+[BasicApiController.java] -down-> [ErrorDTO.java] : returns
+[BasicApiController.java] -down-> [ItemDTO.java] : returns
+
+[DockerHealthController.java] --> [RunningServiceDTO.java] : returns
+[DockerHealthController.java] --> [RunningServiceMapper.java] : uses
+[RunningServiceMapper.java] --> [RunningServiceDTO.java] : maps
+
+frame docker {
+  [artemis] #Silver
+  [cp-kafka] #Silver
+  [cp-schema-registry] #Silver
+  [cp-zookeeper] #Silver
+  [mariadb] #Silver
+  [mongo] #Silver
+  [postgres] #Silver
+
+  ' Relationships
+
+  [artemis] -[hidden]left- [mariadb]
+  [mariadb] -[hidden]down- [postgres]
+  [postgres] -[hidden]down- [mongo]
+  [mariadb] -[hidden]left- [cp-kafka]
+  [cp-kafka] -[hidden]down- [cp-zookeeper]
+  [cp-zookeeper] -[hidden]down- [cp-schema-registry]
+}
+
+' Relationships
+
+[BasicApplication.java] -left-> [docker] : starts
+[DockerHealthController.java] -left-> [docker] : checks
+
+@enduml

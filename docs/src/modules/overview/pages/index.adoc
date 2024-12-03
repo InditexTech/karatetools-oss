@@ -1,0 +1,35 @@
+= Overview
+
+include::about.adoc[]
+
+== Features
+
+include::features.adoc[]
+
+== Architecture
+
+The high-level architecture of Karate Tools is shown in the following diagram:
+
+[plantuml,architecture,png,role="no-border, zoom-in"]
+....
+include::puml:partial$sprites.puml[]
+include::puml:partial$architecture.puml[]
+....
+
+== Setup and Usage
+
+include::setup.adoc[]
+
+== Examples and Training
+
+include::examples.adoc[]
+
+== Modules
+
+[cols="40h,~"]
+|=======================
+|Feature|Description
+
+include::modules.adoc[]
+
+|=======================

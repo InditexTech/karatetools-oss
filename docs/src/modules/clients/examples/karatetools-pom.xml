@@ -1,0 +1,16 @@
+<properties>
+  ...
+  <!-- Karate Tools -->
+  <karatetools.version>X.X.X</karatetools.version>
+</properties>
+
+<dependencies>
+  ...
+  <!-- Karate Tools -->
+  <dependency>
+    <groupId>{karatetools-package}</groupId>
+    <artifactId>karatetools-starter</artifactId>
+    <version>${karatetools.version}</version>
+    <scope>test</scope>
+  </dependency>
+</dependencies>

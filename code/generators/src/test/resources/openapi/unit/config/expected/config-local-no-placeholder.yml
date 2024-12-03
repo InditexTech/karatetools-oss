@@ -1,0 +1,8 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  janusAuthUrl: TO_BE_COMPLETED
+  openAMAuthUrl: TO_BE_COMPLETED
+
+# defaultUsername: default username
+# defaultAuthMode: basic | janus | jwt | openAM
+# credentials: pairs of username: password

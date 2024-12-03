@@ -1,0 +1,7 @@
+* xref:clients:jdbc.adoc[*JDBCClient*]: Java Client to interact with DataBases using JDBC. Included drivers for:
+** MariaDB
+** PostgreSQL
+* xref:clients:mongodb.adoc[*MongoDBClient*]: Java Client to interact with MongoDB
+* xref:clients:kafka.adoc[*Kafka Clients*]: Java Clients (Consumer and Producer) to interact with Kafka
+* xref:clients:jms.adoc[*JMSClient*]: Java Client (JMS Send and JMS Consume) to interact with JMS queues. Included providers for:
+** Apache Active MQ

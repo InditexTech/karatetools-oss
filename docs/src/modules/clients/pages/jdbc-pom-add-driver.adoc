@@ -1,0 +1,27 @@
+
+.*If you need to add a different JDBC Driver*, you can include it in the pom as follows:
+[%collapsible]
+====
+* SQL Server
++
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - SQL Server -->
+    <sqlserver.version>11.2.3.jre17</sqlserver.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - SQL Server -->
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>${mssql-jdbc.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

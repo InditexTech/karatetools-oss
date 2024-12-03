@@ -1,0 +1,50 @@
+@startuml karatetools-kafka
+
+!include sprites.puml
+
+node "<$karate,scale=0.5>\n karate-module" as karateModule {
+  file "<$cucumber-icon,scale=0.5> karate-tests" as test
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as karatetoolsClients {
+  agent "<$java-icon,scale=0.15> kafka-producer-client" as kafkaProducerClient
+  agent "<$java-icon,scale=0.15> kafka-consumer-client" as kafkaConsumerClient
+}
+
+queue "<$kafka,scale=1>" as kafka
+
+json "<$json,scale=0.5> JSON" as JSON {
+  "response-single-topic": [
+    { "id": 1, "name": "karate-A1", "value": 1 },
+    { "id": 2, "name": "karate-A2", "value": 2 }
+  ],
+  "response-multiple-topics": {
+    "topicA": [
+      { "id": 1, "name": "karate-A1", "value": 1 },
+      { "id": 2, "name": "karate-A2", "value": 2 }
+    ],
+    "topicB": [
+      { "id": 1, "name": "karate-B1", "value": 1 },
+      { "id": 2, "name": "karate-B2", "value": 2 }
+    ]
+  }
+}
+
+' Relationships
+
+kafkaProducerClient -[hidden]- kafkaConsumerClient
+
+kafkaProducerClient --> kafka
+note bottom of link : <$kafka-icon,scale=0.5> eventA1
+kafkaConsumerClient --> kafka
+
+test -right-> kafkaProducerClient
+note bottom of link : send('topicA', eventA1)
+
+test -right-> kafkaConsumerClient
+note bottom of link : consume('topicA', 'groupX')\n\nconsume(['topicA', 'topicB'], 'groupX')
+
+kafkaConsumerClient ..> JSON
+JSON ..> test
+
+@enduml

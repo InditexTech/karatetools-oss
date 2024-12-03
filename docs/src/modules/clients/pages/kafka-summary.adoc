@@ -1,0 +1,18 @@
+Java Clients (Consumer and Producer) to interact with *Kafka from karate*.
+
+It provides features to *consume and produce Kafka Events* for one o multiple topics.
+
+[plantuml,kafka,png,role="no-border, zoom-in"]
+....
+include::puml:partial$sprites.puml[]
+include::puml:partial$kafka-clients.puml[]
+....
+
+* How to set it up:
+** Define (if applicable) the Kafka clients dependencies in the project *xref:#pom-configuration[POM]*
+** Define the Kafka clients configuration in the file *xref:#client-configuration[src/test/resources/config/kafka/kafka-<env>-config.yml]*
+
+* How to use it in the karate files:
+** Kafka Clients Features and Usage
+*** *xref:#client-features-and-usage-producer[Client Features and Usage - Producer]*
+*** *xref:#client-features-and-usage-consumer[Client Features and Usage - Consumer]*

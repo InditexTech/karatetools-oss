@@ -1,0 +1,9 @@
+*Karate Tools* is a *toolkit* to facilitate a *karate module's*:
+
+⚙️ *initialization* and *configuration* through a *maven archetype*
+
+🗂️ *automated generation* of *test scenarios*, *test data* and external *services mocks* from *Open API*
+
+🛠️ usual operations such as *authentication*, *database interaction*, *messaging (Kafka & JMS)*, ...
+
+⏩ *execution* in different enviroments of karate tests for a REST artifact.

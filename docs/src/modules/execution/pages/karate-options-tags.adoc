@@ -1,0 +1,62 @@
+* Execute tests with specific *tags* using `karate.options` `-t` or `--tags`
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t ..."
+mvn clean test -Dkarate.options="--tags ..."
+----
+
+Karate Tests support *combinations of TAGS*.
+
+* *AND*: Features with both @TAG1 and @TAG2 but not @TAG3.
++
+`-Dkarate.options="-t @TAG1 -t @TAG2 -t @~TAG3"`.
++
+For example:
+
+** Smoke Tests for a single operation
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @smoke -t @op.showItemById"
+----
+
+** Functional Tests for a single operation
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @functional -t @op.showItemById"
+----
+
+* *OR*: Features with either @TAG1 or @TAG2
++
+`-Dkarate.options="-t @TAG1,@TAG2"`.
++
+For example:
+
+** All Tests for two operations
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @op.showItemById,@op.listItems"
+----
+
+* *AND and OR Combination*: Features with either @TAG1 or @TAG2 and @TAG3 but not @TAG4
++
+`-Dkarate.options="-t @TAG1,@TAG2 -t @TAG3 -t ~@TAG4"`.
++
+For example:
+
+** Smoke Tests for two operations
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @smoke -t @op.showItemById,@op.listItems"
+----
+
+** Functional Tests for two operations
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="-t @functional -t @op.showItemById,@op.listItems"
+----

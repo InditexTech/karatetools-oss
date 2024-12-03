@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: KarateTools Open Api - Basic
+  version: 1.0.0
+  contact:
+    name: KarateTools
+    email: karate-utils@inditex.com
+  description: KarateTools Open Api - Basic
+servers:
+- url: http://localhost:8080/karatetools
+  description: Local
+tags:
+- name: BasicApi
+paths:
+  /items:
+    get:
+      summary: List all items
+      description: List all items
+      operationId: listItems
+      tags:
+      - BasicApi
+      parameters:
+      - name: limit
+        in: query
+        description: How many items to return at one time (max 100)
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          format: int32
+      - name: Accept-Language
+        in: header
+        required: false
+        description: Header for translating markets into proper language
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Items'
+        '400':
+          description: invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+    post:
+      summary: Create an item
+      description: Create an item
+      operationId: createItems
+      tags:
+      - BasicApi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/Item'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Item'
+        '400':
+          description: invalid item
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+  /items/{itemId}:
+    get:
+      summary: Info for a specific item
+      description: Info for a specific item
+      operationId: showItemById
+      tags:
+      - BasicApi
+      parameters:
+      - name: itemId
+        in: path
+        required: true
+        description: The id of the item to retrieve
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Item'
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'

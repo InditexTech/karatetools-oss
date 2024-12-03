@@ -1,0 +1,55 @@
+= Karate Tools Mock Server
+
+Karate Tools include the feature to Start a Karate mock server with two execution modes:
+
+Standalone mode:: mocks shared by all the tests
+Inline mode:: mocks specific to each test
+
+This feature can be enabled or disabled using the tag `karate.options` tags:
+
+* `@mock.templates.standalone` to enable the **Standalone Mock Server** (default)
+* `@mock.templates.inline` to enable the **Inline Mock Server**
+
+== Execution
+
+Execute tests enabling or disabling **Karate Tools Mock Server (Standalone/Inline)** using `karate.options`
+
+* Mock Server **Standalone** (started by default via karate hook) without Inline Tests
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline"
+----
+
+* **Inline** Tests without Standalone Mock Server (disabling standalone default start hook)
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.env=local -Dkarate.options="-t @mock.templates.inline -t ~@mock.templates.standalone"
+----
+
+Also the **port** for the mock server can be customized using `KARATE_MOCK_SERVER_PORT` environment variable.
+
+* Execute tests with custom karate mock server port
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.env=local -DKARATE_MOCK_SERVER_PORT=58081
+----
+
+== Launch Standalone Mock Server independently of the tests
+
+This feature is useful to test the mock server endpoints without running the tests.
+
+* Launch Standalone Mock Server independently of the tests.
++
+[source,bash,subs="+attributes"]
+----
+mvn exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.intuit.karate.Main" -Dexec.args="-p 58082 -m classpath:mocks/mock-templates.feature"
+----
+
+The mock server endpoints will be available at the provided port (`-p 58082`), for example:
+
+* `http://localhost:58082/items?limit=1`
+* `http://localhost:58082/items/1`
+* ...

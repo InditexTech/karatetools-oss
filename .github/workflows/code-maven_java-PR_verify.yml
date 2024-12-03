@@ -1,0 +1,139 @@
+---
+name: code-maven-PR-verify
+
+concurrency:
+  group: code-PR-verify-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - 'code/**'
+      - '.github/workflows/code*'
+
+env:
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+jobs:
+  unit-tests:
+    name: Code / Verify
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Maven Cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+    
+      - name: Setup asdf Cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Save tool-versions content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat code/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Maven / Setup asdf environment
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      - name: Setup Java environment vars
+        working-directory: code
+        run: |
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+      - name: Store project information
+        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+        id: version
+        run: |
+          echo "app-version=$(yq -oy '.project.version' code/pom.xml)" >> "$GITHUB_OUTPUT"
+          echo "app-name=$(yq -oy '.project.artifactId' code/pom.xml)" >> "$GITHUB_OUTPUT"
+
+      - name: Maven / Verify artifact with coverage
+        if: ${{ !(contains(github.event.pull_request.labels.*.name, 'autopublish/snapshot-binaries')) }}
+        working-directory: code
+        run: |
+          mvn -B clean verify -Djacoco.skip=false -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
+
+      - name: Maven / Process Surefire report and annotate PR
+        if: ${{ always() && !cancelled() }}
+        uses: scacap/action-surefire-report@a2911bd1a4412ec18dde2d93b1758b3e56d2a880
+        with:
+          fail_if_no_tests: false
+          create_check: false
+          check_name: "Code / Verify"
+
+      - name: SonarCloud / Setup asdf tools
+        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: |
+            java temurin-17.0.8+7
+            nodejs 20.10.0
+            maven 3.9.4
+
+      - name: SonarCloud / Set asdf versions
+        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+        working-directory: code
+        run: |
+          asdf local java temurin-17.0.8+7
+          asdf local nodejs 20.10.0
+          asdf local maven 3.9.4
+
+      - name: Setup Java environment vars
+        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+        working-directory: code
+        run: |
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+      - name: SonarCloud / Run Maven Sonar goal
+        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+          LOGIN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_SCANNER_OPTS: ''
+        working-directory: code
+        run: |
+          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
+            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
+            -Dsonar.host.url="https://sonarcloud.io/" \
+            -Dsonar.organization=inditextech \
+            -Dsonar.token="${LOGIN}" \
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
+            -Dsonar.pullrequest.branch="$PR_HEAD_REF" \
+            -Dsonar.pullrequest.base=${{ github.base_ref }} \
+            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }} \
+            -Dsonar.qualitygate.wait=true \
+            -Dsonar.qualitygate.timeout=300 \
+            -Dsonar.pullrequest.provider=GitHub \
+            -Dsonar.pullrequest.github.repository="${{ github.repository }}" \
+            -Dsonar.pullrequest.github.summary_comment=true \
+            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"

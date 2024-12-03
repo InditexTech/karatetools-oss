@@ -1,0 +1,5 @@
+? Enter Open Api Generator Mode (Operations / Smoke Tests / Functional Test / Mock Data)
+  Open Api Operations
+> Open Api Smoke Tests
+  Open Api Functional Test
+  Open Api Mock Data

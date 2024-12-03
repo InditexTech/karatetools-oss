@@ -1,0 +1,22 @@
+The `karatetools-oss-clients` module includes the following *core* and *support* packages.
+
+The *core* packages are:
+
+* 📦 `dev.inditex.karate.db`: *JDBC client* to interact with *relational databases*. The included drivers are:
+** 🛢️ MariaDB
+** 🛢️ PostgreSQL
+* 📦 `dev.inditex.karate.mongodb`: *MongoDB client* to interact with *MongoDB*.
+* 📦 `dev.inditex.karate.kafka`: *Kafka clients* to interact with *Kafka*.
+* 📦 `dev.inditex.karate.jms`: *JMS client* to interact with *JMS*. The included clients are:
+** ✉️ Active MQ Artemis
+
+The *support* packages are:
+
+* 📦 `dev.inditex.karate.logging`: *logging* utilities to *log* the *clients* methods.
+* 📦 `dev.inditex.karate.parser`: *parser* utilities to *parse* the *clients* configuration files and inject system properties.
+
+.Karate Tools Clients Overview
+[plantuml,development-guide-karatetools-oss-clients,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-clients.puml[]
+....

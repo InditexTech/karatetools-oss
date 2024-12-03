@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <immediateFlush>false</immediateFlush>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <file>target/lib-karatetools.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="org.springframework.boot.docker.compose" level="ERROR"/>
+  <logger name="dev.inditex.karate" level="INFO"/>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="file" />
+  </root>
+
+</configuration>

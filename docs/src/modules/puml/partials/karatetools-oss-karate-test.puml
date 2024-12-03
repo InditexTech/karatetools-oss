@@ -1,0 +1,79 @@
+@startuml karatetools-oss-archetype
+skinparam componentStyle rectangle
+left to right direction
+scale 2
+
+frame "karatetools-oss-karate-test" {
+  frame "src/test/java" {
+    [KarateRunnerTest.java]
+    [...] as java_plus
+  }
+  frame "src/test/resources" {
+    [config-local.yml]
+    [...] as res_plus
+    frame "jwt" {
+    }
+    frame "config" {
+    }
+    frame "mocks" {
+    }
+  }
+  frame "src/test/resources/dev/inditex/karate" {
+    [auth] as auth_test
+    [base] as base_test
+    frame clients as clients_test {
+      [db] as db_test
+      [jms] as jms_test
+      [kafka] as kafka_test
+      [mongodb] as mongodb_test
+    }
+  }
+  frame "src/test/resources/apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable" {
+    frame [BasicApi] {
+      [createItems] as createItems_api
+      [listItems] as listItems_api
+      [showItemById] as showItemById_api
+    }
+  }
+  frame "src/test/resources/dev/inditex/karate/karatetools-openapi-test" {
+    frame [functional] {
+      [e2e]
+    }
+    frame [smoke] {
+      [createItems] as createItems_test
+      [listItems] as listItems_test
+      [showItemById] as showItemById_test
+    }
+  }
+}
+
+' Relationships
+
+[src/test/java] -[hidden]down- [src/test/resources]
+
+[KarateRunnerTest.java] -[hidden]left- [java_plus]
+
+[config] -[hidden]- [jwt]
+[jwt] -[hidden]- [mocks]
+[mocks] -[hidden]- [config-local.yml]
+[config-local.yml] -[hidden]- [res_plus]
+
+[src/test/java] -[hidden]left- [src/test/resources/dev/inditex/karate]
+
+[auth_test] -[hidden]- [base_test]
+[base_test] -[hidden]- [db_test]
+[db_test] -[hidden]- [jms_test]
+[jms_test] -[hidden]- [kafka_test]
+[kafka_test] -[hidden]- [mongodb_test]
+
+[src/test/resources/dev/inditex/karate] -[hidden]left- [src/test/resources/apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable]
+[createItems_api] -[hidden]- [listItems_api]
+[listItems_api]  -[hidden]- [showItemById_api]
+
+[src/test/resources/apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable] -[hidden]left- [src/test/resources/dev/inditex/karate/karatetools-openapi-test]
+[functional] -[hidden]- [smoke]
+
+[createItems_test] -[hidden]- [listItems_test]
+[listItems_test]  -[hidden]- [showItemById_test]
+
+@enduml

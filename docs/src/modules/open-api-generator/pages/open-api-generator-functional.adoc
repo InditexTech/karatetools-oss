@@ -1,0 +1,461 @@
+= Karate Open Api Generator - Functional Test
+
+:source-highlighter: highlightjs
+
+Karate *Functional Test*: Generates *functional tests* for the choosen combination of Open API paths and response codes. These tests are meant to verify the artifact end-points functionalities.
+
+* The generation steps are the following:
++
+. Enter the location of the *Open Api definition*
+. Select which *Operations (path and method)* you want to generate for
+. For each selected path and method, select the *response code(s)* to generate for
+. Select the *artifactId* you want to generate for
+. Enter the *name of the test* to generate
+. Select if the test will *include inline mocks*
+
+* After the automatic generation the tests should be updated regarding:
+** operation steps order
+** test data
+** verification steps
+** (if applicable) include steps for initial data (jdbc, mongodb, kafka, jms) using the xref:clients:index.adoc[🛠️ Karate Clients]
+** (if applicable) include steps for additional checks (jdbc, mongodb, kafka, jms) using the xref:clients:index.adoc[🛠️ Karate Clients]
+
+== Execute open-api-generator - Functional Test
+
+Execute *open-api-generator* and select *generation mode* *"Functional Test"*.
+
+[source,bash,subs="+attributes"]
+----
+mvn exec:java@open-api-generator
+----
+
+TIP: Select *generation mode* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+----
+
+image::open-api-generator-cmd-functional.png[role="no-border, zoom-in"]
+
+=== 1. Enter the location of the Open Api definition
+
+For generation mode *Open Api Functional Test*, the *open-api-generator* will search for the *openapi-rest.yml* files in the karate module folders and list them to be chosen for open-api-generation.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition
+  Enter Manually
+> target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+  target\apis\xxx-external-api-rest-stable-jar\openapi-rest.yml
+----
+
+TIP: Select *open api definiton* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-api.png[role="no-border, zoom-in"]
+
+It will also allow to enter the file location manually by selecting `Enter Manually`
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition Enter Manually
+? Enter the location of the Open Api definition (Enter Manually) target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+----
+
+image::open-api-generator-cmd-api-manual.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Open Api file is provided or if the Open Api file is invalid an error will be displayed:
+
+* `ERROR - Open Api file must be provided`
+* `ERROR - Open Api file must be valid`
+====
+
+=== 2. Select which Operations (path and method) you want to generate for
+
+For the selected *openapi-rest.yml* file, the *open-api-generator* will list all the paths and methods which can be part of the *functional test*. You can select one or more, for example create + show + list.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for
+> (*) all
+  ( ) GET    /items/{itemId}   showItemById
+  ( ) POST   /items            createItems
+  ( ) GET    /items            listItems
+----
+
+TIP: Select *methods & paths* using the up/down arrows `&#x2191;` `&#x2193;`, mark/unmark the selection with `space` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-methods.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Operations are selected an error will be displayed:
+
+* `ERROR - Operations to generate for must be selected`
+====
+
+=== 3. For each selected path and method, select the response code to generate for
+
+For each selected *path and method*, the *open-api-generator* will list all the response codes defined. You must select which *return code(s)* you want to use in the functional test.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for [POST   /items            createItems ]
+? Enter the responses to generate for
+POST   /items            createItems
+> ( ) all
+  ( ) 201
+  ( ) 400
+  ( ) default
+----
+
+TIP: Select *response code(s)* using the up/down arrows `&#x2191;` `&#x2193;`, mark/unmark the selection with `space` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-responsecode.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Responses are selected an error will be displayed:
+
+* `ERROR - Responses to generate for must be selected for all Operations`
+====
+
+=== 4. Select the artifactId you want to generate for
+
+Once the operations are selected, the *open-api-generator* will list all the artifacts defined in the `pom.xml` to choose the *target artifact* for the functional test.
+
+IMPORTANT: You must select the *artifact Id* of the *Open Api* (`com.mypackage.api:xxx-api-rest-stable`)
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for [all]
+? Enter the responses to generate for
+POST   /items            createItems  [all]
+? Select which artifactId you want to generate for
+> com.mypackage.api:xxx-api-rest-stable
+  com.mypackage.api:xxx-external-api-rest-stable
+  {karatetools-package}:karatetools-starter
+  com.mypackage:karate
+  ...
+----
+
+TIP: Select *artifactId* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-artifact.png[role="no-border, zoom-in"]
+
+=== 5. Enter the name of the test to generate
+
+Once the target artifact is selected, the *open-api-generator* will prompt to enter the *test name* for the functional test.
+
+TIP: The *test name* allowed characters are: alpha numerical as well as `-` `.` and `_`.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for [all]
+? Enter the responses to generate for
+GET    /items            listItems    200
+? Enter the responses to generate for
+GET    /items/{itemId}   showItemById 200
+? Enter the responses to generate for
+POST   /items            createItems  201
+? Select which artifactId you want to generate for com.mypackage.api:xxx-api-rest-stable
+? Enter the name of the test to generate (TestName) CreateShowListItems
+----
+
+image::open-api-generator-cmd-testname.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Test Name is provided an error will be displayed:
+
+* `ERROR - Test Name must be provided for functional tests`
+====
+
+=== 6. Select if the test will include inline mocks
+
+Once the test name is entered, the *open-api-generator* will ask if the test will *include inline mocks*.
+
+If *inline mocks* is selected the the *open-api-generator* will include in the test the `Background Steps` to load the mocks. The mocks should be generated following the instructions in *xref:open-api-generator:open-api-generator-mock.adoc[Karate Open Api Generator - Mock Data]* also indicating that the generated mocks are *inline* and related to this functional test.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-functional-select.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for [all]
+? Enter the responses to generate for
+GET    /items            listItems    200
+? Enter the responses to generate for
+GET    /items/{itemId}   showItemById 200
+? Enter the responses to generate for
+POST   /items            createItems  201
+? Select which artifactId you want to generate for com.mypackage.api:xxx-api-rest-stable
+? Enter the name of the test to generate CreateItemsWithInlineMocks
+? Select if the test will include inline mocks (y/N)
+----
+
+TIP: Select *inline mocks* using keys `y` or `n` for `YES/NO` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-inlinemocks.png[role="no-border, zoom-in"]
+
+== Review Generated functional test
+
+For the functional test the *open-api-generator* generates:
+
+* *feature file* with the operations for the functional test with or without inline mocks
+* *test data files* with the test data for each of the selected operations and response codes.
+
+The *functional test* files are generated in the folder `src/test/resources/<API_PACKAGE>/functional` organized by *API Tags*, for example: `src/test/resources/com/mypackage/api/xxx-api-rest-stable/functional`
+
+Example of the structure of the generated functional test:
+
+[source,plaintext,subs="+attributes"]
+----
++---src
+    \---test
+        \---resources
+            \---com
+                \---mypackage
+                    \---api
+                        \---xxx-api-rest-stable
+                            \---functional
+                                +---CreateItems
+                                |   |   CreateItems.feature
+                                |   |
+                                |   \---test-data
+                                |           createItems_201.yml
+                                |           createItems_400.yml
+                                +---CreateItems
+                                |   |   CreateItemsWithInlineMocks.feature
+                                |   |
+                                |   \---test-data
+                                |           createItems_201.yml
+                                \---CreateShowListItems
+                                    |   CreateShowListItems.feature
+                                    |
+                                    \---test-data
+                                            createItems_201.yml
+                                            listItems_200.yml
+                                            showItemById_200.yml
+----
+
+=== Functional test feature file
+
+*feature file* with the karate code for the functional test with the following format
+
+[source,gherkin,subs="+attributes"]
+----
+@functional
+@op.<OPERATION_ID> @op.<OPERATION_ID> ...
+
+Feature: <TEST_NAME>
+
+Background:
+
+<INLINE_MOCKS_STEPS_IF_APPLICABLE>
+
+Scenario: <TEST_NAME>
+
+# <OPERATION_ID>-<STATUS_CODE>
+Given def <OPERATION_ID>Request = read('test-data/<OPERATION_ID>_<STATUS_CODE>.yml')
+When def <OPERATION_ID>Response = call read('classpath:<OPERATION_FEATURE_CLASSPATH>') <OPERATION_ID>Request
+Then match <OPERATION_ID>Response.responseStatus == <STATUS_CODE>
+
+# <OPERATION_ID>-<STATUS_CODE>
+Given def <OPERATION_ID>Request = read('test-data/<OPERATION_ID>_<STATUS_CODE>.yml')
+When def <OPERATION_ID>Response = call read('classpath:<OPERATION_FEATURE_CLASSPATH>') <OPERATION_ID>Request
+Then match <OPERATION_ID>Response.responseStatus == <STATUS_CODE>
+
+...
+----
+
+TIP: The operation steps included in the functional test must be ordered to fulfill the test purpose.
+
+TIP: The operation steps included in the functional test can be duplicated if needed to fulfill the test purpose. For example, if your e2e is `POST, GET, DEL, GET` you must duplicate the `GET` step
+
+Examples:
+
+* Example of *functional test without inline mocks* steps `CreateShowListItems.feature`:
++
+[source,gherkin,subs="+attributes"]
+----
+@functional
+@op.createItems @op.listItems @op.showItemById
+
+Feature: CreateShowListItems
+
+Background:
+
+Scenario: CreateShowListItems
+
+# createItems-201
+Given def createItemsRequest = read('test-data/createItems_201.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 201
+
+# showItemById-200
+Given def showItemByIdRequest = read('test-data/showItemById_200.yml')
+When def showItemByIdResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById.feature') showItemByIdRequest
+Then match showItemByIdResponse.responseStatus == 200
+
+# listItems-200
+Given def listItemsRequest = read('test-data/listItems_200.yml')
+When def listItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/listItems/listItems.feature') listItemsRequest
+Then match listItemsResponse.responseStatus == 200
+----
+
+* Example of *functional test without inline mocks* multiple response codes for the same operation `CreateItems.feature`:
++
+[source,gherkin,subs="+attributes"]
+----
+@functional
+@op.createItems
+
+Feature: CreateItems
+
+Background:
+
+Scenario: CreateItems
+
+# createItems-201
+Given def createItemsRequest = read('test-data/createItems_201.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 201
+
+# createItems-400
+Given def createItemsRequest = read('test-data/createItems_400.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 400
+----
+
+TIP: When generating multiple response codes for the same operation, the test can be easily split into multiple scenarios.
+
+* Example of *functional test without inline mocks* multiple response codes for the same operation `CreateItems.feature` in separated scenarios:
++
+[source,gherkin,subs="+attributes"]
+----
+@functional
+@op.createItems
+
+Feature: CreateItems
+
+Background:
+
+Scenario: CreateItems-201
+
+# createItems-201
+Given def createItemsRequest = read('test-data/createItems_201.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 201
+
+Scenario: CreateItems-400
+
+# createItems-400
+Given def createItemsRequest = read('test-data/createItems_400.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 400
+----
+
+* Example of *functional test with inline mocks* steps `CreateItemsWithInlineMocks.feature`:
++
+[source,gherkin,subs="+attributes"]
+----
+@functional
+@op.createItems
+@mock.templates.inline
+@env=local
+
+Feature: CreateItemsWithInlineMocks
+
+Background:
+
+* def getParentFolder =
+  """
+  function() {
+    var path = karate.feature.prefixedPath;
+    var parent = Java.type("java.nio.file.Paths").get(path.substring(path.indexOf(':') + 1)).getParent().toString();
+    return parent.replaceAll("\\", "/")
+  }
+  """
+
+# ###############################################
+# Start Mock Server
+# ###############################################
+* karate.log('>> CreateItemsWithInlineMocks >> Background >> Start Mock')
+* def mockTemplatesFolder = getParentFolder() + '/mocks'
+* def mockPort = parseInt( karate.properties['KARATE_MOCK_SERVER_PORT'] || '58081' )
+* def mockArgs = karate.getEngine().getAllVariablesAsMap()
+
+* callonce read('classpath:mocks/mock-templates-inline.feature')
+# ###############################################
+
+Scenario: CreateItemsWithInlineMocks
+
+# createItems-201
+Given def createItemsRequest = read('test-data/createItems_201.yml')
+When def createItemsResponse = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') createItemsRequest
+Then match createItemsResponse.responseStatus == 201
+----
+
+=== Functional test data files
+
+*test data files* with the data needed for the execution of the functional test. For example:
+
+* `createItems_201.yml`:
++
+[source,yaml,subs="+attributes"]
+----
+---
+operationId: "createItems"
+statusCode: "201"
+params: null
+body:
+  id: 0
+  name: "string"
+  tag: "string"
+matchResponse: true
+responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/schema/createItems_201.schema.yml'))"
+----
+
+* `showItemById_200.yml`:
++
+[source,yaml,subs="+attributes"]
+----
+---
+operationId: "showItemById"
+statusCode: "200"
+params:
+  itemId: 0
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/showItemById/schema/showItemById_200.schema.yml'))"
+----
+
+* `listItems_200.yml`:
++
+[source,yaml,subs="+attributes"]
+----
+---
+operationId: "listItems"
+statusCode: "200"
+params:
+  limit: 0
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/listItems/schema/listItems_200.schema.yml'))"
+----
+
+TIP: The data (params, body) in each of the test data files must be updated to fulfill the test purpose.
+
+NOTE: If the api defines `default` response codes, the `statusCode` of the test data will be set to `null` and will require manual update.

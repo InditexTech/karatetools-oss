@@ -1,0 +1,290 @@
+
+=== Instantiate MongoDBClient
+
+*New instance of the MongoDBClient* providing the configuration as a map loaded from a yaml file.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public MongoDBClient(final Map<Object, Object> configMap)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public MongoDBClient(final Map<Object, Object> configMap)
+# Instantiate MongoDBClient
+Given def config = read('classpath:config/db/mongodb-config-' + karate.env + '.yml')
+Given def MongoDBClient = Java.type('{karatetools-package}.mongodb.MongoDBClient')
+Given def mongoDBClient = new MongoDBClient(config)
+----
+
+=== Check if MongoBD is available
+
+Checks if the *MongoBD connection can be established*
+
+Returns true is *connection is available*, false otherwise
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Boolean available()
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def available = mongoDBClient.available()
+Then if (!available) karate.fail('MongoDB Client not available')
+----
+
+=== Count documents in a collection
+
+*Counts* the number of documents in the collection
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Long count(final String collectionName)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# public Long count(final String collectionName)
+When def count = mongoDBClient.count(collection)
+Then karate.log('mongoDBClient.count(',collection,')=', count)
+Then assert count >= 0
+----
+
+=== Delete One document in a collection matching a filter
+
+*Removes one document* from the collection that *matches the given filter*. If no documents match, the collection is not modified.
+
+Deletes the *first document that matches the filter*. Use a field that is part of a unique index such as _id for precise deletions.
+
+Returns the *number of documents deleted* (1 or 0)
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public long delete(final String collectionName, final Map<String, Object> value)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Filters
+Given def oneFilter = { "_id": "1" }
+
+When def deleteOne = mongoDBClient.delete(collection, oneFilter)
+Then karate.log('mongoDBClient.delete(',collection,', ', oneFilter, ')=', deleteOne)
+Then assert deleteOne == 1
+Then def countAfterDeleteOne = mongoDBClient.count(collection)
+Then karate.log('mongoDBClient.count(',collection,')=', countAfterDeleteOne)
+Then assert countAfterDeleteOne == 2
+----
+
+=== Delete Many documents in a collection matching a filter
+
+*Removes all documents* from the collection that *match the given query filter*. If no documents match, the collection is not modified.
+
+Returns the *number of documents deleted*
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public long deleteMany(final String collectionName, final Map<String, Object> filter)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Filters
+Given def manyFilter = { "name": { "$regex": "^karate-(.*)" } }
+
+When def deletedMany = mongoDBClient.deleteMany(collection, manyFilter)
+Then karate.log('mongoDBClient.delete(',collection,', ', manyFilter, ')=', deletedMany)
+Then assert deletedMany >= 0
+When def countAfterDeleteMany = mongoDBClient.count(collection)
+Then karate.log('mongoDBClient.count(',collection,')=', countAfterDeleteMany)
+Then assert countAfterDeleteMany == 0
+----
+
+=== Find all documents in a collection
+
+*Finds all documents* in the collection.
+
+Returns a *JSON Array* representing the obtained find result, where each row is a map *<< field name, Result value >>*
+
+For example:
+
+[source,json,subs="+attributes"]
+----
+[
+  { "_id": 1, "name": "karate-01", "value": 1 },
+  { "_id": 2, "name": "karate-02", "value": 2 },
+  { "_id": 3, "name": "karate-03", "value": 3 }
+]
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> find(final String collectionName)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+When def findAll = mongoDBClient.find(collection)
+Then karate.log('mongoDBClient.find(',collection,')=', findAll.length )
+Then assert findAll.length == 3
+Then def result = karate.sort(findAll, x => x._id)
+Then match result[0]._id == '1'
+Then match result[0].name == 'karate-01'
+Then match result[0].value == 1
+Then match result[1]._id == '2'
+Then match result[1].name == 'karate-02'
+Then match result[1].value == 2
+Then match result[2]._id == '3'
+Then match result[2].name == 'karate-03'
+Then match result[2].value == 3
+----
+
+=== Find documents in a collection matching a filter
+
+*Finds all documents* in the collection *matching the query filter*
+
+Returns a *JSON Array* representing the obtained find result, where each row is a map *<< field name, Result value >>*
+
+For example:
+
+With a filter where id > 1:
+
+[source,json,subs="+attributes"]
+----
+{ "value": { $gt: 1 } }
+----
+
+will return:
+
+[source,json,subs="+attributes"]
+----
+[
+  { "_id": 2, "name": "karate-02", "value": 2 },
+  { "_id": 3, "name": "karate-03", "value": 3 }
+]
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> find(final String collectionName, final Map<String, Object> filter)
+----
+
+.Gherkin Usage - Find One
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Filters
+Given def oneFilter = { "_id": "1" }
+
+# public List<Map<String, Object>> find(final String collectionName, final Map<String, Object> filter)
+When def findOne = mongoDBClient.find(collection, oneFilter)
+Then karate.log('mongoDBClient.find(',collection,',', oneFilter, ')=', findOne.length )
+Then assert findOne.length == 1
+Then match findOne[0]._id == '1'
+Then match findOne[0].name == 'karate-01'
+Then match findOne[0].value == 1
+----
+
+.Gherkin Usage - Find Some
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Filters
+Given def someFilter = { "value": { $gt: 1 } }
+
+When def findSome = mongoDBClient.find(collection, someFilter)
+Then karate.log('mongoDBClient.find(',collection,',', someFilter, ')=', findSome.length )
+Then assert findSome.length == 2
+Then def result = karate.sort(findSome, x => x._id)
+Then match result[0]._id == '2'
+Then match result[0].name == 'karate-02'
+Then match result[0].value == 2
+Then match result[1]._id == '3'
+Then match result[1].name == 'karate-03'
+Then match result[1].value == 3
+----
+
+=== Insert One Document in a collection
+
+*Inserts the provided document* in the collection.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void insert(final String collectionName, final Map<String, Object> value)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Data
+Given def oneDocument = { "_id": "1", "name": "karate-01", "value": 1 }
+
+# public void insert(final String collectionName, final Map<String, Object> value)
+# insert(String, Map<String, Object>) : void
+When mongoDBClient.insert(collection, oneDocument)
+When def countAfterInsertOne = mongoDBClient.count(collection)
+Then karate.log('mongoDBClient.count(',collection,')=', countAfterInsertOne)
+Then assert countAfterInsertOne == 1
+----
+
+=== Insert Many Documents in a collection
+
+*Inserts one or more documents* in the collection.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void insertMany(final String collectionName, final List<Map<String, Object>> values)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define collection
+Given def collection = "data"
+
+# Define Data
+Given def manyDocuments = [ { "_id": "2", "name": "karate-02", "value": 2 }, { "_id": "3", "name": "karate-03", "value": 3 } ]
+
+When mongoDBClient.insertMany(collection, manyDocuments)
+When def countAfterInsertMany = mongoDBClient.count(collection)
+Then karate.log('mongoDBClient.count(',collection,')=', countAfterInsertMany)
+Then assert countAfterInsertMany == 3
+----
+
+=== Replace a document in the collection

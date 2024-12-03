@@ -1,0 +1,10 @@
+NOTE: If the project has been generated using the xref:archetype:index.adoc[Karate Tools Archetype] the pom will already contain the corresponding configuration.
+
+.Add the karatetools dependency and execution plugin in the karate pom:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+include::example$open-api-generator-pom.xml[]
+----
+====

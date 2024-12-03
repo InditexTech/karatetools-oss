@@ -1,0 +1,10 @@
+= Logging
+
+include::logging-config.adoc[]
+
+== Examples
+
+[source,xml,subs="+attributes"]
+----
+include::example$logback-test.xml[]
+----

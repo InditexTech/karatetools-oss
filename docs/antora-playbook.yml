@@ -1,0 +1,117 @@
+site:
+  title: InditexTech Karate Tools
+  start_page: karatetools-oss:HOME:index.adoc
+urls:
+  latest_version_segment: latest
+content:
+  sources:
+    - url: https://github.com/InditexTech/karatetools-oss.git
+      start_path: docs/src
+      edit_url: "{web_url}/edit/develop/{path}"
+      tags:
+        - docs/v*
+      branches:
+        - develop
+      version:
+        develop: prerelease
+        docs/v(*): $1
+asciidoc:
+  attributes:
+    experimental: ""
+    idprefix: ""
+    idseparator: "-"
+    page-pagination: ""
+    source-language: asciidoc@
+    # ############################################
+    # Kroki attributes
+    # ############################################
+    # kroki-default-format: Define the default format for the diagrams.
+    #   the @ allows the attribute value to be reset in documents
+    #   Default: By default, images are generated as SVG when possible.
+    kroki-default-format: png@
+    # kroki-default-options:
+    # Supported values are: ['inline', 'interactive', 'none']
+    #   By default, Asciidoctor Kroki generates a link, to a Kroki server or a local file
+    kroki-default-options: inline
+    # kroki-fetch-diagram: Define if we should download (and save on the disk) the images from the Kroki server.
+    kroki-fetch-diagram: true
+    # kroki-server-url: The URL of the Kroki server (see "Using Your Own Kroki")
+    #   Default: https://kroki.io
+    kroki-server-url: http://127.0.0.1:8000
+    # kroki-server-url: https://kroki.io
+    # kroki-data-uri: Embed images as data-uri elements in HTML elements so file is completely self-contained.
+    #   Default: false
+    # kroki-data-uri: false
+    # kroki-http-method: Define how we should get the image from the Kroki server. Possible values:
+    #   Supported values are:
+    #     get: always use GET equests
+    #     post: always use POST requests
+    #     adaptive: use a POST request if the URI length is longer than kroki-max-uri-length (default 4000) characters,
+    #       otherwise use a GET request
+    #   Default: adaptive
+    # kroki-http-method: adaptive
+    # kroki-max-uri-length: Define the max URI length before using a POST request when using adaptive HTTP method (kroki-http-method)
+    #   Default: 4000
+    # kroki-max-uri-length: 4000
+    # kroki-plantuml-include: A file that will be included at the top of all PlantUML diagrams as if !include file was used.
+    #   This can be useful when you want to define a common skin for all your diagrams.
+    #   The value can be a path or a URL.
+    # kroki-plantuml-include-paths: Search path(s) that will be used to resolve !include file additionally to current diagram directory,
+    #   similar to PlantUML property plantuml.include.path.
+    #   Please use directory delimiter ; (Windows) or : (Unix) for multiple paths, e.g.:
+    #     "c:/docu/styles;c:/docu/library" or "~/docu/styles:~/docu/library"
+    # ############################################
+    # Karate Tools attributes
+    # ############################################
+    karatetools-package: dev.inditex.karate
+    karatetools-version: 3.1.0
+    karatetools-unit-coverage-threshold: 90%
+    karatetools-mutation-coverage-threshold: 90%
+    karatetools-integration-coverage-threshold: 80%
+    karatetools-karate-coverage-threshold: 80%
+    # TODO - Custom Repository Header Link
+    repository-url: https://github.com/InditexTech/karatetools-oss
+  extensions:
+    - asciidoctor-kroki
+antora:
+  extensions:
+  - require: '@antora/lunr-extension'
+ui:
+  bundle:
+    url: ./ui-bundle.zip
+    snapshot: true
+  supplemental_files:
+    # Favicon
+    - path: favicon.ico
+      contents: ./supplemental-ui/img/favicon.ico
+    # Zoom-In
+    - path: css/image-zoom-in.css
+      contents: ./supplemental-ui/css/image-zoom-in.css
+    - path: js/image-zoom-in.js
+      contents: ./supplemental-ui/js/image-zoom-in.js
+    - path: js/vendor/jquery.min.js
+      contents: ./supplemental-ui/js/vendor/jquery.min.js
+    # Highlight JS with Gherkin Sintax
+    - path: js/vendor/highlight.min.js
+      contents: ./supplemental-ui/js/vendor/highlight.min.js
+    # Handlebars
+    - path: partials/footer-content.hbs
+      contents: ./supplemental-ui/partials/footer-content.hbs
+    - path: partials/footer-scripts.hbs
+      contents: ./supplemental-ui/partials/footer-scripts.hbs
+    - path: partials/head-scripts.hbs
+      contents: ./supplemental-ui/partials/head-scripts.hbs
+    - path: partials/head-styles.hbs
+      contents: ./supplemental-ui/partials/head-styles.hbs
+    - path: partials/header-content.hbs
+      contents: ./supplemental-ui/partials/header-content.hbs
+    # No Jekyll
+    - path: .nojekyll
+    # Static UI
+    - path: ui.yml
+      contents: |
+        static_files:
+        - .nojekyll
+        - favicon.ico
+runtime:
+  fetch: true

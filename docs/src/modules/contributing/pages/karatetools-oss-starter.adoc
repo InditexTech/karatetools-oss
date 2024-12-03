@@ -1,0 +1,1 @@
+The `karatetools-oss-starter` module is a `packaging` module that includes the dependencies needed for a karate project to be able to use the karate tools, `karatetools-oss-clients`, `karatetools-oss-generators` and `karatetools-oss-runner` modules as well as any other necessary dependencies.

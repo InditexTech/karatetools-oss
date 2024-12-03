@@ -1,0 +1,17 @@
+{
+  "com/.../xxx-api-rest-stable/BasicApi/createItems/createItems" : {
+    "smoke" : 3,
+    "functional" : 3,
+    "calls" : 7
+  },
+  "com/.../api/xxx-api-rest-stable/BasicApi/listItems/listItems" : {
+    "smoke" : 3,
+    "functional" : 1,
+    "calls" : 5
+  },
+  "com/.../api/xxx-api-rest-stable/BasicApi/showItemById/showItemById" : {
+    "smoke" : 3,
+    "functional" : 1,
+    "calls" : 5
+  }
+}

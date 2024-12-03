@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.inditex.karate</groupId>
+    <artifactId>karatetools</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>karatetools-boot</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>InditexOSS Karate Tools - Spring Boot Basic Application with Docker</description>
+
+  <developers>
+    <developer>
+      <name>Inditex Open Source Office</name>
+      <email>oso@inditex.com</email>
+      <organization>Industria de Diseño Textil, S.A.</organization>
+      <organizationUrl>https://inditex.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <properties>
+    <start-class>dev.inditex.karate.BasicApplication</start-class>
+  </properties>
+
+  <dependencies>
+    <!-- Karate Tools -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-clients</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-generators</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-runner</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Test Api -->
+    <dependency>
+      <groupId>dev.inditex.karate.karatetools-openapi-test</groupId>
+      <artifactId>xxx-api-rest-stable</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Spring Boot -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-docker-compose</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Open Api -->
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>${jakarta.annotation-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>${jakarta.validation-api.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <!-- Kafka - Avro Generation for Testing purposes -->
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${avro-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>schemas</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.basedir}/src/test/resources/config/kafka/avro/</sourceDirectory>
+              <includes>
+                <include>**/*.avsc</include>
+              </includes>
+              <outputDirectory>${project.build.directory}/generated-test-sources/avro</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Open Api Source Generation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-apis</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <silent>false</silent>
+              <outputDirectory>${project.build.directory}/apis/</outputDirectory>
+              <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
+              <stripVersion>true</stripVersion>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <includeGroupIds>dev.inditex.karate.karatetools-openapi-test</includeGroupIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <executions>
+          <!-- Java Jar -->
+          <execution>
+            <id>java</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>java</classifier>
+              <includes>
+                <include>dev/inditex/karate/**</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- Test Jar -->
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>dev/inditex/karate/**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <apiNameSuffix>Interface</apiNameSuffix>
+              <apiPackage>dev.inditex.karate.openapitest.service</apiPackage>
+              <generateApiDocumentation>false</generateApiDocumentation>
+              <generateApis>true</generateApis>
+              <generateApiTests>false</generateApiTests>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateModels>true</generateModels>
+              <generateModelTests>false</generateModelTests>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <generatorName>spring</generatorName>
+              <inputSpec>${project.build.directory}/apis/xxx-api-rest-stable-jar/openapi-rest.yml</inputSpec>
+              <modelNameSuffix>DTO</modelNameSuffix>
+              <modelPackage>dev.inditex.karate.openapitest.dto</modelPackage>
+              <skipOperationExample>true</skipOperationExample>
+              <configOptions>
+                <annotationLibrary>none</annotationLibrary>
+                <containerDefaultToNull>false</containerDefaultToNull>
+                <dateLibrary>java8</dateLibrary>
+                <documentationProvider>none</documentationProvider>
+                <excludeTransitive>false</excludeTransitive>
+                <interfaceOnly>true</interfaceOnly>
+                <openApiNullable>false</openApiNullable>
+                <reactive>false</reactive>
+                <serializableModel>true</serializableModel>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <unhandledException>false</unhandledException>
+                <useSpringBoot3>true</useSpringBoot3>
+                <useTags>true</useTags>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Docker Compose -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <configuration>
+          <excludeDockerCompose>false</excludeDockerCompose>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

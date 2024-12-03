@@ -1,0 +1,52 @@
+---
+# The name of the workflow
+name: code-repolinter
+# The name of the workflow run
+run-name: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+
+# Concurrency configuration
+concurrency:
+  # The concurrency group for this workflow
+  group: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+  # Cancel all previous runs in progress
+  cancel-in-progress: true
+
+# Events that trigger the workflow
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # Automatically run the workflow on pull_request events
+  pull_request:
+    types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  WORKFLOW_VERSION: 1.0.0
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # repo-lint-check
+  repo-lint-check:
+    # The name of the job
+    name: repo-lint-check
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Conditions to run the job
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
+    # Steps represent a sequence of tasks that will be executed
+    steps:
+
+      # checkout
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # repo-lint
+      - name: repo-lint
+        id: repo-lint
+        uses: newrelic/repolinter-action@v1.7.0
+        with:
+          config_file: repolinter_rules.json

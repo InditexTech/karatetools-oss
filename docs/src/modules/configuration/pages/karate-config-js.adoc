@@ -1,0 +1,3 @@
+Karate first will look for *`karate-config.js`* and it will process it.
+
+If the `karate.env` property is set and the over-ride *`karate-config-<env>.js`* exists, it will be processed, and the configuration returned by this function will over-ride any set by `karate-config.js`

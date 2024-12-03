@@ -1,0 +1,16 @@
+= Karate Tools Release Notes
+
+[cols="1,1,6"]
+|===
+| Version | Date | Description
+
+| Next
+| 2024-XX-XX
+|
+
+✔️ Karate Tools - *Containers Update* (mongo 6.0.9 -> 7.0.12)
+
+✔️ Karate Tools - *Dependencies Update* (mongodb-driver-sync 5.1.4 -> 5.2.0)
+
+✔️ Karate Tools - Added *configurable kafka consumer offset* `consumer.auto.offset.reset`
+|===

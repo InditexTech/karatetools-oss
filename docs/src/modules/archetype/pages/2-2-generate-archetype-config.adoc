@@ -1,0 +1,22 @@
+It will prompt (*yes/no*) for the properties to include sample configuration files for the *Karate Clients* (*JDBC*, *MongoDB*, *Kafka* and *JMS*):
+
+* *JDBC*
+** `includeJDBCClient_MariaDB` to include MariaDB JDBC client configuration
+** `includeJDBCClient_PostgreSQL` to include PostgreSQL JDBC client configuration
+* *MongoDB*
+** `includeMongoDBClient` to include MongoDB configuration
+* *JMS*
+** `includeJMSClient_ActiveMQ` to include ActiveMQ configuration
+* *Kafka*
+** `includeKafkaClients` to include Kafka configuration(s).
+
+[source,plaintext,subs="+attributes"]
+----
+Define value for property 'includeJDBCClient_MariaDB' yes: :
+Define value for property 'includeJDBCClient_PostgreSQL' yes: :
+Define value for property 'includeMongoDBClient' yes: :
+Define value for property 'includeKafkaClients' yes: :
+Define value for property 'includeJMSClient_ActiveMQ' yes: :
+----
+
+TIP: For a client not to be included type `n` or `no`, if it's left empty it takes the default value.

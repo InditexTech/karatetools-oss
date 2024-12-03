@@ -1,0 +1,481 @@
+---
+# The name of the workflow
+name: code-maven-QA-e2e-karate
+# The name of the workflow run
+run-name: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+
+# Concurrency configuration
+concurrency:
+  # The concurrency group for this workflow
+  group: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+  # Cancel all previous runs in progress
+  cancel-in-progress: true
+
+# Events that trigger the workflow
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      KARATE_ENV:
+        description: |
+          ENV: Karate Target environment.
+          'DEFAULT' uses the value set in github_config.yml "karate.env".
+        required: false
+        default: 'DEFAULT'
+      KARATE_OPTIONS:
+        description: |
+          KARATE_OPTIONS: Karate options to run the tests.
+          'DEFAULT' uses the value set in github_config.yml "karate.options".
+        required: false
+        default: 'DEFAULT'
+      KARATE_APP_ENABLED:
+        description: |
+          Flag to enable the build and launch of the Java app.
+          'DEFAULT' uses the value set in github_config.yml "karate.app.enabled".
+        required: false
+        default: 'DEFAULT'
+      KARATE_COVERAGE_THRESHOLD:
+        description: |
+          The minimum coverage threshold to pass the Karate tests, for example 80
+          'DEFAULT' uses the value set in github_config.yml "karate.coverage.threshold".
+        required: false
+        default: DEFAULT
+  # Automatically run the workflow on pull_request events
+  pull_request:
+    types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]
+    paths:
+      - 'code/**'
+      - '.github/workflows/code*'
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  WORKFLOW_VERSION: 1.0.0
+  # JaCoCo configuration
+  JACOCO_RELATIVE_CLASS_DUMP_DIR: classes
+  JACOCO_RELATIVE_DEST_FILE: jacoco-e2e.exec
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # karate-tests
+  karate-tests:
+    # The name of the job
+    name: karate-tests
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+    # Conditions to run the job
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # checkout
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # config
+      - name: config
+        id: config
+        uses: ./.github/actions/config-resolver
+        with:
+          create-annotations: true
+          files: |
+            github_config.yml
+          input-vars: "${{ toJSON(github.event.inputs) }}" # it injects all workflows inputs
+
+      # setup-maven-cache
+      - name: setup-maven-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # setup-asdf-cache
+      - name: setup-asdf-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      # save-tool-versions-content
+      - name: save-tool-versions-content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat code/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      # asdf-install
+      - name: asdf-install
+        id: asdf-install
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      # set-java-home
+      - name: set-java-home
+        id: set-java-home
+        run: |
+          # set-java-home
+
+          echo "::group::+++ set-java-home +++"
+
+          # Set JAVA_HOME
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+          echo "::endgroup::"
+
+      # app-config
+      - name: app-config
+        id: app-config
+        if: ${{ fromJSON(steps.config.outputs.config).karate.app.enabled == true }}
+        working-directory: code
+        run: |
+
+          # app-config
+
+          echo "::group::+++ app-config +++"
+
+          # App Port
+          APP_PORT=${{ fromJSON(steps.config.outputs.config).karate.app.port }}
+          echo "APP_PORT=$APP_PORT"
+
+          # Project Version from pom.xml
+          PROJECT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+          echo "PROJECT_VERSION=$PROJECT_VERSION"
+
+          # App Path to Jar
+          APP_PATH_TO_JAR="${{ fromJSON(steps.config.outputs.config).karate.app.jar }}-$PROJECT_VERSION.jar"
+          echo "APP_PATH_TO_JAR=$APP_PATH_TO_JAR"
+
+          # App Options
+          APP_OPTIONS="--server.port=$APP_PORT"
+          echo "APP_OPTIONS=$APP_OPTIONS"
+
+          # App Health Probe from config
+          APP_HEALTH_PROBE="${{ fromJSON(steps.config.outputs.config).karate.app.health_probe }}"
+          echo "APP_HEALTH_PROBE=$APP_HEALTH_PROBE"
+
+          # App Health Check URL
+          APP_HEALTH_CHECK_URL="http://localhost:$APP_PORT/$APP_HEALTH_PROBE"
+          echo "APP_HEALTH_CHECK_URL=$APP_HEALTH_CHECK_URL"
+
+          # JaCoCo agent version from pom.xml
+          JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${jacoco.version}' --non-recursive exec:exec)
+          echo "JACOCO_VERSION=$JACOCO_VERSION"
+
+          # JaCoCo report folder relative to the code folder
+          JACOCO_RELATIVE_FOLDER=$(echo ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }} | sed -E "s/^code\///" )
+          echo "JACOCO_RELATIVE_FOLDER=$JACOCO_RELATIVE_FOLDER"
+
+          # JaCoCo Settings - Includes
+          JACOCO_INCLUDES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.includes, ':') }}"
+          echo "JACOCO_INCLUDES=$JACOCO_INCLUDES"
+
+          # JaCoCo Settings - Excludes
+          JACOCO_EXCLUDES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.excludes, ':') }}"
+          echo "JACOCO_EXCLUDES=$JACOCO_EXCLUDES"
+
+          # JaCoCo Settings - Source Files
+          JACOCO_SOURCE_FILES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.sourcefiles, ' --sourcefiles ') }}"
+          echo "JACOCO_SOURCE_FILES=$JACOCO_SOURCE_FILES"
+
+          # JaCoCo Settings - Class Dump Directory
+          JACOCO_CLASS_DUMP_DIR="$JACOCO_RELATIVE_FOLDER/classes"
+          echo "JACOCO_CLASS_DUMP_DIR=$JACOCO_CLASS_DUMP_DIR"
+
+          # JaCoCo Settings - Destination File
+          JACOCO_DEST_FILE="$JACOCO_RELATIVE_FOLDER/jacoco-e2e.exec"
+          echo "JACOCO_DEST_FILE=$JACOCO_DEST_FILE"
+
+          # JaCoCo Agent Options
+          JACOCO_AGENT_OPTIONS="-javaagent:target/jacocoagent.jar=dumponexit=true,output=file,destfile=$JACOCO_DEST_FILE,classdumpdir=$JACOCO_CLASS_DUMP_DIR,excludes=$JACOCO_EXCLUDES,includes=$JACOCO_INCLUDES"
+          echo "JACOCO_AGENT_OPTIONS=$JACOCO_AGENT_OPTIONS"
+
+          # JaCoCo CLI Report Options
+          JACOCO_CLI_REPORT_OPTIONS="$JACOCO_DEST_FILE --html $JACOCO_RELATIVE_FOLDER --classfiles $JACOCO_CLASS_DUMP_DIR --sourcefiles $JACOCO_SOURCE_FILES"
+          echo "JACOCO_CLI_REPORT_OPTIONS=$JACOCO_CLI_REPORT_OPTIONS"
+
+          # Set Output
+          echo "project-version=$PROJECT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "app-path-to-jar=$APP_PATH_TO_JAR" >> "$GITHUB_OUTPUT"
+          echo "app-options=$APP_OPTIONS" >> "$GITHUB_OUTPUT"
+          echo "app-health-check-url=$APP_HEALTH_CHECK_URL" >> "$GITHUB_OUTPUT"
+
+          echo "jacoco-version=$JACOCO_VERSION" >> "$GITHUB_OUTPUT"
+          echo "jacoco-relative-folder=$JACOCO_RELATIVE_FOLDER" >> "$GITHUB_OUTPUT"
+          echo "jacoco-dest-file=$JACOCO_DEST_FILE" >> "$GITHUB_OUTPUT"
+          echo "jacoco-agent-options=$JACOCO_AGENT_OPTIONS" >> "$GITHUB_OUTPUT"
+          echo "jacoco-cli-report-options=$JACOCO_CLI_REPORT_OPTIONS" >> "$GITHUB_OUTPUT"
+
+          echo "::endgroup::"
+
+      # mvn-clean-install
+      - name: mvn-clean-install
+        id: mvn-clean-install
+        if: ${{ fromJSON(steps.config.outputs.config).karate.app.enabled == true }}
+        working-directory: code
+        run: |
+
+          # mvn-clean-install
+
+          echo "::group::+++ mvn-clean-install +++"
+
+          # Maven Properties
+          MVN_PROPERTIES="-DskipTests -DskipITs -DskipUTs"
+          echo "MVN_PROPERTIES=$MVN_PROPERTIES"
+
+          # mvn clean install
+          mvn -B -ntp clean install $MVN_PROPERTIES
+
+          echo "::endgroup::"
+
+      # start-java-app
+      - name: start-java-app
+        id: start-java-app
+        if: ${{ fromJSON(steps.config.outputs.config).karate.app.enabled == true }}
+        working-directory: code
+        run: |
+
+          # start-java-app
+
+          echo "::group::+++ download-jacoco-agent +++"
+          # Download JaCoCo agent
+
+          JACOCO_VERSION="${{ steps.app-config.outputs.jacoco-version }}"
+          echo "JACOCO_VERSION=$JACOCO_VERSION"
+
+          curl -k -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar
+
+          echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
+
+          echo "::endgroup::"
+
+          echo "::group::+++ start-java-app +++"
+          # Start the app
+
+          APP_LOG_FILE="${{ fromJSON(steps.config.outputs.config).karate.app.logfile }}"
+          APP_PATH_TO_JAR="${{ steps.app-config.outputs.app-path-to-jar }}"
+          APP_OPTIONS="${{ steps.app-config.outputs.app-options }}"
+          JACOCO_AGENT_OPTIONS="${{ steps.app-config.outputs.jacoco-agent-options }}"
+
+          START_APP_CMD="java $JACOCO_AGENT_OPTIONS -jar $APP_PATH_TO_JAR $APP_OPTIONS"
+
+          echo ">> Starting app : $APP_PATH_TO_JAR"
+          echo ">> Executing command: $START_APP_CMD"
+
+          $START_APP_CMD 2>&1 > $APP_LOG_FILE &
+
+          # Save the app-pid
+          APP_PID=$!
+          echo ">> Starting app with pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
+          echo "app-pid=$APP_PID" >> "$GITHUB_OUTPUT"
+
+          # Tail the log file
+          tail -f $APP_LOG_FILE &
+
+          echo "::endgroup::"
+
+          echo "::group::+++ wait-for-app-health-check +++"
+
+          # Wait for the app to start
+          APP_HEALTH_CHECK_URL="${{ steps.app-config.outputs.app-health-check-url }}"
+          APP_HEALTH_CHECK_CMD="curl -s -o /dev/null -w \"%{http_code}\" $APP_HEALTH_CHECK_URL"
+
+          echo ">> Waiting for healthcheck to return 200: $APP_HEALTH_CHECK_URL"
+
+          # Retry settings, wait 30 seconds between retries, 10 retries (5 minutes)
+          RETRY_WAIT=30
+          RETRY_TIMES=10
+          RETRY_COUNT=0
+
+          set +e
+
+          # Wait for the health check to return 200
+          sleep "$RETRY_WAIT"
+          while [ $RETRY_COUNT -lt $((RETRY_TIMES)) ]; do
+            RETRY_COUNT=$((RETRY_COUNT+1));
+            echo ">> Executing healthcheck [$APP_HEALTH_CHECK_URL], try [$RETRY_COUNT of $RETRY_TIMES]";
+            response=$(eval "$APP_HEALTH_CHECK_CMD");
+            if [[ $response -eq 200 ]]; then
+              echo ">> Started app with pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
+              break;
+            else
+              if [ ! $RETRY_COUNT -eq "$RETRY_TIMES" ]; then
+                echo ">> app not yet started, waiting for $RETRY_WAIT seconds to retry at $(date +%Y/%m/%d-%H:%M:%S.%3N)";
+                sleep "$RETRY_WAIT";
+              else
+                echo ">> ERROR: app with pid=$APP_PID not started after $((RETRY_WAIT*RETRY_TIMES)) seconds at $(date +%Y/%m/%d-%H:%M:%S.%3N)";
+                exit 1;
+              fi
+            fi
+          done
+
+          echo "::endgroup::"
+
+      # mvn-clean-verify
+      - name: mvn-clean-verify
+        id: mvn-clean-verify
+        working-directory: e2e/karate
+        run: |
+
+          # mvn-clean-verify
+
+          echo "::group::+++ mvn-clean-verify +++"
+
+          # Maven Properties
+          APP_PORT=${{ fromJSON(steps.config.outputs.config).karate.app.port }}
+          KARATE_ENV=${{ fromJSON(steps.config.outputs.config).karate.env }}
+          KARATE_OPTIONS="${{ fromJSON(steps.config.outputs.config).karate.options }}"
+          echo "MVN_PROPERTIES=-DAPP_PORT=$APP_PORT -Dkarate.env=$KARATE_ENV -Dkarate.options=$KARATE_OPTIONS"
+
+          # mvn clean verify
+          mvn -B -ntp clean verify -DAPP_PORT="$APP_PORT" -Dkarate.env="$KARATE_ENV" -Dkarate.options="$KARATE_OPTIONS"
+
+          echo "::endgroup::"
+
+      # karate-results-verification
+      - name: karate-results-verification
+        id: karate-results-verification
+        if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
+        uses: ./.github/actions/test-results-verification
+        with:
+          # type: The type of results. Supported types: 'surefire', 'failsafe', 'jacoco', 'karate' and 'pitest'.
+          type: karate
+          # results_folder: The folder of the results. For example:
+          #   'surefire/failsafe': code/target/site
+          #   'jacoco': code/jacoco-report-aggregate/target/site/jacoco-aggregate or code/jacoco-report-aggregate/target/site/jacoco-aggregate-it
+          #   'pitest': code/target/pit-reports
+          #   'karate': e2e/karate/target/karate-reports
+          results_folder: ${{ fromJSON(steps.config.outputs.config).karate.report.folder }}
+          # threshold: the threshold to verify, For example: 'coverage %' for 'jacoco' and 'pitest', 'success rate %' for 'surefire', 'failsafe' and 'karate'
+          threshold: 100
+
+      # karate-report-upload
+      - name: karate-report-upload
+        id: karate-report-upload
+        if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-karate-report
+          path: ${{ fromJSON(steps.config.outputs.config).karate.report.folder }}
+
+      # stop-java-app
+      - name: stop-java-app
+        id: stop-java-app
+        if: |
+          ${{ always() && !cancelled()
+          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
+          && steps.start-java-app.outcome == 'success' }}
+        working-directory: code
+        run: |
+
+          # stop-java-app
+
+          echo "::group::+++ stop-java-app +++"
+          # Stop the app
+
+          # Kill the app using the app-pid
+          APP_PID=${{ steps.start-java-app.outputs.app-pid }}
+
+          echo ">> Killing app-pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
+          while kill -15 $APP_PID 2>/dev/null; do sleep 1; done
+          echo ">> Killed  app-pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
+
+          # Check JaCoCo agent Dump Files
+          echo ">> JaCoCo agent dump files:"
+          echo "$(ls -l ${{ steps.app-config.outputs.jacoco-relative-folder }})"
+
+          echo "::endgroup::"
+
+      # generate-jacoco-report
+      - name: generate-jacoco-report
+        id: generate-jacoco-report
+        if: |
+          ${{ always() && !cancelled()
+          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
+          && steps.start-java-app.outcome == 'success' }}
+        working-directory: code
+        run: |
+
+          # generate-jacoco-report
+
+          echo "::group::+++ download-jacoco-cli +++"
+          # Download JaCoCo CLI
+
+          JACOCO_VERSION="${{ steps.app-config.outputs.jacoco-version }}"
+          echo "JACOCO_VERSION=$JACOCO_VERSION"
+
+          # Donwload the JaCoCo CLI
+          curl -k -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar
+
+          echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
+
+          echo "::endgroup::"
+
+          echo "::group::+++ generate-jacoco-report +++"
+
+          # JaCoCo CLI Report Options
+          JACOCO_CLI_REPORT_OPTIONS="${{ steps.app-config.outputs.jacoco-cli-report-options }}"
+
+          # Generate JaCoCo report
+          echo ">> Generating JaCoCo report with options: $JACOCO_CLI_REPORT_OPTIONS"
+
+          java -jar target/jacococli.jar report $JACOCO_CLI_REPORT_OPTIONS
+
+          echo "::endgroup::"
+
+      # jacoco-results-verification
+      - name: jacoco-results-verification
+        id: jacoco-results-verification
+        if: |
+          ${{ always() && !cancelled()
+          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
+          && steps.start-java-app.outcome == 'success' }}
+        uses: ./.github/actions/test-results-verification
+        with:
+          # type: The type of results. Supported types: 'surefire', 'failsafe', 'jacoco', 'karate' and 'pitest'.
+          type: jacoco
+          # results_folder: The folder of the results. For example:
+          #   'surefire/failsafe': code/target/site
+          #   'jacoco': code/jacoco-report-aggregate/target/site/jacoco-aggregate or code/jacoco-report-aggregate/target/site/jacoco-aggregate-it
+          #   'pitest': code/target/pit-reports
+          #   'karate': e2e/karate/target/karate-reports
+          results_folder: ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }}
+          # threshold: the threshold to verify, For example: 'coverage %' for 'jacoco' and 'pitest', 'success rate %' for 'surefire', 'failsafe' and 'karate'
+          threshold: ${{ fromJSON(steps.config.outputs.config).karate.coverage.threshold || 80 }}
+
+      # jacoco-report-upload
+      - name: jacoco-report-upload
+        id: jacoco-report-upload
+        if: |
+          ${{ always() && !cancelled()
+          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
+          && steps.start-java-app.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-jacoco-report
+          path: ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }}
+
+      # execution-logs-upload
+      - name: execution-logs-upload
+        id: execution-logs-upload
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
+          path: |
+            code/**/*.log
+            e2e/karate/**/*.log

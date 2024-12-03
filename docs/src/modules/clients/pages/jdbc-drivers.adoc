@@ -1,0 +1,2 @@
+* xref:#jdbc-client-configuration-properties-mariadb[Maria DB]
+* xref:#jdbc-client-configuration-properties-postgresql[PostgreSQL]

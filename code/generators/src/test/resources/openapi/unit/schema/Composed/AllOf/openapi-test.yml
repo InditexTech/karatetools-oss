@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: KarateTools Open Api - Composed - AllOf
+  version: 1.0.0
+  contact:
+    name: Karate Tools
+    email: karate-utils@inditex.com
+  description: KarateTools Open Api - Composed - AllOf
+servers:
+- url: http://localhost:8080/karatetools
+  description: Local
+tags:
+- name: composedAllOf
+paths:
+  /api/v1/composed-allof:
+    get:
+      summary: KarateTools Open Api - Composed - AllOf - GET
+      description: KarateTools Open Api - Composed - AllOf - GET
+      operationId: composedAllOfGet
+      tags:
+        - composedAllOf
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComposedSchemaAllOf'
+    post:
+      summary: KarateTools Open Api - Composed - AllOf - POST
+      description: KarateTools Open Api - Composed - AllOf - POST
+      operationId: composedAllOfPost
+      tags:
+        - composedAllOf
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComposedSchemaAllOf'
+      responses:
+        '200':
+          description: Successful operation
+
+components:
+  schemas:
+    ComposedSchemaAllOf:
+      description: KarateTools Open Api - Composed - AllOf - Schema
+      allOf:
+        - type: object
+          properties:
+            name:
+              type: string
+        - type: object
+          properties:
+            partner:
+              type: string
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                type: string
+        - type: object
+          properties:
+            childrenObject:
+              $ref: '#/components/schemas/ComposedSchemaObject'
+        - type: object
+          properties:
+            childrenObjectArray:
+              type: array
+              items:
+                $ref: '#/components/schemas/ComposedSchemaObject'
+    ComposedSchemaObject:
+      description: KarateTools Open Api - Composed - AllOf - Object
+      title: ComposedSchemaObject
+      type: object
+      properties:
+        id:
+          type: string
+        value:
+          type: string

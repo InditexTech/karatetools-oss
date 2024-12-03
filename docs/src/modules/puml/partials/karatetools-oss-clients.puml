@@ -1,0 +1,52 @@
+@startuml karatetools-oss-clients
+skinparam componentStyle rectangle
+scale 2
+
+frame "karatetools-oss-clients" {
+  frame "karatetools-oss-clients (core)" {
+    package "dev.inditex.karate.db" {
+      [JDBCClient.java]
+    }
+    package "dev.inditex.karate.jms" {
+      [JMSClient.java]
+      package "dev.inditex.karate.jms.factory" {
+        [ActiveMQClientFactory.java]
+        [JMSClientFactory.java]
+      }
+    }
+    package "dev.inditex.karate.kafka" {
+      [KafkaAbstractClient.java]
+      [KafkaConsumerClient.java]
+      [KafkaProducerClient.java]
+    }
+    package "dev.inditex.karate.mongodb" {
+      [MongoDBClient.java]
+    }
+  }
+
+  frame "karatetools-oss-clients (support)" {
+    package "dev.inditex.karate.logging" {
+      [KarateClientLogger.java]
+    }
+    package "dev.inditex.karate.parser" {
+      [SystemPropertiesParser.java]
+    }
+  }
+}
+
+' Relationships
+
+[JMSClient.java] --> [JMSClientFactory.java] : calls
+[JMSClientFactory.java] --> [ActiveMQClientFactory.java] : creates
+
+[KafkaAbstractClient.java] <|-- [KafkaConsumerClient.java] : extends
+[KafkaAbstractClient.java] <|-- [KafkaProducerClient.java] : extends
+
+[dev.inditex.karate.parser] .right[hidden]. [dev.inditex.karate.logging]
+
+[karatetools-oss-clients (core)] .up.> [karatetools-oss-clients (support)] : uses
+
+[dev.inditex.karate.db] .down[hidden]. [dev.inditex.karate.kafka]
+[dev.inditex.karate.mongodb] .down[hidden]. [dev.inditex.karate.kafka]
+
+@enduml

@@ -1,0 +1,3 @@
+auth:
+  authMode: 'jwt'
+  username: 'usernameA'

@@ -1,0 +1,16 @@
+This **json** report is **automatically generated** by Karate Tools.
+
+This report includes, for each **API operation** the number of **smoke** and **functional** scenarios which called each operation, as well as the number of **total calls**.
+
+The **API operation** is identified as `<API_PACKAGE>/<OPERATION_TAG>/<OPERATION_FOLDER>/<OPERATION>`
+
+For example:
+[source,json]
+----
+include::example$karate-operations-json.txt[]
+----
+
+NOTE: The number of **total calls** can be higher than the aggregation of **smoke** and **functional**, since one operation can be used **multiple times in a scenario**, for example in end-to-end flows.
+
+* The report is generated in:
+** `target/karate-reports/karate-operations-json.txt`

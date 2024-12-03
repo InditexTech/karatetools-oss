@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+
+  <packaging>jar</packaging>
+
+  <properties>
+    <!-- Java Version -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <java.version>17</java.version>
+
+    <!-- Source Encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Test Execution & Reporting -->
+    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.3.1</maven-surefire-report-plugin.version>
+    <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
+
+    <!-- Open Api Source Generation -->
+    <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
+
+    <!-- Karate Tools -->
+    <karatetools.version>@archetype-${project.version}</karatetools.version>
+    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+#if (${includeKafkaClients} == 'yes' || ${includeKafkaClients} == 'y')
+
+    <!-- Karate Clients -->
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+#end
+  </properties>
+
+  <dependencies>
+    <!-- Karate Tools -->
+    <dependency>
+      <groupId>dev.inditex.karate</groupId>
+      <artifactId>karatetools-starter</artifactId>
+      <version>${karatetools.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Test Execution & Reporting -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven-surefire-report-plugin.version}</version>
+        <configuration>
+          <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
+          <!-- Enable this line if using Karate v1.0.0 -->
+          <xrefLocation>${project.build.directory}/karate-reports</xrefLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${maven-site-plugin.version}</version>
+        <configuration>
+          <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
+        </configuration>
+      </plugin>
+      <!-- Open Api Source Generation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>unpack-apis</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <silent>false</silent>
+              <outputDirectory>${project.build.directory}/apis/</outputDirectory>
+              <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
+              <stripVersion>true</stripVersion>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <includeGroupIds>dev.inditex.karate.karatetools-openapi-test</includeGroupIds>
+              <includes>**/*.yaml,**/*.yml</includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+#if (${includeKafkaClients} == 'yes' || ${includeKafkaClients} == 'y')
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+#end
+      <!-- Karate Tools - Generators -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+          <!-- Karate Tools - Generators - OpenApi -->
+          <execution>
+            <id>open-api-generator</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>dev.inditex.karate.openapi.OpenApiGeneratorCLI</mainClass>
+              <classpathScope>test</classpathScope>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              <executableDependency>
+                <groupId>dev.inditex.karate</groupId>
+                <artifactId>karatetools-starter</artifactId>
+              </executableDependency>
+              <systemProperties>
+                <systemProperty>
+                  <key>logback.configurationFile</key>
+                  <value>src/test/resources/logback-test.xml</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>dev.inditex.karate</groupId>
+            <artifactId>karatetools-starter</artifactId>
+            <version>${karatetools.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>
