@@ -1,0 +1,148 @@
+---
+name: docs-build-snapshot
+
+concurrency: docs-build-${{ github.ref_name }}
+
+on:
+  push:
+    branches: ['develop', 'develop-*', 'main', 'main-*']
+    paths: ['docs/**', '.github/workflows/docs**']
+
+jobs:
+  check-triggered-release:
+    name: Check release-docs labeled
+    runs-on: ubuntu-24.04
+    outputs:
+      labels: ${{ steps.get-labels.outputs.LABELS }}
+      skip: ${{ steps.release-commits.outputs.SKIP }}
+    steps:
+      - name: Get related labels
+        id: get-labels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LABELS=$(gh api -H "Accept: application/vnd.github.v3+json" "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" | jq -cr '.[0].labels[].name' | sed -z 's/\n/ /g;s/ $//')
+          echo "$LABELS"
+          echo "LABELS=$LABELS" >> "$GITHUB_OUTPUT"
+
+      - name: Get release commits
+        id: release-commits
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_MESSAGE=$(gh api -H "Accept: application/vnd.github.v3+json" "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA" | jq -cr '.commit.message')
+          if [[ "$COMMIT_MESSAGE" == *"[npm-scripts] release docs"* ]]; then
+            echo "SKIP=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$COMMIT_MESSAGE" == *"[npm-scripts] bumped docs version"* ]]; then
+            echo "SKIP=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "SKIP=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "$COMMIT_MESSAGE"
+
+  build-snapshot:
+    name: Build Snapshot
+    needs: check-triggered-release
+    runs-on: ubuntu-20.04
+    if: ${{ ((vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
+      || (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))))
+      && !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs')
+      && needs.check-triggered-release.outputs.skip == 'false' }}
+    steps:
+      - name: Checkout / Branch Head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: NPM / Setup Dependencies Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup asdf Cache
+        id: asdf-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Save tool-versions content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat docs/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Node / Setup asdf environment
+        uses: asdf-vm/actions/install@v3
+        # https://github.com/asdf-vm/actions/issues/356
+        if: steps.asdf-cache.outputs.cache-hit != 'true'
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      - name: Configure Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCM_COMMITTER_PGP_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+        run: |
+          git config --global credential.helper store
+          cat <<EOT >> ~/.git-credentials
+          https://ci-user:$GITHUB_TOKEN@github.com
+          EOT
+
+          echo "$SCM_COMMITTER_PGP_KEY" | gpg --batch --import
+          git config user.name "InditexTech CI"
+          git config user.email "oso@inditex.com"
+
+      - name: Docker / Execute Kroki server
+        run: |
+          docker run \
+            -p 8000:8000 \
+            --name krokiserver \
+            --health-cmd="curl -s --fail http://localhost:8000/health || exit 1" \
+            --health-interval=2s \
+            --health-retries=5 \
+            --health-timeout=1s \
+            -d yuzutech/kroki
+
+          max_attempts=5
+          attempt=1
+          backoff=2
+
+          while ! docker inspect --format='{{json .State.Health.Status}}' krokiserver | grep -q "healthy"; do
+            echo "Kroki server is not ready yet. Waiting for $backoff seconds..."
+            sleep $backoff
+
+            attempt=$((attempt + 1))
+
+            if [ $attempt -gt $max_attempts ]; then
+              echo "Kroki server failed to start after $max_attempts attempts. Exiting..."
+              exit 1
+            fi
+          done
+
+      - name: NPM / Verify
+        working-directory: docs
+        run: |
+          npm run verify
+
+      - name: Dispatch / Execute Publish Docs
+        if: ${{ !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs/no-publish') }}
+        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        with:
+          workflow: docs-publish
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            {
+              "AUTODEPLOY_BRANCH": "${{ github.ref_name }}",
+              "ENVIRONMENT": "github-pages-pre"
+            }

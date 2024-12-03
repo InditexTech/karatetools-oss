@@ -1,0 +1,31 @@
+= JWT Authentication
+
+> *Karate Tools* will generate a JWT token based on default JWT data defined in `src/test/resources/jwt/default-jwt.yml` and will send the HTTP requests with the *JWT token as Bearer* in the *"Authorization" header*.
+
+TIP: User specific data for JWT generation can be defined in `src/test/resources/jwt/<username>-jwt.yml` files.
+
+== Configuration
+
+include::auth-jwt-config.adoc[]
+
+== Examples
+
+=== Default settings
+
+[source,yaml,subs="+attributes"]
+----
+include::example$auth-jwt-settings.yml[]
+----
+
+=== Overwrite at request level
+
+* test-data\<operation>_<returncode>.yml
++
+[source,yaml,subs="+attributes"]
+----
+include::example$auth-jwt-overwrite.yml[]
+----
+
+== Error Management
+
+include::auth-jwt-errors.adoc[]

@@ -1,0 +1,7 @@
+The default settings for JWT authentication are:
+
+* `defaultAuthMode`: `jwt`
+** `auth.authMode` when used in a specific request.
+
+* `defaultUsername`: default username.
+** `auth.username` when used in a specific request.

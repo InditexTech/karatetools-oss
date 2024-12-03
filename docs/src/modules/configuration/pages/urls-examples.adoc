@@ -1,0 +1,7 @@
+[source,yaml,subs="+attributes"]
+----
+# urls: karate urls used for target environments and authentication
+urls:
+  xxxApiRestStableUrl: "#('http://localhost:' + (karate.properties['APP_PORT'] || 8080) + '/TO_BE_COMPLETED')"
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+----

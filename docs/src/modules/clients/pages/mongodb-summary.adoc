@@ -1,0 +1,17 @@
+Java Client to interact with *MongoDB from karate*.
+
+It provides features to execute operations such as *count*, *find*, *insert and insertMany*, *replace*, *delete and deleteMany* over MongoDB collections.
+
+[plantuml,mongodb,png,role="no-border, zoom-in"]
+....
+include::puml:partial$sprites.puml[]
+include::puml:partial$mongodb-client.puml[]
+....
+
+
+* How to set it up:
+** Define (if applicable) the MongoDB client dependencies in the project *xref:#pom-configuration[POM]*
+** Define the MongoDB client configuration in the file *xref:#client-configuration[src/test/resources/config/db/mongodb-<env>-config.yml]*
+
+* How to use it in the karate files:
+** *xref:#client-features-and-usage[MongoDB Client Features and Usage]*

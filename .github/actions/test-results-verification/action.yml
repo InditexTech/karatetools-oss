@@ -1,0 +1,70 @@
+name: 'Test Results Verification'
+
+description: 'Generates test summary and verifies threshold for a given set of results'
+
+inputs:
+  type:
+    description: |
+      The type of results. Supported types: 'surefire', 'failsafe', 'jacoco', 'karate' and 'pitest'.
+    required: true
+  results_folder:
+    description: |
+      The folder of the results. For example:
+      'surefire/failsafe': code/target/site.
+      'jacoco': code/jacoco-report-aggregate/target/site/jacoco-aggregate or code/jacoco-report-aggregate/target/site/jacoco-aggregate-it.
+      'karate': e2e/karate/target/karate-reports.
+      'pitest': code/target/pit-reports.
+    required: true
+  threshold:
+    description: |
+      The threshold to verify, For example: '% coverage' for 'jacoco' and 'pitest', 'failed tests' for 'surefire', 'failsafe' and 'karate'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+
+    - name: test-results-summary
+      id: test-results-summary
+      if: ${{ ( inputs.type != null && inputs.results_folder != null ) }}
+      env:
+        # Folder to process
+        INPUT_RESULTS_FOLDER: '${{ inputs.results_folder }}'
+        # Type of results
+        INPUT_TYPE: '${{ inputs.type }}'
+      shell: bash
+      run: |
+
+        echo "::group::+++ test-results-summary [-t ${{ env.INPUT_TYPE }}][-r ${{ env.INPUT_RESULTS_FOLDER }}] +++"
+
+        chmod +x ${{ github.action_path }}/test-results-summary.sh
+        ${{ github.action_path }}/test-results-summary.sh -t '${{ env.INPUT_TYPE }}' -r '${{ env.INPUT_RESULTS_FOLDER }}'
+
+        echo "::endgroup::"
+
+    - name: test-results-verification
+      id: test-results-verification
+      if: ${{ ( inputs.threshold != null && steps.test-results-summary.outputs.result-value != null ) }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+
+          console.log(`::group::+++ test-results-verification [-t ${{ inputs.type }}][-p ${{ inputs.results_folder }}] +++`);
+
+          var threshold = parseFloat('${{ inputs.threshold }}');
+
+          var type = '${{ steps.test-results-summary.outputs.result-type }}';
+          var label = '${{ steps.test-results-summary.outputs.result-label }}';
+          var result = parseFloat('${{ steps.test-results-summary.outputs.result-value }}');
+
+          console.log(`${type} - ${label} [${result}] - threshold [${threshold}]`);
+
+          if (isNaN(result)) {
+            core.setFailed(`${type}: ❌ Failed - ${label} [${result}] is not a number`);
+          } else if ( result >= threshold) {
+            core.notice(`${type}: ✔️ Passed - ${label} [${result}] is above or equal to threshold [${threshold}]`);
+          } else {
+            core.setFailed(`${type}: ❌ Failed - ${label} [${result}] is below threshold [${threshold}]`);
+          }
+
+          console.log(`::endgroup::`);

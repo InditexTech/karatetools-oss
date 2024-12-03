@@ -1,0 +1,5 @@
+<1> root folder for the *operations*
+<2> *api tag* folder
+<3> *operation* folder
+<4> *operation* feature file
+<5> *operation* validation schemas

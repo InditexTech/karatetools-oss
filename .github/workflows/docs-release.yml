@@ -1,0 +1,213 @@
+---
+name: docs-release
+
+concurrency: docs-release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ['main', 'main-*']
+    paths: ['docs/**', '.github/workflows/docs-**']
+
+jobs:
+  release:
+    name: Release Docs Process
+    if: ${{ github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release-docs') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout merge commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: NPM / Setup Dependencies Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup asdf Cache
+        id: asdf-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Save tool-versions content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat docs/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Node / Setup asdf environment
+        uses: asdf-vm/actions/install@v3
+        # https://github.com/asdf-vm/actions/issues/356
+        if: steps.asdf-cache.outputs.cache-hit != 'true'
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      - name: Prepare committer information and set GPG key
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCM_COMMITTER_PGP_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+        run: |
+          git config --global credential.helper store
+          cat <<EOT >> ~/.git-credentials
+          https://ci-user:$GITHUB_TOKEN@github.com
+          EOT
+
+          echo "$SCM_COMMITTER_PGP_KEY" | gpg --batch --import
+          git config user.name "InditexTech CI"
+          git config user.email "oso@inditex.com"
+
+      - name: Docker / Execute Kroki server
+        run: |
+          docker run \
+            -p 8000:8000 \
+            --name krokiserver \
+            --health-cmd="curl -s --fail http://localhost:8000/health || exit 1" \
+            --health-interval=2s \
+            --health-retries=5 \
+            --health-timeout=1s \
+            -d yuzutech/kroki
+
+          max_attempts=5
+          attempt=1
+          backoff=2
+
+          while ! docker inspect --format='{{json .State.Health.Status}}' krokiserver | grep -q "healthy"; do
+            echo "Kroki server is not ready yet. Waiting for $backoff seconds..."
+            sleep $backoff
+
+            attempt=$((attempt + 1))
+
+            if [ $attempt -gt $max_attempts ]; then
+              echo "Kroki server failed to start after $max_attempts attempts. Exiting..."
+              exit 1
+            fi
+          done
+
+      - name: NPM / Verify
+        working-directory: docs
+        run: |
+          npm run verify
+
+      - name: Determine version
+        id: determine-version
+        working-directory: docs
+        run: |
+          if [[ -f ".docsconfig.yml" ]]; then
+            VERSION=$(yq -r '.release.version' .docsconfig.yml)
+          fi
+
+          if [[ -z "$VERSION" ]]; then
+            echo "Version not found in .docsconfig.yml. Using default version 1.0.0"
+            VERSION="1.0.0"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: NPM / Set Release Version
+        working-directory: docs
+        env:
+          RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
+        run: |
+          npm run version:release
+
+      - name: Release / Force Tag
+        if: contains(github.event.pull_request.labels.*.name, 'release-docs/force')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: docs
+        run: |
+          git pull --tags
+          if git tag -l "docs/v${{ steps.determine-version.outputs.version }}"; then
+            git tag -d docs/v${{ steps.determine-version.outputs.version }};
+            git push --delete origin docs/v${{ steps.determine-version.outputs.version }};
+          fi
+
+      - name: Release / Commit and Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: docs
+        run: |
+          git add package.json package-lock.json src/antora.yml || true
+          git commit -m "chore: bumped docs version" || true
+          git tag docs/v${{ steps.determine-version.outputs.version }}
+          git push --tags --no-verify --follow-tags origin HEAD
+
+      - name:  Next Development Iteration / Bump Version
+        working-directory: docs
+        run: |
+          npm run version:development
+
+      - name:  Next Development Iteration / Bump Docs Version
+        working-directory: docs
+        run: |
+          if [[ -f ".docsconfig.yml" ]]; then
+            NEW_VERSION=$(jq -r '.version' package.json | sed 's/-SNAPSHOT//')
+            ACTUAL_VERSION=$(yq -r '.release.version' .docsconfig.yml)
+            if [[ -n "$ACTUAL_VERSION" ]]; then
+              yq eval ".release.version = \"$NEW_VERSION\"" -i .docsconfig.yml
+            fi
+          fi
+
+      - name: Next Development Iteration / Commit Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: docs
+        run: |
+          git commit --allow-empty -i package.json package-lock.json .docsconfig.yml src/antora.yml -m "chore: bumped docs to development version"
+          git push --no-verify origin HEAD
+
+      - name: Next Development Iteration / Create Sync Branch PR into Develop
+        id: sync-branch-pr
+        if: ${{ vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
+        continue-on-error: true
+        env:
+          BASELINE_BRANCH: ${{ github.ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
+          NO_PUBLISH: ${{ contains(github.event.pull_request.labels.*.name, 'release-docs/no-publish') }}
+        run: |
+          DEVELOP=${BASELINE_BRANCH/main/develop}
+          DEVELOP=${DEVELOP#refs/heads/}
+          # Avoid creating sync PR if the corresponding development branch does not exist
+          if [[ -z $(git ls-remote --heads origin "$DEVELOP") ]]; then
+            echo "The '$DEVELOP' branch does not exist in remote. Skipping the creation of sync PR"
+          else
+            git checkout -b "automated/sync-docs-release-${{ env.RELEASE_VERSION }}-to-$DEVELOP"
+            git push --no-verify -u origin HEAD
+            # shellcheck disable=SC2046
+            gh pr create --base "$DEVELOP" \
+              --title "Sync docs release ${{ env.RELEASE_VERSION }} to $DEVELOP" \
+              $([[ "$NO_PUBLISH" = "true" ]] && echo "--label release-docs/no-publish") \
+              --body "**Automated Pull Request**"
+          fi
+
+      - name: Comment in PR / Sync PR failed
+        if: ${{ steps.sync-branch-pr.outcome == 'failure' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh pr comment ${{ github.event.number }} --body "An error occurred creating the \`sync\` branch that synchronizes the \`main\` and \`develop\` branches.
+          Please create a branch from \`main\` (e.g. \`internal/sync-main-with-develop\`) and then create a pull request against \`develop\` to finish the release process."
+
+      - name: Dispatch / Execute Publish Docs
+        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        with:
+          workflow: docs-publish
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            {
+              "VERSION": "${{ steps.determine-version.outputs.version }}",
+              "ENVIRONMENT": "github-pages"
+            }

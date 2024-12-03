@@ -1,0 +1,248 @@
+services:
+
+  # DB - postgresql
+  postgres:
+    container_name: kt-postgres
+    profiles: [ "it", "app" ]
+    image: postgres:15.7
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "KARATE"
+      POSTGRES_USER: "karate"
+      POSTGRES_PASSWORD: "karate-pwd"
+    volumes:
+      - "./postgres/data:/docker-entrypoint-initdb.d/"
+    healthcheck:
+      test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # DB - Maria DB
+  mariadb:
+    container_name: kt-mariadb
+    profiles: [ "it", "app" ]
+    image: mariadb:10.5.21
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: "KARATE"
+      MARIADB_USER: "karate"
+      MARIADB_PASSWORD: "karate-pwd"
+      MARIADB_ROOT_PASSWORD: "karate-root-pwd"
+    volumes:
+      - "./mariadb/data:/docker-entrypoint-initdb.d/"
+    healthcheck:
+      test: "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD --silent"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # DB - Mongo DB
+  mongodb:
+    container_name: kt-mongodb
+    profiles: [ "it", "app" ]
+    image: mongo:7.0.12
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: "KARATE"
+      MONGO_INITDB_ROOT_USERNAME: "karate"
+      MONGO_INITDB_ROOT_PASSWORD: "karate-pwd"
+    volumes:
+      - "./mongodb/data:/docker-entrypoint-initdb.d/"
+    healthcheck:
+      test: "mongosh --eval \"db.runCommand('ping').ok\" --quiet"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # JMS - Active MQ
+  amq:
+    container_name: kt-amq
+    profiles: [ "it", "app" ]
+    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0
+    ports:
+      - "8161:8161"   # Web Console
+      - "61616:61616" # STOMP
+      - "5672:5672"   # AMQP
+    environment:
+      AMQ_USER: "karate"
+      AMQ_PASSWORD: "karate-pwd"
+    healthcheck:
+      test: "/home/jboss/broker/bin/artemis check node || exit 1"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # Kafka / Schema Registry / ZooKeeper - Kafka
+  kafka:
+    container_name: kt-kafka
+    profiles: [ "it", "app", "kafka" ]
+    image: confluentinc/cp-kafka:7.6.2
+    ports:
+      # No auth
+      - 39091:39091
+      # Sasl Plain
+      - 39092:39092
+      # Sasl Scram Sha 512
+      - 39093:39093
+    environment:
+      # general
+      KAFKA_ALLOW_AUTO_CREATE_TOPICS: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # zookeeper
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      ZOOKEEPER_SASL_ENABLED: "false"
+      # listeners
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:
+        INTERNAL:PLAINTEXT,
+        NOAUTH:PLAINTEXT,
+        SASLPLAIN:SASL_PLAINTEXT,
+        SASLSCRAM:SASL_PLAINTEXT
+      KAFKA_LISTENERS:
+        INTERNAL://0.0.0.0:9090,
+        NOAUTH://0.0.0.0:39091,
+        SASLPLAIN://0.0.0.0:39092,
+        SASLSCRAM://0.0.0.0:39093
+      KAFKA_ADVERTISED_LISTENERS:
+        INTERNAL://kafka:9090,
+        NOAUTH://localhost:39091,
+        SASLPLAIN://localhost:39092,
+        SASLSCRAM://localhost:39093
+      # inter-broker
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      # authentication
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN,SCRAM-SHA-512
+      # authentication - SASL Plain
+      KAFKA_LISTENER_NAME_SASLPLAIN_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_SASLPLAIN_PLAIN_SASL_JAAS_CONFIG:
+        org.apache.kafka.common.security.plain.PlainLoginModule required \
+          username="saslplain" \
+          password="saslplain-pwd" \
+          user_saslplain="saslplain-pwd";
+      # authentication - SASL SCRAM SHA 512
+      KAFKA_LISTENER_NAME_SASLSCRAM_SASL_ENABLED_MECHANISMS: SCRAM-SHA-512
+      KAFKA_LISTENER_NAME_SASLSCRAM_SCRAM___SHA___512_SASL_JAAS_CONFIG:
+        org.apache.kafka.common.security.scram.ScramLoginModule required;
+    # Add user for SASL SCRAM SHA 512
+    command:
+      /bin/sh -c "kafka-configs --zookeeper zookeeper:2181 --alter \
+      --add-config SCRAM-SHA-512=[iterations=4096,password=saslscram-pwd] \
+      --entity-type users --entity-name saslscram && /etc/confluent/docker/run"
+    volumes:
+      - "./kafka/data:/tmp/data"
+    healthcheck:
+      test: "nc -z localhost 9090 || exit 1"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # Kafka / Schema Registry / ZooKeeper - Schema Registry (No Auth)
+  schema-registry:
+    container_name: kt-schema-registry
+    profiles: [ "it", "app", "kafka" ]
+    image: confluentinc/cp-schema-registry:7.6.2
+    ports:
+    - 38081:8081
+    volumes:
+    - ./conf:/conf
+    environment:
+      # general
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      # listeners
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      # kafka
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9090
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID : schema_registry
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_ZK_NAMESPACE: schema_registry
+    healthcheck:
+      test: "nc -z localhost 8081 || exit 1"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # Kafka / Schema Registry / ZooKeeper - Schema Registry (Basic Auth)
+  schema-registry-basic-auth:
+    container_name: kt-schema-registry-basic-auth
+    profiles: [ "it", "app", "kafka" ]
+    image: confluentinc/cp-schema-registry:7.6.2
+    ports:
+      - 38082:8082
+    environment:
+      # general
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-basic-auth
+      # listeners
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8082
+      # kafka
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9090
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID : schema_registry_basic_auth
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas_basic_auth
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_ZK_NAMESPACE: schema_registry_basic_auth
+      # basic auth
+      SCHEMA_REGISTRY_AUTHENTICATION_METHOD: BASIC
+      SCHEMA_REGISTRY_AUTHENTICATION_REALM: karate
+      SCHEMA_REGISTRY_AUTHENTICATION_ROLES: karate
+      SCHEMA_REGISTRY_OPTS: -Djava.security.auth.login.config=/etc/schema_registry/schema_registry.jaas
+    volumes:
+      - "./schema_registry/data-auth:/tmp/data"
+      - "./schema_registry/schema_registry.jaas:/etc/schema_registry/schema_registry.jaas"
+      - "./schema_registry/schema_registry.users:/etc/schema_registry/schema_registry.users"
+    healthcheck:
+      test: "nc -z localhost 8082 || exit 1"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
+  # Kafka / Schema Registry / ZooKeeper - ZooKeeper
+  zookeeper:
+    container_name: kt-zookeeper
+    profiles: [ "it", "app", "kafka" ]
+    image: confluentinc/cp-zookeeper:7.6.2
+    ports:
+      - 2181:2181
+    environment:
+      # general
+      ZOOKEEPER_CLIENT_PORT: 2181
+      # authentication
+      ZOOKEEPER_SASL_ENABLED: "false"
+    healthcheck:
+      test: "echo ruok | nc localhost 2181"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true

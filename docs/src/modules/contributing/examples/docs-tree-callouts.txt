@@ -1,0 +1,9 @@
+<1> Antora playbooks
+<2> Build folder where the output documentation is generated
+<3> Node modules folder
+<4> Node package configuration file
+<5> Content source root folder
+<6> `antora.yml` (reserved file name): Antora component version descriptor file. This file indicates to Antora that the contents of a directory named modules should be collected and processed.
+<7> `modules` (reserved directory name): Antora required directory located at the same hierarchical level as the antora.yml file. The modules directory must contain, at a minimum, either a ROOT module directory or a named module directory.
+<8> Supplemental UI to customize the UI bundle
+<9> Antora Default UI bundle

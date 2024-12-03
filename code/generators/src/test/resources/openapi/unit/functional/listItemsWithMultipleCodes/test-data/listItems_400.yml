@@ -1,0 +1,10 @@
+---
+operationId: "listItems"
+statusCode: 400
+params:
+  limit: 0
+headers:
+  Accept-Language: "en"
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/openapi/test/BasicApi/listItems/schema/listItems_400.schema.yml'))"

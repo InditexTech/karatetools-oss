@@ -1,0 +1,9 @@
+⚙️ *`jmsFactory`* - JMS Factory to use: *`ActiveMQ`*
+
+⚙️ *`brokerURL`* - URL of the Active MQ broker
+
+⚙️ *`username`* - User name that application uses to connect to ActiveMQ
+
+⚙️ *`password`* - Password that the application uses to connect to ActiveMQ
+
+⚙️ *`sendTimeout`* - Timeout in milliseconds for sending messages (default 5000)

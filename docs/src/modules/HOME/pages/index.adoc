@@ -1,0 +1,44 @@
+= Home
+:icons: font
+:page-role: -toc
+
+[cols="1,3,1,3"]
+|===
+.>a|image::karatetools.png["Overview", width="100", role="no-border"]
+a| xref:overview:index.adoc[📖 Overview]
+
+.>a|image::notes.png["Release Notes", width="100", role="no-border"]
+a| xref:release:index.adoc[📝 Release Notes]
+
+.5+>a|image::tools.png["Karate Tools", width="100", role="no-border"]
+a| xref:prerequisites:index.adoc[☑️ Prerequisites]
+
+.5+>a|image::clients.png["Karate Clients", width="100", role="no-border"]
+a| xref:clients:index.adoc[🛠️ Clients]
+
+a| xref:archetype:index.adoc[⚙️ Archetype]
+a| xref:clients:jdbc.adoc[🛠️ JDBC Client] icon:database[database]
+
+a| xref:configuration:index.adoc[⚙️ Configuration]
+a| xref:clients:mongodb.adoc[🛠️ MongoDB Client] icon:database[database]
+
+a| xref:open-api-generator:index.adoc[⚙️ Karate Open Api Generator]
+a| xref:clients:kafka.adoc[🛠️ Kafka Clients] icon:envelope-o[envelope-o]
+
+a| xref:execution:index.adoc[▶️ Execution]
+a| xref:clients:jms.adoc[🛠️ JMS Client] icon:envelope[envelope]
+
+.3+>a|image::dev.png["Overview", width="100", role="no-border"]
+a| xref:contributing:index.adoc[👩‍💻 Contributing]
+a|
+a|
+
+a| xref:contributing:development-guide.adoc[👩‍💻 Development Guide]
+a|
+a|
+
+a| xref:contributing:step-by-step.adoc[👩‍💻 Step by Step]
+a|
+a|
+
+|===

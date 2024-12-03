@@ -1,0 +1,26 @@
+NOTE: default `karate.env` = `local`
+
+* Execute all tests with default environment (`local`)
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test
+----
+
+* Execute all tests on a specified *environment* using `karate.env`
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.env=local
+mvn clean test -Dkarate.env=pre
+mvn clean test -Dkarate.env=pre_zero
+----
+
+In order to filter the tests per environment use the *karate environment tags*.
+
+These are two special tags (`@env` and `@envnot`) that allow you to "select" or "un-select" a Scenario depending on the value of the `karate.env`.
+
+For example:
+
+* `@env=local,pre,pre_zero`: the scenario will be executed only when the value of karate.env is equal to `local` on `pre` or `pre_zero`.
+* `@envnot=local`: the scenario will be executed only when the value of karate.env is anything other than `local`.

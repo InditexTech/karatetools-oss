@@ -1,0 +1,79 @@
+@startuml karatetools-architecture
+
+!include sprites.puml
+
+node "<$java-icon,scale=0.15>\n karatetools-archetype" as karatetoolsArchetype {
+  agent "archetype-generator" as archetypeGenerator
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-generators (karatetools-starter)" as karatetoolsGenerators {
+  agent "open-api-generator" as openapiGenerator
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as karatetoolsClients {
+  agent "jdbc-client" as jdbcClient
+  agent "mongodb-client" as mongodbClient
+  agent "kafka-client" as kafkaClient
+  agent "jms-client" as jmsClient
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-runner (karatetools-starter)" as karatetoolsRunner {
+  agent "karate-runner" as karateRunner
+  agent "karate-mock-server" as karateMockServer
+}
+
+node "<$karate,scale=0.5>\n karate-module" as karateModule {
+  agent "<$java-icon,scale=0.15>\n runner" as runner
+  file "<$yaml,scale=0.5>\n karate-config" as config
+  file "<$javascript-icon,scale=0.5>\n javascript" as js
+  file "<$cucumber-icon,scale=0.4>\n karate-tests" as tests
+  file "<$yaml,scale=0.5>\n karate-mocks" as mocks
+}
+
+node "<$spring,scale=1>" {
+
+  node "persistence" {
+    database "<$mariadb-icon,scale=1>\n Maria DB" as mariadb
+    database "<$mongodb-icon,scale=1>\n Mongo DB" as mongodb
+    database "<$postgresql-icon,scale=0.2>\n PostgreSQL" as postgresql
+  }
+
+  node "messaging" {
+    queue "<$kafka-icon,scale=1>\n Kafka" as kafka
+    queue "<$apache,scale=0.5,color=#832878>\n Active MQ" as activemq
+  }
+
+  node "application" {
+    collections "<$openapi-icon,scale=0.8>\n REST Api" as RESTApi
+  }
+}
+
+' Relationships
+
+archetypeGenerator --> karateModule : generate
+archetypeGenerator --> js
+archetypeGenerator --> config
+archetypeGenerator --> runner
+
+openapiGenerator --> tests : "<$swagger,scale=0.1>\ngenerate tests"
+openapiGenerator --> mocks : "<$swagger,scale=0.1>\ngenerate mocks"
+
+runner -left-> tests : execute
+tests --> karateRunner : execute
+mocks <-- karateMockServer : respond
+
+tests --> jdbcClient : call
+tests --> mongodbClient : call
+tests --> kafkaClient : call
+tests --> jmsClient : call
+
+jdbcClient --> mariadb
+jdbcClient --> postgresql
+mongodbClient --> mongodb
+kafkaClient --> kafka
+jmsClient --> activemq
+
+application --> karateMockServer : "<$swagger,scale=0.1>\nexternal service"
+karateRunner --> RESTApi : test
+
+@enduml

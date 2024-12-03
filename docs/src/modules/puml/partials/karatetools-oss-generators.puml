@@ -1,0 +1,46 @@
+@startuml karatetools-oss-generators
+skinparam componentStyle rectangle
+left to right direction
+scale 2
+
+frame "karatetools-oss-generators" {
+  frame "karatetools-oss-generators (core)" {
+    package "dev.inditex.karate.openapi" {
+      [OpenApiGenerator.java]
+      [OpenApiGeneratorCLI.java]
+      [OpenApiGeneratorModes.java]
+    }
+    package "dev.inditex.karate.openapi.data" {
+      [OpenApiGenerators.java]
+      [KarateOperation.java]
+      [KarateSmokeFeature.java]
+      [KarateFunctionalFeature.java]
+      [KarateMockData.java]
+      [KarateTestData.java]
+    }
+  }
+  frame "karatetools-oss-generators (support)" {
+    [dev.inditex.karate.console]
+  }
+}
+
+' Relationships
+
+[OpenApiGeneratorCLI.java] -up-> [dev.inditex.karate.console] : uses
+[OpenApiGeneratorCLI.java] -left-> [OpenApiGeneratorModes.java] : select mode
+[OpenApiGeneratorModes.java] -left-> [OpenApiGenerator.java] : execute
+[OpenApiGenerator.java] --> [OpenApiGenerators.java] : generate<Mode>
+
+[OpenApiGenerators.java] --> [KarateOperation.java] : generate
+[OpenApiGenerators.java] --> [KarateSmokeFeature.java] : generate
+[OpenApiGenerators.java] --> [KarateFunctionalFeature.java] : generate
+[OpenApiGenerators.java] --> [KarateMockData.java] : generate
+
+[KarateFunctionalFeature.java] o-- [KarateTestData.java]
+[KarateSmokeFeature.java] o-- [KarateTestData.java]
+
+[KarateOperation.java] -[hidden]left- [KarateSmokeFeature.java]
+[KarateSmokeFeature.java] -[hidden]left- [KarateFunctionalFeature.java]
+[KarateFunctionalFeature.java] -[hidden]left- [KarateMockData.java]
+[KarateFunctionalFeature.java] -[hidden]left- [KarateTestData.java]
+@enduml

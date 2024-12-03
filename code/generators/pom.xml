@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.inditex.karate</groupId>
+    <artifactId>karatetools</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>karatetools-generators</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>InditexOSS Karate Tools - Generators</description>
+
+  <developers>
+    <developer>
+      <name>Inditex Open Source Office</name>
+      <email>oso@inditex.com</email>
+      <organization>Industria de Diseño Textil, S.A.</organization>
+      <organizationUrl>https://inditex.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <properties />
+
+  <dependencyManagement />
+
+  <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <!-- Karate Generators -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+    <!-- Karate Generators - Console -->
+    <dependency>
+      <groupId>de.codeshelf.consoleui</groupId>
+      <artifactId>consoleui</artifactId>
+    </dependency>
+    <!-- Karate Generators - Open Api -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger.parser.v3</groupId>
+      <artifactId>swagger-parser</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-inflector</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <executions>
+          <!-- Default Jar -->
+          <execution>
+            <id>default-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/logback.xml</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <!-- Java Jar -->
+          <execution>
+            <id>java</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>java</classifier>
+              <includes>
+                <include>dev/inditex/karate/**</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- Templates Jar -->
+          <execution>
+            <id>templates</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>templates</classifier>
+              <includes>
+                <include>open-api-generator/*.template</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- Test Jar -->
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/logback-test.xml</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>dev.inditex.karate</groupId>
+            <artifactId>generators</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <!-- Karate Generators - OpenApi -->
+          <execution>
+            <id>open-api-generator</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>dev.inditex.karate.openapi.OpenApiGeneratorCLI</mainClass>
+              <classpathScope>test</classpathScope>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              <executableDependency>
+                <groupId>dev.inditex.karate</groupId>
+                <artifactId>generators</artifactId>
+              </executableDependency>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting />
+
+  <profiles />
+</project>

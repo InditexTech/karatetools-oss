@@ -1,0 +1,18 @@
+<1> *post-processing script* to *choose* the *files* to *include* based on the *archetype properties* which are prompted to the user.
+<2> *archetype descriptor*, metadata defining the *archetype properties*, *files* and *directories*, and the *post-processing script*.
+<3> the *prototype files* that are copied by the archetype plugin to the target module
+<4> *prototype*: Git ignore file
+<5> *prototype*: Tools version manager file
+<6> *prototype*: Karate pom file
+<7> *prototype*: Java Test Runner
+<8> *prototype*: karate clients configuration files templates
+<9> *prototype*: Configuration Files (general and environment specific)
+<10> *prototype*: Karate Authentication Default JWT
+<11> *prototype*: Karate-config file
+<12> *prototype*: logback configuration file
+<13> *prototype*: karate mocks folder to define standalone mock templates
+<14> *test projects* to test the archetype generation with different configurations
+<15> *test*: project folder
+<16> *test*: archetype properties (groupId, artifactId, version, ...)
+<17> *test*: maven goal to be executed for the project test, for example: `clean validate`
+<18> *test*: expected output files

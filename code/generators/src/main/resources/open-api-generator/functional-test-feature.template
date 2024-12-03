@@ -1,0 +1,35 @@
+@functional
+[# th:each="operationId: ${operationIds}"]@op.[(${operationId})] [/]
+[# th:block th:if="${inlineMocks}"]@mock.templates.inline
+@env=local
+[/]
+Feature: [(${testName})]
+
+Background:
+[# th:block th:if="${inlineMocks}"]
+* def getParentFolder =
+  """
+  function() {
+    var path = karate.feature.prefixedPath;
+    var parent = Java.type("java.nio.file.Paths").get(path.substring(path.indexOf(':') + 1)).getParent().toString();
+    return parent.replaceAll("\\", "/")
+  }
+  """
+
+# ###############################################
+# Start Mock Server
+# ###############################################
+* karate.log('>> [(${testName})] >> Background >> Start Mock')
+* def mockTemplatesFolder = getParentFolder() + '/mocks'
+* def mockPort = parseInt( karate.properties['KARATE_MOCK_SERVER_PORT'] || '58081' )
+* def mockArgs = karate.getEngine().getAllVariablesAsMap()
+
+* callonce read('classpath:mocks/mock-templates-inline.feature')
+# ###############################################
+[/]
+Scenario: [(${testName})][# th:block th:each="step: ${steps}"]
+
+# [(${step.operation.operationId})]-[(${step.statusCode})]
+Given def [(${step.operation.operationId})]Request = read('test-data/[(${step.operation.operationId})]_[(${step.statusCode})].yml')
+When def [(${step.operation.operationId})]Response = call read('classpath:[(${step.operationFeatureClassPath})]') [(${step.operation.operationId})]Request
+Then match [(${step.operation.operationId})]Response.responseStatus == [(${step.statusCode})][/]

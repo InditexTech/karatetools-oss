@@ -1,0 +1,9 @@
+= Karate config
+
+== karate-config.js / karate-config-<env>.js
+
+include::karate-config-js.adoc[]
+
+== config.yml / config-<env>.yml
+
+include::karate-config-yml.adoc[]

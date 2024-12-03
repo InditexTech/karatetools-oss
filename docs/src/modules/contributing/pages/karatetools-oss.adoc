@@ -1,0 +1,55 @@
+= karatetools-oss
+
+++++
+<style>
+/* Limit the size of the code blocks */
+.paragraph:has(code), .listingblock:has(code){
+  font-size: 12px;
+  max-width: 500px
+}
+</style>
+++++
+
+== Overview
+
+include::karatetools-oss-overview.adoc[]
+
+== karatetools-oss-code
+
+include::karatetools-oss-code.adoc[]
+
+=== karatetools-oss-archetype
+
+include::karatetools-oss-archetype.adoc[]
+
+=== karatetools-oss-clients
+
+include::karatetools-oss-clients.adoc[]
+
+=== karatetools-oss-generators
+
+include::karatetools-oss-generators.adoc[]
+
+=== karatetools-oss-runner
+
+include::karatetools-oss-runner.adoc[]
+
+=== karatetools-oss-starter
+
+include::karatetools-oss-starter.adoc[]
+
+=== karatetools-oss-boot
+
+include::karatetools-oss-boot.adoc[]
+
+=== karatetools-oss-openapi-test
+
+include::karatetools-oss-openapi-test.adoc[]
+
+== karatetools-oss-karate-test
+
+include::karatetools-oss-karate-test.adoc[]
+
+== karatetools-oss-docs
+
+include::karatetools-oss-docs.adoc[]

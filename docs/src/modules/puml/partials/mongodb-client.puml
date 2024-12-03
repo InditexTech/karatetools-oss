@@ -1,0 +1,39 @@
+@startuml karatetools-mongodb
+
+!include sprites.puml
+
+node "<$karate,scale=0.5>\n karate-module" as karateModule {
+  file "<$cucumber,scale=0.5,color=#126e37> karate-tests" as test
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as karatetoolsClients {
+  agent "<$java-icon,scale=0.15> mongodb-client" as mongodbClient
+}
+
+note as DataTable
+  <#lightblue,#black>|= _id String |= name String |= value Int32 |
+  <#white>| 1 | karate-01 | 1 |
+  <#white>| 2 | karate-02 | 2 |
+end note
+
+database "<$mongodb,scale=1>" as mongodb
+
+json "<$json,scale=0.5> JSON" as JSON {
+  "response": [
+    { "id": 1, "name": "karate-01", "value": 1 },
+    { "id": 2, "name": "karate-02", "value": 2 }
+  ]
+}
+
+' Relationships
+
+mongodbClient --> DataTable
+DataTable --> mongodb
+
+test -right-> mongodbClient
+note bottom of link : find('data', {'name'; { '$regex': '^karate-(.*)' }})
+
+mongodbClient ..> JSON
+JSON ..> test
+
+@enduml

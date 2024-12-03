@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: KarateTools Open Api - Composed - AnyOf
+  version: 1.0.0
+  contact:
+    name: Karate Tools
+    email: karate-utils@inditex.com
+  description: KarateTools Open Api - Composed - AnyOf
+servers:
+- url: http://localhost:8080/karatetools
+  description: Local
+tags:
+- name: composedAnyOf
+paths:
+  /api/v1/composed-anyof:
+    get:
+      summary: KarateTools Open Api - Composed - AnyOf - GET
+      description: KarateTools Open Api - Composed - AnyOf - GET
+      operationId: composedAnyOfGet
+      tags:
+        - composedAnyOf
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComposedSchemaAnyOf'
+    post:
+      summary: KarateTools Open Api - Composed - AnyOf - POST
+      description: KarateTools Open Api - Composed - AnyOf - POST
+      operationId: composedAnyOfPost
+      tags:
+        - composedAnyOf
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComposedSchemaAnyOf'
+      responses:
+        '200':
+          description: Successful operation
+
+components:
+  schemas:
+    ComposedSchemaAnyOf:
+      description: KarateTools Open Api - Composed - AnyOf - Schema
+      anyOf:
+        - type: object
+          properties:
+            name:
+              type: string
+        - type: object
+          properties:
+            partner:
+              type: string
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                type: string

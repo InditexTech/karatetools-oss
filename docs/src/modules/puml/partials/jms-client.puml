@@ -1,0 +1,35 @@
+@startuml karatetools-jms
+
+!include sprites.puml
+
+node "<$karate,scale=0.5>\n karate-module" as karateModule {
+  file "<$cucumber-icon,scale=0.5> karate-tests" as test
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as karatetoolsClients {
+  agent "<$java-icon,scale=0.15> jms-client" as jmsClient
+}
+
+queue "<$apache,scale=0.5,color=#832878>\n Active MQ" as activemq
+
+json "<$json,scale=0.5> JSON" as JSON {
+  "response": [
+    { "id": 1, "name": "karate-01", "value": 1 },
+    { "id": 2, "name": "karate-02", "value": 2 }
+  ]
+}
+
+' Relationships
+
+jmsClient --> activemq
+
+test -right-> jmsClient
+note bottom of link : send('queue', { 'id': 1, 'name': 'karate-01', 'value': 1 })
+
+test --> jmsClient
+note top of link : consume('queue')
+
+jmsClient ..> JSON
+JSON ..> test
+
+@enduml

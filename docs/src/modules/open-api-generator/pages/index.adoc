@@ -1,0 +1,19 @@
+= Karate Open Api Generator
+
+*Automatic generation* of tests in Gherkin, with their related data sets and schemas for response validation as well as data to mock external services from *Open Api definitions*
+
+Karate *open-api-generator* has the following generation modes:
+
+include::open-api-generator-modes.adoc[]
+
+== Configuration
+
+include::configuration.adoc[]
+
+== API Dependencies
+
+include::api-dependencies.adoc[]
+
+== Execution
+
+include::execution.adoc[]

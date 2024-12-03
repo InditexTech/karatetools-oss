@@ -1,0 +1,27 @@
+The environment *Authentication mode* and *default settings* must be defined per environment.
+
+* `defaultAuthMode`: basic ...
+
+* `defaultUsername`: default username.
+
+* `credentials`: pairs of `username: password`.
+
+** For example:
+*** pair `<username: password>`
++
+[source,yaml,subs="+attributes"]
+----
+credentials:
+  # username: password
+  username100: username100p
+----
+*** pair `<username: system property>`
++
+[source,yaml,subs="+attributes"]
+----
+credentials:
+  # username: password
+  usernamedes: '#(karate.properties["value-injected-as-system-property"])'
+----
+
+IMPORTANT: The default values for each supported authentication type are defined in the corresponding section.

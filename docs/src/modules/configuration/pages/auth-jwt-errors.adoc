@@ -1,0 +1,22 @@
+The errors applicable to JWT authentication are:
+
+* `invalid authMode`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no authMode or invalid authMode. auth.authMode:JWT
+----
+
+* `no username`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no username. auth.authMode:jwt auth.username:null
+----
+
+* `failed to generate jwt`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> jwt >> failed to generate jwt
+----

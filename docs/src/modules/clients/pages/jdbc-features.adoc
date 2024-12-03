@@ -1,0 +1,143 @@
+=== Instantiate JDBCClient
+
+*New instance of the JDBCClient* providing the configuration as a map loaded from a yaml file.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public JDBCClient(final Map<Object, Object> configMap)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public JDBCClient(final Map<Object, Object> configMap)
+# Instantiate JDBCClient
+Given def config = read('classpath:config/db/postgresql-config-' + karate.env + '.yml')
+Given def JDBCClient = Java.type('{karatetools-package}.db.JDBCClient')
+Given def jdbcClient = new JDBCClient(config)
+----
+
+=== Check if JDBC is available
+
+Checks if the *JDBC connection can be established* using the configured *health query*
+
+Returns true is *connection is available*, false otherwise
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Boolean available()
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def available = jdbcClient.available()
+Then if (!available) karate.fail('JDBC Client not available')
+----
+
+=== Execute JDBC Update Script from file
+
+Execute a *set of SQL update statements* (INSERT, UPDATE, DELETE, TRUNCATE, ...) *defined in a file*, each executable SQL line must end with the *separator ";"*.
+The separator can be ignored when executing each SQL depending on the DB, for example for DB2 ";" must be ignored.
+
+Returns the *aggregated number of row count* for the executed SQL lines.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public int executeUpdateScript(final String script, final boolean ignoreSeparator)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public int executeUpdateScript(final String script, final boolean ignoreSeparator)
+# Truncate Table and Insert 2 records
+Given def scriptSQL = karate.readAsString('classpath:scenarios/db/JDBCClient-PostgreSQL.sql')
+When def insertedScript = jdbcClient.executeUpdateScript(scriptSQL, false)
+Then karate.log('jdbcClient.executeUpdateScript(',scriptSQL,')=',insertedScript)
+Then assert insertedScript == 2
+----
+
+=== Execute JDBC Update SQL
+
+Execute a *single SQL update statement* (INSERT, UPDATE, DELETE, TRUNCATE, ...).
+
+Returns the *row count* for the executed SQL statement or 0 for SQL statements that return nothing (such as TRUNCATE)
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public int executeUpdate(final String sql)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public int executeUpdate(final String sql)
+# Insert a record
+Given def insertSQL = "INSERT INTO DATA (NAME, VALUE) VALUES ('karate-03', 3)"
+When def inserted = jdbcClient.executeUpdate(insertSQL)
+Then karate.log('jdbcClient.executeUpdate(',insertSQL,')=',inserted)
+Then assert inserted == 1
+----
+
+=== Execute JDBC Query SQL
+
+Executes a *single SQL query statement*,
+
+Returns a *JSON Array* representing the obtained ResultSet, where each row is a map *<< column name, ResultSet value >>*
+
+For example:
+
+[source,sql,subs="+attributes"]
+----
+SELECT ID, NAME, VALUE FROM DATA ORDER BY ID
+
+ID|NAME     |VALUE|
+--+---------+-----+
+ 1|karate-01|    1|
+ 2|karate-02|    2|
+ 3|karate-03|    3|
+----
+
+will return
+
+[source,json,subs="+attributes"]
+----
+[
+  { "ID": 1, "NAME": "karate-01", "VALUE": 1 },
+  { "ID": 2, "NAME": "karate-02", "VALUE": 2 },
+  { "ID": 3, "NAME": "karate-03", "VALUE": 3 }
+]
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> executeQuery(final String sql)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public List<Map<String, Object>> executeQuery(final String sql)
+# Select inserted records
+Given def selectSQL = "SELECT ID, NAME, VALUE FROM DATA ORDER BY VALUE ASC";
+When def result = jdbcClient.executeQuery(selectSQL)
+Then karate.log('jdbcClient.executeQuery(',selectSQL,')#=',result.length)
+Then karate.log('jdbcClient.executeQuery(',selectSQL,')=',result)
+Then assert result.length == 3
+Then match result[0].id == '#notnull'
+Then match result[0].name == 'karate-01'
+Then match result[0].value == 1
+Then match result[1].id == '#notnull'
+Then match result[1].name == 'karate-02'
+Then match result[1].value == 2
+Then match result[2].id == '#notnull'
+Then match result[2].name == 'karate-03'
+Then match result[2].value == 3
+----

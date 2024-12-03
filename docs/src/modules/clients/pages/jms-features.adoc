@@ -1,0 +1,359 @@
+=== Instantiate JMSClient
+
+*New instance of the JMSClient* providing the configuration as a map loaded from a yaml file.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public JMSClient(final Map<Object, Object> configMap)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public JMSClient(final Map<Object, Object> configMap)
+# Instantiate JMSClient
+Given def config = read('classpath:config/jms/jms-config-' + karate.env + '.yml')
+Given def JMSClient = Java.type('{karatetools-package}.jms.JMSClient')
+Given def jmsClient = new JMSClient(config)
+----
+
+=== Check if JMS is available
+
+Checks if the *JMS connection can be established*
+
+Returns true is *connection is available*, false otherwise
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Boolean available()
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def available = jmsClient.available()
+Then if (!available) karate.fail('JMS Client not available')
+----
+
+=== Send a message to a queue
+
+*Send a message to a queue*
+
+For example:
+
+.JMS Text Message - JSON
+[source,gherkin,subs="+attributes"]
+----
+Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}
+----
+
+.JMS Text Message - Plain Text
+[source,gherkin,subs="+attributes"]
+----
+Given def jmsMessagePlainText = 'Plain Text Message'
+----
+
+.JMS Text Message - XML
+[source,gherkin,subs="+attributes"]
+----
+Given text jmsMessageXML =
+"""
+<?xml version="1.0"?>
+<karate id="1">
+  <name>karate-01</name>
+  <value>1</value>
+</karate>
+"""
+----
+
+IMPORTANT: In order for an XML to be sent as JMS Text Message you need to use `text` (with enclosed content `"""`) instead of `def` (`def` converts to Map anything that looks like JSON/XML).
+
+.JMS Object Message
+[source,gherkin,subs="+attributes"]
+----
+Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject')
+Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void send(final String queue, final Object value)
+----
+
+.Gherkin Usage - JMS Text Message - JSON
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value)
+# Send Message without properties
+Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}
+When jmsClient.send(queue, jmsMessageJSON)
+----
+
+.Gherkin Usage - JMS Text Message - Plain Text
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value)
+# Send Message without properties
+Given def jmsMessagePlainText = 'Plain Text Message'
+When jmsClient.send(queue, jmsMessagePlainText)
+----
+
+.Gherkin Usage - JMS Text Message - XML
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value)
+# Send Message without properties
+Given text jmsMessageXML =
+"""
+<?xml version="1.0"?>
+<karate id="1">
+  <name>karate-01</name>
+  <value>1</value>
+</karate>
+"""
+When jmsClient.send(queue, jmsMessageXML)
+----
+
+.Gherkin Usage - JMS Object Message
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value)
+Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject')
+Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+When jmsClient.send(queue, jmsMessageObject)
+----
+
+=== Send a message to a queue with optional properties
+
+*Send a message to a queue* with defined properties (optional)
+
+For example:
+
+.JMS Text Message - JSON
+[source,gherkin,subs="+attributes"]
+----
+Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}
+----
+
+.JMS Text Message - Plain Text
+[source,gherkin,subs="+attributes"]
+----
+Given def jmsMessagePlainText = 'Plain Text Message'
+----
+
+.JMS Text Message - XML
+[source,gherkin,subs="+attributes"]
+----
+Given text jmsMessageXML =
+"""
+<?xml version="1.0"?>
+<karate id="1">
+  <name>karate-01</name>
+  <value>1</value>
+</karate>
+"""
+----
+
+IMPORTANT: In order for an XML to be sent as JMS Text Message you need to use `text` (with enclosed content `"""`) instead of `def` (`def` converts to Map anything that looks like JSON/XML).
+
+.JMS Object Message
+[source,gherkin,subs="+attributes"]
+----
+Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject')
+Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+----
+
+.JMS Properties
+[source,json,subs="+attributes"]
+----
+{ 'PRINT_STATUS': 'PRINTING' }
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void send(final String queue, final Object value, final Map<String, Object> properties)
+----
+
+.Gherkin Usage - JMS Text Message - JSON
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value, final Map<String, Object> properties)
+# Send Message with properties
+Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}
+Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
+When jmsClient.send(queue, jmsMessageJSON, jmsProperties)
+
+# Send Message without properties
+When jmsClient.send(queue, jmsMessageJSON, null)
+----
+
+.Gherkin Usage - JMS Text Message - Plain Text
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value, final Map<String, Object> properties)
+# Send Message with properties
+Given def jmsMessagePlainText = 'Plain Text Message'
+Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
+When jmsClient.send(queue, jmsMessagePlainText, jmsProperties)
+
+# Send Message without properties
+When jmsClient.send(queue, jmsMessagePlainText, null)
+----
+
+.Gherkin Usage - JMS Text Message - XML
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value, final Map<String, Object> properties)
+# Send Message with properties
+Given text jmsMessageXML =
+"""
+<?xml version="1.0"?>
+<karate id="1">
+  <name>karate-01</name>
+  <value>1</value>
+</karate>
+"""
+Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
+When jmsClient.send(queue, jmsProperties, null)
+
+# Send Message without properties
+When jmsClient.send(queue, jmsMessageXML, null)
+----
+
+.Gherkin Usage - JMS Object Message
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public void send(final String queue, final Object value, final Map<String, Object> properties)
+# Send Message with properties
+Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject')
+Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
+When jmsClient.send(queue, jmsMessageObject, jmsProperties)
+
+# Send Message without properties
+When jmsClient.send(queue, jmsMessageObject, null)
+----
+
+=== Consume Messages from a queue
+
+*Receive the next messages in the queue* within the default timeout interval (5000ms) or custom timeout interval.
+
+Returns a *JSON Array* representing the obtained messages, where each row is a map *<< field name, message value >>*
+
+For example:
+
+.JSON or Object Messages
+[source,json,subs="+attributes"]
+----
+[
+  { "id": 1, "name": "karate-01", "value": 1 },
+  { "id": 2, "name": "karate-02", "value": 2 }
+]
+----
+
+.Plain Text or XML Messages
+[source,json,subs="+attributes"]
+----
+[
+  { "textMessage": "Plain Text Message" },
+  { "textMessage": "<?xml version=\"1.0\"?>\n<karate id=\"1\">\n  <name>karate-01</name>\n  <value>1</value>\n</karate>" }
+]
+----
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String queue)
+----
+
+.Gherkin Usage - JSON or Object Messages
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public List<Map<String, Object>> consume(final String queue)
+When def messages = jmsClient.consume(queue)
+Then karate.log('messages=', messages)
+Then assert messages.length == 2
+Then def result = karate.sort(messages, x => x.id)
+Then match result[0].id == '1'
+Then match result[0].name == 'karate-01'
+Then match result[0].value == 1
+Then match result[1].id == '2'
+Then match result[1].name == 'karate-02'
+Then match result[1].value == 2
+----
+
+.Gherkin Usage - JMS Text Message - Plain Text
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public List<Map<String, Object>> consume(final String queue)
+When def messages = jmsClient.consume(queue)
+Then assert messages.length == 1
+Then match messages[0].textMessage == jmsMessagePlainText
+----
+
+.Gherkin Usage - JMS Text Message - XML
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public List<Map<String, Object>> consume(final String queue)
+When def messages = jmsClient.consume(queue)
+Then assert messages.length == 1
+Then match messages[0].textMessage == jmsMessageXML
+----
+
+*Receive the next messages in the queue* with custom timeout interval.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String queue, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Queue
+Given def queue = 'global.core.karate.public.queue'
+
+# public List<Map<String, Object>> consume(final String queue, final long timeout)
+When def messages = jmsClient.consume(queue, 10000)
+Then assert messages.length == 1
+Then match messages[0].textMessage == jmsMessagePlainText
+----

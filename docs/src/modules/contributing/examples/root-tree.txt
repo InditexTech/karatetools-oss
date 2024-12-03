@@ -1,0 +1,25 @@
+├── code <1>
+│   ├── archetype <2>
+│   │   └── src
+│   │       └── test
+│   │           ├── java
+│   │           └── resources
+│   ...
+│   └── starter <2>
+├── docs <3>
+│   ├── build <4>
+│   ├── node_modules <4>
+│   ├── src
+│   │   └── modules <5>
+│   │       ├── HOME
+│   │       │   ├── images
+│   │       │   └── pages
+│   │       ...
+│   │       └── release
+│   └── supplemental-ui <6>
+└── e2e
+    └── karate <7>
+        └── src
+            └── test
+                ├── java
+                └── resources

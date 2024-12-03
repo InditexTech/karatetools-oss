@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: OperationId Sanitization API
+  description: OperationId Sanitization API
+paths:
+  /users:
+    get:
+      operationId: get-user
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: post_User
+      responses:
+        '200':
+          description: OK
+    put:
+      operationId: put user
+      responses:
+        '200':
+          description: OK
+    delete:
+      operationId: delete.User
+      responses:
+        '200':
+          description: OK
+    patch:
+      operationId: patch-user-01
+      responses:
+        '200':
+          description: OK

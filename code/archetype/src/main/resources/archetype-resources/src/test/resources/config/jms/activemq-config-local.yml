@@ -1,0 +1,6 @@
+# docker-compose environment variables:  <AMQ_USER> <AMQ_PASSWORD>
+# docker-compose folder structure:       NA
+jmsFactory: ActiveMQ
+brokerURL: tcp://localhost:61616
+username: admin
+password: password

@@ -1,0 +1,106 @@
+=== Instantiate KafkaProducerClient
+
+**New instance of the KafkaProducerClient** providing the configuration as a map loaded from a yaml file.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public KafkaProducerClient(final Map<Object, Object> config)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public KafkaProducerClient(final Map<Object, Object> config)
+# Instantiate KafkaProducerClient
+Given def config = read('classpath:config/kafka/kafka-config-' + karate.env + '.yml')
+Given def KafkaProducerClient = Java.type('{karatetools-package}.kafka.KafkaProducerClient')
+Given def kafkaProducerClient = new KafkaProducerClient(config)
+----
+
+=== Check if Kafka is available
+
+Checks if the **Kafka connection can be established**
+
+Returns true is **connection is available**, false otherwise
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Boolean available()
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def producerAvailable = kafkaProducerClient.available()
+Then if (!producerAvailable) karate.fail('Kafka Client not available')
+----
+
+=== Send a record to a topic
+
+**Send a record to a topic**, with or without headers.
+
+The record being sent is a java intance of the corresponding business event.
+
+For example:
+
+.Java Event
+[source,java,subs="+attributes"]
+----
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+Given def event = new KarateEvent("A1", "karate-A1", 11)
+----
+
+==== Send a record to a topic without headers
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void send(final String topic, final Object event)
+----
+
+.Gherkin Usage - AVRO Serializer/Deserializer
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+
+# public void send(final String topic, final Object event)
+When kafkaProducerClient.send(topicA, eventA1)
+----
+
+.Gherkin Usage - String Serializer/Deserializer
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+Given string eventA1 = { "id": "A1", "name": "karate-A1", "value": 11 }
+
+# public void send(final String topic, final Object event)
+When kafkaProducerClient.send(topicA, eventA1)
+----
+
+==== Send a record to a topic with Headers
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public void send(final String topic, final Object event, final Map<String, List<String>> headers)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+Given def headersA = { "contentType": [ "application/*+avro" ], "status": [ "A" ] }
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+
+# public void send(final String topic, final Object event, final Map<String, List<String>> headers)
+When kafkaProducerClient.send(topicA, eventA2, headersA)
+----

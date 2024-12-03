@@ -1,0 +1,5 @@
+The minimum checks to be made before starting with Karate Tools are:
+
+. Tool requirements should be met.
+. The target project to be tested with Karate Tools should exist, and at least it should run locally.
+. You should know in which artifact the project REST Open API is defined. Also any REST Open API of external services which you want to mock.

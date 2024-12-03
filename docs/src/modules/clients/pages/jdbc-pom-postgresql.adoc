@@ -1,0 +1,26 @@
+*karatetools-starter* already includes the *PostgreSQL* JDBC dependencies.
+
+.*If you need to change the dependency version*, you can include it in the pom as follows:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - PostgreSQL -->
+    <postgresql.version>X.X.X</postgresql.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JDBC - PostgreSQL -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

@@ -1,0 +1,51 @@
+<properties>
+  ...
+  <!-- Karate Tools -->
+  <karatetools.version>X.X.X</karatetools.version>
+  <exec-maven-plugin.version>X.X.X</exec-maven-plugin.version>
+  ...
+</properties>
+
+<build>
+  <plugins>
+    <!-- Karate Tools - Generators -->
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>${exec-maven-plugin.version}</version>
+      <executions>
+        <!-- Karate Tools - Generators - OpenApi -->
+        <execution>
+          <id>open-api-generator</id>
+          <goals>
+            <goal>java</goal>
+          </goals>
+          <configuration>
+            <mainClass>{karatetools-package}.openapi.OpenApiGeneratorCLI</mainClass>
+            <classpathScope>test</classpathScope>
+            <includeProjectDependencies>false</includeProjectDependencies>
+            <includePluginDependencies>true</includePluginDependencies>
+            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            <executableDependency>
+              <groupId>{karatetools-package}</groupId>
+              <artifactId>karatetools-starter</artifactId>
+            </executableDependency>
+            <systemProperties>
+              <systemProperty>
+                <key>logback.configurationFile</key>
+                <value>src/test/resources/logback-test.xml</value>
+              </systemProperty>
+            </systemProperties>
+          </configuration>
+        </execution>
+      </executions>
+      <dependencies>
+        <dependency>
+          <groupId>{karatetools-package} </groupId>
+          <artifactId>karatetools-starter</artifactId>
+          <version>${karatetools.version}</version>
+        </dependency>
+      </dependencies>
+    </plugin>
+  </plugins>
+</build>

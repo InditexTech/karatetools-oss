@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "KarateEvent",
+  "namespace": "dev.inditex.karate.kafka",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": "long"
+    }
+  ]
+}

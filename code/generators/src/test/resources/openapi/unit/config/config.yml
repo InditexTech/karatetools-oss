@@ -1,0 +1,16 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  janusAuthUrl: TO_BE_COMPLETED
+  openAMAuthUrl: TO_BE_COMPLETED
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultUsername: default username
+defaultUsername: TO_BE_COMPLETED
+# defaultAuthMode: basic | janus | jwt | openAM
+defaultAuthMode: TO_BE_COMPLETED
+# credentials: pairs of username: password
+credentials:
+  # username100: Fixed username:password example
+  username100: username100p
+  # usernameFromCyberArk: CyberArk username:password example
+  usernameFromCyberArk: '#(karate.properties["cyberark.credentials.user"])'

@@ -1,0 +1,13 @@
+---
+operationId: "showItemById"
+method: "GET"
+path: "/items/{itemId}"
+params: null
+request: null
+responseStatus: 200
+responseHeaders:
+  Content-Type: "application/json"
+response:
+  id: 0
+  name: "string"
+  tag: "string"

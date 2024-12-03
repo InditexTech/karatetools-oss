@@ -1,0 +1,14 @@
+<script id="site-script" src="{{{uiRootPath}}}/js/site.js" data-ui-root-path="{{{uiRootPath}}}"></script>
+{{!--
+<script async src="{{{uiRootPath}}}/js/vendor/highlight.js"></script>
+--}}
+{{!--
+Custom highlight.js configuration. Supported languages:
+bash, dockerfile, gherkin, java, javascript, json, markdown, plaintext, properties, sql, xml, yaml
+--}}
+<script src="{{uiRootPath}}/js/vendor/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+{{#if env.SITE_SEARCH_PROVIDER}}
+{{> search-scripts}}
+{{/if}}

@@ -1,0 +1,567 @@
+=== Instantiate KafkaConsumerClient
+
+**New instance of the KafkaConsumerClient** providing the configuration as a map loaded from a yaml file.
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public KafkaConsumerClient(final Map<Object, Object> config)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public KafkaConsumerClient(final Map<Object, Object> config)
+# Instantiate KafkaConsumerClient
+Given def config = read('classpath:config/kafka/kafka-config-' + karate.env + '.yml')
+Given def KafkaConsumerClient = Java.type('{karatetools-package}.kafka.KafkaConsumerClient')
+Given def kafkaConsumerClient = new KafkaConsumerClient(config)
+----
+
+=== Check if Kafka is available
+
+Checks if the **Kafka connection can be established**
+
+Returns true is **connection is available**, false otherwise
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Boolean available()
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def consumerAvailable = kafkaConsumerClient.available()
+Then if (!consumerAvailable) karate.fail('Kafka Client not available')
+----
+
+.Gherkin Usage - Both clients availability check
+[source,gherkin,subs="+attributes"]
+----
+# public Boolean available()
+When def consumerAvailable = kafkaConsumerClient.available()
+When def producerAvailable = kafkaProducerClient.available()
+Then if (!consumerAvailable || !producerAvailable) karate.fail('Kafka Client not available')
+----
+
+=== Consume events from one topic
+
+**Consume events from a specific topic** with optionally **group**, **offset** and **timeout**
+
+When **timeout** is not provided it will use the Client default (5000 ms)
+
+Returns a **JSON Array** representing the obtained messages, where each row is a map **<< field name, message value >>**
+
+For example:
+
+[source,json,subs="+attributes"]
+----
+[
+  { "id": "A1", "name": "karate-A1", "value": 11 },
+  { "id": "A2", "name": "karate-A2", "value": 12 }
+]
+----
+
+==== Consume events from one topic
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic)
+----
+
+.Gherkin Usage - AVRO Serializer/Deserializer
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+
+# public List<Map<String, Object>> consume(final String topic)
+When def messagesTopicA = kafkaConsumerClient.consume(topicA)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[2]'
+Then match messagesTopicA[0] == karate.toJson(eventA1)
+Then match messagesTopicA[1] == karate.toJson(eventA2)
+----
+
+.Gherkin Usage - String Serializer/Deserializer
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A-String"
+
+Given string eventA1 = { "id": "A1", "name": "karate-A1", "value": 11 }
+Given string eventA2 = { "id": "A2", "name": "karate-A2", "value": 12 }
+
+# public List<Map<String, Object>> consume(final String topic)
+When def messagesTopicA = kafkaConsumerClient.consume(topicA)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[2]'
+Then match messagesTopicA[0] == karate.fromString(eventA1)
+Then match messagesTopicA[1] == karate.fromString(eventA2)
+----
+
+==== Consume events from one topic with timeout
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+# public List<Map<String, Object>> consume(final String topic, final long timeout)
+When def messagesTopicA = kafkaConsumerClient.consume(topicA, 2000)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[2]'
+Then match messagesTopicA[0] == karate.toJson(eventA3)
+Then match messagesTopicA[1] == karate.toJson(eventA4)
+----
+
+==== Consume events from one topic with group
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic, final String group)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def group1 = "karate-kafka-consumer-group-1"
+
+# public List<Map<String, Object>> consume(final String topic, final String group)
+When def messagesTopicA = kafkaConsumerClient.consume(topicA, group1)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[4]'
+Then match messagesTopicA[0] == karate.toJson(eventA1)
+Then match messagesTopicA[1] == karate.toJson(eventA2)
+Then match messagesTopicA[2] == karate.toJson(eventA3)
+Then match messagesTopicA[3] == karate.toJson(eventA4)
+----
+
+==== Consume events from one topic with group and offset
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic, final String group, final String offset)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def group2 = "karate-kafka-consumer-group-2"
+
+# public List<Map<String, Object>> consume(final String topic, final String group, final String offset)
+When def messagesTopicA = kafkaConsumerClient.consume(topicA, group2, 'earliest')
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[4]'
+Then match messagesTopicA[0] == karate.toJson(eventA1)
+Then match messagesTopicA[1] == karate.toJson(eventA2)
+Then match messagesTopicA[2] == karate.toJson(eventA3)
+Then match messagesTopicA[3] == karate.toJson(eventA4)
+----
+
+==== Consume events from one topic with group and timeout
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic, final String group, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def group3 = "karate-kafka-consumer-group-3"
+
+# public List<Map<String, Object>> consume(final String topic, final String group, final long timeout)
+When def messagesTopicB = kafkaConsumerClient.consume(topicA, group3, 3000)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[4]'
+Then match messagesTopicA[0] == karate.toJson(eventA1)
+Then match messagesTopicA[1] == karate.toJson(eventA2)
+Then match messagesTopicA[2] == karate.toJson(eventA3)
+Then match messagesTopicA[3] == karate.toJson(eventA4)
+----
+
+==== Consume events from one topic with timeout, group and offset
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public List<Map<String, Object>> consume(final String topic, final String group, final String offset, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicA = "{karatetools-package}.kafka.public.A"
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def group3 = "karate-kafka-consumer-group-4"
+
+# public List<Map<String, Object>> consume(final String topic, final String group, final String offset, final long timeout)
+When def messagesTopicB = kafkaConsumerClient.consume(topicA, group3, 'latest', 3000)
+Then karate.log('messagesTopicA=', messagesTopicA)
+Then match messagesTopicA == '#[4]'
+Then match messagesTopicA[0] == karate.toJson(eventA1)
+Then match messagesTopicA[1] == karate.toJson(eventA2)
+Then match messagesTopicA[2] == karate.toJson(eventA3)
+Then match messagesTopicA[3] == karate.toJson(eventA4)
+----
+
+=== Consume events from multiple topics
+
+**Consume events from multiple topics** with optionally **group**, **offset** and **timeout**
+
+When **timeout** is not provided it will use the Client default (5000 ms)
+
+Returns a **JSON Map** where the keys are the **topics** and the values are **JSON Arrays** representing the obtained events, where each row is a map **<< field name, message value >>**
+
+For example:
+
+[source,json,subs="+attributes"]
+----
+{
+  "{karatetools-package}.kafka.public.A": [
+    { "id": "A1", "name": "karate-A1", "value": 11 },
+    { "id": "A2", "name": "karate-A2", "value": 12 }
+  ],
+  "{karatetools-package}.kafka.public.B": [
+    { "id": "B1", "name": "karate-B1", "value": 21 },
+    { "id": "B2", "name": "karate-B2", "value": 22 }
+  ]
+}
+----
+
+==== Consume events from multiple topics
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventC1 = new KarateEvent("C1", "karate-C1", 31)
+Given def eventC2 = new KarateEvent("C2", "karate-C2", 32)
+
+Given def eventD1 = new KarateEvent("D1", "karate-D1", 41)
+Given def eventD2 = new KarateEvent("D2", "karate-D2", 42)
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics)
+When def messagesTopics = kafkaConsumerClient.consume(topics)
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[2]'
+Then match messagesTopicC[0] == karate.toJson(eventC1)
+Then match messagesTopicC[1] == karate.toJson(eventC2)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[2]'
+Then match messagesTopicD[0] == karate.toJson(eventD1)
+Then match messagesTopicD[1] == karate.toJson(eventD2)
+----
+
+==== Consume events from multiple topics with timeout
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventC3 = new KarateEvent("C3", "karate-C3", 33)
+Given def eventC4 = new KarateEvent("C4", "karate-C4", 34)
+
+Given def eventD3 = new KarateEvent("D3", "karate-D3", 43)
+Given def eventD4 = new KarateEvent("D4", "karate-D4", 44)
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics, final long timeout)
+When def messagesTopics = kafkaConsumerClient.consume(topics, 2000)
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[2]'
+Then match messagesTopicC[0] == karate.toJson(eventC3)
+Then match messagesTopicC[1] == karate.toJson(eventC4)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[2]'
+Then match messagesTopicD[0] == karate.toJson(eventD3)
+Then match messagesTopicD[1] == karate.toJson(eventD4)
+----
+
+==== Consume events from multiple topics with group
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventC1 = new KarateEvent("C1", "karate-C1", 31)
+Given def eventC2 = new KarateEvent("C2", "karate-C2", 32)
+Given def eventC3 = new KarateEvent("C3", "karate-C3", 33)
+Given def eventC4 = new KarateEvent("C4", "karate-C4", 34)
+
+Given def eventD1 = new KarateEvent("D1", "karate-D1", 41)
+Given def eventD2 = new KarateEvent("D2", "karate-D2", 42)
+Given def eventD3 = new KarateEvent("D3", "karate-D3", 43)
+Given def eventD4 = new KarateEvent("D4", "karate-D4", 44)
+
+Given def group1 = "karate-kafka-consumer-group-1"
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group)
+When def messagesTopics = kafkaConsumerClient.consume(topics, group1)
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[4]'
+Then match messagesTopicC[0] == karate.toJson(eventC1)
+Then match messagesTopicC[1] == karate.toJson(eventC2)
+Then match messagesTopicC[2] == karate.toJson(eventC3)
+Then match messagesTopicC[3] == karate.toJson(eventC4)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[4]'
+Then match messagesTopicD[0] == karate.toJson(eventD1)
+Then match messagesTopicD[1] == karate.toJson(eventD2)
+Then match messagesTopicD[2] == karate.toJson(eventD3)
+Then match messagesTopicD[3] == karate.toJson(eventD4)
+----
+
+==== Consume events from multiple topics with group and offset
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final String offset)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventC1 = new KarateEvent("C1", "karate-C1", 31)
+Given def eventC2 = new KarateEvent("C2", "karate-C2", 32)
+Given def eventC3 = new KarateEvent("C3", "karate-C3", 33)
+Given def eventC4 = new KarateEvent("C4", "karate-C4", 34)
+
+Given def eventD1 = new KarateEvent("D1", "karate-D1", 41)
+Given def eventD2 = new KarateEvent("D2", "karate-D2", 42)
+Given def eventD3 = new KarateEvent("D3", "karate-D3", 43)
+Given def eventD4 = new KarateEvent("D4", "karate-D4", 44)
+
+Given def group2 = "karate-kafka-consumer-group-2"
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final String offset)
+When def messagesTopics = kafkaConsumerClient.consume(topics, group2, 'earliest')
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[4]'
+Then match messagesTopicC[0] == karate.toJson(eventC1)
+Then match messagesTopicC[1] == karate.toJson(eventC2)
+Then match messagesTopicC[2] == karate.toJson(eventC3)
+Then match messagesTopicC[3] == karate.toJson(eventC4)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[4]'
+Then match messagesTopicD[0] == karate.toJson(eventD1)
+Then match messagesTopicD[1] == karate.toJson(eventD2)
+Then match messagesTopicD[2] == karate.toJson(eventD3)
+Then match messagesTopicD[3] == karate.toJson(eventD4)
+----
+
+==== Consume events from multiple topics with group and timeout
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def eventB1 = new KarateEvent("B1", "karate-B1", 21)
+Given def eventB2 = new KarateEvent("B2", "karate-B2", 22)
+Given def eventB3 = new KarateEvent("B3", "karate-B3", 23)
+Given def eventB4 = new KarateEvent("B4", "karate-B4", 24)
+
+Given def group3 = "karate-kafka-consumer-group-3"
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final long timeout)
+When def messagesTopics = kafkaConsumerClient.consume(topics, group3, 3000)
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[4]'
+Then match messagesTopicC[0] == karate.toJson(eventC1)
+Then match messagesTopicC[1] == karate.toJson(eventC2)
+Then match messagesTopicC[2] == karate.toJson(eventC3)
+Then match messagesTopicC[3] == karate.toJson(eventC4)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[4]'
+Then match messagesTopicD[0] == karate.toJson(eventD1)
+Then match messagesTopicD[1] == karate.toJson(eventD2)
+Then match messagesTopicD[2] == karate.toJson(eventD3)
+Then match messagesTopicD[3] == karate.toJson(eventD4)
+----
+
+==== Consume events from multiple topics with timeout, group and offset
+
+.Java Signature
+[source,java,subs="+attributes"]
+----
+public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final String offset, final long timeout)
+----
+
+.Gherkin Usage
+[source,gherkin,subs="+attributes"]
+----
+# Define Consumer Topics, Headers, Events and Consumer Groups
+Given def topicC = "{karatetools-package}.kafka.public.C"
+Given def topicD = "{karatetools-package}.kafka.public.D"
+Given def topics = [ "#(topicC)", "#(topicD)" ]
+
+Given def KarateEvent = Java.type('{karatetools-package}.kafka.KarateEvent')
+
+Given def eventA1 = new KarateEvent("A1", "karate-A1", 11)
+Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
+Given def eventA3 = new KarateEvent("A3", "karate-A3", 13)
+Given def eventA4 = new KarateEvent("A4", "karate-A4", 14)
+
+Given def eventB1 = new KarateEvent("B1", "karate-B1", 21)
+Given def eventB2 = new KarateEvent("B2", "karate-B2", 22)
+Given def eventB3 = new KarateEvent("B3", "karate-B3", 23)
+Given def eventB4 = new KarateEvent("B4", "karate-B4", 24)
+
+Given def group3 = "karate-kafka-consumer-group-4"
+
+# public Map<String, List<Map<String, Object>>> consume(final String[] topics, final String group, final String offset, final long timeout)
+When def messagesTopics = kafkaConsumerClient.consume(topics, group3, 'latest', 3000)
+Then karate.log('messagesTopics=', messagesTopics)
+Then def messagesTopicC = karate.jsonPath(messagesTopics, "$['" + topicC + "']")
+Then karate.log('messagesTopicC=', messagesTopicC)
+Then match messagesTopicC == '#[4]'
+Then match messagesTopicC[0] == karate.toJson(eventC1)
+Then match messagesTopicC[1] == karate.toJson(eventC2)
+Then match messagesTopicC[2] == karate.toJson(eventC3)
+Then match messagesTopicC[3] == karate.toJson(eventC4)
+Then def messagesTopicD = karate.jsonPath(messagesTopics, "$['" + topicD + "']")
+Then karate.log('messagesTopicD=', messagesTopicD)
+Then match messagesTopicD == '#[4]'
+Then match messagesTopicD[0] == karate.toJson(eventD1)
+Then match messagesTopicD[1] == karate.toJson(eventD2)
+Then match messagesTopicD[2] == karate.toJson(eventD3)
+Then match messagesTopicD[3] == karate.toJson(eventD4)
+----

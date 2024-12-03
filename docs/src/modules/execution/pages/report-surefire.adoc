@@ -1,0 +1,19 @@
+The configuration for maven-surefire-report-plugin and maven-site-plugin is included in the pom **by Karate Tools Archetype** as follows:
+
+[source,xml,subs="+attributes"]
+----
+include::example$surefire-report-plugin.xml[]
+----
+
+The command to generate the surefire report is:
+
+[source,bash,subs="+attributes"]
+----
+mvn surefire-report:report-only site -DgenerateReports=false
+----
+
+* The report is generated in:
+** `target/surefire-html-report`
+*** `surefire-report.html`
++
+image::karate-reports-surefire.png[role="no-border, zoom-in"]

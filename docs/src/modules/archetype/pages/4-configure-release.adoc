@@ -1,0 +1,137 @@
+CAUTION: These steps are to be performed at the *target artifact main pom level*, not at karate level.
+
+. Main artifact `pom.xml`
++
+[source,xml,subs="+attributes"]
+----
+<modules>
+  ...
+  <!-- Module to create the karate release only -->
+  <module>karate-release</module>
+</modules>
+----
+
+. `karate-release/pom.xml`
++
+NOTE: The *workingDirectory* defined in the plugins pom, must point to the relative path to the karate module, for example: `<workingDirectory>../../e2e/karate</workingDirectory>`
++
+[source,xml,subs="+attributes"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>TO_BE_COMPLETED</groupId>
+    <artifactId>TO_BE_COMPLETED</artifactId>
+    <version>TO_BE_COMPLETED</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>karate-release</artifactId>
+  <packaging>pom</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description />
+
+  <properties>
+    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <maven-scm-plugin.version>2.1.0</maven-scm-plugin.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>sync-karate-version</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>mvn</executable>
+              <workingDirectory>../../e2e/karate</workingDirectory>
+              <arguments>
+                <argument>versions:set</argument>
+                <argument>-DnewVersion=${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>${maven-scm-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>sync-karate-version</id>
+            <phase>default-cli</phase>
+            <goals>
+              <goal>add</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>../../e2e/karate</workingDirectory>
+              <includes>pom.xml</includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <!-- Synchronizes karate versions with POM version -->
+    <profile>
+      <id>release-prepare</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sync-karate-version</id>
+                <phase>process-sources</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sync-karate-version</id>
+                <phase>initialize</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+----
+
+. Update the `maven-release-plugin` plugin in the *main pom* to execute the karate versioning
++
+[source,xml,subs="+attributes"]
+----
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        ...
+        <configuration>
+          ...
+          <!-- Karate release -->
+          <preparationGoals>-Prelease-prepare clean verify</preparationGoals>
+          <completionGoals>-pl karate-release exec:exec@sync-karate-version scm:add@sync-karate-version</completionGoals>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+----

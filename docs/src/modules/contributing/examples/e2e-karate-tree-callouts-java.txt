@@ -1,0 +1,2 @@
+<1> JMS Object for testing purposes
+<2> Java Test Runner

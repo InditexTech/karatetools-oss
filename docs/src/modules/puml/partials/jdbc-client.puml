@@ -1,0 +1,41 @@
+@startuml karatetools-jdbc
+
+!include sprites.puml
+
+node "<$karate,scale=0.5>\n karate-module" as karateModule {
+  file "<$cucumber-icon,scale=0.5> karate-tests" as test
+}
+
+node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as karatetoolsClients {
+  agent "<$java-icon,scale=0.15> jdbc-client" as jdbcClient
+}
+
+note as DataTable
+  <#lightblue,#black>|= ID (pk) |= NAME |= VALUE |
+  <#white>| 1 | karate-01 | 1 |
+  <#white>| 2 | karate-02 | 2 |
+end note
+
+database "<$mariadb,scale=1>" as mariadb
+database "<$postgresql,scale=0.4>" as postgresql
+
+json "<$json,scale=0.5> JSON" as JSON {
+  "response": [
+    { "id": 1, "name": "karate-01", "value": 1 },
+    { "id": 2, "name": "karate-02", "value": 2 }
+  ]
+}
+
+' Relationships
+
+jdbcClient --> DataTable
+DataTable --> mariadb
+DataTable --> postgresql
+
+test -right-> jdbcClient
+note bottom of link : SQL SELECT ID, NAME, VALUE FROM DATA ORDER BY ID
+
+jdbcClient ..> JSON
+JSON ..> test
+
+@enduml

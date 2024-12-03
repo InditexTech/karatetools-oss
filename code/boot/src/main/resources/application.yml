@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /karatetools
+logging:
+  level:
+    root: INFO
+spring:
+  application:
+    name: karatetools
+  profiles:
+    active: standalone
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+security:
+  jwt:
+    token:
+      secret-key: aaaa1111-bb22-cc33-dd44-eeeeee555555

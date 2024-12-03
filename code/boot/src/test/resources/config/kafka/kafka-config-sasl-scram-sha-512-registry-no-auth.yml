@@ -1,0 +1,51 @@
+# Karate Tools - Kafka Clients Properties
+
+# bootstrap.servers: Comma-separated list of host/port pairs to use for establishing the initial connection to the Kafka cluster. (https://pipe.docs.inditex.dev/pipe/latest/knowledge-center/regions.html#availability-zones)
+bootstrap.servers: localhost:39093
+
+# Security Protocol: Protocol used to communicate with brokers. Valid values are: SASL_PLAINTEXT, SASL_SSL
+security.protocol: SASL_PLAINTEXT
+# SASL mechanism: Mechanism used for client connections. Valid values are: PLAIN, SCRAM-SHA-512
+sasl.mechanism: SCRAM-SHA-512
+# SASL JAAS Configuration: JAAS login context parameters for SASL connections.
+# Example Values:
+#   org.apache.kafka.common.security.plain.PlainLoginModule required username='...' password='...';
+#   org.apache.kafka.common.security.scram.ScramLoginModule required username='...' password='...';
+sasl.jaas.config: "org.apache.kafka.common.security.scram.ScramLoginModule required username='saslscram' password='saslscram-pwd';"
+
+# schema.registry.url: Comma-separated list of URLs (protocol://host:port) for Schema Registry instances that can be used to register or look up schemas
+schema.registry.url: http://localhost:38081
+
+#
+# Kafka Producer properties - must start with "producer."
+#
+# producer.client.id: An id string to pass to the server when making requests.
+producer.client.id: KARATETOOLS
+# producer.auto.register.schemas: Specify if the Serializer should attempt to register the Schema with Schema Registry
+producer.auto.register.schemas: true
+# producer.key.serializer: Serializer class for key that implements the 'org.apache.kafka.common.serialization.Serializer' interface
+# producer.key.serializer Example Values:
+#   org.apache.kafka.common.serialization.LongSerializer
+#   org.apache.kafka.common.serialization.StringSerializer
+producer.key.serializer: org.apache.kafka.common.serialization.StringSerializer
+# producer.value.serializer: Serializer class for value that implements the 'org.apache.kafka.common.serialization.Serializer' interface
+# producer.value.serializer Example Values:
+#   org.apache.kafka.common.serialization.StringSerializer
+#   io.confluent.kafka.serializers.KafkaAvroSerializer
+producer.value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+# Kafka Consumer properties - must start with "consumer."
+# A unique string that identifies the consumer group this consumer belongs to
+# This value will be used as default group for the consumer
+# It can be overwritten in especific calls like consume(final String topic, final String group)
+consumer.group.id: KARATETOOLS-test-local-saslscram-pvtreg
+# Deserializer class for key that implements the 'org.apache.kafka.common.serialization.Deserializer' interface
+# Deserializer class for key Example Values:
+#   org.apache.kafka.common.serialization.LongDeserializer
+#   org.apache.kafka.common.serialization.StringDeserializer
+consumer.key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+# Deserializer class for value that implements the 'org.apache.kafka.common.serialization.Deserializer' interface
+# Deserializer class for value Example Values:
+#   org.apache.kafka.common.serialization.StringDeserializer
+#   io.confluent.kafka.serializers.KafkaAvroDeserializer
+consumer.value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer

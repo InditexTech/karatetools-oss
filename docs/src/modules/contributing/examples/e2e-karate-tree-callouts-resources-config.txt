@@ -1,0 +1,6 @@
+<1> Karate clients config files (db, jms, kafka)
+<2> Configuration Files (general and environment specific)
+<3> Karate Authentication JWT Files (default and test specific)
+<4> Karate-config files
+<5> logback configuration files
+<6> karate mocks folder

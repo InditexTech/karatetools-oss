@@ -1,0 +1,14 @@
+@smoke
+@op.[(${operation.operationId})]
+
+Feature: [(${operation.operationId})] Smoke Tests 
+
+Background:
+
+Scenario Outline: [(${operation.operationId})] <status>
+* def req = call utils.readTestData <testDataFile>
+* def result = call read('classpath:[(${operationFeatureClassPath})]') req
+* match result.responseStatus == <status>
+[# th:if="${responses.size} &gt; 0"]Examples:
+| status  | testDataFile |[/][# th:each="response: ${responses}" th:with='status=${@java.lang.String@format("%-7s",response.statusCode)}']
+| [[${status}]] | 'test-data/[(${operation.operationId})]_[(${response.statusCode})].yml' |[/]

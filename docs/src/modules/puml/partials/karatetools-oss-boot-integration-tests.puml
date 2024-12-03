@@ -1,0 +1,66 @@
+@startuml karatetools-oss-boot-integration-tests
+skinparam componentStyle rectangle
+left to right direction
+scale 2
+
+frame "karatetools-oss-boot" {
+  package "dev.inditex.karate.controller" {
+    [BasicApiControllerIT.java]
+    [DockerHealthControllerIT.java]
+
+    [BasicApiController.java] #LightBlue
+    [DockerHealthController.java] #LightBlue
+  }
+  package "dev.inditex.karate.db" {
+    [JDBCClientMariaDBIT.java]
+    [JDBCClientPostgreSQLIT.java]
+  }
+  package "dev.inditex.karate.jms" {
+    [JMSClientIT.java]
+  }
+  package "dev.inditex.karate.kafka" {
+    [KafkaClientsIT.java]
+  }
+  package "dev.inditex.karate.mongodb" {
+    [MongoDBClientIT.java]
+  }
+  package "dev.inditex.karate.scenarios" {
+    [KarateScenariosRunnerIT.java]
+  }
+  frame "src/test/resources" {
+    frame "scenarios" {
+      [db] #LightCoral
+      [mongodb] #LightCoral
+      [jms] #LightCoral
+      [kafka] #LightCoral
+
+      [db] -[hidden]left- [mongodb]
+      [mongodb] -[hidden]left- [jms]
+      [jms] -[hidden]left- [kafka]
+    }
+  }
+
+  ' Relationships
+  [KarateScenariosRunnerIT.java] --> [scenarios] : runs
+  [BasicApiControllerIT.java] --> [BasicApiController.java] : tests
+  [DockerHealthControllerIT.java] --> [DockerHealthController.java] : tests
+}
+
+frame docker {
+  [artemis] #Silver
+  [cp-kafka & schema-registry & zookeeper] #Silver
+  [mariadb] #Silver
+  [mongo] #Silver
+  [postgres] #Silver
+}
+
+' Relationships
+
+[JDBCClientMariaDBIT.java] -up-> [mariadb] : tests
+[JDBCClientPostgreSQLIT.java] -up-> [postgres] : tests
+[MongoDBClientIT.java] -up-> [mongo] : tests
+[KafkaClientsIT.java] -up-> [cp-kafka & schema-registry & zookeeper] : tests
+[JMSClientIT.java] -up-> [artemis] : tests
+
+[scenarios] --> [docker] : tests
+@enduml

@@ -1,0 +1,10 @@
+The default settings for Basic authentication are:
+
+* `defaultAuthMode`: `basic`
+** `auth.authMode` when used in a specific request.
+
+* `defaultUsername`: default username.
+** `auth.username` when used in a specific request.
+
+* `credentials`: pairs of username: password.
+** `auth.password` when used in a specific request.

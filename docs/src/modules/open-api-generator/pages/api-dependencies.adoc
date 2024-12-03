@@ -1,0 +1,34 @@
+Include dependencies to project rest-api + Third Party APIs which need mocking in the karate `pom.xml`
+
+[source,xml,subs="+attributes"]
+----
+include::example$open-api-generator-apis-pom.xml[]
+----
+
+Once the api dependencies are included in the pom, the Open API sources must be generated to be accessible for the *open-api-generator*, executing the command:
+
+[source,bash,subs="+attributes"]
+----
+mvn generate-sources
+----
+
+The generated files `openapi-rest.yml` will be generated in folder `target/apis/...`
+
+For example:
+
+[source,plaintext,subs="+attributes"]
+----
+\---target
+    \---apis
+        +---xxx-api-rest-stable-jar
+        |       openapi-rest.yml
+        |
+        +---xxx-external-api-rest-stable-jar
+        |       openapi-rest.yml
+        |
+        \---xxxx-rest-jar
+            \---rest
+                    openapi-rest.yml
+----
+
+NOTE: *open-api-generator* also supports *openapi-rest.yml* files directly placed in some karate folder.

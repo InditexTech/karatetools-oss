@@ -1,0 +1,22 @@
+The errors applicable to Basic authentication are:
+
+* `invalid authMode`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no authMode or invalid authMode. auth.authMode:BASIC
+----
+
+* `no username`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no username. auth.authMode:basic auth.username:null
+----
+
+* `no password`:
++
+[source,log,subs="+attributes"]
+----
+>> auth >> Trying to authenticate with no password. auth.authMode:basic auth.username:username100 auth.password:undefined
+----

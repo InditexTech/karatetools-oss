@@ -1,0 +1,13 @@
+---
+operationId: "listItems"
+method: "GET"
+path: "/items"
+params: "limit=0"
+request: null
+responseStatus: null
+responseHeaders:
+  Content-Type: "application/json"
+response:
+  code: 0
+  message: "string"
+  stack: "string"

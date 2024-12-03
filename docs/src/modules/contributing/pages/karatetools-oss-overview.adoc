@@ -1,0 +1,53 @@
+This library is a general purpose library that can be used by any Karate project.
+
+The *Karate Tools* Open Source Repository is organized as follows:
+
+* `code` - Karate Tools Open Source *codebase* with the corresponding *unit* and *integration tests*
+** 👩‍💻 xref:#karatetools-oss-code[karatetools-oss-code]
+* `e2e/karate` - Karate Tools Open Source *karate tests*
+** 🧪 xref:#karatetools-oss-karate-test[karatetools-oss-karate-test]
+* `docs` - Karate Tools Open Source *documentation* based on *asciidoc and antora*
+** 📄 xref:#karatetools-oss-docs[karatetools-oss-docs]
+
+[source,subs="attributes+"]
+----
+include::example$root-tree.txt[]
+----
+include::example$root-tree-callouts.txt[]
+
+The main `code` modules are:
+
+* 👩‍💻 `karatetools-oss-archetype`: *archetype* to generate a *karate project from scratch* with the necessary *configurations* and *utilities* for the execution of tests.
+
+* 👩‍💻 `karatetools-oss-clients`: *clients* to interact with *relational databases via JDBC (MariaDB and PostgreSQL)*, *MongoDB*, *Kafka* and *JMS (Active MQ)*
+* 👩‍💻 `karatetools-oss-generators`: *generators* of *tests* from *Open API*
+* 👩‍💻 `karatetools-oss-runner`: *karate runner* and all related utilities (*authentication*, *JWT tokens*, *karate base configuration*, *karate utils*, *karate mocks*, *karate cache*, *karate results and reports*, ...)
+
+* 👩‍💻 `karatetools-oss-starter`: *starter* module to include the *generators*, *clients* and *runner* in a Karate project.
+
+It includes test open api modules:
+
+* 👩‍💻 `karatetools-oss-openapi-test`: *Open API* test specifications for the *karate tools tests* with two sub-modules:
+** 👩‍💻 `karatetools-oss-xxx-api-rest-stable`: *api* to test the *test generation tools*
+** 👩‍💻 `karatetools-oss-xxx-external-api-rest-stable`: *api* to test the *mock generation tools*
+
+It includes a spring boot module:
+
+* 👩‍💻 `karatetools-oss-boot`: *spring boot application* with a simple *rest api* implementing the *Open API* test specification and *docker containers* to be used as target for the *karate tools tests* (runner, rest, auth, jdbc, mongodb, kafka, jms, ...)
+
+The karate test module is defined in the `e2e/karate` folder:
+
+* 🧪 `karatetools-oss-karate-test`: *karate module* to *test* the *karate tools*.
+** This module has been generated using the xref:archetype:index.adoc[⚙️ Karate Tools - Archetype]
+** Includes auto-generated tests and mocks for sample api (`karatetools-oss-openapi-test`)
+** uses the `karatetools-oss-starter` to test the karate clients and the sample application (`karatetools-oss-boot`) and containers.
+
+The documentation is defined in the `docs` folder:
+
+* 📄 `karatetools-oss-docs`: *documentation* of the *karate tools* based on *asciidoc and antora*.
+
+.Karate Tools Open Source Modules
+[plantuml,development-guide-karatetools-oss-modules,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-modules.puml[]
+....

@@ -1,0 +1,29 @@
+= Basic Authentication
+
+> *Karate Tools* will send the HTTP requests with the *"Authorization" header* made of *"Basic"*, a space character, and a *Base64-encoded string "username:password"*.
+
+== Configuration
+
+include::auth-basic-config.adoc[]
+
+== Examples
+
+=== Default settings
+
+[source,yaml,subs="+attributes"]
+----
+include::example$auth-basic-settings.yml[]
+----
+
+=== Overwrite at request level
+
+* test-data\<operation>_<returncode>.yml
++
+[source,yaml,subs="+attributes"]
+----
+include::example$auth-basic-overwrite.yml[]
+----
+
+== Error Management
+
+include::auth-basic-errors.adoc[]

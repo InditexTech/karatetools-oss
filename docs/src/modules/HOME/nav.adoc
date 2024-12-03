@@ -1,0 +1,51 @@
+* xref:overview:index.adoc[Overview]
+
+* xref:prerequisites:index.adoc[Prerequisites]
+
+* xref:archetype:index.adoc[Archetype]
+
+* xref:configuration:index.adoc[Configuration]
+** xref:configuration:karate-config.adoc[Karate Config]
+** xref:configuration:logging.adoc[Logging]
+** xref:configuration:urls.adoc[Environment URLs]
+** xref:configuration:auth.adoc[Authentication]
+*** xref:configuration:auth-basic.adoc[Basic Authentication]
+*** xref:configuration:auth-jwt.adoc[JWT Authentication]
+*** xref:configuration:local-machine-secrets.adoc[Local Machine Secrets Management]
+
+* xref:open-api-generator:index.adoc[Open API Generator]
+** xref:open-api-generator:open-api-generator-operations.adoc[Open API Generator - Operations]
+** xref:open-api-generator:open-api-generator-smoke.adoc[Open API Generator - Smoke Tests]
+** xref:open-api-generator:open-api-generator-functional.adoc[Open API Generator - Functional Tests]
+** xref:open-api-generator:open-api-generator-mock.adoc[Open API Generator - Mock Data]
+
+* xref:clients:index.adoc[Karate Clients]
+** xref:clients:jdbc.adoc[JDBC Client]
+** xref:clients:mongodb.adoc[MongoDB Client]
+** xref:clients:kafka.adoc[Kafka Clients]
+** xref:clients:jms.adoc[JMS Client]
+
+* xref:execution:index.adoc[Execution]
+** xref:execution:arguments.adoc[Execution - Arguments]
+** xref:execution:logging.adoc[Execution - Logging]
+** xref:execution:mock-server.adoc[Execution - Mock Server]
+** xref:execution:reports.adoc[Execution - Reports]
+** Execution - Utilities
+*** xref:execution:karate-cache.adoc[Karate Cache]
+
+* xref:release:index.adoc[Release Notes]
+
+* xref:contributing:index.adoc[Contributing]
+** xref:contributing:development-guide.adoc[Development Guide]
+*** xref:contributing:karatetools-oss.adoc[karatetools-oss]
+**** xref:contributing:karatetools-oss.adoc#karatetools-oss-code[karatetools-oss-code]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-archetype[karatetools-oss-archetype]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-clients[karatetools-oss-clients]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-generators[karatetools-oss-generators]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-runner[karatetools-oss-runner]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-starter[karatetools-oss-starter]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-boot[karatetools-oss-boot]
+***** xref:contributing:karatetools-oss.adoc#karatetools-oss-openapi-test[karatetools-oss-openapi-test]
+**** xref:contributing:karatetools-oss.adoc#karatetools-oss-karate-test[karatetools-oss-karate-test]
+**** xref:contributing:karatetools-oss.adoc#karatetools-oss-docs[karatetools-oss-docs]
+** xref:contributing:step-by-step.adoc[Step by Step]

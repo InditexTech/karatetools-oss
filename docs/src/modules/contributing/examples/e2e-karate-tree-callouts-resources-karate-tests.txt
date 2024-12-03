@@ -1,0 +1,7 @@
+<1> Authentication tests
+<2> Karate Base tests
+<3> Karate Clients tests
+<4> Karate Clients tests: *db*
+<5> Karate Clients tests: *jms*
+<6> Karate Clients tests: *kafka*
+<7> Karate Clients tests: *mongodb*

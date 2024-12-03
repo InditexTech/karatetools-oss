@@ -1,0 +1,23 @@
+= Archetype
+
+The *Karate Tools Archetype* generates a karate project from scratch with the necessary configurations and utilities for the generation and execution of karate tests.
+
+== 1. Note down the target artifact's group ID, version and main package.
+
+include::1-artifact-info.adoc[]
+
+== 2. Create a Karate project using the Karate Tools Archetype
+
+include::2-1-generate-archetype.adoc[]
+
+include::2-2-generate-archetype-config.adoc[]
+
+include::2-3-generate-archetype-exec.adoc[]
+
+== 3. Review Karate project structure
+
+include::3-review-output.adoc[]
+
+== 4. Configure the artifact to include the karate module in the release versioning process
+
+include::4-configure-release.adoc[]

@@ -1,0 +1,57 @@
+.doc .imageblock.no-border img,
+.doc .image.no-border img {
+  border-width: 0;
+}
+
+.imageblock.zoom-in {
+  cursor: zoom-in;
+}
+
+.imageblock.zoomed-in {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(40, 40, 40, 0.75);
+  display: flex;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoomed-in-close {
+  display: block;
+  margin: calc(var(--size3) + 2px) var(--size6);
+}
+
+.zoomed-in-close svg {
+  cursor: pointer;
+}
+
+.zoomed-in-close path {
+  fill: white;
+}
+
+.zoomed-in-image {
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+.zoomed-in-top-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 101;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent);
+}
+
+.no-scroll {
+  overflow: hidden;
+}

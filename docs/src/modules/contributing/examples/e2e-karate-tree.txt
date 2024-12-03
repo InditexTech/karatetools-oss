@@ -1,0 +1,123 @@
+e2e/karate/
+├── .gitignore
+├── pom.xml
+└── src
+    └── test
+        ├── java
+        │   └── com
+        │       └── inditextech
+        │           └── karate
+        │               └── karatetools
+        │                   ├── jms
+        │                   │   └── JMSKarateObject.java <1>
+        │                   └── test
+        │                       └── KarateRunnerTest.java <2>
+        └── resources
+            ├── apis
+            │   └── com
+            │       └── inditextech
+            │           └── karate
+            │               └── karatetools-openapi-test
+            │                   └── xxx-api-rest-stable <1>
+            │                       └── BasicApi <2>
+            │                           ├── createItems <3>
+            │                           │   ├── createItems.feature <4>
+            │                           │   └── schema <5>
+            │                           │       ├── createItems_201.schema.yml
+            │                           │       ├── createItems_400.schema.yml
+            │                           │       ├── createItems_401.schema.yml
+            │                           │       └── createItems_default.schema.yml
+            │                           ├── listItems <3>
+            │                           │   ├── listItems.feature <4>
+            │                           │   └── schema <5>
+            │                           │       ├── Items_200.schema.yml
+            │                           │       ├── listItems_200.schema.yml
+            │                           │       ├── listItems_400.schema.yml
+            │                           │       ├── listItems_401.schema.yml
+            │                           │       └── listItems_default.schema.yml
+            │                           └── showItemById <3>
+            │                               ├── schema <5>
+            │                               │   ├── showItemById_200.schema.yml
+            │                               │   ├── showItemById_401.schema.yml
+            │                               │   ├── showItemById_404.schema.yml
+            │                               │   └── showItemById_default.schema.yml
+            │                               └── showItemById.feature <4>
+            ├── com
+            │   └── inditextech
+            │       └── karate
+            │           ├── auth <1>
+            │           │   ├── KarateAuthBackgroundScenario.feature
+            │           │   ├── KarateAuthBasic.feature
+            │           │   └── KarateAuthJWT.feature
+            │           ├── base <2>
+            │           │   └── KarateBase.feature
+            │           ├── clients <3>
+            │           │   ├── db <4>
+            │           │   │   ├── JDBCClient-MariaDB.feature
+            │           │   │   ├── JDBCClient-MariaDB.sql
+            │           │   │   ├── JDBCClient-PostgreSQL.feature
+            │           │   │   └── JDBCClient-PostgreSQL.sql
+            │           │   ├── jms <5>
+            │           │   │   └── JMSClient-ActiveMQ.feature
+            │           │   ├── kafka <6>
+            │           │   │   └── KafkaClients.feature
+            │           │   └── mongodb <7>
+            │           │       └── MongoDBClient.feature
+            │           └── karatetools-openapi-test
+            │               └── xxx-api-rest-stable <1>
+            │                   ├── functional <2>
+            │                   │   └── e2e <3>
+            │                   │       ├── e2e.feature <4>
+            │                   │       └── test-data <5>
+            │                   │           ├── createItems_201.yml
+            │                   │           ├── createItems_400.yml
+            │                   │           ├── createItems_401.yml
+            │                   │           ├── listItems_200.yml
+            │                   │           ├── listItems_400.yml
+            │                   │           ├── listItems_401.yml
+            │                   │           ├── showItemById_200.yml
+            │                   │           ├── showItemById_401.yml
+            │                   │           └── showItemById_404.yml
+            │                   └── smoke <6>
+            │                       └── BasicApi <7>
+            │                           ├── createItems <8>
+            │                           │   ├── createItems.feature <4>
+            │                           │   └── test-data <5>
+            │                           │       ├── createItems_201.yml
+            │                           │       ├── createItems_400.yml
+            │                           │       └── createItems_401.yml
+            │                           ├── listItems <8>
+            │                           │   ├── listItems.feature <4>
+            │                           │   └── test-data <5>
+            │                           │       ├── listItems_200.yml
+            │                           │       ├── listItems_400.yml
+            │                           │       └── listItems_401.yml
+            │                           └── showItemById <8>
+            │                               ├── showItemById.feature <4>
+            │                               └── test-data <5>
+            │                                   ├── showItemById_200.yml
+            │                                   ├── showItemById_401.yml
+            │                                   └── showItemById_404.yml
+            ├── config <1>
+            │   ├── db
+            │   │   ├── mariadb-config-local.yml
+            │   │   ├── mongodb-config-local.yml
+            │   │   └── postgresql-config-local.yml
+            │   ├── jms
+            │   │   └── activemq-config-local.yml
+            │   └── kafka
+            │       ├── avro
+            │       │   └── karate.avsc
+            │       └── kafka-config-local.yml
+            ├── config-local.yml <2>
+            ├── config.yml <2>
+            ├── jwt <3>
+            │   ├── default-jwt.yml
+            │   └── invalid-jwt.yml
+            ├── karate-config.js <4>
+            ├── logback-test-debug.xml <5>
+            ├── logback-test.xml <5>
+            └── mocks <6>
+                └── templates
+                    └── standalone
+                        └── .gitkeep

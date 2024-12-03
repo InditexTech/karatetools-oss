@@ -1,0 +1,14 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  # Point the tests to the mocks
+  xxxApiRestStableUrl: "#('http://localhost:' + (karate.properties['KARATE_MOCK_SERVER_PORT'] || 58081) + '/')"
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultAuthMode: basic | jwt. 'auth.authMode' when used in a specific request.
+defaultAuthMode: jwt
+# defaultUsername: default username. 'auth.username' when used in a specific request.
+defaultUsername: username100
+# credentials: pairs of username: password. 'auth.password' when used in a specific request.
+credentials:
+  # username100: Fixed username:password example
+  username100: username100p

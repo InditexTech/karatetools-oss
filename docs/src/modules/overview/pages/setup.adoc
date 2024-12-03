@@ -1,0 +1,9 @@
+To setup up a karate project for testing of a REST artifact, you should follow the next steps:
+
+. Ensure the *xref:prerequisites:index.adoc[Prerequisites]* are fullfilled
+. Execute the *xref:archetype:index.adoc[Archetype]* to setup the initial karate project
+. Follow the *xref:configuration:index.adoc[Configuration]* steps
+. Generate tests, data sets and mocks
+.. From Open API definitions with the *xref:open-api-generator:index.adoc[Open Api Generator]*
+. Integrate *xref:clients:index.adoc[Karate Clients]* in the tests for test data preparation and test validation
+. Follow the *xref:execution:index.adoc[Execution]* instructions about execution, reporting, start a local application and other utilities usage (KarateCache, ...).

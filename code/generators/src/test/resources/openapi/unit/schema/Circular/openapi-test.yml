@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: KarateTools Open Api - Circular
+  version: 1.0.0
+  contact:
+    name: Karate Tools
+    email: karate-utils@inditex.com
+  description: KarateTools Open Api - Circular
+servers:
+- url: http://localhost:8080/karatetools
+  description: Local
+tags:
+- name: circular
+paths:
+  /api/v1/circular:
+    get:
+      summary: KarateTools Open Api - Circular - GET
+      description: KarateTools Open Api - Circular - GET
+      operationId: circularGet
+      tags:
+        - circular
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CircularSchema'
+    post:
+      summary: KarateTools Open Api - Circular - POST
+      description: KarateTools Open Api - Circular - POST
+      operationId: circularPost
+      tags:
+        - circular
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CircularSchema'
+      responses:
+        '200':
+          description: Successful operation
+
+components:
+  schemas:
+    CircularSchema:
+      description: KarateTools Open Api - Circular - Data
+      type: object
+      properties:
+        name:
+          type: string
+        partner:
+          $ref: '#/components/schemas/CircularSchema'
+        children:
+          type: array
+          description: KarateTools Open Api - Circular - Children
+          items:
+            $ref: '#/components/schemas/CircularSchema'

@@ -1,0 +1,7 @@
+# docker-compose environment variables:  NA
+# docker-compose folder structure:       mariadb/<DB_NAME>/scripts
+jdbc-url: jdbc:mariadb://localhost:3306/<DB_NAME>
+driver-class-name: org.mariadb.jdbc.Driver
+username: mariadb
+password: mariadb-pwd
+health-query: SELECT 1 FROM DUAL

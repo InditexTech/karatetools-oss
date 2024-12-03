@@ -1,0 +1,57 @@
+@startuml karatetools-oss-archetype
+skinparam componentStyle rectangle
+scale 2
+
+frame "karatetools-oss-archetype" {
+  frame "src/main/resources" {
+    frame "META-INF" {
+      [maven/archetype-metadata.xml]
+      [archetype-post-generate.groovy]
+    }
+
+    frame "archetype-resources" {
+      [pom.xml]
+      [.tool-versions]
+
+      frame "src/test/java" {
+        [KarateRunnerTest.java]
+      }
+      frame "src/test/resources" {
+        [config-<env>.yml]
+        [config.yml]
+        [karate-config.js]
+        [logback-test.xml]
+        frame "jwt" {
+          [default-jwt.yml]
+        }
+        frame "config" {
+          [db]
+          [jms]
+          [kafka]
+        }
+        frame "mocks/templates/standalone" {
+          [.gitkeep]
+        }
+      }
+    }
+  }
+}
+
+' Relationships
+
+[META-INF] -[hidden]down- [archetype-resources]
+
+[src/test/java] -[hidden]down- [src/test/resources]
+
+[config] -[hidden]right- [jwt]
+[jwt] -[hidden]right- [mocks/templates/standalone]
+
+[db] -[hidden]right- [jms]
+[jms] -[hidden]right- [kafka]
+
+[config.yml] -[hidden]right- [config-<env>.yml]
+[config-<env>.yml] -[hidden]right- [karate-config.js]
+[karate-config.js] -[hidden]right- [logback-test.xml]
+
+[config.yml] -[hidden]down- [mocks/templates/standalone]
+@enduml

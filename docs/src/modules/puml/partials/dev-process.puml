@@ -1,0 +1,66 @@
+@startuml dev-guide-overview
+skinparam componentStyle rectangle
+state Identify #Silver {
+  state Feature #LimeGreen {
+  }
+  state BugFix #Tomato {
+  }
+}
+state Implement #Silver {
+  state ImplementCode #LightSkyBlue {
+  }
+}
+Identify --> Implement
+Implement --> Test
+state Test #Silver {
+  state Unit #LightGreen {
+    state ImplementUT #LightCyan {
+    }
+    state ExecuteUT #LemonChiffon {
+    }
+    state VerifyUT #Wheat {
+    }
+    ImplementUT --> ExecuteUT
+    ExecuteUT --> VerifyUT
+    VerifyUT : Coverage > {karatetools-unit-coverage-threshold}
+  }
+  state Mutation #LightSeaGreen {
+    state ExecuteMT #LemonChiffon {
+    }
+    state VerifyMT #Wheat {
+    }
+    ExecuteMT --> VerifyMT
+    VerifyMT : Coverage > {karatetools-mutation-coverage-threshold}
+  }
+  state Integration #LightBlue {
+    state ImplementIT #LightCyan {
+    }
+    state ExecuteIT #LemonChiffon {
+    }
+    state VerifyIT #Wheat {
+    }
+    ImplementIT --> ExecuteIT
+    ExecuteIT --> VerifyIT
+    VerifyIT : Coverage > {karatetools-integration-coverage-threshold}
+  }
+  state Karate #LightCoral {
+    state ImplementKT #LightCyan {
+    }
+    state ExecuteKT #LemonChiffon {
+    }
+    state VerifyKT #Wheat {
+    }
+    ImplementKT --> ExecuteKT
+    ExecuteKT --> VerifyKT
+    VerifyKT : Coverage > {karatetools-karate-coverage-threshold}
+  }
+  Unit -right-> Mutation
+  Mutation -[hidden]right-> Integration
+  Integration -[hidden]right-> Karate
+}
+state Document #Silver {
+  state ImplementDocumentation #SandyBrown {
+  }
+}
+Test --> Document
+@enduml

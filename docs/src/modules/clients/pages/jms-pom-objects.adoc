@@ -1,0 +1,31 @@
+The JMS Client is cappable of processing JMS TextMessage or ObjectMessage.
+
+In order to process JSM ObjectMessages you might need to add in the pom.xml the dependency to the module with the JMS Object classes.
+
+* POM Properties
++
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients - JMS - JMS Objects -->
+    <xxxxxx-jms-module.version>X.X.X</xxxxxx-jms-module.version>
+    ...
+  </properties>
+----
+
+* POM Dependencies
++
+[source,xml,subs="+attributes"]
+----
+  <dependencies>
+    ...
+    <!-- Karate Clients - JMS - JMS Objects -->
+    <dependency>
+      <groupId>com.mycompany.api</groupId>
+      <artifactId>xxxxxx-jms-module</artifactId>
+      <version>${xxxxxx-jms-module.version}</version>
+    </dependency>
+    ...
+  </dependencies>
+----

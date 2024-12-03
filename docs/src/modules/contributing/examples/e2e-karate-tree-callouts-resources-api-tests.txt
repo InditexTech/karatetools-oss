@@ -1,0 +1,8 @@
+<1> root folder for the *rest api* test
+<2> root folder for the *functional rest api* tests
+<3> specific functional test folder
+<4> feature file
+<5> test data files
+<6> root folder for the *smoke rest api* tests
+<7> *api tag* folder
+<8> smoke tests *operation* folder

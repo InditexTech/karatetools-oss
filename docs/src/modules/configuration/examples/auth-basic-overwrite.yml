@@ -1,0 +1,4 @@
+auth:
+  authMode: 'basic'
+  username: 'username100'
+  password: 'password100x'

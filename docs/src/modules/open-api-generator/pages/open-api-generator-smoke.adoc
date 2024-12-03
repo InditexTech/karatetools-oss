@@ -1,0 +1,243 @@
+= Karate Open Api Generator - Smoke Tests
+
+Karate *Smoke Tests*: Generates *smoke tests* for each of the Open API defined paths and response codes. These tests are meant only to verify the artifact end-points are compliant (response codes and schemas) with their Open API definition.
+
+* The generation steps are the following:
++
+. Enter the location of the *Open Api definition*
+. Select which *Smoke Tests* you want to generate for
+. Select the *artifactId* you want to generate for
+
+* After the automatic generation the tests data files should be updated to fullfil the purpose of each scenario.
+
+== Execute open-api-generator - Smoke Tests
+
+Execute *open-api-generator* and select *generation mode* *"Smoke Tests"*.
+
+[source,plaintext,subs="+attributes"]
+----
+mvn exec:java@open-api-generator
+----
+
+TIP: Select *generation mode* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-smoke-select.txt[]
+----
+
+image::open-api-generator-cmd-smoke.png[role="no-border, zoom-in"]
+
+=== 1. Enter the location of the Open Api definition
+
+For generation mode *Open Api Smoke Tests*, the *open-api-generator* will search for the *openapi-rest.yml* files in the karate module folders and list them to be chosen for open-api-generation.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-smoke.txt[]
+? Enter the location of the Open Api definition
+  Enter Manually
+> target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+  target\apis\xxx-external-api-rest-stable-jar\openapi-rest.yml
+----
+
+TIP: Select *open api definiton* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-api.png[role="no-border, zoom-in"]
+
+It will also allow to enter the file location manually by selecting `Enter Manually`
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-smoke.txt[]
+? Enter the location of the Open Api definition Enter Manually
+? Enter the location of the Open Api definition (Enter Manually) target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+----
+
+image::open-api-generator-cmd-api-manual.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Open Api file is provided or if the Open Api file is invalid an error will be displayed:
+
+* `ERROR - Open Api file must be provided`
+* `ERROR - Open Api file must be valid`
+====
+
+=== 2. Select which Smoke Tests you want to generate for
+
+For the selected *openapi-rest.yml* file, the *open-api-generator* will list all the paths and methods from which *smoke tests* can be generated. In an initial execution you should select them all. For Open Api updates you should only select the new or updated methods/paths.
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-smoke.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for
+> (*) all
+  ( ) GET    /items/{itemId}   showItemById
+  ( ) POST   /items            createItems
+  ( ) GET    /items            listItems
+----
+
+TIP: Select *methods & paths* using the up/down arrows `&#x2191;` `&#x2193;`, mark/unmark the selection with `space` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-methods.png[role="no-border, zoom-in"]
+
+[CAUTION]
+====
+If no Operations are selected an error will be displayed:
+
+* `ERROR - Operations to generate for must be selected`
+====
+
+=== 3. Select the artifactId you want to generate for
+
+Once the operations are selected, the *open-api-generator* will list all the artifacts defined in the `pom.xml` to choose the target artifact for the smoke tests.
+
+IMPORTANT: You must select the *artifact Id* of the *Open Api* (`com.mypackage.api:xxx-api-rest-stable`)
+
+[source,plaintext,subs="+attributes"]
+----
+include::example$open-api-generator-smoke.txt[]
+? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
+? Select which Operations you want to generate for [all]
+? Select which artifactId you want to generate for
+> com.mypackage.api:xxx-api-rest-stable
+  com.mypackage.api:xxx-external-api-rest-stable
+  {karatetools-package}:karatetools-starter
+  com.mypackage:karate
+  ...
+----
+
+TIP: Select *artifactId* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
+
+image::open-api-generator-cmd-artifact.png[role="no-border, zoom-in"]
+
+== Review Generated smoke tests
+
+For each smoke test the *open-api-generator* generates:
+
+* *feature file* with the smoke tests for the operation
+* *test data files* with the test data for each of the smoke tests
+
+The *smoke test* files are generated in the folder `src/test/resources/<API_PACKAGE>/smoke` organized by *API Tags*, for example: `src/test/resources/com/mypackage/api/xxx-api-rest-stable/smoke`
+
+Example of the structure of the generated smoke tests:
+
+[source,plaintext,subs="+attributes"]
+----
++---src
+    \---test
+        \---resources
+            \---com
+                \---mypackage
+                    \---api
+                        \---xxx-api-rest-stable
+                            \---smoke
+                                \---BasicApi
+                                    +---createItems
+                                    |   |   createItems.feature
+                                    |   |
+                                    |   \---test-data
+                                    |           createItems_201.yml
+                                    |           createItems_default.yml
+                                    |
+                                    +---listItems
+                                    |   |   listItems.feature
+                                    |   |
+                                    |   \---test-data
+                                    |           listItems_200.yml
+                                    |           listItems_default.yml
+                                    |
+                                    \---showItemById
+                                        |   showItemById.feature
+                                        |
+                                        \---test-data
+                                                showItemById_200.yml
+                                                showItemById_404.yml
+                                                showItemById_default.yml
+----
+
+=== Smoke test feature file
+
+*feature file* with the karate code for the smoke test with the following format
+
+[source,gherkin,subs="+attributes"]
+----
+@smoke
+@op.<OPERATION_ID>
+
+Feature: <OPERATION_ID> Smoke Tests
+
+Background:
+
+Scenario Outline: <OPERATION_ID> <status>
+* def req = call utils.readTestData <testDataFile>
+* def result = call read('classpath:<OPERATION_FEATURE_CLASSPATH>') req
+* match result.responseStatus == <status>
+Examples:
+| status  | testDataFile |
+| <STATUS_CODE> | 'test-data/<OPERATION_ID>_<STATUS_CODE>.yml'
+----
+
+For example `showItemById.feature`:
+
+[source,gherkin,subs="+attributes"]
+----
+@smoke
+@op.showItemById
+
+Feature: showItemById Smoke Tests
+
+Background:
+
+Scenario Outline: showItemById <status>
+* def req = call utils.readTestData <testDataFile>
+* def result = call read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById.feature') req
+* match result.responseStatus == <status>
+Examples:
+| status  | testDataFile |
+| 200     | 'test-data/showItemById_200.yml' |
+| 404     | 'test-data/showItemById_404.yml' |
+| default | 'test-data/showItemById_default.yml' |
+----
+
+NOTE: If the api defines `default` response codes, the `status` of the smoke feature will be set to `default` and will require manual update.
+
+=== Smoke test data files
+
+*test data files* with the data needed for the execution of each response code. For example:
+
+* `createItems_201.yml`:
++
+[source,yaml,subs="+attributes"]
+----
+---
+operationId: "createItems"
+statusCode: "201"
+params: null
+body:
+  id: 0
+  name: "string"
+  tag: "string"
+matchResponse: true
+responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/createItems/schema/createItems_201.schema.yml'))"
+----
+
+* `showItemById_200.yml`:
++
+[source,yaml,subs="+attributes"]
+----
+---
+operationId: "showItemById"
+statusCode: "200"
+params:
+  itemId: 0
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/BasicApi/showItemById/schema/showItemById_200.schema.yml'))"
+----
+
+TIP: The data (params, body) in each of the test data files must be updated to fulfill the test purpose.
+
+NOTE: If the api defines `default` response codes, the `statusCode` of the test data will be set to `null` and will require manual update.

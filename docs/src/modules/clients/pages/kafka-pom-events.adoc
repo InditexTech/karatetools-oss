@@ -1,0 +1,31 @@
+In order to process *Avro Events* the dependency to the module with the *Avro classes* of the corresponding *application events (to produce or consume)* must be included in the pom.xml.
+
+* POM Properties
++
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients - Kafka - AVRO Objects -->
+    <xxxxxx-event-module.version>X.X.X</xxxxxx-event-module.version>
+    ...
+  </properties>
+----
+
+* POM Dependencies
++
+[source,xml,subs="+attributes"]
+----
+  <dependencies>
+    ...
+    <!-- Karate Clients - Kafka - AVRO Objects -->
+    <dependency>
+      <groupId>com.mycompany.api</groupId>
+      <artifactId>xxxxxx-event-module</artifactId>
+      <version>${xxxxxx-event-module.version}</version>
+    </dependency>
+    ...
+  </dependencies>
+----
+
+TIP: Normally this module is the one marked with Amiga `marker-project-schema-avro.amiga`

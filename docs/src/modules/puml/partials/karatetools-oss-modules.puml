@@ -1,0 +1,74 @@
+@startuml karatetools-oss-modules
+skinparam componentStyle rectangle
+scale 2
+
+legend top left
+  |Color             | Type                     |
+  |<#LightBlue>      | Library Module           |
+  |<#LightSteelBlue> | Library Support Module   |
+  |<#LightCoral>     | Karate Tools Test Module |
+  |<#LightSalmon>    | Doc Module               |
+  |<#Silver>         | External Library         |
+endlegend
+
+frame "karatetools-oss" {
+  [karatetools-oss-docs] #LightSalmon
+
+  [karatetools-oss-archetype] #LightBlue
+  [karatetools-oss-generators] #LightBlue
+  [karatetools-oss-runner] #LightBlue
+  [karatetools-oss-clients] #LightBlue
+  [karatetools-oss-starter] #LightBlue
+
+  [karatetools-oss-boot] #LightSteelBlue
+  [karatetools-oss-openapi-test] #LightSteelBlue
+
+  [karatetools-oss-xxx-api-rest-stable] #LightSteelBlue
+  [karatetools-oss-xxx-external-api-rest-stable] #LightSteelBlue
+
+  [karatetools-oss-karate-test] #LightCoral
+}
+
+[karate] #Silver
+[swagger-parser] #Silver
+
+[activemq-artemis-jms-client] #Silver
+[kafka-clients] #Silver
+[mariadb-jdbc-driver] #Silver
+[mongodb-driver] #Silver
+[postgresql-jdbc-driver] #Silver
+
+' Relationships
+
+[karatetools-oss-archetype] -right-> [karatetools-oss-karate-test] : generates
+
+[karatetools-oss-starter] ..> [karatetools-oss-generators] : includes
+[karatetools-oss-starter] ..> [karatetools-oss-clients] : includes
+[karatetools-oss-starter] ..> [karatetools-oss-runner] : includes
+
+[karatetools-oss-openapi-test] .right.> [karatetools-oss-xxx-api-rest-stable] : includes
+[karatetools-oss-openapi-test] .up.> [karatetools-oss-xxx-external-api-rest-stable] : includes
+
+[karatetools-oss-boot] .right.> [karatetools-oss-openapi-test] : implements
+[karatetools-oss-boot] .left[hidden].> [karatetools-oss-starter]
+
+[karatetools-oss-karate-test] ..> [karatetools-oss-starter] : uses
+[karatetools-oss-karate-test] ..> [karatetools-oss-openapi-test] : tests (api)
+[karatetools-oss-karate-test] ..> [karatetools-oss-boot] : tests (api + containers)
+
+[karatetools-oss-runner] ..> [karate] : uses
+
+[karatetools-oss-generators] ..> [swagger-parser] : uses
+
+[karatetools-oss-clients] .down.> [mariadb-jdbc-driver] : uses
+[karatetools-oss-clients] .down.> [postgresql-jdbc-driver] : uses
+[karatetools-oss-clients] .down.> [mongodb-driver] : uses
+[karatetools-oss-clients] .down.> [kafka-clients] : uses
+[karatetools-oss-clients] .down.> [activemq-artemis-jms-client] : uses
+
+[activemq-artemis-jms-client] -[hidden]right- [kafka-clients]
+[kafka-clients] -[hidden]right- [mariadb-jdbc-driver]
+[mariadb-jdbc-driver] -[hidden]right- [postgresql-jdbc-driver]
+[postgresql-jdbc-driver] -[hidden]right- [mongodb-driver]
+
+@enduml

@@ -1,0 +1,8 @@
+* Execute tests with a specified *number of threads* using `karate.options` `--threads`
++
+[source,bash,subs="+attributes"]
+----
+mvn clean test -Dkarate.options="... --threads XX ..."
+----
++
+NOTE: default number of threads = 1, the custom number of threads is capped up to `number of cores / 2`

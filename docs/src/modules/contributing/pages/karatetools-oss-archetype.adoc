@@ -1,0 +1,22 @@
+> What is Archetype?
+> In short, Archetype is a Maven project templating toolkit. An archetype is defined as an original pattern or model from which all other things of the same kind are made.
+
+The `karatetools-oss-archetype` module povides the templates and scripts to generate *karate-test* modules.
+
+This module has the following structure:
+
+.Karate Tools Archetype Overview
+[plantuml,development-guide-karatetools-oss-arquetype,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-archetype.puml[]
+....
+
+It includes the following files:
+
+[source,subs="attributes+"]
+----
+include::example$archetype-tree.txt[]
+----
+include::example$archetype-tree-callouts.txt[]
+
+IMPORTANT: Any changes made in the prototype files and/or processing scripts must be reflected in the corresponding output project tests.

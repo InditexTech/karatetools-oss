@@ -1,0 +1,51 @@
+= Karate Clients - JDBC
+
+include::jdbc-summary.adoc[]
+
+The included JDBC Drivers are:
+
+include::jdbc-drivers.adoc[]
+
+== POM Configuration
+
+=== POM Karate Tools
+
+include::jdbc-pom.adoc[]
+
+=== POM Driver
+
+==== MariaDB POM
+
+include::jdbc-pom-mariadb.adoc[]
+
+==== PostgreSQL POM
+
+include::jdbc-pom-postgresql.adoc[]
+
+==== Additional Drivers POM
+
+include::jdbc-pom-add-driver.adoc[]
+
+== Client Configuration
+
+include::jdbc-config.adoc[]
+
+=== JDBC Client Configuration Properties - MariaDB
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$mariadb-config-local.yml[]
+----
+
+=== JDBC Client Configuration Properties - PostgreSQL
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$postgresql-config-local.yml[]
+----
+
+== Client Features and Usage
+
+include::jdbc-features.adoc[]

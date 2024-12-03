@@ -1,0 +1,10 @@
+---
+operationId: "createItems"
+statusCode: 400
+params: null
+body:
+  id: 0
+  name: "string"
+  tag: "string"
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/openapi/test/BasicApi/createItems/schema/createItems_400.schema.yml'))"

@@ -1,0 +1,16 @@
+code/openapi-test/
+├── pom.xml
+├── xxx-api-rest-stable
+│   ├── pom.xml
+│   └── src
+│       └── main
+│           └── resources
+│               ├── components.yml
+│               └── openapi-rest.yml
+└── xxx-external-api-rest-stable
+    ├── pom.xml
+    └── src
+        └── main
+            └── resources
+                ├── components.yml
+                └── openapi-rest.yml

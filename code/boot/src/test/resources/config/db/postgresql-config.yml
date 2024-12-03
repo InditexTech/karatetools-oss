@@ -1,0 +1,7 @@
+# docker-compose environment variables:  <POSTGRES_DB> <POSTGRES_USER> <POSTGRES_PASSWORD>
+# docker-compose folder structure:       NA
+jdbc-url: jdbc:postgresql://localhost:5432/KARATE
+driver-class-name: org.postgresql.Driver
+username: karate
+password: karate-pwd
+health-query: SELECT 1

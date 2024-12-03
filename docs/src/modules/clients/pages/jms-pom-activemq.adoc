@@ -1,0 +1,27 @@
+*karatetools-starter* already includes the *Active MQ* JMS dependencies.
+
+.*If you need to change the dependency version*, you can include it in the pom as follows:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JMS -->
+    <!-- Karate Clients - JMS - ActiveMQ -->
+    <artemis-jms-client.version>X.X.X</artemis-jms-client.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients - JMS -->
+    <!-- Karate Clients - JMS - ActiveMQ -->
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>artemis-jms-client</artifactId>
+      <version>${artemis-jms-client.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

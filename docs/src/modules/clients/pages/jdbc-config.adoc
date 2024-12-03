@@ -1,0 +1,49 @@
+Configuration parameters for the JDBC Clients. These values can be overwritten by the corresponding (DB specific) system properties. System properties can be injected by CI/CD.
+
+NOTE: If the project has been generated using the xref:archetype:index.adoc[Karate Tools Archetype] the archetype would have prompted for the creation of the configuration files.
+
+This client can be configured for multi-environment execution with a *config file per environment*:
+
+[source,plaintext,subs="+attributes"]
+----
+\---src
+    \---test
+        \---resources
+            \---config
+                \---db
+                    <db>-config-local.yml
+                    ...
+                    <db>-config-pre.yml
+----
+
+For example:
+
+[source,plaintext,subs="+attributes"]
+----
+\---src
+    \---test
+        \---resources
+            \---config
+                \---db
+                    mariadb-config-local.yml
+                    ...
+                    mariadb-config-pre.yml
+                    ...
+                    postgresql-config-local.yml
+                    ...
+                    postgresql-config-pre.yml
+----
+
+=== JDBC Client Configuration Properties
+
+⚙️ *`jdbc-url`* - JDBC URL to connect to the data base. JDBC URL is database specific.
+
+** `jdbc:[protocol]//[host]:[port]/[database][?properties]`
+
+⚙️ *`driver-class-name`* - JDBC Driver Class Name.
+
+⚙️ *`username`* - user name to connect
+
+⚙️ *`password`* - password to connect
+
+⚙️ *`health-query`* - SQL query to use to check if the DB is available.

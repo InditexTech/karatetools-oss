@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.inditex.karate</groupId>
+    <artifactId>karatetools-openapi-test</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <groupId>dev.inditex.karate.karatetools-openapi-test</groupId>
+  <artifactId>xxx-external-api-rest-stable</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>InditexOSS Karate Tools - Open Apis for testing - Rest - External</description>
+
+  <developers>
+    <developer>
+      <name>Inditex Open Source Office</name>
+      <email>oso@inditex.com</email>
+      <organization>Industria de Diseño Textil, S.A.</organization>
+      <organizationUrl>https://inditex.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <properties>
+    <!-- This module has no junit tests -->
+    <pitest-skip>true</pitest-skip>
+    <!-- Code Format and Style -->
+    <sortpom-maven-plugin.sortOrderFile>${project.basedir}/../../src/main/config/pom-code-convention.xml</sortpom-maven-plugin.sortOrderFile>
+    <!-- Code Format and Style - Checkstyle -->
+    <maven-checkstyle-plugin.configLocation>${project.basedir}/../../src/main/config/checkstyle-java-google-style.xml</maven-checkstyle-plugin.configLocation>
+    <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/../../src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
+    <!-- Static code analysis - Spotbugs -->
+    <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/../../src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
+  </properties>
+
+  <dependencyManagement />
+
+  <dependencies />
+
+  <build />
+
+  <reporting />
+
+  <profiles />
+
+</project>

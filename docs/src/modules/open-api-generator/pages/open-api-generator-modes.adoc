@@ -1,0 +1,17 @@
+* Karate *Operations*: Generates *operation feature files* and *validation schemas* which will be shared for all tests for each of the Open API defined paths and methods.
++
+IMPORTANT: The *operations* are the base for the execution of all the tests, so this is a *mandatory* step which should be the *first step of the generation process*.
+
+* Karate *Smoke Tests*: Generates *smoke tests* for each of the Open API defined paths and response codes. These tests are meant only to verify the artifact end-points are compliant (response codes and schemas) with their Open API definition.
+** After the automatic generation the tests data files should be updated to fullfil the purpose of each scenario.
+
+* Karate *Functional Test*: Generates *functional tests* for the choosen combination of Open API paths and response codes. These tests are meant to verify the artifact end-points functionalities.
+** After the automatic generation the tests should be updated regarding:
+*** operation steps order
+*** test data
+*** verification steps
+*** (if applicable) include steps for initial data (jdbc, mongodb, kafka, jms) using the xref:clients:index.adoc[🛠️ Karate Clients]
+*** (if applicable) include steps for additional checks (jdbc, mongodb, kafka, jms) using the xref:clients:index.adoc[🛠️ Karate Clients]
+
+* Karate *Mock Data*: Generates *mock data* for the choosen combination of Open API paths and response codes of external APIs. The mock data files are meant to be used by the karate mock server to simulate the behaviour of the external APIs.
+** After the automatic generation the mock data files should be updated regarding the corresponding path, params, request and response bodies to match needed mocking scenarios.

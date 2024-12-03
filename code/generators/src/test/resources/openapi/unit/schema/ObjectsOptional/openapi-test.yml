@@ -1,0 +1,72 @@
+openapi: 3.0.6
+
+info:
+  title: User Details
+  description: User Details
+  version: 1.0.0
+
+paths:
+  /object:
+    get:
+      operationId: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  responses:
+    Forbidden:
+      description: forbidden
+    Unauthorized:
+      description: unauthorized
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ErrorDTO"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorDTO"
+  schemas:
+    ObjectResponse:
+      type: object
+      properties:
+        stringResponse:
+          type: string
+        integerResponse:
+          type: number
+        objectResponse2:
+          $ref: "#/components/schemas/ObjectResponse2"
+      required:
+        - integerResponse
+        - stringResponse
+
+    ObjectResponse2:
+      type: object
+      properties:
+        stringResponse:
+          type: string
+          nullable: true
+        integerResponse:
+          type: number
+      required:
+        - stringResponse
+        - integerResponse

@@ -1,0 +1,17 @@
+Java Client (JMS Send and JMS Consume) to interact with *JMS queues from karate*.
+
+It provides features to *send and consume JMS Messages (TextMessage or ObjectMessage)* for a Queue:
+
+[plantuml,jms,png,role="no-border, zoom-in"]
+....
+include::puml:partial$sprites.puml[]
+include::puml:partial$jms-client.puml[]
+....
+
+* How to set it up:
+** Define (if applicable) the JMS client dependencies in the project *xref:#pom-configuration[POM]*
+** Define (if applicable) the JMS Object Classes in the project *xref:#pom-jms-object[POM]*
+** Define the JMS client configuration in the file *xref:#client-configuration[src/test/resources/config/jms/<jms-provider>-<env>-config.yml]*
+
+* How to use it in the karate files:
+** *xref:#client-features-and-usage[JMS Client Features and Usage]*

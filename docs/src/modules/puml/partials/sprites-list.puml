@@ -1,0 +1,28 @@
+@startuml karatetools-architecture
+
+!include sprites.puml
+
+node "<$apache,scale=0.5,color=#832878>"
+node "<$cucumber-icon,scale=0.8>"
+node "<$cucumber,scale=0.8>"
+node "<$java-icon,scale=0.15>"
+node "<$javascript-icon,scale=1>"
+node "<$javascript,scale=0.8>"
+node "<$kafka-icon,scale=1>"
+node "<$kafka,scale=0.8>"
+node "<$karate,scale=1>"
+node "<$mariadb-icon,scale=1>"
+node "<$mariadb,scale=1>"
+node "<$mongodb-icon,scale=1>"
+node "<$mongodb,scale=0.8>"
+node "<$openapi-icon,scale=0.8>"
+node "<$openapi,scale=0.2>"
+node "<$postgresql-icon,scale=0.25>"
+node "<$postgresql,scale=0.5>"
+node "<$spring-icon,scale=1>"
+node "<$spring,scale=1>"
+node "<$swagger,scale=0.25>"
+node "<$xml,scale=1>"
+node "<$yaml,scale=1>"
+
+@enduml

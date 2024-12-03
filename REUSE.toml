@@ -1,0 +1,181 @@
+version = 1
+SPDX-PackageName = "karatetools-oss"
+SPDX-PackageSupplier = "2024 INDITEX S.A"
+SPDX-PackageDownloadLocation = "https://github.com/InditexTech/karatetools-oss"
+
+[[annotations]]
+path = ".gitattributes"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ".github/actions/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Karate tools actions"
+
+[[annotations]]
+path = ".github/ISSUE_TEMPLATE/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Karate tools github issue templates"
+
+[[annotations]]
+path = ".github/PULL_REQUEST_TEMPLATE.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ".github/workflows/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Karate tools workflows"
+
+[[annotations]]
+path = ".gitignore"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ".tool-versions"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "code/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "docs/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/clients.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/dev.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/integration.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/lab.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/notes.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/toolbox.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/tools.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/src/modules/HOME/images/training.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
+
+[[annotations]]
+path = "docs/supplemental-ui/js/vendor/highlight.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006-2024 Josh Goebel <hello@joshgoebel.com> and other contributors"
+SPDX-License-Identifier = "BSD-3-Clause"
+SPDX-FileComment = "highlight.min.js"
+
+[[annotations]]
+path = "docs/supplemental-ui/js/vendor/jquery.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "OpenJS Foundation and other contributors"
+SPDX-License-Identifier = "MIT"
+SPDX-FileComment = "https://jquery.com/license/"
+
+[[annotations]]
+path = "docs/ui-bundle.zip"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright © 2017-present OpenDevise Inc. and the Antora Project."
+SPDX-License-Identifier = "MPL-2.0"
+SPDX-FileComment = "https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable"
+
+[[annotations]]
+path = "e2e/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "github_config.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "README.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "repolinter_rules.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "REUSE.toml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Free Software Foundation Europe e.V. <https://fsfe.org>"
+SPDX-License-Identifier = "CC0-1.0"
+SPDX-FileComment = "https://github.com/fsfe/reuse-action"
+
+[[annotations]]
+path = "SECURITY.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "SUPPORT.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"

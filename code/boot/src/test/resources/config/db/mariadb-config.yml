@@ -1,0 +1,7 @@
+# docker-compose environment variables:  <MARIADB_DATABASE> <MARIADB_USER> <MARIADB_PASSWORD>
+# docker-compose folder structure:       NA
+jdbc-url: jdbc:mariadb://localhost:3306/KARATE
+driver-class-name: org.mariadb.jdbc.Driver
+username: karate
+password: karate-pwd
+health-query: SELECT 1 FROM DUAL

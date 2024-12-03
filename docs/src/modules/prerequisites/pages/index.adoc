@@ -1,0 +1,11 @@
+:page-role: -toc
+
+= Prerequisites
+
+== Tools Requirements
+
+include::tools.adoc[]
+
+== Minimum checklist before starting with Karate Tools
+
+include::checklist.adoc[]

@@ -1,0 +1,10 @@
+It is very important to *understand the working principle* of the `config.yml` and `config-<env>.yml` files since they work in a *cumulative fashion*.
+
+. *Generic configurations*: First, the `config.yml` is parsed for generic configuration settings, and specified configurations are set in Karate properties.
+. *Specific configurations*: Then the environment-specific file is parsed, and specified values are set in Karate properties. So, if the same property exists in both files, then environment-specific values will *overwrite* the generic ones. For example:
+.. `defaultUsername` is set to `userA` in the `config.yml` file.
+.. `defaultUsername` is *not* set in `config-local.yml` file.
+.. `defaultUsername` is set to `userB` in the `config-pre.yml` file.
++
+When the test runs on `local` environment, the `defaultUsername` will be the default value `userA`.
+When the test runs on `pre` environment, the `defaultUsername` will be the defined `userB`.

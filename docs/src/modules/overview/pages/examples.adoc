@@ -1,0 +1,40 @@
+* The karate tools repository includes working examples for the different karate tools features.
+
+* `e2e/karate/src/test/resources`
++
+[source,plaintext,subs="+attributes"]
+----
+e2e/karate/src/test/resources
+└── com
+    └── inditextech
+        └── karate
+            ├── auth
+            ├── base
+            ├── clients
+            │   ├── db
+            │   │   ├── JDBCClient-MariaDB.feature
+            │   │   ├── JDBCClient-PostgreSQL.feature
+            │   ├── jms
+            │   │   └── JMSClient-ActiveMQ.feature
+            │   ├── kafka
+            │   │   └── KafkaClients.feature
+            │   └── mongodb
+            │       └── MongoDBClient.feature
+            └── karatetools-openapi-test
+                └── xxx-api-rest-stable
+                    ├── functional
+                    │   └── e2e
+                    │       ├── e2e.feature
+                    │       └── test-data
+                    └── smoke
+                        └── BasicApi
+                            ├── createItems
+                            │   ├── createItems.feature
+                            │   └── test-data
+                            ├── listItems
+                            │   ├── listItems.feature
+                            │   └── test-data
+                            └── showItemById
+                                ├── showItemById.feature
+                                └── test-data
+----

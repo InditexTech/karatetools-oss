@@ -1,0 +1,71 @@
+spring:
+  docker:
+    compose:
+      # spring.docker.compose.enabled: Whether docker compose support is enabled.
+      #   Default: true
+      enabled: true
+      # spring.docker.compose.file: Path to a specific docker compose configuration file.
+      #   org.springframework.boot.docker.compose.core.DockerComposeFile uses File not Resources to load docker-compose.yml file
+      file: src/test/resources/compose/docker-compose.yml
+      # spring.docker.compose.host: Hostname or IP of the machine where the docker containers are started.
+      #   NA
+      # spring.docker.compose.lifecycle-management: Docker compose lifecycle management.
+      #   Supported values: none, start-only, start-and-stop
+      #     none - Don't start or stop Docker Compose.
+      #     start-only - Start Docker Compose if it's not running when the application starts and leave it running
+      #     start-and-stop - Start Docker Compose if it's not running when the application starts and stop it when the JVM exits
+      #   Default: start-and-stop
+      lifecycle-management: start-and-stop
+      profiles:
+        # spring.docker.compose.profiles.active: Docker compose profiles that should be active.
+        active: it
+      readiness:
+        # spring.docker.compose.readiness.tcp.connect-timeout: Timeout for connections.
+        #   Default: 200ms
+        #   compose.yml file label "org.springframework.boot.readiness-check.tcp.disable" to disable on a per-container basis.
+        # spring.docker.compose.readiness.tcp.read-timeout: Timeout for reads.
+        #   compose.yml file label "org.springframework.boot.readiness-check.tcp.disable" to disable on a per-container basis.
+        #   Default: 200ms
+        # spring.docker.compose.readiness.timeout: Timeout of the readiness checks.
+        #   Default: 2m
+        timeout: 5m
+        # spring.docker.compose.readiness.wait: Wait strategy to use.
+        #   Supported values:
+        #     always - Always perform readiness checks.
+        #     never - Never perform readiness checks.
+        #     only-if-started - Only perform readiness checks if docker was started with lifecycle management
+        #   Default: always
+      skip:
+        # spring.docker.compose.skip.in-tests: Whether to skip in tests.
+        #   Default: true
+        in-tests: false
+      start:
+        # spring.docker.compose.start.command: Command used to start docker compose.
+        #   Supported values:
+        #     up - Start using docker compose up
+        #     start - Start using docker compose start
+        #   Default: up
+        command: up
+        # spring.docker.compose.start.log-level: Log level for output.
+        #   Default: info
+        log-level: info
+        # spring.docker.compose.start.skip: Whether to skip executing the start command.
+        #   Supported values:
+        #     never - Never skip
+        #     if-running - Skip if the containers are already running
+        #   Default: if-running
+        # spring.docker.compose.start.timeout: Timeout for starting Docker Compose.
+        #   Default: 10m
+        timeout: 5m
+      stop:
+        # spring.docker.compose.stop.command: Command used to stop docker compose.
+        #   Default: stop
+        command: down
+        # spring.docker.compose.stop.timeout: Timeout for stopping Docker Compose.
+        #   Use '0' for forced stop.
+        #   Default: 10s
+        timeout: 0
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false

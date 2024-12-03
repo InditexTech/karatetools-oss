@@ -1,0 +1,4 @@
+# defaultAuthMode: basic | jwt. 'auth.authMode' when used in a specific request.
+defaultAuthMode: jwt
+# defaultUsername: default username. 'auth.username' when used in a specific request.
+defaultUsername: username100

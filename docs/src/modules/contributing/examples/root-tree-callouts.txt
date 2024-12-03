@@ -1,0 +1,7 @@
+<1> *codebase* root directory
+<2> *codebase* maven modules
+<3> *documentation* root directory
+<4> *documentation* build and node directories
+<5> *documentation* antora asciidoc modules
+<6> *documentation* antora UI assets (page templates, CSS, JavaScript, images, etc.)
+<7> *karate-test* maven module root directory

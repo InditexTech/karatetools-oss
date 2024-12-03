@@ -1,0 +1,7 @@
+---
+operationId: "get"
+method: "GET"
+path: "/get"
+params: null
+request: "#ignore"
+responseStatus: 204

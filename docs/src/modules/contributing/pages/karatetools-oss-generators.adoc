@@ -1,0 +1,11 @@
+
+The `karatetools-oss-generators` module includes the following packages:
+
+* 📦 `dev.inditex.karate.openapi`: *Open API generator* to create *test scenarios*, *test data* and *external services mocks* from *Open API* specifications.
+* 📦 `dev.inditex.karate.console`: *request user input from the console* (which API specification file to use, which operations to generate, etc).
+
+.Karate Tools Generators Overview
+[plantuml,development-guide-karatetools-oss-generators,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-generators.puml[]
+....

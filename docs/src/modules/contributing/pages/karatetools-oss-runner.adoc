@@ -1,0 +1,24 @@
+The `karatetools-oss-runner` module includes the following packages:
+
+* 📦 `dev.inditex.karate.jwt`: *JWT generator* to create *JWT tokens* for *authentication* and *authorization* purposes in *Karate* tests.
+* 📦 `dev.inditex.karate.results`: *results generators* to *aggregate* the *cucumber results* of the *test scenarios*, to *create statistics* on the *karate operations usage* and to *copy the junit reports* to the *surefire folder*.
+* 📦 `dev.inditex.karate.test`: *karate runner* to *run* the *karate tests* and *karate cache* to *share variables* across tests.
+
+It also includes the following karate resources:
+
+* 📜 `karate-base.js`: *karate base configuration*
+* 📜 `karate-utils.js`: *karate tools utility js functions*
+* `karate-auth` (`basic`, `jwt`):
+** 📜 `karate-auth.feature`: *common features* to connect to authentication services.
+** 📜 `karate-auth.js`: *karate auth functions* to orquestrate the *authentication* and *authorization* process.
+* `mocks`:
+** 📜 `mock-templates.feature`: *common feature* to launch the *mocks*.
+** 📜 `mock-templates-functions.js`: *karate mocks functions* to find, load, ... the *mock templates*.
+** 📜 `mock-templates-inline.feature`: *feature* to launch the *mocks* in *inline* mode.
+** 📜 `mock-templates-standalone.feature`: *feature* to launch the *mocks* in *standalone* mode.
+
+.Karate Tools Runner Overview
+[plantuml,development-guide-karatetools-oss-runner,png,role="no-border, zoom-in"]
+....
+include::puml:partial$karatetools-oss-runner.puml[]
+....

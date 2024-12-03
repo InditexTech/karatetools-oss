@@ -1,0 +1,8 @@
+|⚙️ xref:archetype:index.adoc[Karate Tools Archetype]
+|*Archetype to initialize* a Karate maven project from scratch with all its dependencies
+
+|⚙️ xref:open-api-generator:index.adoc[Karate Tools Open Api Generator]
+|*Automatic generation* of tests in Gherkin, with their related data sets and schemas for response validation as well as data to mock external services from *Open Api definitions*.
+
+|⚙️ xref:clients:index.adoc[Karate Clients]
+|Clients to interact with Relational Databases (*JDBC*), Non-relational Database (*Mongo*), Event Messaging (*Kafka Consumer and Producer*) and JMS Messaging (*JMS Send and JMS Consume*).
