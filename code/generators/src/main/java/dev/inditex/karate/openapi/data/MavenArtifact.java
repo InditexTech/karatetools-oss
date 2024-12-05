@@ -38,9 +38,7 @@ public class MavenArtifact {
    */
   public static MavenArtifact fromId(final String id) {
     if (id.indexOf(":") >= 0 && id.split(":").length == 2) {
-      final String groupId = id.split(":")[0];
-      final String artifactId = id.split(":")[1];
-      return new MavenArtifact(groupId, artifactId);
+      return new MavenArtifact(id.split(":")[0], id.split(":")[1]);
     }
     return null;
   }

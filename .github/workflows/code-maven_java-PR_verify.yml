@@ -72,6 +72,7 @@ jobs:
         run: |
           echo "app-version=$(yq -oy '.project.version' code/pom.xml)" >> "$GITHUB_OUTPUT"
           echo "app-name=$(yq -oy '.project.artifactId' code/pom.xml)" >> "$GITHUB_OUTPUT"
+          echo "github-repository=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> "$GITHUB_OUTPUT"
 
       - name: Maven / Verify artifact with coverage
         if: ${{ !(contains(github.event.pull_request.labels.*.name, 'autopublish/snapshot-binaries')) }}
@@ -121,7 +122,7 @@ jobs:
         run: |
           JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
           mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
-            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.app-name }}" \
+            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.github-repository }}" \
             -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
             -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
