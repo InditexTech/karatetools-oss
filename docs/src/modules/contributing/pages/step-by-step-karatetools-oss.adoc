@@ -50,7 +50,7 @@ For example:
 * Add the instantiation of the `RabbitMQClientFactory` class to the `JMSClientFactory`.
 
 .. `karatetools-oss-archetype`
-* Add the client property (`includeJMSClient_ActiveMQ`) in `archetype-metadata.xml` file.
+* Add the client property (`includeJMSClient_RabbitMQ`) in `archetype-metadata.xml` file.
 * Add the `configuration template` for the `rabbitmq` client in the `archetype-resources` folder.
 * Add the generation logic in the `archetype-post-generate.groovy` file.
 
@@ -82,7 +82,7 @@ For example:
 .. `karatetools-oss-archetype`
 * Add the `archetype project test(s)` for the new client.
 * Execute the `archetype tests` to ensure that the affected *template configurations are properly generated*.
-* _This type of tests does not generate coverage nor require mutation tests_.
+* _This type of tests do not generate coverage nor require mutation tests_.
 
 .. ...
 
