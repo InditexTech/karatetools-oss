@@ -1,6 +1,6 @@
 {
   "name": "karatetools-oss",
-  "version": "4.0.0",
+  "version": "4.1.0-SNAPSHOT",
   "description": "InditexTech Karate Tools OSS",
   "scripts": {
     "start": "npx antora --clean --stacktrace --fetch antora-playbook-local.yml && npx http-server build/site -c-1 -p 0",
