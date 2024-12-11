@@ -2,27 +2,26 @@ package dev.inditex.karate.openapi.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import dev.inditex.karate.openapi.ExampleBasicApiMother;
+import dev.inditex.karate.openapi.data.KarateFunctionalFeature.FunctionalTestStep;
+import dev.inditex.karate.openapi.data.KarateSmokeFeature.SmokeTestResponse;
 import dev.inditex.karate.openapi.data.OpenApiParser.OperationPath;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.media.Content;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
-import javax.ws.rs.core.MediaType;
-import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
 
 class OpenApiGeneratorsTest extends KarateTest {
 
@@ -35,171 +34,144 @@ class OpenApiGeneratorsTest extends KarateTest {
   }
 
   @Nested
-  class GetOperationClasspath {
+  class GenerateOperations {
+    @Test
+    void when_generate_expect_delegate() {
+      try (
+          final MockedStatic<OpenApiUtils> openApiUtils = mockStatic(OpenApiUtils.class);
+          final MockedStatic<KarateOperation> karateOperation = mockStatic(KarateOperation.class);) {
 
-    @ParameterizedTest(name = "GetOperationClasspath_{0}")
-    @MethodSource
-    void when_get_classpath_expect_result(final String operationId, final OperationPath operation, final String root,
-        final String expected) {
-      final Path rootPath = Paths.get(targetFolder, root);
-      final MavenArtifact artifact = new MavenArtifact("dev.inditex.karate.openapi", "test");
+        final Path root = mock(Path.class);
+        final MavenArtifact mavenArtifact = MavenArtifact.builder().groupId("dev.inditex.openapi.karatetools").artifactId("test").build();
+        final OperationPath operationPath = mock(OperationPath.class);
+        final List<OperationPath> operations = List.of(operationPath);
+        final Path operationFolder = mock(Path.class);
+        final Path saved = mock(Path.class);
+        openApiUtils.when(
+            () -> OpenApiUtils.getOperationFolder(root, mavenArtifact, operationPath))
+            .thenReturn(operationFolder);
+        karateOperation.when(
+            () -> KarateOperation.save(root, operationFolder, mavenArtifact, operationPath, OpenApiUtils.getResponseSchemas(operationPath)))
+            .thenReturn(List.of(saved));
 
-      final var result = OpenApiGenerators.getOperationClasspath(rootPath, artifact, operation);
+        final var result = OpenApiGenerators.generateOperations(root, mavenArtifact, operations);
 
-      assertThat(result).isEqualTo(expected);
-    }
+        assertThat(result).hasSize(1);
+      }
 
-    public static Stream<Arguments> when_get_classpath_expect_result() {
-      final String root = FilenameUtils.separatorsToSystem("src/test/resources");
-      return Stream.of(
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation(), root,
-              "apis/dev/inditex/karate/openapi/test/BasicApi/showItemById/showItemById.feature"),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation(), root,
-              "apis/dev/inditex/karate/openapi/test/BasicApi/listItems/listItems.feature"),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation(), root,
-              "apis/dev/inditex/karate/openapi/test/BasicApi/createItems/createItems.feature"));
-    }
-  }
-
-  @Nested
-  class GetResponseSchemaClasspath {
-
-    @ParameterizedTest(name = "GetResponseSchemaClasspath_{0}")
-    @MethodSource
-    void when_get_response_schema_classpath_expect_result(final String operationId, final OperationPath operation, final String root,
-        final String code, final String expected) {
-      final Path rootPath = Paths.get(targetFolder, root);
-      final MavenArtifact artifact = new MavenArtifact("dev.inditex.karate.openapi", "test");
-
-      final var result = OpenApiGenerators.getResponseSchemaClasspath(rootPath, artifact, operation, code);
-
-      assertThat(result).isEqualTo(expected);
-    }
-
-    public static Stream<Arguments> when_get_response_schema_classpath_expect_result() {
-      final String root = FilenameUtils.separatorsToSystem("src/test/resources");
-      return Stream.of(
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation(), root,
-              "200", "apis/dev/inditex/karate/openapi/test/BasicApi/showItemById/schema/showItemById_200.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation(), root,
-              "404", "apis/dev/inditex/karate/openapi/test/BasicApi/showItemById/schema/showItemById_404.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation(), root,
-              "default", "apis/dev/inditex/karate/openapi/test/BasicApi/showItemById/schema/showItemById_default.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation(), root,
-              "200", "apis/dev/inditex/karate/openapi/test/BasicApi/listItems/schema/listItems_200.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation(), root,
-              "default", "apis/dev/inditex/karate/openapi/test/BasicApi/listItems/schema/listItems_default.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation(), root,
-              "201", "apis/dev/inditex/karate/openapi/test/BasicApi/createItems/schema/createItems_201.schema.yml"),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation(), root,
-              "default", "apis/dev/inditex/karate/openapi/test/BasicApi/createItems/schema/createItems_default.schema.yml")
-
-      );
     }
   }
 
   @Nested
-  class GetResponseSchema {
+  class GenerateSmokeTests {
+    @Test
+    void when_generate_expect_delegate() {
+      try (
+          final MockedStatic<OpenApiUtils> openApiUtils = mockStatic(OpenApiUtils.class);
+          final MockedStatic<KarateSmokeFeature> karateSmokeFeature = mockStatic(KarateSmokeFeature.class);) {
 
-    @SuppressWarnings("rawtypes")
-    @ParameterizedTest(name = "GetResponseSchema_{0}")
-    @MethodSource
-    void when_get_response_schema_expect_result(final String operationId, final Operation operation, final String code,
-        final Schema expected) {
+        final OpenAPI openApi = mock(OpenAPI.class);
+        final Path root = mock(Path.class);
+        final Path artifact = mock(Path.class);
+        final Path smoke = mock(Path.class);
+        final MavenArtifact mavenArtifact = MavenArtifact.builder().groupId("dev.inditex.openapi.karatetools").artifactId("test").build();
+        final OperationPath operationPath = mock(OperationPath.class);
+        final List<OperationPath> operations = List.of(operationPath);
+        final Operation operation = mock(Operation.class);
+        final ApiResponses responses = new ApiResponses();
+        final ApiResponse response = new ApiResponse();
+        responses.put("200", response);
+        final Path saved = mock(Path.class);
+        when(root.resolve(mavenArtifact.toPath())).thenReturn(artifact);
+        when(artifact.resolve("smoke")).thenReturn(smoke);
+        when(operationPath.operation()).thenReturn(operation);
+        when(operation.getResponses()).thenReturn(responses);
+        openApiUtils.when(
+            () -> OpenApiUtils.getResponseSchemaClasspath(root, mavenArtifact, operationPath, "200"))
+            .thenReturn("responseSchemaClasspath");
+        openApiUtils.when(
+            () -> OpenApiUtils.getOperationClasspath(root, mavenArtifact, operationPath))
+            .thenReturn("operationClasspath");
+        karateSmokeFeature.when(
+            () -> KarateSmokeFeature.save(smoke, operation, "operationClasspath",
+                List.of(new SmokeTestResponse("200", "responseSchemaClasspath")), openApi))
+            .thenReturn(List.of(saved));
 
-      final var result = OpenApiGenerators.getResponseSchema(operation, code);
+        final var result = OpenApiGenerators.generateSmokeTests(root, mavenArtifact, operations, openApi);
 
-      assertThat(result).isEqualTo(expected);
-    }
-
-    public static Stream<Arguments> when_get_response_schema_expect_result() {
-      return Stream.of(
-          Arguments.of("noResponse", new Operation().responses(null), "200", null),
-          Arguments.of("noResponseCode", new Operation().responses(new ApiResponses()), "200", null),
-          Arguments.of("nullResponseCode", new Operation().responses(new ApiResponses().addApiResponse("200", null)), "200", null),
-          Arguments.of("noResponseCodeContent", new Operation().responses(new ApiResponses().addApiResponse("200",
-              new ApiResponse().content(null))), "200", null),
-          Arguments.of("noResponseCodeContentMediaType", new Operation().responses(
-              new ApiResponses().addApiResponse("200", new ApiResponse().content(new Content()))), "200", null),
-          Arguments.of("noResponseCodeContentMediaTypeSchema", new Operation().responses(
-              new ApiResponses().addApiResponse("200",
-                  new ApiResponse().content(new Content().addMediaType(
-                      MediaType.APPLICATION_JSON, new io.swagger.v3.oas.models.media.MediaType().schema(null))))),
-              "200", null),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation().operation(),
-              "200", ExampleBasicApiMother.getShowItemByIdOperation().operation().getResponses().get("200").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation().operation(),
-              "404", ExampleBasicApiMother.getShowItemByIdOperation().operation().getResponses().get("404").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation().operation(),
-              "default", ExampleBasicApiMother.getShowItemByIdOperation().operation().getResponses().get("default").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation().operation(),
-              "200", ExampleBasicApiMother.getListItemsOperation().operation().getResponses().get("200").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation().operation(),
-              "default", ExampleBasicApiMother.getListItemsOperation().operation().getResponses().get("default").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation().operation(),
-              "201", ExampleBasicApiMother.getCreateItemsOperation().operation().getResponses().get("201").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation().operation(),
-              "default", ExampleBasicApiMother.getCreateItemsOperation().operation().getResponses().get("default").getContent()
-                  .get(MediaType.APPLICATION_JSON).getSchema()));
+        assertThat(result).hasSize(1);
+      }
     }
   }
 
   @Nested
-  class GetRequestSchema {
+  class GenerateFunctionalTest {
+    @Test
+    void when_generate_expect_delegate() {
+      try (
+          final MockedStatic<OpenApiUtils> openApiUtils = mockStatic(OpenApiUtils.class);
+          final MockedStatic<KarateFunctionalFeature> karateFunctionalFeature = mockStatic(KarateFunctionalFeature.class);) {
 
-    @SuppressWarnings("rawtypes")
-    @ParameterizedTest(name = "GetRequestSchema_{0}")
-    @MethodSource
-    void when_get_request_schema_expect_result(final String operationId, final Operation operation, final Schema expected) {
+        final OpenAPI openApi = mock(OpenAPI.class);
+        final Path root = mock(Path.class);
+        final Path artifact = mock(Path.class);
+        final Path functional = mock(Path.class);
+        final MavenArtifact mavenArtifact = MavenArtifact.builder().groupId("dev.inditex.openapi.karatetools").artifactId("test").build();
+        final OperationPath operationPath = mock(OperationPath.class);
+        final Operation operation = mock(Operation.class);
+        final ApiResponses responses = new ApiResponses();
+        final ApiResponse response = new ApiResponse();
+        responses.put("200", response);
+        final Path saved = mock(Path.class);
+        when(root.resolve(mavenArtifact.toPath())).thenReturn(artifact);
+        when(artifact.resolve("functional")).thenReturn(functional);
+        when(operationPath.operation()).thenReturn(operation);
+        when(operation.getResponses()).thenReturn(responses);
+        openApiUtils.when(
+            () -> OpenApiUtils.getResponseSchemaClasspath(root, mavenArtifact, operationPath, "200"))
+            .thenReturn("responseSchemaClasspath");
+        openApiUtils.when(
+            () -> OpenApiUtils.getOperationClasspath(root, mavenArtifact, operationPath))
+            .thenReturn("operationClasspath");
+        karateFunctionalFeature.when(
+            () -> KarateFunctionalFeature.save(functional, "testName", false,
+                List.of(new FunctionalTestStep(operation, "200", "operationClasspath", "responseSchemaClasspath")), openApi))
+            .thenReturn(List.of(saved));
 
-      final var result = OpenApiGenerators.getRequestSchema(operation);
+        final var result =
+            OpenApiGenerators.generateFunctionalTest(root, mavenArtifact, "testName", false, Map.of(operationPath, Set.of("200")), openApi);
 
-      assertThat(result).isEqualTo(expected);
-    }
-
-    public static Stream<Arguments> when_get_request_schema_expect_result() {
-      return Stream.of(
-          Arguments.of("noRequestBody", new Operation().requestBody(null), null),
-          Arguments.of("noRequestBodyContent", new Operation().requestBody(new RequestBody().content(null)), null),
-          Arguments.of("noRequestBodyContentMediaType", new Operation().requestBody(new RequestBody().content(new Content())), null),
-          Arguments.of(ExampleBasicApiMother.getShowItemByIdOperationId(), ExampleBasicApiMother.getShowItemByIdOperation().operation(),
-              null),
-          Arguments.of(ExampleBasicApiMother.getListItemsOperationId(), ExampleBasicApiMother.getListItemsOperation().operation(),
-              null),
-          Arguments.of(ExampleBasicApiMother.getCreateItemsOperationId(), ExampleBasicApiMother.getCreateItemsOperation().operation(),
-              ExampleBasicApiMother.getCreateItemsOperation().operation().getRequestBody().getContent().get(MediaType.APPLICATION_JSON)
-                  .getSchema()));
+        assertThat(result).hasSize(1);
+      }
     }
   }
 
   @Nested
-  class GetMockDataTargetPath {
-    @ParameterizedTest(name = "GetMockDataTargetPath{0}")
-    @MethodSource
-    void when_get_request_schema_expect_result(final String testId, final MavenArtifact artifact,
-        final Boolean inlineMocks, final MavenArtifact functionalArtifact, final String testName, final String expected) {
+  class GenerateMockData {
+    @Test
+    void when_generate_expect_delegate() {
+      try (
+          final MockedStatic<OpenApiUtils> openApiUtils = mockStatic(OpenApiUtils.class);
+          final MockedStatic<KarateMockData> karateMockData = mockStatic(KarateMockData.class);) {
 
-      final var result =
-          OpenApiGenerators.getMockDataTargetPath(Paths.get(targetFolder), artifact, inlineMocks, functionalArtifact, testName);
+        final OpenAPI openApi = mock(OpenAPI.class);
+        final Path root = mock(Path.class);
+        final MavenArtifact mavenArtifact = MavenArtifact.builder().groupId("dev.inditex.openapi.karatetools").artifactId("test").build();
+        final OperationPath operationPath = mock(OperationPath.class);
+        final Path operationFolder = mock(Path.class);
+        final Path saved = mock(Path.class);
+        openApiUtils.when(
+            () -> OpenApiUtils.getMockDataTargetPath(root, mavenArtifact, false, mavenArtifact, null))
+            .thenReturn(operationFolder);
+        karateMockData.when(
+            () -> KarateMockData.save(operationFolder, operationPath, "200", openApi))
+            .thenReturn(saved);
 
-      assertThat(result).isEqualTo(Paths.get(targetFolder, expected));
+        final var result = OpenApiGenerators.generateMockData(root, mavenArtifact, false, mavenArtifact, "testName",
+            Map.of(operationPath, Set.of("200")), openApi);
+
+        assertThat(result).hasSize(1);
+      }
     }
-
-    public static Stream<Arguments> when_get_request_schema_expect_result() {
-      return Stream.of(
-          Arguments.of("Inline", MavenArtifact.fromId("dev.inditex.karate.openapi:external"), true,
-              MavenArtifact.fromId("dev.inditex.karate.openapi:test"), "TestName",
-              "dev/inditex/karate/openapi/test/functional/TestName/mocks/external"),
-          Arguments.of("Standalone", MavenArtifact.fromId("dev.inditex.karate.openapi:external"), false,
-              MavenArtifact.fromId("dev.inditex.karate.openapi:test"), "TestName",
-              "mocks/templates/standalone/external"));
-    }
-
   }
 }
