@@ -19,6 +19,7 @@ import de.codeshelf.consoleui.prompt.ConfirmResult;
 import de.codeshelf.consoleui.prompt.InputResult;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -263,9 +264,9 @@ class OpenApiGeneratorOptionsTest {
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
 
-      assertThatThrownBy(() -> {
-        options.selectOpenApi();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectOpenApi;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
     @Test
@@ -277,9 +278,9 @@ class OpenApiGeneratorOptionsTest {
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
 
-      assertThatThrownBy(() -> {
-        options.selectOpenApi();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectOpenApi;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
   }
@@ -316,9 +317,9 @@ class OpenApiGeneratorOptionsTest {
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
       options.selectOpenApi();
 
-      assertThatThrownBy(() -> {
-        options.selectOperations();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectOperations;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
     @Test
@@ -330,9 +331,9 @@ class OpenApiGeneratorOptionsTest {
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
 
-      assertThatThrownBy(() -> {
-        options.selectOperations();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectOperations;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
   }
@@ -378,9 +379,9 @@ class OpenApiGeneratorOptionsTest {
       options.selectOpenApi();
       options.selectOperations();
 
-      assertThatThrownBy(() -> {
-        options.selectOperationsResponses();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectOperationsResponses;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
   }
@@ -443,9 +444,9 @@ class OpenApiGeneratorOptionsTest {
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
 
-      assertThatThrownBy(() -> {
-        options.selectTestName();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Test Name must be provided");
+      final ThrowingCallable result = options::selectTestName;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Test Name must be provided");
     }
 
   }
@@ -593,9 +594,9 @@ class OpenApiGeneratorOptionsTest {
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
       final OpenApiGeneratorOptions options = new OpenApiGeneratorOptions();
 
-      assertThatThrownBy(() -> {
-        options.selectInlineMocksFunctionalTestName();
-      }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
+      final ThrowingCallable result = options::selectInlineMocksFunctionalTestName;
+
+      assertThatThrownBy(result).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(expectedError);
     }
 
   }

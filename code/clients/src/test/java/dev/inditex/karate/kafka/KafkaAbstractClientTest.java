@@ -28,6 +28,7 @@ import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Node;
 import org.apache.kafka.common.config.SaslConfigs;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -117,7 +118,6 @@ class KafkaAbstractClientTest extends AbstractClientTest {
           .isEqualTo(config.get(SaslConfigs.SASL_MECHANISM));
       assertThat(client.getConfiguration().getProperty(SaslConfigs.SASL_JAAS_CONFIG))
           .isEqualTo(config.get(SaslConfigs.SASL_JAAS_CONFIG));
-
       // Registry
       assertThat(client.getConfiguration().getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG))
           .isEqualTo(config.get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
@@ -164,14 +164,12 @@ class KafkaAbstractClientTest extends AbstractClientTest {
       try (final MockedStatic<Admin> staticAdmin = mockStatic(Admin.class)) {
         staticAdmin.when(() -> Admin.create(any(Properties.class))).thenReturn(null);
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka Admin client");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka Admin client");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() KafkaException")
             && log.getThrowableProxy().getMessage().contains("Unable to access Kafka Admin client"));
-
       }
     }
 
@@ -185,10 +183,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         staticAdmin.when(() -> Admin.create(any(Properties.class))).thenReturn(admin);
         when(admin.describeCluster()).thenReturn(null);
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() KafkaException")
             && log.getThrowableProxy().getMessage().contains("Unable to access Kafka cluster"));
@@ -207,10 +204,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         when(admin.describeCluster()).thenReturn(describeClusterResult);
         when(describeClusterResult.nodes()).thenReturn(null);
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [null]");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [null]");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() KafkaException")
             && log.getThrowableProxy().getMessage().contains("Unable to access Kafka cluster nodes [null]"));
@@ -232,10 +228,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         when(describeClusterResult.nodes()).thenReturn(nodes);
         when(nodes.get()).thenReturn(null);
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [null list]");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [null list]");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() KafkaException")
             && log.getThrowableProxy().getMessage().contains("Unable to access Kafka cluster nodes [null list]"));
@@ -257,10 +252,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         when(describeClusterResult.nodes()).thenReturn(nodes);
         when(nodes.get()).thenReturn(List.of());
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [empty list]");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster nodes [empty list]");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() KafkaException")
             && log.getThrowableProxy().getMessage().contains("Unable to access Kafka cluster nodes [empty list]"));
@@ -283,10 +277,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         when(describeClusterResult.nodes()).thenReturn(nodes);
         when(nodes.get()).thenThrow(new InterruptedException("Interrupted exception"));
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Thread interrupted");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Thread interrupted");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() InterruptedException")
             && log.getThrowableProxy().getMessage().contains("Interrupted exception"));
@@ -308,10 +301,9 @@ class KafkaAbstractClientTest extends AbstractClientTest {
         when(describeClusterResult.nodes()).thenReturn(nodes);
         when(nodes.get()).thenThrow(new RuntimeException("Unknown exception"));
 
-        assertThatThrownBy(() -> {
-          client.available();
-        }).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster");
+        final ThrowingCallable result = client::available;
 
+        assertThatThrownBy(result).isInstanceOf(KafkaException.class).hasMessage("Unable to access Kafka cluster");
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("KafkaAbstractClient => available() Exception")
             && log.getThrowableProxy().getMessage().contains("Unknown exception"));
