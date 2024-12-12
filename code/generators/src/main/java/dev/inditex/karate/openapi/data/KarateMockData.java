@@ -124,12 +124,12 @@ public class KarateMockData extends KarateWriter {
       }
     }
     // Set Body Example if Schema defined
-    final Schema requestSchema = OpenApiGenerators.getRequestSchema(operation);
+    final Schema requestSchema = OpenApiUtils.getRequestSchema(operation);
     if (requestSchema != null) {
       mockData.setRequest(OpenApiExampleGenerator.generateExample(openApi, requestSchema));
     }
     // Set Response if Schema defined
-    final Schema responseSchema = OpenApiGenerators.getResponseSchema(operation, responseStatus);
+    final Schema responseSchema = OpenApiUtils.getResponseSchema(operation, responseStatus);
     if (responseSchema != null) {
       mockData.setResponse(OpenApiExampleGenerator.generateExample(openApi, responseSchema));
     }

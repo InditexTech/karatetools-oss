@@ -79,7 +79,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     }
   }
 
-  protected String generateResults(Results results) {
+  protected String generateResults(final Results results) {
     return KarateReportsGenerator.generate(results);
   }
 
@@ -229,7 +229,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   @SuppressWarnings("rawtypes")
   protected Results getTestResults(final String file) {
     String path = "classpath:scenarios/karate-reports";
-    if (file != null && file.length() > 0) {
+    if (file != null && !file.isEmpty()) {
       path = path + File.separator + file;
     }
     final Runner.Builder runner =
