@@ -33,7 +33,7 @@ class KarateClientLoggerTest {
     logWatcher = new ListAppender<>();
     logWatcher.start();
     final Logger logger = (Logger) LoggerFactory.getLogger(KarateClientLogger.class);
-    logger.setLevel(Level.ALL);
+    logger.setLevel(Level.TRACE);
     logger.addAppender(logWatcher);
   }
 
