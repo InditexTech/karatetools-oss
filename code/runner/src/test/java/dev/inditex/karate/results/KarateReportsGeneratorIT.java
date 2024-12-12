@@ -9,6 +9,7 @@ import java.util.Map;
 
 import dev.inditex.karate.AbstractKarateTest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -16,12 +17,19 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("IT")
+@Slf4j
 public class KarateReportsGeneratorIT extends AbstractKarateTest {
 
+  @Override
   @AfterEach
-  protected void afterEach() throws IOException {
+  protected void afterEach() {
+    super.afterEach();
     // Clean test surefire reports folder so they are not counted in general reports
-    FileUtils.deleteDirectory(new File(surefireReportsFolder));
+    try {
+      FileUtils.deleteDirectory(new File(surefireReportsFolder));
+    } catch (final IOException e) {
+      log.error("Error deleting surefire reports folder", e);
+    }
   }
 
   @Nested
