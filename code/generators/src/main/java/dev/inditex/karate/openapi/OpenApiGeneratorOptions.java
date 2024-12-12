@@ -319,7 +319,8 @@ public class OpenApiGeneratorOptions {
         final Map<String, Object> yaml = yamlMapper.readValue(content, new TypeReference<Map<String, Object>>() {});
         return yaml.containsKey("openapi");
       } catch (final IOException e) {
-        OpenApiGeneratorANSILogger.warn(String.format("Not an Open Api file %s in folder %s %n    Exception [%s]", name, dir, e.getMessage()));
+        OpenApiGeneratorANSILogger.warn(
+            String.format("Not an Open Api file %s in folder %s %n    Exception [%s]", name, dir, e.getMessage()));
       }
     }
     return false;
