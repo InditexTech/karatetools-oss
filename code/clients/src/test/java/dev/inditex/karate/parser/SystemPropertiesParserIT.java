@@ -13,6 +13,7 @@ import com.intuit.karate.core.ScenarioEngine;
 import com.intuit.karate.core.ScenarioFileReader;
 import com.intuit.karate.graal.JsValue;
 import com.intuit.karate.http.HttpClientFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -24,12 +25,21 @@ class SystemPropertiesParserIT {
 
   protected ListAppender<ILoggingEvent> logWatcher;
 
+  protected Level defaultLogLevel;
+
   @BeforeEach
   protected void beforeEach() {
+    defaultLogLevel = ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).addAppender(logWatcher);
     ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).setLevel(Level.DEBUG);
+  }
+
+  @AfterEach
+  protected void afterEach() {
+    ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).setLevel(defaultLogLevel);
   }
 
   @Nested
