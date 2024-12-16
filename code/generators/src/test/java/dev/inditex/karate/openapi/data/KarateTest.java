@@ -12,6 +12,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.LoggerFactory;
@@ -24,13 +25,22 @@ public abstract class KarateTest {
 
   protected ListAppender<ILoggingEvent> logWatcher;
 
+  protected Level defaultLogLevel;
+
   @BeforeEach
   void beforeEach(final TestInfo testInfo) throws IOException {
+    defaultLogLevel = ((Logger) LoggerFactory.getLogger("dev.inditex.karate.openapi.data")).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate.openapi.data")).addAppender(logWatcher);
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate.openapi.data")).setLevel(Level.WARN);
     prepareGeneratorFolders(testInfo);
+  }
+
+  @AfterEach
+  void afterEach() {
+    ((Logger) LoggerFactory.getLogger("dev.inditex.karate.openapi.data")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("dev.inditex.karate.openapi.data")).setLevel(defaultLogLevel);
   }
 
   private void prepareGeneratorFolders(final TestInfo testInfo) throws IOException {

@@ -30,6 +30,7 @@ import de.codeshelf.consoleui.prompt.ConfirmResult;
 import de.codeshelf.consoleui.prompt.InputResult;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,15 +48,24 @@ public class OpenApiGeneratorTest {
 
   protected ListAppender<ILoggingEvent> logWatcher;
 
+  protected Level defaultLogLevel;
+
   @BeforeEach
   protected void beforeEach(final TestInfo testInfo) throws IOException {
     ConsoleCLI.withoutRealTerminal();
+    defaultLogLevel = ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).addAppender(logWatcher);
-    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.WARN);
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.ERROR);
     prepareGeneratorFolders(testInfo);
     generator = new OpenApiGenerator(targetFolder);
+  }
+
+  @AfterEach
+  void afterEach() {
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(defaultLogLevel);
   }
 
   protected void prepareGeneratorFolders(final TestInfo testInfo) throws IOException {
