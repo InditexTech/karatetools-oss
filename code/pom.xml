@@ -53,9 +53,9 @@
 
   <properties>
     <!-- Java Version -->
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <java.version>17</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <java.version>21</java.version>
 
     <!-- Source Encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,9 +68,10 @@
     <project.scm.id>inditextech-scm-github</project.scm.id>
 
     <!-- Maven -->
-    <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
-    <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
-    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-release-strategies.version>0.7.1</maven-release-strategies.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
@@ -87,74 +88,74 @@
     <sortpom-maven-plugin.sortOrderFile>${project.basedir}/${project.parent.relativePath}/src/main/config/pom-code-convention.xml</sortpom-maven-plugin.sortOrderFile>
 
     <!-- Code Format and Style - Checkstyle -->
-    <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
-    <com.puppycrawl.tools.checkstyle.version>10.20.1</com.puppycrawl.tools.checkstyle.version>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <com.puppycrawl.tools.checkstyle.version>10.21.1</com.puppycrawl.tools.checkstyle.version>
     <maven-checkstyle-plugin.configLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-java-google-style.xml</maven-checkstyle-plugin.configLocation>
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
     <!-- Static code analysis - Spotbugs -->
-    <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
     <com.github.spotbugs.spotbugs.version>4.8.6</com.github.spotbugs.spotbugs.version>
     <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
     <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
 
     <!-- Common -->
-    <karate.version>1.4.0</karate.version>
+    <karate.version>1.5.1</karate.version>
     <lombok.version>1.18.36</lombok.version>
-    <jackson.version>2.18.1</jackson.version>
+    <jackson.version>2.18.2</jackson.version>
     <gson.version>2.11.0</gson.version>
     <commons-io.version>2.18.0</commons-io.version>
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 
     <!-- Logging -->
-    <logback.version>1.5.12</logback.version>
+    <logback.version>1.5.16</logback.version>
     <slf4j.version>2.0.13</slf4j.version>
 
     <!-- Test -->
-    <junit.version>5.11.3</junit.version>
-    <assertj.version>3.25.3</assertj.version>
-    <mockito.version>5.14.2</mockito.version>
+    <junit.version>5.11.4</junit.version>
+    <assertj.version>3.27.2</assertj.version>
+    <mockito.version>5.15.2</mockito.version>
 
     <!-- Jacoco / Surefire -->
     <jacoco.version>0.8.12</jacoco.version>
-    <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.3.1</maven-surefire-report-plugin.version>
+    <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->
-    <pitest.version>1.16.1</pitest.version>
+    <pitest.version>1.17.3</pitest.version>
     <pitest-junit5-plugin.version>1.2.1</pitest-junit5-plugin.version>
     <pitest-skip>false</pitest-skip>
 
     <!-- Spring Boot  -->
-    <spring-boot.version>3.3.3</spring-boot.version>
+    <spring-boot.version>3.3.6</spring-boot.version>
 
     <!-- Kafka - Avro Generation for Testing purposes -->
     <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
 
     <!-- Open Api Source Generator -->
     <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
-    <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
     <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
 
     <!-- Karate Clients -->
     <!-- Karate Clients - JDBC -->
     <postgresql.version>42.7.4</postgresql.version>
-    <mariadb-java-client.version>3.5.0</mariadb-java-client.version>
+    <mariadb-java-client.version>3.5.1</mariadb-java-client.version>
     <!-- Karate Clients - MongoDB -->
     <mongodb-driver-sync.version>5.2.1</mongodb-driver-sync.version>
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - ActiveMQ -->
-    <artemis-jms-client.version>2.38.0</artemis-jms-client.version>
+    <artemis-jms-client.version>2.39.0</artemis-jms-client.version>
     <!-- Karate Clients - Kafka  -->
     <kafka-clients.version>3.9.0</kafka-clients.version>
     <kafka-avro-serializer.version>7.6.2</kafka-avro-serializer.version>
 
     <!-- Karate Generators -->
     <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
-    <spring-core.version>6.1.13</spring-core.version>
+    <spring-core.version>6.1.15</spring-core.version>
     <!-- Karate Generators - Console -->
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
@@ -171,7 +172,7 @@
     <dependencies>
       <!-- Common -->
       <dependency>
-        <groupId>com.intuit.karate</groupId>
+        <groupId>io.karatelabs</groupId>
         <artifactId>karate-core</artifactId>
         <version>${karate.version}</version>
       </dependency>
@@ -394,7 +395,7 @@
   <dependencies>
     <!-- Common -->
     <dependency>
-      <groupId>com.intuit.karate</groupId>
+      <groupId>io.karatelabs</groupId>
       <artifactId>karate-core</artifactId>
     </dependency>
     <dependency>
@@ -691,7 +692,7 @@
                   <version>[3.9.4]</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[17,18)</version>
+                  <version>[21,22)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -738,7 +739,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>${maven-gpg-plugin.version}</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>

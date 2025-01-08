@@ -10,20 +10,20 @@
 
   <properties>
     <!-- Java Version -->
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <java.version>17</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <java.version>21</java.version>
 
     <!-- Source Encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Test Execution & Reporting -->
-    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.3.1</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
 
     <!-- Open Api Source Generation -->
-    <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
 
     <!-- Karate Tools -->
     <karatetools.version>@archetype-${project.version}</karatetools.version>

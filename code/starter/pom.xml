@@ -99,7 +99,7 @@
     </dependency>
     <!-- Common -->
     <dependency>
-      <groupId>com.intuit.karate</groupId>
+      <groupId>io.karatelabs</groupId>
       <artifactId>karate-core</artifactId>
       <scope>compile</scope>
       <exclusions>

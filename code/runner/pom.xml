@@ -27,7 +27,7 @@
   <dependencies>
     <!-- Common -->
     <dependency>
-      <groupId>com.intuit.karate</groupId>
+      <groupId>io.karatelabs</groupId>
       <artifactId>karate-core</artifactId>
     </dependency>
     <dependency>

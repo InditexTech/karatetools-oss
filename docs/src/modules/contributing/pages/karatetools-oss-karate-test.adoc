@@ -88,7 +88,7 @@ a|
 a|
 `cd e2e/karate`
 
-`mvn clean verify -DAPP_PORT=8888 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore"`
+`mvn clean verify -DAPP_PORT=8888 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore" -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml`
 |`e2e/karate/target/karate-reports/karate-summary.html`
 |all tests pass
 |===
@@ -137,7 +137,7 @@ a|
 
 `APP_PATH_TO_JAR="boot/target/karatetools-boot-X.X.X-SNAPSHOT.jar"`
 
-`APP_OPTIONS="--server.port=8080"`
+`APP_OPTIONS="--server.port=8888"`
 
 `JACOCO_AGENT_OPTIONS="-javaagent:target/jacocoagent.jar=dumponexit=true,output=file,destfile=target/jacoco-e2e/jacoco-e2e.exec,classdumpdir=target/jacoco-e2e/classes,excludes=*SpringCGLIB*:*HibernateProxy*:*MessagePostProcessor*:*_Accessor_*:*_Instantiator_*:**.invoker.**:**.*DTO,includes=dev.inditex.*"`
 
@@ -159,7 +159,12 @@ a|`docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Status}}\t{{
 a|
 `cd e2e/karate`
 
-`mvn clean verify -DAPP_PORT=8080 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore"`
+`mvn clean verify -DAPP_PORT=8888 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore" -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml`
+
+|all tests pass
+
+|Check karate report
+|`e2e/karate/target/karate-reports/karate-summary.html`
 |all tests pass
 
 |Stop app
