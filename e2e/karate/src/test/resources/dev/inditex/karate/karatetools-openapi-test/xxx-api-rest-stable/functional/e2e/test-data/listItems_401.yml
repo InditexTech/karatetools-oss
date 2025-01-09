@@ -1,9 +1,6 @@
 ---
 operationId: "listItems"
 statusCode: 401
-auth:
-  authMode: jwt
-  username: username200
 params:
   limit: 0
 body: null

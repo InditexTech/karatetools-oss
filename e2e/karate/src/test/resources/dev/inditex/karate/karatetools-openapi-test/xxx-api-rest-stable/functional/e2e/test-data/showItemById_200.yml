@@ -2,7 +2,7 @@
 operationId: "showItemById"
 statusCode: 200
 params:
-  itemId: 10
+  itemId: 0
 body: null
 matchResponse: true
 responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/showItemById/schema/showItemById_200.schema.yml'))"

@@ -131,6 +131,28 @@ public class BasicApiControllerTest {
   }
 
   @Nested
+  class deleteAllItems {
+    @Test
+    void when_items_exist_expect_no_content_all_items_deleted() {
+
+      final ResponseEntity<Void> response = controller.deleteAllItems();
+
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+      assertThat(controller.items).isEmpty();
+    }
+
+    @Test
+    void when_items_does_not_exist_expect_no_content() {
+      controller.items.clear();
+
+      final ResponseEntity<Void> response = controller.deleteAllItems();
+
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+      assertThat(controller.items).isEmpty();
+    }
+  }
+
+  @Nested
   class Authz {
     @Test
     void when_request_attributes_is_null_expect_throw_unauthorized_exception() {
@@ -250,6 +272,7 @@ public class BasicApiControllerTest {
       assertThat(response.getBody().getMessage()).isEqualTo(HttpStatus.UNAUTHORIZED.getReasonPhrase());
       assertThat(response.getBody().getStack()).isEqualTo("Unauthorized");
     }
+
   }
 
   /**

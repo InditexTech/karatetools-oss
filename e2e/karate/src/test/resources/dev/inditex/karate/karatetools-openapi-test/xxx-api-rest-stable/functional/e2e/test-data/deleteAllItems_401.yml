@@ -1,0 +1,7 @@
+---
+operationId: "deleteAllItems"
+statusCode: 401
+params: null
+body: null
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/deleteAllItems/schema/deleteAllItems_401.schema.yml'))"
