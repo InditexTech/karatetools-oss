@@ -88,7 +88,7 @@
   <Match>
     <!-- Protected for extension purposes -->
     <Bug pattern="MS_PKGPROTECT" />
-    <Class name="dev.inditex.karate.openapi.OpenApiGeneratorCLI" />
+    <Class name="dev.inditex.karate.openapi.OpenApiGeneratorConsole" />
     <Or>
       <Field name="operationFormat" />
     </Or>
@@ -106,7 +106,7 @@
   <Match>
     <!-- Not final for Testing purposes -->
     <Bug pattern="MS_SHOULD_BE_FINAL" />
-    <Class name="dev.inditex.karate.openapi.OpenApiGeneratorCLI" />
+    <Class name="dev.inditex.karate.openapi.OpenApiGeneratorConsole" />
     <Or>
       <Field name="consolePrompt" />
     </Or>

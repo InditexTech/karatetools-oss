@@ -37,7 +37,7 @@ public class OpenApiGeneratorOptions {
 
   /** The mode. */
   // Common Options
-  private OpenApiGeneratorMode mode = OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_DEFAULT_VALUE;
+  private OpenApiGeneratorMode mode = OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_DEFAULT_VALUE;
 
   /** The open api. */
   private OpenAPI openApi;
@@ -111,7 +111,7 @@ public class OpenApiGeneratorOptions {
    */
   public void selectMode() {
     // Prompt for Execution Mode
-    mode = OpenApiGeneratorCLI.promptMode();
+    mode = OpenApiGeneratorConsole.promptMode();
     log.debug("OpenApiGeneratorOptions.mode: {}", mode);
   }
 
@@ -122,10 +122,10 @@ public class OpenApiGeneratorOptions {
     // Get Open Api Files
     final List<String> openApis = findOpenApis();
     // Prompt for Open Api File from List
-    String openApiFileName = OpenApiGeneratorCLI.promptOpenApi(openApis);
+    String openApiFileName = OpenApiGeneratorConsole.promptOpenApi(openApis);
     // If none provided prompt for manually entered
     if (openApiFileName == null) {
-      openApiFileName = OpenApiGeneratorCLI.promptOpenApi();
+      openApiFileName = OpenApiGeneratorConsole.promptOpenApi();
       validateApiFile(openApiFileName);
     }
     // Parse Selected Open Api
@@ -147,7 +147,7 @@ public class OpenApiGeneratorOptions {
       throw new IllegalArgumentException("Unable to parse Open Api file Operations");
     }
     // Prompt for Operations to generate
-    final List<OperationPath> ops = OpenApiGeneratorCLI.promptOperations(operationsByTag);
+    final List<OperationPath> ops = OpenApiGeneratorConsole.promptOperations(operationsByTag);
     if (ops == null || ops.isEmpty()) {
       throw new IllegalArgumentException("Operations to generate for must be selected");
     }
@@ -168,7 +168,7 @@ public class OpenApiGeneratorOptions {
    */
   protected void selectOperationsResponses() {
     final Map<OperationPath, Set<String>> opsResponses = operations.stream().collect(Collectors.toMap(
-        o -> o, o -> OpenApiGeneratorCLI.promptOperationResponses(o, o.operation().getResponses().keySet())));
+        o -> o, o -> OpenApiGeneratorConsole.promptOperationResponses(o, o.operation().getResponses().keySet())));
     if (opsResponses.entrySet().stream().filter(e -> e.getValue() == null || e.getValue().isEmpty())
         .findAny()
         .orElse(null) != null) {
@@ -182,7 +182,7 @@ public class OpenApiGeneratorOptions {
    */
   protected void selectArtifact() {
     // Prompt for Artifact from List
-    final String artifactId = OpenApiGeneratorCLI.promptArtifacts(
+    final String artifactId = OpenApiGeneratorConsole.promptArtifacts(
         artifacts.keySet().stream().toList(), artifacts.keySet().iterator().next());
     artifacts.putIfAbsent(artifactId,
         MavenArtifact.builder().groupId(artifactId.split(":")[0]).artifactId(artifactId.split(":")[1]).build());
@@ -217,7 +217,7 @@ public class OpenApiGeneratorOptions {
    * @return the string
    */
   protected String selectTestName(final String message, final String error) {
-    final String test = OpenApiGeneratorCLI.promptTestName(message);
+    final String test = OpenApiGeneratorConsole.promptTestName(message);
     // If none provided break
     if (test == null) {
       throw new IllegalArgumentException(error);
@@ -238,7 +238,7 @@ public class OpenApiGeneratorOptions {
    * Select functional with inline mocks.
    */
   protected void selectFunctionalWithInlineMocks() {
-    inlineMocks = OpenApiGeneratorCLI.promptInlineMocks("Select if the test will include inline mocks");
+    inlineMocks = OpenApiGeneratorConsole.promptInlineMocks("Select if the test will include inline mocks");
   }
 
   /**
@@ -254,7 +254,7 @@ public class OpenApiGeneratorOptions {
    * Select inline mocks.
    */
   protected void selectInlineMocks() {
-    inlineMocks = OpenApiGeneratorCLI.promptInlineMocks("Select if the mocks are to be included in a functional test (Inline)");
+    inlineMocks = OpenApiGeneratorConsole.promptInlineMocks("Select if the mocks are to be included in a functional test (Inline)");
   }
 
   /**
@@ -263,7 +263,7 @@ public class OpenApiGeneratorOptions {
   protected void selectInlineMocksFunctionalArtifact() {
     // Functional Test Artifact Id needed for Inline Mocks
     final String functionalArtifactId =
-        OpenApiGeneratorCLI.promptSecondaryArtifacts("Select the artifact of the functional test for these inline mocks",
+        OpenApiGeneratorConsole.promptSecondaryArtifacts("Select the artifact of the functional test for these inline mocks",
             artifacts.keySet().stream().toList(), artifacts.keySet().iterator().next());
     artifacts.putIfAbsent(functionalArtifactId,
         MavenArtifact.builder().groupId(functionalArtifactId.split(":")[0]).artifactId(functionalArtifactId.split(":")[1]).build());
