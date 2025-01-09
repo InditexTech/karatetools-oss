@@ -108,7 +108,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Open Api Source Generation -->
+      <!-- Open Api Source Generation - Unpack Open Api Dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -131,6 +131,7 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Maven Jar Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -164,14 +165,17 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Maven Javadoc Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
+      <!-- Maven Source Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
+      <!-- Open Api Source Generation - Generate Open Api Source -->
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>

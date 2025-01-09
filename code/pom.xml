@@ -729,8 +729,7 @@
             </goals>
             <configuration>
               <!-- Sets the VM argument line used when integration tests are run. -->
-              <!-- JDK21: Enable instrumentation for Mockito -->
-              <argLine>${failsafeArgLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+              <argLine>${failsafeArgLine}</argLine>
               <!-- Skips integration tests based on -DskipITs -->
               <skipTests>${skipITs}</skipTests>
               <!-- Configures the test classes to be included in the integration test phase. -->
@@ -760,8 +759,7 @@
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- Sets the VM argument line used when unit tests are run. -->
-          <!-- JDK21: Enable instrumentation for Mockito -->
-          <argLine>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+          <argLine>${surefireArgLine}</argLine>
           <!-- Skips unit tests based on -DskipUTs -->
           <skipTests>${skipUTs}</skipTests>
           <!-- Excludes integration tests when unit tests are run. -->
