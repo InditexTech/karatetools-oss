@@ -1,6 +1,9 @@
 ---
 operationId: "deleteAllItems"
 statusCode: 401
+auth:
+  authMode: jwt
+  username: username200
 params: null
 body: null
 matchResponse: true

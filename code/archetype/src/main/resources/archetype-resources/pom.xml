@@ -20,7 +20,6 @@
     <!-- Test Execution & Reporting -->
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
-    <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
 
     <!-- Open Api Source Generation -->
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
@@ -61,14 +60,6 @@
           <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
           <!-- Enable this line if using Karate v1.0.0 -->
           <xrefLocation>${project.build.directory}/karate-reports</xrefLocation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>${maven-site-plugin.version}</version>
-        <configuration>
-          <outputDirectory>${project.build.directory}/surefire-html-report</outputDirectory>
         </configuration>
       </plugin>
       <!-- Open Api Source Generation -->

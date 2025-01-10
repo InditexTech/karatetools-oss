@@ -2,7 +2,7 @@
 operationId: "listItems"
 statusCode: 400
 params:
-  limit: 0
+  limit: 101
 body: null
 matchResponse: true
 responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/listItems/schema/listItems_400.schema.yml'))"
