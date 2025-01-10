@@ -20,7 +20,7 @@ integration:
   # Default test report configuration
   report:
     # Failsafe report folder, used to upload the report
-    folder: code/target/site
+    folder: code/target/reports
   # JaCoCo configuration
   jacoco:
     report:

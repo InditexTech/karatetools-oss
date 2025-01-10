@@ -20,7 +20,7 @@ unit:
   # Default test report configuration
   report:
     # Surefire report folder, used to upload the report
-    folder: code/target/site
+    folder: code/target/reports
   # JaCoCo configuration
   jacoco:
     report:
