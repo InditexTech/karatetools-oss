@@ -21,7 +21,7 @@ This action accepts as parameters:
 * **type**: The type of results.
   * Supported types: `surefire`, `failsafe`, `jacoco`, `karate` and `pitest`.
 * **results_folder**: The folder of the results. For example:
-  * `surefire/failsafe`: `code/target/site`
+  * `surefire/failsafe`: `code/target/reports`
   * `jacoco`:
     * `unit`: `code/jacoco-report-aggregate/target/site/jacoco-aggregate`
     * `integration`: `code/jacoco-report-aggregate/target/site/jacoco-aggregate-it`

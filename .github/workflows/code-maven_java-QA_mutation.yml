@@ -144,7 +144,7 @@ jobs:
           # type: The type of results. Supported types: 'surefire', 'failsafe', 'jacoco', 'karate' and 'pitest'.
           type: pitest
           # results_folder: The folder of the results. For example:
-          #   'surefire/failsafe': code/target/site
+          #   'surefire/failsafe': code/target/reports
           #   'jacoco': code/jacoco-report-aggregate/target/site/jacoco-aggregate or code/jacoco-report-aggregate/target/site/jacoco-aggregate-it
           #   'pitest': code/target/pit-reports
           #   'karate': e2e/karate/target/karate-reports

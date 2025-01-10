@@ -60,7 +60,7 @@ function fn() {
   // This may break existing test scripts only if you are extensively using the fuzzy matching short-cut #[] in enbedded schema validations.
   // The good news is that if you see any of your existing tests break, you can do this to get back the old behavior.
   // * configure matchEachEmptyAllowed = true
-  karate.configure('matchEachEmptyAllowed', false);
+  karate.configure('matchEachEmptyAllowed', true);
   
   return {
     cache: Java.type('dev.inditex.karate.test.KarateCache'),

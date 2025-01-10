@@ -1,9 +1,11 @@
 @smoke
 @op.deleteAllItems
 
-Feature: deleteAllItems Smoke Tests 
+Feature: deleteAllItems Smoke Tests
 
 Background:
+
+* callonce read('classpath:dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/common/reset/reset.feature')
 
 Scenario Outline: deleteAllItems <status>
 * def req = call utils.readTestData <testDataFile>
