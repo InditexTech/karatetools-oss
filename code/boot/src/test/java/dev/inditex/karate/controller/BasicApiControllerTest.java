@@ -131,7 +131,7 @@ public class BasicApiControllerTest {
   }
 
   @Nested
-  class deleteAllItems {
+  class DeleteAllItems {
     @Test
     void when_items_exist_expect_no_content_all_items_deleted() {
 
