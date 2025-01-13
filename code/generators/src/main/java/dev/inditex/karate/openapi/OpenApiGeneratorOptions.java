@@ -14,7 +14,6 @@ import dev.inditex.karate.openapi.data.OpenApiParser;
 import dev.inditex.karate.openapi.data.OpenApiParser.OperationPath;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -313,7 +312,6 @@ public class OpenApiGeneratorOptions {
    */
   protected boolean isOpenApi(final File dir, final String name) {
     final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
-    yamlMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
     if (name.endsWith(".yml")) {
       final File file = new File(dir.getAbsolutePath() + File.separator + name);
       try {
@@ -321,7 +319,7 @@ public class OpenApiGeneratorOptions {
         final Map<String, Object> yaml = yamlMapper.readValue(content, new TypeReference<Map<String, Object>>() {});
         return yaml.containsKey("openapi");
       } catch (final IOException e) {
-        OpenApiGeneratorANSILogger.warn(
+        OpenApiGeneratorANSILogger.debug(
             String.format("Not an Open Api file %s in folder %s %n    Exception [%s]", name, dir, e.getMessage()));
       }
     }
