@@ -96,7 +96,9 @@ a|
 a|
 `cd e2e/karate`
 
-`mvn clean verify -DAPP_PORT=8888 -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore" -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml`
+`APP_PORT=8888`
+
+`mvn clean verify -DAPP_PORT=$APP_PORT -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore" -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml`
 |`e2e/karate/target/karate-reports/karate-summary.html`
 |all tests pass
 |===

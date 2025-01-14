@@ -61,7 +61,7 @@ function fn() {
   // The good news is that if you see any of your existing tests break, you can do this to get back the old behavior.
   // * configure matchEachEmptyAllowed = true
   karate.configure('matchEachEmptyAllowed', true);
-  
+
   return {
     cache: Java.type('dev.inditex.karate.test.KarateCache'),
     utils: karate.call('classpath:karate-utils.js'),
