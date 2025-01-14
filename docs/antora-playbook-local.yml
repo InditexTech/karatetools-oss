@@ -64,7 +64,7 @@ asciidoc:
     # Karate Tools attributes
     # ############################################
     karatetools-package: dev.inditex.karate
-    karatetools-version: 3.1.0
+    karatetools-version: 5.1.0
     karatetools-unit-coverage-threshold: 90%
     karatetools-mutation-coverage-threshold: 90%
     karatetools-integration-coverage-threshold: 80%
