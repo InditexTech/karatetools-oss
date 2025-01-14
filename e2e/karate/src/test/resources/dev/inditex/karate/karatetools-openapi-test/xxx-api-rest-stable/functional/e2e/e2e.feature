@@ -1,9 +1,11 @@
 @functional
-@op.listItems @op.showItemById @op.createItems
+@op.listItems @op.showItemById @op.createItems @op.deleteAllItems
 
 Feature: e2e
 
 Background:
+
+* callonce read('classpath:dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/common/reset/reset.feature')
 
 Scenario: e2e - Success
 
@@ -24,21 +26,15 @@ Given def listItemsRequest = read('test-data/listItems_200.yml')
 When def listItemsResponse = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/listItems/listItems.feature') listItemsRequest
 Then match listItemsResponse.responseStatus == 200
 Then def response = listItemsResponse.response
-Then match response == '#[4]'
-## Pre-Created Items
+Then match response == '#[2]'
+## Pre-Created Items - Common Feature executed in Background
 Then match response[0].id == 1
 Then match response[0].name == 'Item1'
 Then match response[0].tag == 'Tag1'
-Then match response[1].id == 2
-Then match response[1].name == 'Item2'
-Then match response[1].tag == 'Tag2'
-Then match response[2].id == 3
-Then match response[2].name == 'Item3'
-Then match response[2].tag == 'Tag3'
 ## Created Item in previous steps
-Then match response[3].id == 10
-Then match response[3].name == 'Item10'
-Then match response[3].tag == 'Tag10'
+Then match response[1].id == 10
+Then match response[1].name == 'Item10'
+Then match response[1].tag == 'Tag10'
 
 # showItemById-200
 Given def showItemByIdRequest = read('test-data/showItemById_200.yml')
@@ -50,7 +46,19 @@ Then match response.id == 10
 Then match response.name == 'Item10'
 Then match response.tag == 'Tag10'
 
-Scenario: e2e - createItems - 401 Error with JwT
+# deleteAllItems-204
+Given def deleteAllItemsRequest = read('test-data/deleteAllItems_204.yml')
+When def deleteAllItemsResponse = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/deleteAllItems/deleteAllItems.feature') deleteAllItemsRequest
+Then match deleteAllItemsResponse.responseStatus == 204
+
+# listItems-200
+Given def listItemsRequest = read('test-data/listItems_200.yml')
+When def listItemsResponse = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/listItems/listItems.feature') listItemsRequest
+Then match listItemsResponse.responseStatus == 200
+Then def response = listItemsResponse.response
+Then match response == '#[0]'
+
+Scenario: e2e - createItems - 401 Error with JWT
 
 # createItems-401
 Given def createItemsRequest = read('test-data/createItems_401.yml')
@@ -61,7 +69,7 @@ Then match response.code == 401
 Then match response.message == 'Unauthorized'
 Then match response.stack == 'Unauthorized'
 
-Scenario: e2e - listItems - 401 Error with JwT
+Scenario: e2e - listItems - 401 Error with JWT
 
 # listItems-401
 Given def listItemsRequest = read('test-data/listItems_401.yml')
@@ -72,13 +80,24 @@ Then match response.code == 401
 Then match response.message == 'Unauthorized'
 Then match response.stack == 'Unauthorized'
 
-Scenario: e2e - showItemById - 401 Error
+Scenario: e2e - showItemById - 401 Error with JWT
 
 # showItemById-401
 Given def showItemByIdRequest = read('test-data/showItemById_401.yml')
 When def showItemByIdResponse = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/showItemById/showItemById.feature') showItemByIdRequest
 Then match showItemByIdResponse.responseStatus == 401
 Then def response = showItemByIdResponse.response
+Then match response.code == 401
+Then match response.message == 'Unauthorized'
+Then match response.stack == 'Unauthorized'
+
+Scenario: e2e - deleteAllItems - 401 Error with JWT
+
+# deleteAllItems-401
+Given def deleteAllItemsRequest = read('test-data/deleteAllItems_401.yml')
+When def deleteAllItemsResponse = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/deleteAllItems/deleteAllItems.feature') deleteAllItemsRequest
+Then match deleteAllItemsResponse.responseStatus == 401
+Then def response = deleteAllItemsResponse.response
 Then match response.code == 401
 Then match response.message == 'Unauthorized'
 Then match response.stack == 'Unauthorized'

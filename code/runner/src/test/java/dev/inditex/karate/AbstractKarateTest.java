@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intuit.karate.Constants;
 import com.intuit.karate.Results;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,14 @@ public abstract class AbstractKarateTest {
 
   protected ListAppender<ILoggingEvent> logWatcher;
 
+  protected Level defaultLogLevelIntuitKarate;
+
+  protected Level defaultLogLevelKarateTools;
+
   @BeforeEach
   protected void beforeEach(final TestInfo testInfo) throws IOException {
+    defaultLogLevelIntuitKarate = ((Logger) LoggerFactory.getLogger("com.intuit.karate")).getLevel();
+    defaultLogLevelKarateTools = ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger("com.intuit.karate")).addAppender(logWatcher);
@@ -52,6 +59,14 @@ public abstract class AbstractKarateTest {
     clearKarateSystemProperties();
     prepareReportFolders(testInfo);
     setRamdomPortForKarateMockServer();
+  }
+
+  @AfterEach
+  protected void afterEach() {
+    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).setLevel(defaultLogLevelIntuitKarate);
+    ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).setLevel(defaultLogLevelKarateTools);
   }
 
   protected void clearKarateSystemProperties() {

@@ -1,0 +1,10 @@
+---
+operationId: "createItems"
+statusCode: 201
+params: null
+body:
+  id: 0 # To be replaced by the test
+  name: "Item0" # To be replaced by the test
+  tag: "Tag0" # To be replaced by the test
+matchResponse: true
+responseMatches: "#(read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/createItems/schema/createItems_201.schema.yml'))"

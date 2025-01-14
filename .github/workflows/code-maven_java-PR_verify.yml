@@ -37,7 +37,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-    
+
       - name: Setup asdf Cache
         uses: actions/cache@v4
         continue-on-error: true
@@ -93,7 +93,7 @@ jobs:
         uses: asdf-vm/actions/install@v3
         with:
           tool_versions: |
-            java temurin-17.0.8+7
+            java temurin-21.0.4+7.0.LTS
             nodejs 20.10.0
             maven 3.9.4
 
@@ -101,7 +101,7 @@ jobs:
         if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
         working-directory: code
         run: |
-          asdf local java temurin-17.0.8+7
+          asdf local java temurin-21.0.4+7.0.LTS
           asdf local nodejs 20.10.0
           asdf local maven 3.9.4
 

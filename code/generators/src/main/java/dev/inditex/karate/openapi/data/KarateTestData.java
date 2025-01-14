@@ -103,12 +103,12 @@ public class KarateTestData extends KarateWriter {
     // Set Headers Example if defined
     setHeaders(operation, openApi, testData);
     // Set Body Example if Schema defined
-    final Schema requestSchema = OpenApiGenerators.getRequestSchema(operation);
+    final Schema requestSchema = OpenApiUtils.getRequestSchema(operation);
     if (requestSchema != null) {
       testData.setBody(OpenApiExampleGenerator.generateExample(openApi, requestSchema));
     }
     // Set Response Matches if Schema defined
-    final Schema responseSchema = OpenApiGenerators.getResponseSchema(operation, statusCode);
+    final Schema responseSchema = OpenApiUtils.getResponseSchema(operation, statusCode);
     if (responseSchema != null) {
       testData.setResponseMatches("#(read('classpath:" + responseSchemaClassPath + "'))");
     }

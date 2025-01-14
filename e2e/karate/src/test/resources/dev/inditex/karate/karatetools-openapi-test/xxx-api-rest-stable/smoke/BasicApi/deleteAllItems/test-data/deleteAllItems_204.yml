@@ -1,0 +1,7 @@
+---
+operationId: "deleteAllItems"
+statusCode: 204
+params: null
+body: null
+matchResponse: true
+responseMatches: null

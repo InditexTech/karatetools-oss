@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class OpenApiGenerator.
@@ -55,25 +53,25 @@ public class OpenApiGenerator {
    */
   public List<Path> execute() {
     log.debug("OpenApiGenerator.execute() ...");
-    final Path rootPath = Paths.get(this.targetFolder);
+    final Path rootPath = Paths.get(targetFolder);
     final List<Path> outputs = new ArrayList<>();
     try {
       // Configure options
-      this.configureOptions();
+      configureOptions();
       // Execute based on Mode
-      if (this.options.getMode() == OpenApiGeneratorModes.OPERATIONS) {
-        outputs.addAll(this.executeOperations());
-      } else if (this.options.getMode() == OpenApiGeneratorModes.SMOKE_TESTS) {
-        outputs.addAll(this.executeSmokeTests());
-      } else if (this.options.getMode() == OpenApiGeneratorModes.FUNCTIONAL_TEST) {
-        outputs.addAll(this.executeFunctionalTest());
-      } else if (this.options.getMode() == OpenApiGeneratorModes.MOCK_DATA) {
-        outputs.addAll(this.executeMockData());
+      if (options.getMode() == OpenApiGeneratorModes.OPERATIONS) {
+        outputs.addAll(executeOperations());
+      } else if (options.getMode() == OpenApiGeneratorModes.SMOKE_TESTS) {
+        outputs.addAll(executeSmokeTests());
+      } else if (options.getMode() == OpenApiGeneratorModes.FUNCTIONAL_TEST) {
+        outputs.addAll(executeFunctionalTest());
+      } else if (options.getMode() == OpenApiGeneratorModes.MOCK_DATA) {
+        outputs.addAll(executeMockData());
       }
     } catch (final IllegalArgumentException e) {
-      ANSILogger.error(e.getMessage());
+      OpenApiGeneratorANSILogger.error(e.getMessage());
     }
-    outputs.forEach(p -> ANSILogger.info("Generated " + rootPath.relativize(p)));
+    outputs.forEach(p -> OpenApiGeneratorANSILogger.info("Generated " + rootPath.relativize(p)));
     return outputs;
   }
 
@@ -81,8 +79,8 @@ public class OpenApiGenerator {
    * Configure options.
    */
   public void configureOptions() {
-    this.options = new OpenApiGeneratorOptions();
-    this.options.configure();
+    options = new OpenApiGeneratorOptions();
+    options.configure();
   }
 
   /**
@@ -91,11 +89,15 @@ public class OpenApiGenerator {
    * @return the list
    */
   protected List<Path> executeOperations() {
-    final Path rootPath = Paths.get(this.targetFolder);
+    final Path rootPath = Paths.get(targetFolder);
     final List<Path> outputs = new ArrayList<>();
-    ANSILogger.info("Generating Operations ...");
-    outputs.addAll(OpenApiGenerators.generateOperations(rootPath, this.options.getArtifact(), this.options.getOperations()));
-    KarateConfig.updateKarateUrls(this.targetFolder, this.options.getArtifact());
+    OpenApiGeneratorANSILogger.info("Generating Operations ...");
+    outputs.addAll(
+        OpenApiGenerators.generateOperations(
+            rootPath,
+            options.getArtifact(),
+            options.getOperations()));
+    KarateConfig.updateKarateUrls(targetFolder, options.getArtifact());
     return outputs;
   }
 
@@ -105,11 +107,15 @@ public class OpenApiGenerator {
    * @return the list
    */
   protected List<Path> executeSmokeTests() {
-    final Path rootPath = Paths.get(this.targetFolder);
+    final Path rootPath = Paths.get(targetFolder);
     final List<Path> outputs = new ArrayList<>();
-    ANSILogger.info("Generating Smoke Tests ...");
-    outputs.addAll(OpenApiGenerators.generateSmokeTests(rootPath, this.options.getArtifact(), this.options.getOperations(),
-        this.options.getOpenApi()));
+    OpenApiGeneratorANSILogger.info("Generating Smoke Tests ...");
+    outputs.addAll(
+        OpenApiGenerators.generateSmokeTests(
+            rootPath,
+            options.getArtifact(),
+            options.getOperations(),
+            options.getOpenApi()));
     return outputs;
   }
 
@@ -119,13 +125,18 @@ public class OpenApiGenerator {
    * @return the list
    */
   protected List<Path> executeFunctionalTest() {
-    final Path rootPath = Paths.get(this.targetFolder);
+    final Path rootPath = Paths.get(targetFolder);
     final List<Path> outputs = new ArrayList<>();
-    ANSILogger.info("Generating Functional Tests ...");
-    ANSILogger.info("Generating Functional Test Case [" + this.options.getTestName() + "] ...");
-    outputs.addAll(OpenApiGenerators.generateFunctionalTest(rootPath,
-        this.options.getArtifact(), this.options.getTestName(), this.options.getInlineMocks(), this.options.getOperationsResponses(),
-        this.options.getOpenApi()));
+    OpenApiGeneratorANSILogger.info("Generating Functional Tests ...");
+    OpenApiGeneratorANSILogger.info("Generating Functional Test Case [" + options.getTestName() + "] ...");
+    outputs.addAll(
+        OpenApiGenerators.generateFunctionalTest(
+            rootPath,
+            options.getArtifact(),
+            options.getTestName(),
+            options.getInlineMocks(),
+            options.getOperationsResponses(),
+            options.getOpenApi()));
     return outputs;
   }
 
@@ -135,71 +146,17 @@ public class OpenApiGenerator {
    * @return the list
    */
   protected List<Path> executeMockData() {
-    final Path rootPath = Paths.get(this.targetFolder);
+    final Path rootPath = Paths.get(targetFolder);
     final List<Path> outputs = new ArrayList<>();
-    ANSILogger.info("Generating Mock Data ...");
-    ANSILogger.info("Generating Mock Data ...");
+    OpenApiGeneratorANSILogger.info("Generating Mock Data ...");
+    OpenApiGeneratorANSILogger.info("Generating Mock Data ...");
     outputs.addAll(OpenApiGenerators.generateMockData(rootPath,
-        this.options.getArtifact(), this.options.getInlineMocks(), this.options.getInlineMocksFunctionalArtifact(),
-        this.options.getTestName(), this.options.getOperationsResponses(), this.options.getOpenApi()));
+        options.getArtifact(),
+        options.getInlineMocks(),
+        options.getInlineMocksFunctionalArtifact(),
+        options.getTestName(),
+        options.getOperationsResponses(),
+        options.getOpenApi()));
     return outputs;
-  }
-
-  /**
-   * The Class ANSILogger.
-   */
-  protected static class ANSILogger {
-
-    /** The Constant OPEN_API_GENERATOR_STDOUT. */
-    protected static final Logger OPEN_API_GENERATOR_STDOUT = LoggerFactory.getLogger("OpenApiGenerator");
-
-    /** The Constant ANSI_RESET. */
-    protected static final String ANSI_RESET = "\u001B[0m";
-
-    /** The Constant ANSI_BLUE. */
-    protected static final String ANSI_BLUE = "\u001B[34m";
-
-    /** The Constant ANSI_YELLOW. */
-    protected static final String ANSI_YELLOW = "\u001B[33m";
-
-    /** The Constant ANSI_RED. */
-    protected static final String ANSI_RED = "\u001B[31m";
-
-    /** The Constant LOG_FORMAT. */
-    protected static final String LOG_FORMAT = "\n{}{}{}{}\n";
-
-    /**
-     * Instantiates a new ANSI logger.
-     */
-    protected ANSILogger() {
-      // Empty
-    }
-
-    /**
-     * Info.
-     *
-     * @param message the message
-     */
-    public static void info(final String message) {
-      OPEN_API_GENERATOR_STDOUT.info(LOG_FORMAT, ANSI_BLUE, "INFO  - ", message, ANSI_RESET);
-    }
-
-    /**
-     * Warn.
-     *
-     * @param message the message
-     */
-    public static void warn(final String message) {
-      OPEN_API_GENERATOR_STDOUT.debug(LOG_FORMAT, ANSI_YELLOW, "WARN  - ", message, ANSI_RESET);
-    }
-
-    /**
-     * Error.
-     *
-     * @param message the message
-     */
-    public static void error(final String message) {
-      OPEN_API_GENERATOR_STDOUT.error(LOG_FORMAT, ANSI_RED, "ERROR - ", message, ANSI_RESET);
-    }
   }
 }

@@ -24,18 +24,25 @@ import com.intuit.karate.Results;
 import com.intuit.karate.Runner;
 import com.intuit.karate.Suite;
 import com.intuit.karate.core.FeatureResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+@Slf4j
 public class KarateReportsGeneratorTest extends AbstractKarateTest {
 
+  @Override
   @AfterEach
-  protected void afterEach() throws IOException {
+  protected void afterEach() {
     // Clean test surefire reports folder so they are not counted in general reports
-    FileUtils.deleteDirectory(new File(surefireReportsFolder));
+    try {
+      FileUtils.deleteDirectory(new File(surefireReportsFolder));
+    } catch (final IOException e) {
+      log.error("Error deleting surefire reports folder", e);
+    }
   }
 
   @Nested
@@ -79,7 +86,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     }
   }
 
-  protected String generateResults(Results results) {
+  protected String generateResults(final Results results) {
     return KarateReportsGenerator.generate(results);
   }
 
@@ -229,7 +236,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   @SuppressWarnings("rawtypes")
   protected Results getTestResults(final String file) {
     String path = "classpath:scenarios/karate-reports";
-    if (file != null && file.length() > 0) {
+    if (file != null && !file.isEmpty()) {
       path = path + File.separator + file;
     }
     final Runner.Builder runner =

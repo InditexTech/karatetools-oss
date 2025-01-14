@@ -16,7 +16,7 @@ parse_surefire() {
   FOLDER=$2
 
   # Define File
-  REPORT_FILE=$FOLDER/surefire-report.html
+  REPORT_FILE=$FOLDER/surefire.html
   if [[ -s "$REPORT_FILE" ]]; then
 
     # Extract Values

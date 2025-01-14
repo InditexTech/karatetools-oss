@@ -22,12 +22,12 @@ public class KarateRunnerTest extends AbstractKarateTest {
     @MethodSource("executeArguments")
     void when_execute_expect_result(final String env, final String opts,
         final String expectedEnv, final int expectedThreads, final List<String> expectedPaths, final List<String> expectedTags) {
-      if (env != null && env.length() > 0) {
+      if (env != null && !env.isEmpty()) {
         System.setProperty(Constants.KARATE_ENV, env);
       } else {
         System.clearProperty(Constants.KARATE_ENV);
       }
-      if (opts != null && opts.length() > 0) {
+      if (opts != null && !opts.isEmpty()) {
         System.setProperty(Constants.KARATE_OPTIONS, opts);
       } else {
         System.clearProperty(Constants.KARATE_OPTIONS);
@@ -76,7 +76,7 @@ public class KarateRunnerTest extends AbstractKarateTest {
     @ParameterizedTest
     @MethodSource("parseKarateOptionsArguments")
     void when_parse_expect_options(final String opts, final List<String> expectedTags, final int expectedThreads, final String warning) {
-      if (opts != null && opts.length() > 0) {
+      if (opts != null && !opts.isEmpty()) {
         System.setProperty(Constants.KARATE_OPTIONS, opts);
       } else {
         System.clearProperty(Constants.KARATE_OPTIONS);

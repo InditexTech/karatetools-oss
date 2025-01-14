@@ -88,6 +88,25 @@ paths:
                 code: 400
                 message: Bad Request
                 stack: Error creating item
+    delete:
+      summary: Delete all items
+      description: Delete all items
+      operationId: deleteAllItems
+      tags:
+      - BasicApi
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 401
+                message: Unauthorized
+                stack: User not authorized
   /items/{itemId}:
     get:
       summary: Info for a specific item

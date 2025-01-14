@@ -30,6 +30,7 @@ import de.codeshelf.consoleui.prompt.ConfirmResult;
 import de.codeshelf.consoleui.prompt.InputResult;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,15 +48,24 @@ public class OpenApiGeneratorTest {
 
   protected ListAppender<ILoggingEvent> logWatcher;
 
+  protected Level defaultLogLevel;
+
   @BeforeEach
   protected void beforeEach(final TestInfo testInfo) throws IOException {
     ConsoleCLI.withoutRealTerminal();
+    defaultLogLevel = ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).addAppender(logWatcher);
-    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.WARN);
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.ERROR);
     prepareGeneratorFolders(testInfo);
     generator = new OpenApiGenerator(targetFolder);
+  }
+
+  @AfterEach
+  void afterEach() {
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(defaultLogLevel);
   }
 
   protected void prepareGeneratorFolders(final TestInfo testInfo) throws IOException {
@@ -97,17 +107,17 @@ public class OpenApiGeneratorTest {
       final String artifactId = "dev.inditex.karate.openapi:test";
       final String openApiFile = "src/test/resources/openapi/karatetools/rest/basic/openapi-rest.yml";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
       if (manualInput) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
-            new ListResult(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
+            new ListResult(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
       } else {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
       }
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 
       final var result = generator.execute();
@@ -234,17 +244,17 @@ public class OpenApiGeneratorTest {
       final String artifactId = "dev.inditex.karate.openapi:test";
       final String openApiFile = "src/test/resources/openapi/karatetools/rest/basic/openapi-rest.yml";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
       if (manualInput) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
-            new ListResult(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
+            new ListResult(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
       } else {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
       }
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 
       final var result = generator.execute();
@@ -368,25 +378,25 @@ public class OpenApiGeneratorTest {
       final String artifactId = "dev.inditex.karate.openapi:test";
       final String openApiFile = "src/test/resources/openapi/karatetools/rest/basic/openapi-rest.yml";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
       if (manualInput) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
-            new ListResult(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
+            new ListResult(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
       } else {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
       }
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
       // Response Code only applicable for Functional, Mock Data
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(returnCodes)));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
       // Inline Mocks only applicable for Functional and Mock Data
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_INLINE_MOCKS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_INLINE_MOCKS_ID,
           new ConfirmResult(inlineMocks ? ConfirmationValue.YES : ConfirmationValue.NO));
       // Test Name only applicable for Functional and Mock Data (Inline Mocks)
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_TEST_NAME_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_TEST_NAME_ID,
           new InputResult(getTestName(inlineMocks, operationId, returnCodes)));
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 
@@ -606,31 +616,31 @@ public class OpenApiGeneratorTest {
       final String artifactId = "dev.inditex.karate.openapi:external";
       final String openApiFile = "src/test/resources/openapi/karatetools/rest/basic/openapi-rest.yml";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
       if (manualInput) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
-            new ListResult(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID,
+            new ListResult(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_DEFAULT_VALUE));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(openApiFile));
       } else {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
       }
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
       // Response Code only applicable for Functional, Mock Data
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(returnCodes)));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
       // Inline Mocks only applicable for Functional and Mock Data
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_INLINE_MOCKS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_INLINE_MOCKS_ID,
           new ConfirmResult(inlineMocks ? ConfirmationValue.YES : ConfirmationValue.NO));
       // Test Name only applicable for Functional and Mock Data (Inline Mocks)
       if (inlineMocks) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_TEST_NAME_ID,
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_TEST_NAME_ID,
             new InputResult(getTestName(inlineMocks, operationId, returnCodes)));
       }
       // Secondary Artifact only applicable for Mock Data (Inline Mocks)
       if (inlineMocks) {
-        mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_SECONDARY_ARTIFACT_ID,
+        mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_SECONDARY_ARTIFACT_ID,
             new ListResult("dev.inditex.karate.openapi:test"));
       }
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
@@ -836,8 +846,8 @@ public class OpenApiGeneratorTest {
     void when_common_with_null_api_expect_error() throws NoSuchFieldException, SecurityException {
       final OpenApiGeneratorMode mode = OpenApiGeneratorModes.OPERATIONS;
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(null));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(null));
       final String expectedError = "Open Api file must be provided";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 
@@ -852,8 +862,8 @@ public class OpenApiGeneratorTest {
     void when_common_with_blank_api_expect_error() throws NoSuchFieldException, SecurityException {
       final OpenApiGeneratorMode mode = OpenApiGeneratorModes.OPERATIONS;
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(""));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_MANUAL_ID, new InputResult(""));
       final String expectedError = "Open Api file must be valid";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 
@@ -869,9 +879,9 @@ public class OpenApiGeneratorTest {
       final OpenApiGeneratorMode mode = OpenApiGeneratorModes.OPERATIONS;
       final String openApiFile = "src/test/resources/openapi/karatetools/rest/basic/openapi-rest.yml";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of())));
       final String expectedError = "Operations to generate for must be selected";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
@@ -890,11 +900,11 @@ public class OpenApiGeneratorTest {
       final String operationId = ExampleBasicApiMother.getCreateItemsOperationId();
       final String operationDisplayName = ExampleBasicApiMother.getCreateItemsOperationDisplayName();
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(Set.of())));
       final String expectedError = "Responses to generate for must be selected for all Operations";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
@@ -913,11 +923,11 @@ public class OpenApiGeneratorTest {
       final String operationId = ExampleBasicApiMother.getCreateItemsOperationId();
       final String operationDisplayName = ExampleBasicApiMother.getCreateItemsOperationDisplayName();
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(Set.of())));
       final String expectedError = "Responses to generate for must be selected for all Operations";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
@@ -937,11 +947,11 @@ public class OpenApiGeneratorTest {
       final String operationDisplayName = ExampleBasicApiMother.getCreateItemsOperationDisplayName();
       final Set<String> returnCodes = Set.of("201");
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(returnCodes)));
       final String expectedError = "Test Name must be provided for functional tests";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
@@ -962,14 +972,14 @@ public class OpenApiGeneratorTest {
       final Set<String> returnCodes = Set.of("201");
       final String artifactId = "dev.inditex.karate.openapi:test";
       final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATIONS_ID,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_MODE_ID, new ListResult(mode.name()));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPEN_API_FILE_LIST_ID, new ListResult(openApiFile));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID,
           new CheckboxResult(new HashSet<>(Set.of(operationDisplayName))));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATION_RESPONSE_ID_PREFIX + operationId,
           new CheckboxResult(new HashSet<>(returnCodes)));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
-      mockPrompts.put(OpenApiGeneratorCLI.OPEN_API_GENERATOR_INLINE_MOCKS_ID, new ConfirmResult(ConfirmationValue.YES));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_ARTIFACT_ID, new ListResult(artifactId));
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_INLINE_MOCKS_ID, new ConfirmResult(ConfirmationValue.YES));
       final String expectedError = "Test Name must be provided for inline mocks";
       ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, false);
 

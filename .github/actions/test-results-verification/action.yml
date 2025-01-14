@@ -10,7 +10,7 @@ inputs:
   results_folder:
     description: |
       The folder of the results. For example:
-      'surefire/failsafe': code/target/site.
+      'surefire/failsafe': code/target/reports.
       'jacoco': code/jacoco-report-aggregate/target/site/jacoco-aggregate or code/jacoco-report-aggregate/target/site/jacoco-aggregate-it.
       'karate': e2e/karate/target/karate-reports.
       'pitest': code/target/pit-reports.

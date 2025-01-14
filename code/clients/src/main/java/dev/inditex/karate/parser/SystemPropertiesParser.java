@@ -45,10 +45,10 @@ public class SystemPropertiesParser {
    * @param map the map
    * @return the map
    */
-  protected static Map<Object, Object> parseMap(final Map<Object, Object> map) {
+  protected static Map<Object, Object> parseMap(final Map<?, ?> map) {
     final Map<Object, Object> parsedMap = new HashMap<>();
     if (map != null) {
-      for (final Entry<Object, Object> entry : map.entrySet()) {
+      for (final Entry<?, ?> entry : map.entrySet()) {
         final Object parsedValue = parseValue(entry.getValue());
         parsedMap.put(entry.getKey(), parsedValue);
       }
@@ -62,39 +62,36 @@ public class SystemPropertiesParser {
    * @param value the value
    * @return the object
    */
-  @SuppressWarnings("unchecked")
   protected static Object parseValue(final Object value) {
     log.trace("parseValue-> {}", value);
-    if (value instanceof final Map map) {
-      return parseMap(map);
-    } else if (value instanceof final Number num) {
-      return num;
-    } else if (value instanceof final Boolean bool) {
-      return bool;
-    } else if (value instanceof final String str) {
-      final StringBuilder sb = new StringBuilder();
-      final Matcher matcher = Pattern.compile(VARIABLE_PATTERN).matcher(str);
-      while (matcher.find()) {
-        final String match = matcher.group(1);
-        log.trace("          -> {}", match);
-        String systemKey = match;
-        String defaultValue = match;
-        if (match.contains(DEFAULT_SEPARATOR)) {
-          systemKey = match.substring(0, match.indexOf(DEFAULT_SEPARATOR));
-          defaultValue = match.substring(match.indexOf(DEFAULT_SEPARATOR) + 1, match.length());
+    return switch (value) {
+      case final Map<?, ?> map -> parseMap(map);
+      case final Number num -> num;
+      case final Boolean bool -> bool;
+      case final String str -> {
+        final StringBuilder sb = new StringBuilder();
+        final Matcher matcher = Pattern.compile(VARIABLE_PATTERN).matcher(str);
+        while (matcher.find()) {
+          final String match = matcher.group(1);
+          log.trace("          -> {}", match);
+          String systemKey = match;
+          String defaultValue = match;
+          if (match.contains(DEFAULT_SEPARATOR)) {
+            systemKey = match.substring(0, match.indexOf(DEFAULT_SEPARATOR));
+            defaultValue = match.substring(match.indexOf(DEFAULT_SEPARATOR) + 1);
+          }
+          log.trace("               -> [{},{}]", systemKey, defaultValue);
+          final String systemValue = System.getProperty(systemKey, defaultValue);
+          log.trace("                    -> [{}]", systemValue);
+          matcher.appendReplacement(sb, systemValue);
         }
-        log.trace("               -> [{},{}]", systemKey, defaultValue);
-        final String systemValue = System.getProperty(systemKey, defaultValue);
-        log.trace("                    -> [{}]", systemValue);
-        matcher.appendReplacement(sb, systemValue);
+        matcher.appendTail(sb);
+        final String parsedValue = sb.toString();
+        log.trace("parseValue({})\n        => {}", value, parsedValue);
+        yield parsedValue;
       }
-      matcher.appendTail(sb);
-      final String parsedValue = sb.toString();
-      log.trace("parseValue({})\n        => {}", value, parsedValue);
-      return parsedValue;
-    } else {
-      throw new IllegalArgumentException(String.format("Unable to parse type [%s]", value.getClass()));
-    }
+      default -> throw new IllegalArgumentException(String.format("Unable to parse type [%s]", value.getClass()));
+    };
   }
 
   /**
@@ -114,10 +111,10 @@ public class SystemPropertiesParser {
    * @param map the map
    * @return the map
    */
-  protected static Map<Object, Object> maskMap(final Map<Object, Object> map) {
+  protected static Map<Object, Object> maskMap(final Map<?, ?> map) {
     final Map<Object, Object> maskedMap = new HashMap<>();
     if (map != null) {
-      for (final Entry<Object, Object> entry : map.entrySet()) {
+      for (final Entry<?, ?> entry : map.entrySet()) {
         final Object maskedValue = mask(entry.getKey(), entry.getValue());
         maskedMap.put(entry.getKey(), maskedValue);
       }
@@ -132,15 +129,12 @@ public class SystemPropertiesParser {
    * @param value the value
    * @return the object
    */
-  @SuppressWarnings("unchecked")
   protected static Object mask(final Object key, final Object value) {
-    if (value instanceof final Map map) {
-      return maskMap(map);
-    } else if (value instanceof final String str) {
-      return maskValue(key, str);
-    } else {
-      return value;
-    }
+    return switch (value) {
+      case final Map<?, ?> map -> maskMap(map);
+      case final String str -> maskValue(key, str);
+      default -> value;
+    };
   }
 
   /**

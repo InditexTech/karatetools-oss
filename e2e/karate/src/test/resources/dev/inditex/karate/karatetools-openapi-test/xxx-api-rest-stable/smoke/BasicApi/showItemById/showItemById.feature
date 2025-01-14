@@ -5,6 +5,8 @@ Feature: showItemById Smoke Tests
 
 Background:
 
+* callonce read('classpath:dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/common/reset/reset.feature')
+
 Scenario Outline: showItemById <status>
 * def req = call utils.readTestData <testDataFile>
 * def result = call read('classpath:apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/BasicApi/showItemById/showItemById.feature') req

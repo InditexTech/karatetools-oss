@@ -79,6 +79,18 @@ public class BasicApiController implements BasicApiInterface {
   }
 
   /**
+   * Delete all items.
+   * 
+   * @return the response entity
+   */
+  @Override
+  public ResponseEntity<Void> deleteAllItems() {
+    authz();
+    items.clear();
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
    * Sets the items.
    *
    * @param items the items
