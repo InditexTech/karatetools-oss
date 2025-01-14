@@ -38,7 +38,7 @@ parse_results() {
       # Load parser
       # shellcheck disable=SC1090
       source "$PARSER"
-      # Define command, for example parse_surefire surefire code/target/site
+      # Define command, for example parse_surefire surefire code/target/reports
       COMMAND="parse_$RESULTS_TYPE $RESULTS_TYPE $RESULTS_FOLDER"
       # Execute command
       echo "Executing       [$COMMAND]"

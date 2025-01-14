@@ -25,7 +25,7 @@ class OpenApiGeneratorANSILoggerTest {
     logWatcher = new ListAppender<>();
     logWatcher.start();
     ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).addAppender(logWatcher);
-    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.INFO);
+    ((Logger) LoggerFactory.getLogger("OpenApiGenerator")).setLevel(Level.DEBUG);
   }
 
   @AfterEach
@@ -51,7 +51,7 @@ class OpenApiGeneratorANSILoggerTest {
 
       assertThat(logWatcher.list).hasSize(1).extracting("level").containsOnly(Level.INFO);
       assertThat(logWatcher.list.get(0).getFormattedMessage())
-          .contains(OpenApiGeneratorANSILogger.ANSI_BLUE + "INFO  - " + message + OpenApiGeneratorANSILogger.ANSI_RESET);
+          .contains(OpenApiGeneratorANSILogger.ANSI_BLUE + "INFO  - " + message + OpenApiGeneratorANSILogger.ANSI_DEFAULT);
 
     }
   }
@@ -65,7 +65,7 @@ class OpenApiGeneratorANSILoggerTest {
 
       assertThat(logWatcher.list).hasSize(1).extracting("level").containsOnly(Level.WARN);
       assertThat(logWatcher.list.get(0).getFormattedMessage())
-          .contains(OpenApiGeneratorANSILogger.ANSI_YELLOW + "WARN  - " + message + OpenApiGeneratorANSILogger.ANSI_RESET);
+          .contains(OpenApiGeneratorANSILogger.ANSI_YELLOW + "WARN  - " + message + OpenApiGeneratorANSILogger.ANSI_DEFAULT);
     }
   }
 
@@ -78,8 +78,20 @@ class OpenApiGeneratorANSILoggerTest {
 
       assertThat(logWatcher.list).hasSize(1).extracting("level").containsOnly(Level.ERROR);
       assertThat(logWatcher.list.get(0).getFormattedMessage())
-          .contains(OpenApiGeneratorANSILogger.ANSI_RED + "ERROR - " + message + OpenApiGeneratorANSILogger.ANSI_RESET);
+          .contains(OpenApiGeneratorANSILogger.ANSI_RED + "ERROR - " + message + OpenApiGeneratorANSILogger.ANSI_DEFAULT);
     }
   }
 
+  @Nested
+  class DEbug {
+    @Test
+    void when_message_expect_delegate_to_logger_with_color() {
+      final String message = "message";
+      OpenApiGeneratorANSILogger.debug(message);
+
+      assertThat(logWatcher.list).hasSize(1).extracting("level").containsOnly(Level.DEBUG);
+      assertThat(logWatcher.list.get(0).getFormattedMessage())
+          .contains(OpenApiGeneratorANSILogger.ANSI_DEFAULT + "DEBUG - " + message + OpenApiGeneratorANSILogger.ANSI_DEFAULT);
+    }
+  }
 }

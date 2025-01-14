@@ -16,7 +16,7 @@ parse_failsafe() {
   FOLDER=$2
 
   # Define File
-  REPORT_FILE=$FOLDER/failsafe-report.html
+  REPORT_FILE=$FOLDER/failsafe.html
   if [[ -s "$REPORT_FILE" ]]; then
 
     # Extract Values

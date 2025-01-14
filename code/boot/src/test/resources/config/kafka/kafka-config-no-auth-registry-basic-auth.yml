@@ -16,7 +16,7 @@ basic.auth.user.info: "schemaregistry:schemaregistry-pwd"
 # Kafka Producer properties - must start with "producer."
 #
 # producer.client.id: An id string to pass to the server when making requests.
-producer.client.id: KARATETOOLS
+producer.client.id: KARATELABSS
 # producer.auto.register.schemas: Specify if the Serializer should attempt to register the Schema with Schema Registry
 producer.auto.register.schemas: true
 # producer.key.serializer: Serializer class for key that implements the 'org.apache.kafka.common.serialization.Serializer' interface

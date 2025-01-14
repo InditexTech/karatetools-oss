@@ -11,8 +11,8 @@ public class OpenApiGeneratorANSILogger {
   /** The Constant OPEN_API_GENERATOR_STDOUT. */
   protected static final Logger OPEN_API_GENERATOR_STDOUT = LoggerFactory.getLogger("OpenApiGenerator");
 
-  /** The Constant ANSI_RESET. */
-  protected static final String ANSI_RESET = "\u001B[0m";
+  /** The Constant ANSI_DEFAUT. */
+  protected static final String ANSI_DEFAULT = "\u001B[0m";
 
   /** The Constant ANSI_BLUE. */
   protected static final String ANSI_BLUE = "\u001B[34m";
@@ -39,7 +39,7 @@ public class OpenApiGeneratorANSILogger {
    * @param message the message
    */
   public static void info(final String message) {
-    OPEN_API_GENERATOR_STDOUT.info(LOG_FORMAT, ANSI_BLUE, "INFO  - ", message, ANSI_RESET);
+    OPEN_API_GENERATOR_STDOUT.info(LOG_FORMAT, ANSI_BLUE, "INFO  - ", message, ANSI_DEFAULT);
   }
 
   /**
@@ -48,7 +48,7 @@ public class OpenApiGeneratorANSILogger {
    * @param message the message
    */
   public static void warn(final String message) {
-    OPEN_API_GENERATOR_STDOUT.warn(LOG_FORMAT, ANSI_YELLOW, "WARN  - ", message, ANSI_RESET);
+    OPEN_API_GENERATOR_STDOUT.warn(LOG_FORMAT, ANSI_YELLOW, "WARN  - ", message, ANSI_DEFAULT);
   }
 
   /**
@@ -57,6 +57,15 @@ public class OpenApiGeneratorANSILogger {
    * @param message the message
    */
   public static void error(final String message) {
-    OPEN_API_GENERATOR_STDOUT.error(LOG_FORMAT, ANSI_RED, "ERROR - ", message, ANSI_RESET);
+    OPEN_API_GENERATOR_STDOUT.error(LOG_FORMAT, ANSI_RED, "ERROR - ", message, ANSI_DEFAULT);
+  }
+
+  /**
+   * Debug.
+   * 
+   * @param message the message
+   */
+  public static void debug(final String message) {
+    OPEN_API_GENERATOR_STDOUT.debug(LOG_FORMAT, ANSI_DEFAULT, "DEBUG - ", message, ANSI_DEFAULT);
   }
 }
