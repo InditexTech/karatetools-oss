@@ -178,7 +178,6 @@ a|
 `APP_PORT=8888`
 
 `mvn clean verify -DAPP_PORT=$APP_PORT -Dkarate.env=local -Dkarate.options="-t ~@mock.templates.inline -t ~@ignore" -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml`
-
 |all tests pass
 
 |Check karate report
