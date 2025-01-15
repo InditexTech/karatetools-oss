@@ -4,6 +4,15 @@ Feature: karate-base
 
 Background:
 
+* print '---- ScenarioEngine.getAllVariablesAsMap()                ----'
+* def variables = karate.getEngine().getAllVariablesAsMap()
+* print variables
+* print '--------------------------------------------------------------'
+* print '---- ScenarioEngine.getConfig()                           ----'
+* def config = karate.getEngine().getConfig()
+* print karate.toJson(config)
+* print '--------------------------------------------------------------'
+
 @karate-base
 @env=local
 Scenario: karate-base-simple
