@@ -1,0 +1,57 @@
+# The name of the workflow
+name: code-maven-QA-compatibility
+# The name of the workflow run
+run-name: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+
+# Concurrency configuration
+concurrency:
+  # The concurrency group for this workflow
+  group: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+  # Cancel all previous runs in progress
+  cancel-in-progress: true
+
+# Events that trigger the workflow
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      RUNNERS:
+        description: |
+          Array of runners where the tests must be executed, for example: ["ubuntu-latest","windows-latest","macos-latest"].
+        required: true
+        default: '["ubuntu-latest","windows-latest","macos-latest"]'
+  # Automatically run the workflow on pull_request events
+  pull_request:
+    types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]
+    paths:
+      - 'code/**'
+      - '.github/workflows/code*'
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  WORKFLOW_VERSION: 1.0.0
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # compatibility-tests
+  compatibility-tests:
+    # The name of the job
+    name: compatibility-tests
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: ${{ fromJSON(github.event.inputs.RUNNERS) }}
+    # Conditions to run the job
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # checkout
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
