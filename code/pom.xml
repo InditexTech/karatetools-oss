@@ -154,7 +154,7 @@
     <kafka-avro-serializer.version>7.6.2</kafka-avro-serializer.version>
 
     <!-- Karate Generators -->
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <spring-core.version>6.1.15</spring-core.version>
     <!-- Karate Generators - Console -->
     <consoleui.version>0.0.13</consoleui.version>

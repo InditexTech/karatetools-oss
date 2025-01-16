@@ -10,8 +10,6 @@
 
 ✔️ Karate Tools - *exec-maven-plugin Downgrade* (3.5.0 -> 3.1.0) due to console issues with MacOS.
 
-✔️ Karate Tools - *Added OS Compatibility Tests* (Windows, MacOS, Linux).
-
 | 5.0.0
 | 2025-01-14
 |

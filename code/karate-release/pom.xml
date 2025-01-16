@@ -25,7 +25,7 @@
   </developers>
 
   <properties>
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <maven-scm-plugin.version>2.1.0</maven-scm-plugin.version>
   </properties>
 

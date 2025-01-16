@@ -26,7 +26,7 @@
 
     <!-- Karate Tools -->
     <karatetools.version>${project.version}</karatetools.version>
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
 
     <!-- Karate Clients -->
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
