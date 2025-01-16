@@ -42,9 +42,13 @@ jobs:
     name: compatibility-tests
     # The type of runner that the job will run on
     runs-on: ${{ matrix.runner }}
+    # Strategy for matrix build
     strategy:
+      # Maximum number of jobs that can run simultaneously
+      max-parallel: 1
+      # Define the matrix of parameters
       matrix:
-        runner: ${{ fromJSON(github.event.inputs.RUNNERS) }}
+        runner: ${{ fromJSON(github.event.inputs.RUNNERS) || ["ubuntu-latest","windows-latest","macos-latest"] }} 
     # Conditions to run the job
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
     # Steps represent a sequence of tasks that will be executed as part of the job
