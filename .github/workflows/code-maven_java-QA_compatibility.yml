@@ -118,13 +118,14 @@ jobs:
       - name: mvn-exec-java
         id: mvn-exec-java
         working-directory: code
+        timeout-minutes: 2
         run: |
           # mvn-exec-java
 
           echo "::group::+++ mvn-exec-java +++"
 
           # Maven Properties
-          MVN_PROPERTIES="-pl generators -Dexec.mainClass=dev.inditex.karate.console.ConsoleCLI"
+          MVN_PROPERTIES="-pl generators -Dexec.mainClass=dev.inditex.karate.openapi.OpenApiGeneratorCLI"
           echo "MVN_PROPERTIES=$MVN_PROPERTIES"
 
           # mvn exec:java
