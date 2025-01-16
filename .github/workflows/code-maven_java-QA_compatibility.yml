@@ -61,16 +61,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # config
-      - name: config
-        id: config
-        uses: ./.github/actions/config-resolver
-        with:
-          create-annotations: true
-          files: |
-            github_config.yml
-          input-vars: "${{ toJSON(github.event.inputs) }}" # it injects all workflows inputs
-
       # setup-maven-cache
       - name: setup-maven-cache
         uses: actions/cache@v4
@@ -101,15 +91,13 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_ENV"
 
-      # save-tool-versions-content-ubuntu-macos
+      # save-tool-versions-content-windows
       - name: save-tool-versions-content-windows
         if: ${{ contains(matrix.runner, 'windows') }}
         run: |
-          {
-            echo "TOOL_VERSIONS<<EOF"
-            type code\.tool-versions
-            echo "EOF"
-          } >> "$GITHUB_ENV"
+          echo "TOOL_VERSIONS<<EOF" | Out-File -FilePath $env:GITHUB_ENV -Append
+          type code\.tool-versions | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "EOF" | Out-File -FilePath $env:GITHUB_ENV -Append
       
       # asdf-install
       - name: asdf-install
