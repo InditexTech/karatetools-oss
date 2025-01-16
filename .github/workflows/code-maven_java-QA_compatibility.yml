@@ -119,8 +119,8 @@ jobs:
           echo "::endgroup::"
 
       # mvn-exec-java
-      - name: mvn-exec-java-${{ matrix.runner }}
-        id: mvn-exec-java-${{ matrix.runner }}
+      - name: mvn-exec-java
+        id: mvn-exec-java
         working-directory: code
         run: |
 
