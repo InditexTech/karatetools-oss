@@ -6,7 +6,7 @@
 
 * On `workflow_dispatch`
   * inputs:
-    * `RUNNERS` : Comma separated list of runners where the tests must be executed, for example: "ubuntu-latest,windows-latest,macos-latest".
+    * `RUNNERS` : Array of runners where the tests must be executed, for example: ["ubuntu-20.04","macos-13"].
 * On `pull_request` which is not a `draft`
   * inputs are read from the `github_config.yml` file
 
