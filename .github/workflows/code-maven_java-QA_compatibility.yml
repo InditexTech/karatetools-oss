@@ -18,9 +18,9 @@ on:
     inputs:
       RUNNERS:
         description: |
-          Array of runners where the tests must be executed, for example: ["ubuntu-20.04","macos-latest"].
+          Array of runners where the tests must be executed, for example: ["ubuntu-20.04","macos-13"].
         required: true
-        default: ${{ env.DEFAULT_RUNNERS }}
+        default: '["ubuntu-20.04","ubuntu-22.04","ubuntu-24.04","macos-13","macos-14","macos-15"]'
   # Automatically run the workflow on pull_request events
   pull_request:
     types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]
@@ -32,7 +32,6 @@ on:
 env:
   WORKFLOW_VERSION: 1.0.0
   MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
-  DEFAULT_RUNNERS: '["ubuntu-20.04","ubuntu-22.04","ubuntu-24.04","macos-13","macos-14","macos-15"]'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -51,7 +50,7 @@ jobs:
       fail-fast: false
       # Define the matrix of parameters
       matrix:
-        runner: ${{ fromJSON(github.event.inputs.RUNNERS || env.DEFAULT_RUNNERS) }}
+        runner: ${{ fromJSON(github.event.inputs.RUNNERS || '["ubuntu-20.04","ubuntu-22.04","ubuntu-24.04","macos-13","macos-14","macos-15"]') }}
     # Conditions to run the job
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
     # Steps represent a sequence of tasks that will be executed as part of the job
