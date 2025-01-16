@@ -20,7 +20,7 @@ on:
         description: |
           Array of runners where the tests must be executed, for example: ["ubuntu-20.04","macos-latest"].
         required: true
-        default: env.DEFAULT_RUNNERS
+        default: ${{ env.DEFAULT_RUNNERS }}
   # Automatically run the workflow on pull_request events
   pull_request:
     types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]

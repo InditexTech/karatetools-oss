@@ -50,9 +50,6 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   WORKFLOW_VERSION: 1.0.0
-  # JaCoCo configuration
-  JACOCO_RELATIVE_CLASS_DUMP_DIR: classes
-  JACOCO_RELATIVE_DEST_FILE: jacoco-e2e.exec
   MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
