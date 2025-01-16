@@ -16,6 +16,7 @@ import de.codeshelf.consoleui.prompt.ExpandableChoiceResult;
 import de.codeshelf.consoleui.prompt.InputResult;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,18 @@ class ConsoleCLITest {
       final var result = ConsoleCLI.initializeConsole();
 
       assertThat(result).isNull();
+    }
+  }
+
+  @Nested
+  class Main {
+    @Test
+    void when_no_args_expect_no_exception() {
+      final String[] args = {};
+
+      final ThrowingCallable result = () -> ConsoleCLI.main(args);
+
+      assertThatCode(result).doesNotThrowAnyException();
     }
   }
 

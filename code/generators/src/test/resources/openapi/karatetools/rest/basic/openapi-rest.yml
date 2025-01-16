@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   contact:
     name: KarateTools
-    email: karate-utils@inditex.com
+    email: karate-tools@inditex.com
   description: KarateTools Open Api - Basic
 servers:
 - url: http://localhost:8080/karatetools

@@ -1,0 +1,136 @@
+---
+# The name of the workflow
+name: code-maven-QA-compatibility
+# The name of the workflow run
+run-name: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+
+# Concurrency configuration
+concurrency:
+  # The concurrency group for this workflow
+  group: "${{ github.workflow }}-[${{ github.head_ref || github.ref_name }}]=>[${{ github.base_ref }}]"
+  # Cancel all previous runs in progress
+  cancel-in-progress: true
+
+# Events that trigger the workflow
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      RUNNERS:
+        description: |
+          Array of runners where the tests must be executed, for example: ["ubuntu-latest","windows-latest","macos-latest"].
+        required: true
+        default: '["ubuntu-latest","windows-latest","macos-latest"]'
+  # Automatically run the workflow on pull_request events
+  pull_request:
+    types: [ opened, edited, labeled, synchronize, ready_for_review, reopened ]
+    paths:
+      - 'code/**'
+      - '.github/workflows/code*'
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  WORKFLOW_VERSION: 1.0.0
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # compatibility-tests
+  compatibility-tests:
+    # The name of the job
+    name: compatibility-tests
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: ${{ fromJSON(github.event.inputs.RUNNERS) }}
+    # Conditions to run the job
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # checkout
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # config
+      - name: config
+        id: config
+        uses: ./.github/actions/config-resolver
+        with:
+          create-annotations: true
+          files: |
+            github_config.yml
+          input-vars: "${{ toJSON(github.event.inputs) }}" # it injects all workflows inputs
+
+      # setup-maven-cache
+      - name: setup-maven-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # setup-asdf-cache
+      - name: setup-asdf-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      # save-tool-versions-content
+      - name: save-tool-versions-content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat code/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      # asdf-install
+      - name: asdf-install
+        id: asdf-install
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      # set-java-home
+      - name: set-java-home
+        id: set-java-home
+        run: |
+          # set-java-home
+
+          echo "::group::+++ set-java-home +++"
+
+          # Set JAVA_HOME
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+
+          echo "::endgroup::"
+
+      # mvn-exec-java
+      - name: mvn-exec-java-${{ matrix.runner }}
+        id: mvn-exec-java-${{ matrix.runner }}
+        working-directory: code
+        run: |
+
+          echo "::group::+++ mvn-exec-java +++"
+  
+          # Maven Properties
+          MVN_PROPERTIES="-pl generators -Dexec.mainClass=dev.inditex.karate.console.ConsoleCLI"
+          echo "MVN_PROPERTIES=$MVN_PROPERTIES"
+  
+          # mvn exec:java 
+          mvn exec:java $MVN_PROPERTIES
+  
+          echo "::endgroup::"
