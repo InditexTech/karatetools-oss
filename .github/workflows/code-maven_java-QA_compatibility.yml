@@ -48,7 +48,7 @@ jobs:
       max-parallel: 1
       # Define the matrix of parameters
       matrix:
-        runner: ${{ fromJSON(github.event.inputs.RUNNERS || '["ubuntu-latest","windows-latest","macos-latest"]') }} 
+        runner: ${{ fromJSON(github.event.inputs.RUNNERS || '["ubuntu-latest","windows-latest","macos-latest"]') }}
     # Conditions to run the job
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -127,14 +127,15 @@ jobs:
         id: mvn-exec-java
         working-directory: code
         run: |
+          # mvn-exec-java
 
           echo "::group::+++ mvn-exec-java +++"
-  
+
           # Maven Properties
           MVN_PROPERTIES="-pl generators -Dexec.mainClass=dev.inditex.karate.console.ConsoleCLI"
           echo "MVN_PROPERTIES=$MVN_PROPERTIES"
-  
-          # mvn exec:java 
-          mvn exec:java $MVN_PROPERTIES
-  
+
+          # mvn exec:java
+          mvn compile exec:java $MVN_PROPERTIES
+
           echo "::endgroup::"
