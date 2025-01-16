@@ -46,6 +46,8 @@ jobs:
     strategy:
       # Maximum number of jobs that can run simultaneously
       # max-parallel: 1
+      # fail-fast: cancel all in-progress and queued jobs in the matrix if any job in the matrix fails
+      fail-fast: false
       # Define the matrix of parameters
       matrix:
         runner: ${{ fromJSON(github.event.inputs.RUNNERS || '["ubuntu-latest","windows-latest","macos-latest"]') }}
