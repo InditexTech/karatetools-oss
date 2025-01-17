@@ -74,4 +74,10 @@ a|* workflow dispatch
 |workflow execution reports
 |automatically on workflow execution
 
+|compatibility
+a|* workflow dispatch
+* automatically on PR
+|workflow execution reports
+|automatically on workflow execution
+
 |===

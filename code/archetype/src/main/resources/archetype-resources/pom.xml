@@ -26,7 +26,7 @@
 
     <!-- Karate Tools -->
     <karatetools.version>@archetype-${project.version}</karatetools.version>
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
 #if (${includeKafkaClients} == 'yes' || ${includeKafkaClients} == 'y')
 
     <!-- Karate Clients -->

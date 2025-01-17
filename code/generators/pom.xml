@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.inditex.karate</groupId>
     <artifactId>karatetools</artifactId>
-    <version>5.1.0-SNAPSHOT</version>
+    <version>5.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -140,38 +140,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec-maven-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>dev.inditex.karate</groupId>
-            <artifactId>generators</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <!-- Karate Generators - OpenApi -->
-          <execution>
-            <id>open-api-generator</id>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>dev.inditex.karate.openapi.OpenApiGeneratorCLI</mainClass>
-              <classpathScope>test</classpathScope>
-              <includeProjectDependencies>false</includeProjectDependencies>
-              <includePluginDependencies>true</includePluginDependencies>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-              <executableDependency>
-                <groupId>dev.inditex.karate</groupId>
-                <artifactId>generators</artifactId>
-              </executableDependency>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
