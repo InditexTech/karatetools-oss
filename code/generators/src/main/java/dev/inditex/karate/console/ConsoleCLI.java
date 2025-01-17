@@ -42,21 +42,6 @@ public class ConsoleCLI {
   }
 
   /**
-   * Main.
-   *
-   * @param args the arguments
-   */
-  public static void main(final String[] args) {
-    ConsoleCLI.withRealTerminal();
-    final var console = ConsoleCLI.initializeConsole();
-    log.info("ConsoleCLI.main Console {}", console);
-    if (console == null) {
-      log.error("ConsoleCLI.main Console is null");
-      System.exit(1);
-    }
-  }
-
-  /**
    * Without real terminal.
    */
   public static void withoutRealTerminal() {
