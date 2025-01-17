@@ -8,7 +8,7 @@
 | 2025-01-17
 |
 
-✔️ Karate Tools - *exec-maven-plugin Downgrade* (3.5.0 -> 3.1.0) due to console issues with MacOS.
+✔️ Karate Tools - *exec-maven-plugin Downgrade* (3.5.0 -> 3.1.0) due to console issues with MacOS. The observed issue is `Could not load library` ... `no jansi in java.library.path`
 
 | 5.0.0
 | 2025-01-14
