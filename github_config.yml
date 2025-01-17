@@ -41,17 +41,6 @@ integration:
     # Coverage threshold: The minimum coverage threshold to pass the integration tests
     threshold: 80
 
-# Compatibility test configuration
-compatibility:
-  # Runners: Comma separated list of runners where the tests must be executed. 
-  # Supported runners: 
-  #   See https://docs.github.com/en/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for-public-repositories
-  runners: "ubuntu-latest,windows-latest,macos-latest"
-  # Default test report configuration
-  report:
-    # Failsafe report folder, used to upload the report
-    folder: code/target/reports
-
 # Karate test configuration
 karate:
   # Environment: The environment to run the karate tests
