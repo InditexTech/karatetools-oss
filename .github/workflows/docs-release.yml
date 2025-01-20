@@ -30,7 +30,18 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Trigger / Release Concurrently
-        run: echo test
+        if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
+        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        with:
+          workflow: ${{ github.workflow }}
+          inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "CONCURRENCY_REF": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
+
+      - name: Trigger / Release Job
+        if: !contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
+        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        with:
+          workflow: ${{ github.workflow }}
+          inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
 
   release:
     name: Release Docs Process
@@ -223,7 +234,7 @@ jobs:
           Please create a branch from \`main\` (e.g. \`internal/sync-main-with-develop\`) and then create a pull request against \`develop\` to finish the release process."
 
       - name: Dispatch / Execute Publish Docs
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
         with:
           workflow: docs-publish
           ref: ${{ github.ref }}
