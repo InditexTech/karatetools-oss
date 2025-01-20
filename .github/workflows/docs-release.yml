@@ -1,7 +1,7 @@
 ---
 name: docs-release
 
-concurrency: code-release-${{ github.ref }}
+concurrency: code-release-${{ inputs.CONCURRENCY_REF }}
 
 on:
   pull_request:
