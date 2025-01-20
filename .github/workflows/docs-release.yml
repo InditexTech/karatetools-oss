@@ -33,7 +33,7 @@ jobs:
         if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: ${{ github.workflow }}
+          workflow: test
 
       - name: Trigger / Release Job
         if: !contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
