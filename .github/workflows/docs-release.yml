@@ -31,14 +31,14 @@ jobs:
     steps:
       - name: Trigger / Release Concurrently
         if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
-        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
         with:
           workflow: ${{ github.workflow }}
           inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "CONCURRENCY_REF": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
 
       - name: Trigger / Release Job
         if: (!contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type'))
-        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
         with:
           workflow: ${{ github.workflow }}
           inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
@@ -234,7 +234,7 @@ jobs:
           Please create a branch from \`main\` (e.g. \`internal/sync-main-with-develop\`) and then create a pull request against \`develop\` to finish the release process."
 
       - name: Dispatch / Execute Publish Docs
-        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
         with:
           workflow: docs-publish
           ref: ${{ github.ref }}
