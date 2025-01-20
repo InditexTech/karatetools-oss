@@ -30,15 +30,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Trigger / Release Concurrently
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: test
-
-      - name: Trigger / Release Job
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: ${{ github.workflow }}
-          inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
+        run: echo test
 
   release:
     name: Release Docs Process
