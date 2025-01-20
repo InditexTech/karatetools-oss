@@ -33,7 +33,8 @@ jobs:
         if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
         uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
         with:
-          workflow: test
+          workflow: ${{ github.workflow }}
+          inputs: test
 
   release:
     name: Release Docs Process
