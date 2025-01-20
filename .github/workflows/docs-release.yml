@@ -34,7 +34,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
         with:
           workflow: ${{ github.workflow }}
-          inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}","RELEASE_LABELS": "test" }'
+          inputs: '{ "BASELINE_BRANCH": "test", "RELEASE_LABELS": "test" }'
 
       - name: Trigger / Release Job
         if: !contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
