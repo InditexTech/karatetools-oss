@@ -37,7 +37,7 @@ jobs:
           inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "CONCURRENCY_REF": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
 
       - name: Trigger / Release Job
-        if: !contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
+        if: (!contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type'))
         uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
         with:
           workflow: ${{ github.workflow }}
@@ -45,7 +45,7 @@ jobs:
 
   release:
     name: Release Docs Process
-    if: ${{ github.event_name == 'workflow_dispatch' && contains(github.event.pull_request.labels.*.name, 'release-docs') }}
+    if: ${{ github.event_name == 'workflow_dispatch' && contains(inputs.RELEASE_LABELS, 'release-docs') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout merge commit
@@ -155,7 +155,7 @@ jobs:
           npm run version:release
 
       - name: Release / Force Tag
-        if: contains(github.event.pull_request.labels.*.name, 'release-docs/force')
+        if: contains(inputs.RELEASE_LABELS, 'release-docs/force')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: docs
@@ -208,7 +208,7 @@ jobs:
           BASELINE_BRANCH: ${{ github.ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
-          NO_PUBLISH: ${{ contains(github.event.pull_request.labels.*.name, 'release-docs/no-publish') }}
+          NO_PUBLISH: ${{ contains(inputs.RELEASE_LABELS, 'release-docs/no-publish') }}
         run: |
           DEVELOP=${BASELINE_BRANCH/main/develop}
           DEVELOP=${DEVELOP#refs/heads/}
