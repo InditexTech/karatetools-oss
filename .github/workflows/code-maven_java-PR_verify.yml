@@ -126,7 +126,7 @@ jobs:
             -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
             -Dsonar.organization=inditextech \
-            -Dsonar.token="$${{ secrets.SONAR_TOKEN }}" \
+            -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
             -Dsonar.pullrequest.branch="$PR_HEAD_REF" \
             -Dsonar.pullrequest.base=${{ github.base_ref }} \
