@@ -40,6 +40,17 @@ parse_jacoco() {
       | $JACOCO_INSTRUCTIONS_MISSED \
       | $JACOCO_INSTRUCTIONS_COVERAGE |" >> "$GITHUB_STEP_SUMMARY"
 
+    # Build Annotation Message
+    MESSAGE="| \
+      #️⃣ Instructions: $JACOCO_INSTRUCTIONS_TOTAL | \
+      ✔️ Covered: $JACOCO_INSTRUCTIONS_COVERED | \
+      ❌ Missed: $JACOCO_INSTRUCTIONS_MISSED | \
+      📊 Coverage: $JACOCO_INSTRUCTIONS_COVERAGE |"
+    # Clean Annotation Message (Remove newlines and extra spaces)
+    MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
+    # Echo Annotation Message
+    echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+
     # Set Output Variables
     LABEL="📊 Coverage %"
     RESULT=$(echo "$JACOCO_INSTRUCTIONS_COVERAGE" | tr -d '%')
