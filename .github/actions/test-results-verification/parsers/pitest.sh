@@ -47,7 +47,8 @@ parse_pitest() {
     # Clean Annotation Message (Remove newlines and extra spaces)
     MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
     # Echo Annotation Message
-    echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    # echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    echo "::notice ::$ICON $TYPE: $MESSAGE"
 
     # Set Output Variables
     LABEL="📊 Mutation Coverage %"
