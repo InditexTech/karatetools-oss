@@ -83,57 +83,6 @@ jobs:
             github_config.yml
           input-vars: "${{ toJSON(github.event.inputs) }}" # it injects all workflows inputs
 
-      # setup-maven-cache
-      - name: setup-maven-cache
-        uses: actions/cache@v4
-        continue-on-error: true
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      # setup-asdf-cache
-      - name: setup-asdf-cache
-        uses: actions/cache@v4
-        continue-on-error: true
-        with:
-          path: ~/.asdf/data
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      # save-tool-versions-content
-      - name: save-tool-versions-content
-        run: |
-          {
-            echo "TOOL_VERSIONS<<EOF"
-            cat code/.tool-versions
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-
-      # asdf-install
-      - name: asdf-install
-        id: asdf-install
-        uses: asdf-vm/actions/install@v3
-        with:
-          tool_versions: ${{ env.TOOL_VERSIONS }}
-
-      # set-java-home
-      - name: set-java-home
-        id: set-java-home
-        run: |
-          # set-java-home
-
-          echo "::group::+++ set-java-home +++"
-
-          # Set JAVA_HOME
-          JAVA_HOME="$(asdf where java)"
-          echo "JAVA_HOME=$JAVA_HOME"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
-          echo "::endgroup::"
-
       # app-config
       - name: app-config
         id: app-config
@@ -216,6 +165,57 @@ jobs:
           echo "jacoco-dest-file=$JACOCO_DEST_FILE" >> "$GITHUB_OUTPUT"
           echo "jacoco-agent-options=$JACOCO_AGENT_OPTIONS" >> "$GITHUB_OUTPUT"
           echo "jacoco-cli-report-options=$JACOCO_CLI_REPORT_OPTIONS" >> "$GITHUB_OUTPUT"
+
+          echo "::endgroup::"
+
+      # setup-maven-cache
+      - name: setup-maven-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # setup-asdf-cache
+      - name: setup-asdf-cache
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: ~/.asdf/data
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      # save-tool-versions-content
+      - name: save-tool-versions-content
+        run: |
+          {
+            echo "TOOL_VERSIONS<<EOF"
+            cat code/.tool-versions
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      # asdf-install
+      - name: asdf-install
+        id: asdf-install
+        uses: asdf-vm/actions/install@v3
+        with:
+          tool_versions: ${{ env.TOOL_VERSIONS }}
+
+      # set-java-home
+      - name: set-java-home
+        id: set-java-home
+        run: |
+          # set-java-home
+
+          echo "::group::+++ set-java-home +++"
+
+          # Set JAVA_HOME
+          JAVA_HOME="$(asdf where java)"
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
 
           echo "::endgroup::"
 

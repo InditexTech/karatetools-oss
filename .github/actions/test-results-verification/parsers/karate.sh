@@ -46,6 +46,19 @@ parse_karate() {
       | $KARATE_SUCCESS_RATE% \
       | $KARATE_ELAPSED_TIME |" >> "$GITHUB_STEP_SUMMARY"
 
+    # Build Annotation Message
+    MESSAGE="| \
+      #️⃣ Features (Scenarios): $KARATE_FEATURES_TOTAL ($KARATE_SCENARIOS_TOTAL) | \
+      ✔️ Passed: $KARATE_FEATURES_PASSED ($KARATE_SCENARIOS_PASSED) | \
+      ❌ Failed: $KARATE_FEATURES_FAILED ($KARATE_SCENARIOS_FAILED) | \
+      📊 Success Rate: $KARATE_SUCCESS_RATE% | \
+      ⏱ Time: $KARATE_ELAPSED_TIME |"
+    # Clean Annotation Message (Remove newlines and extra spaces)
+    MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
+    # Echo Annotation Message
+    # echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    echo "::notice ::$ICON $TYPE: $MESSAGE"
+
     # Set Output Variables
     LABEL="📊 Success Rate %"
     RESULT=$(echo "$KARATE_SUCCESS_RATE" | tr -d '%')

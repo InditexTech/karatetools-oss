@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#30](https://github.com/InditexTech/karatetools-oss/issues/30) \[Karare Tools] [CI/CD] Add test results annotations
+
 ## [5.0.1] - 2025-01-17
 
 - [#19](https://github.com/InditexTech/karatetools-oss/issues/19) \[Karate Tools] Bug-Fix - exec-maven-plugin:3.5.0 causes Could not load library for *jansi*

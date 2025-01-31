@@ -23,6 +23,7 @@ exit_error() {
 parse_results() {
 
   # Install xmllint
+  sudo apt-get update -qq > /dev/null
   sudo apt-get -y -qq install libxml2-utils > /dev/null
 
   local RESULTS_TYPE RESULTS_FOLDER PARSER COMMAND

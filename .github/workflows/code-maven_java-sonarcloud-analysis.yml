@@ -124,7 +124,7 @@ jobs:
             -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.github-repository }}" \
             -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
             -Dsonar.projectVersion="${{ github.event.release.tag_name }}" \
-            -Dsonar.branch.name="release/${{ github.event.release.tag_name }}" \
+            -Dsonar.branch.name="release-${{ github.event.release.tag_name }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
             -Dsonar.organization=inditextech \
             -Dsonar.token="${LOGIN}" \

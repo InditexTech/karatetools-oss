@@ -38,6 +38,18 @@ parse_pitest() {
       | $PITEST_LINE_COVERAGE \
       | $PITEST_TEST_STRENGTH |" >> "$GITHUB_STEP_SUMMARY"
 
+    # Build Annotation Message
+    MESSAGE="| \
+      #️⃣ Classes: $PITEST_NUMBER_CLASSES | \
+      📊 Mutation Coverage: $PITEST_MUTATION_COVERAGE | \
+      📑 Line Coverage: $PITEST_LINE_COVERAGE | \
+      💪 Test Strength: $PITEST_TEST_STRENGTH |"
+    # Clean Annotation Message (Remove newlines and extra spaces)
+    MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
+    # Echo Annotation Message
+    # echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    echo "::notice ::$ICON $TYPE: $MESSAGE"
+
     # Set Output Variables
     LABEL="📊 Mutation Coverage %"
     RESULT=$(echo "$PITEST_MUTATION_COVERAGE" | tr -d '%')
