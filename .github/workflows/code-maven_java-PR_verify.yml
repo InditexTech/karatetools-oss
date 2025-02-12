@@ -116,7 +116,6 @@ jobs:
         if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
         env:
           PR_HEAD_REF: ${{ github.head_ref }}
-          LOGIN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_OPTS: ''
         working-directory: code
         run: |
@@ -127,7 +126,7 @@ jobs:
             -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
             -Dsonar.organization=inditextech \
-            -Dsonar.token="${LOGIN}" \
+            -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
             -Dsonar.pullrequest.branch="$PR_HEAD_REF" \
             -Dsonar.pullrequest.base=${{ github.base_ref }} \
