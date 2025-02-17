@@ -114,6 +114,7 @@ jobs:
 
       - name: SonarCloud / Run Maven Sonar goal with release event
         env:
+          LOGIN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_OPTS: ''
         if: ${{ github.event_name == 'release' }}
         working-directory: code
@@ -126,11 +127,12 @@ jobs:
             -Dsonar.branch.name="release-${{ github.event.release.tag_name }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
             -Dsonar.organization=inditextech \
-            -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
+            -Dsonar.token="${LOGIN}" \
             -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
 
       - name: SonarCloud / Run Maven Sonar goal
         env:
+          LOGIN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_OPTS: ''
         if: ${{ github.event_name != 'release' }}
         working-directory: code
@@ -143,5 +145,5 @@ jobs:
             -Dsonar.branch.name="${{ github.base_ref || github.ref_name }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
             -Dsonar.organization=inditextech \
-            -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
+            -Dsonar.token="${LOGIN}" \
             -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
