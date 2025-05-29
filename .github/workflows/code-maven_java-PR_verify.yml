@@ -80,14 +80,6 @@ jobs:
         run: |
           mvn -B clean verify -Djacoco.skip=false -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
 
-      - name: Maven / Process Surefire report and annotate PR
-        if: ${{ always() && !cancelled() }}
-        uses: scacap/action-surefire-report@a2911bd1a4412ec18dde2d93b1758b3e56d2a880
-        with:
-          fail_if_no_tests: false
-          create_check: false
-          check_name: "Code / Verify"
-
       - name: SonarCloud / Setup asdf tools
         if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
         uses: asdf-vm/actions/install@v3
