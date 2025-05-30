@@ -63,7 +63,7 @@ karate:
 
 ## Where does it run?
 
-GitHub-hosted runner `ubuntu-20.04`:
+GitHub-hosted runner `ubuntu-24.04`:
 * 4 cores / 16 Gb RAM / 14 Gb Storage
 * [Ubuntu2004-Readme.md](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md)
 
