@@ -42,7 +42,7 @@ jobs:
     # The name of the job
     name: unit-tests
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     # Conditions to run the job
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
     # Steps represent a sequence of tasks that will be executed as part of the job

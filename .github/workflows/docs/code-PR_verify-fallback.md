@@ -11,7 +11,7 @@ Any pull request `opened` with only changes outside `code` folder or `code-*` wo
 
 ## Where does it run?
 
-`ubuntu-20.04` GitHub infrastructure.
+`ubuntu-24.04` GitHub infrastructure.
 
 ## Jobs
 

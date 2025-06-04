@@ -16,7 +16,7 @@ env:
 jobs:
   check-changes-in-paths:
     name: Check for changes in corresponding paths
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: ${{ github.event.pull_request.draft == false || contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type') || contains(join(github.event.pull_request.labels.*.name, ', '), 'release-preview') }}
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
@@ -34,7 +34,7 @@ jobs:
     name: Release Preview
     needs: check-changes-in-paths
     if: ${{ (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type') || contains(join(github.event.pull_request.labels.*.name, ', '), 'release-preview')) && needs.check-changes-in-paths.outputs.detected == 'true' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout merge commit
         uses: actions/checkout@v4
@@ -172,7 +172,7 @@ jobs:
     name: Add PR comment with configuration management information
     needs: check-changes-in-paths
     if: ${{ (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type') || (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-preview'))) && needs.check-changes-in-paths.outputs.detected == 'false' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -194,7 +194,7 @@ jobs:
     name: Add PR comment with release information
     needs: check-changes-in-paths
     if: ${{ !contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type') && needs.check-changes-in-paths.outputs.detected == 'true' && github.event.pull_request.draft == false && vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
