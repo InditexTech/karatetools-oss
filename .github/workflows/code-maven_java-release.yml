@@ -37,7 +37,7 @@ jobs:
       || (github.event.pull_request.merged == true && !contains(join(github.event.pull_request.labels.*.name, ', '), 'skip-release')
       && (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
       || vars.DEVELOPMENT_FLOW == 'trunk-based-development' ))
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Get input parameters
         run: |

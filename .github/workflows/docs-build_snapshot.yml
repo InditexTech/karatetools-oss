@@ -43,7 +43,7 @@ jobs:
   build-snapshot:
     name: Build Snapshot
     needs: check-triggered-release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: ${{ ((vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
       || (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))))
       && !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs')

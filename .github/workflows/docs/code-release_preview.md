@@ -8,7 +8,7 @@ Any pull request `labeled` to `main` branch about `code` path with `release-type
 
 ## Where does it run?
 
-`ubuntu-20.04` GitHub infrastructure.
+`ubuntu-24.04` GitHub infrastructure.
 
 ## Preconditions
 
