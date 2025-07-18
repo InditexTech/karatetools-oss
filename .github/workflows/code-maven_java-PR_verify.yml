@@ -65,7 +65,6 @@ jobs:
       - name: Setup Java environment vars
         working-directory: code
         run: |
-          cat /home/runner/.asdf/plugins/maven/bin/install
           JAVA_HOME="$(asdf where java)"
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
 
