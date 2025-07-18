@@ -60,7 +60,7 @@ jobs:
         # https://github.com/asdf-vm/actions/issues/356
         if: steps.asdf-cache.outputs.cache-hit != 'true'
         with:
-          tool_versions: ${{ env.TOOL_VERSIONS }}
+          tool_versions: maven 3.9.4
 
       - name: Setup Java environment vars
         working-directory: code
