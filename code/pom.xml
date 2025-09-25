@@ -68,9 +68,9 @@
     <project.scm.id>inditextech-scm-github</project.scm.id>
 
     <!-- Maven -->
-    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
-    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-release-strategies.version>0.7.1</maven-release-strategies.version>
@@ -79,7 +79,7 @@
     <release.strategy.developmentBranch>develop</release.strategy.developmentBranch>
     <release.strategy.syncPullReqLabels>kind/internal</release.strategy.syncPullReqLabels>
     <release.strategy.createSyncPR>true</release.strategy.createSyncPR>
-    <central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
+    <central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 
     <!-- Code Format and Style -->
     <project.parent.relativePath />
@@ -94,7 +94,7 @@
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
     <!-- Static code analysis - Spotbugs -->
-    <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.9.6.0</spotbugs-maven-plugin.version>
     <com.github.spotbugs.spotbugs.version>4.8.6</com.github.spotbugs.spotbugs.version>
     <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
     <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
@@ -117,25 +117,25 @@
     <mockito.version>5.15.2</mockito.version>
 
     <!-- Jacoco / Surefire -->
-    <jacoco.version>0.8.12</jacoco.version>
-    <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
+    <jacoco.version>0.8.13</jacoco.version>
+    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.4</maven-surefire-report-plugin.version>
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->
-    <pitest.version>1.17.3</pitest.version>
-    <pitest-junit5-plugin.version>1.2.1</pitest-junit5-plugin.version>
+    <pitest.version>1.20.3</pitest.version>
+    <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
     <pitest-skip>false</pitest-skip>
 
     <!-- Spring Boot  -->
-    <spring-boot.version>3.3.6</spring-boot.version>
+    <spring-boot.version>3.5.6</spring-boot.version>
 
     <!-- Kafka - Avro Generation for Testing purposes -->
     <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
 
     <!-- Open Api Source Generator -->
-    <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
+    <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
     <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
