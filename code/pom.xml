@@ -155,7 +155,7 @@
 
     <!-- Karate Generators -->
     <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
-    <spring-core.version>6.1.15</spring-core.version>
+    <spring-core.version>6.2.11</spring-core.version>
     <!-- Karate Generators - Console -->
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
