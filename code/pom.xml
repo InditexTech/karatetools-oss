@@ -114,7 +114,7 @@
     <!-- Test -->
     <junit.version>5.13.4</junit.version>
     <assertj.version>3.27.6</assertj.version>
-    <mockito.version>5.15.2</mockito.version>
+    <mockito.version>5.20.0</mockito.version>
 
     <!-- Jacoco / Surefire -->
     <jacoco.version>0.8.13</jacoco.version>
