@@ -18,8 +18,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Test Execution & Reporting -->
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.4</maven-surefire-report-plugin.version>
 
     <!-- Open Api Source Generation -->
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
