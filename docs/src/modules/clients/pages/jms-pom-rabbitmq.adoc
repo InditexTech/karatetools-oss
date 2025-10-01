@@ -1,0 +1,28 @@
+*karatetools-starter* already includes the *Rabbit MQ* JMS dependencies.
+
+.*If you need to change the dependency version*, you can include it in the pom as follows:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+  <properties>
+    ...
+    <!-- Karate Clients -->
+    <!-- Karate Clients - JMS -->
+    <!-- Karate Clients - JMS - RabbitMQ -->
+    <!-- 2.X.X : Version for JMS 2.0 -->
+    <rabbitmq-jms-client.version>X.X.X</rabbitmq-jms-client.version>
+  </properties>
+
+  <dependencies>
+    ...
+    <!-- Karate Clients - JMS -->
+    <!-- Karate Clients - JMS - RabbitMQ -->
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>rabbitmq-jms-client</artifactId>
+      <version>${rabbitmq-jms-client.version}</version>
+    </dependency>
+  </dependencies>
+----
+====

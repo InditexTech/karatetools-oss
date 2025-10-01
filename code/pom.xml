@@ -118,9 +118,9 @@
 
     <!-- Jacoco / Surefire -->
     <jacoco.version>0.8.13</jacoco.version>
-    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.5.4</maven-surefire-report-plugin.version>
+    <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->

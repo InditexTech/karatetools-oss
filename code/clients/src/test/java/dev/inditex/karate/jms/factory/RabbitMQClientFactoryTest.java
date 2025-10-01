@@ -15,17 +15,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
 class RabbitMQClientFactoryTest {
-  public static final String HOST = "host"; // RabbitMQ server host
+  public static final String HOST = "host"; // RabbitMQ server host.
 
-  public static final String PORT = "port"; // RabbitMQ server port
+  public static final String PORT = "port"; // RabbitMQ server port.
 
-  public static final String USERNAME = "username"; // Username for authentication
+  public static final String USERNAME = "username"; // User name that the application uses to connect to RabbitMQ.
 
-  public static final String PASSWORD = "password"; // Password for authentication
+  public static final String PASSWORD = "password"; //  Password that the application uses to connect to RabbitMQ.
 
-  public static final String VIRTUAL_HOST = "virtual-host"; // Virtual host
+  public static final String VIRTUAL_HOST = "virtual-host"; // virtual host to be used when creating a connection to RabbitMQ.
 
-  public static final String CONNECTION_TIMEOUT = "on-message-timeout"; // Connection timeout in ms
+  public static final String CONNECTION_TIMEOUT = "on-message-timeout"; // Timeout in milliseconds for processing messages.
 
   public static final int DEFAULT_PORT = 5672;
 

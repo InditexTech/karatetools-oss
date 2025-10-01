@@ -10,22 +10,22 @@ import com.rabbitmq.jms.admin.RMQConnectionFactory;
 public class RabbitMQClientFactory {
 
   /** The Constant HOST. */
-  public static final String HOST = "host"; // RabbitMQ server host
+  public static final String HOST = "host"; // RabbitMQ server host.
 
   /** The Constant PORT. */
-  public static final String PORT = "port"; // RabbitMQ server port
+  public static final String PORT = "port"; // RabbitMQ server port.
 
   /** The Constant USERNAME. */
-  public static final String USERNAME = "username"; // Username for authentication
+  public static final String USERNAME = "username"; // User name that the application uses to connect to RabbitMQ.
 
   /** The Constant PASSWORD. */
-  public static final String PASSWORD = "password"; // Password for authentication
+  public static final String PASSWORD = "password"; //  Password that the application uses to connect to RabbitMQ.
 
   /** The Constant VIRTUAL_HOST. */
-  public static final String VIRTUAL_HOST = "virtual-host"; // Virtual host
+  public static final String VIRTUAL_HOST = "virtual-host"; // virtual host to be used when creating a connection to RabbitMQ.
 
   /** The Constant CONNECTION_TIMEOUT. */
-  public static final String CONNECTION_TIMEOUT = "on-message-timeout"; // Connection timeout in ms
+  public static final String CONNECTION_TIMEOUT = "on-message-timeout"; // Timeout in milliseconds for processing messages.
 
   /** The Constant DEFAULT_PORT. */
   public static final int DEFAULT_PORT = 5672;

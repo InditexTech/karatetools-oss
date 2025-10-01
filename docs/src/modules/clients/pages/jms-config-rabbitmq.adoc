@@ -1,0 +1,13 @@
+⚙️ *`jmsFactory`* - JMS Factory to use: *`RabbitMQ`*
+
+⚙️ *`host`* - RabbitMQ server host
+
+⚙️ *`port`* - RabbitMQ server port
+
+⚙️ *`username`* - User name that the application uses to connect to RabbitMQ
+
+⚙️ *`password`* - Password that the application uses to connect to RabbitMQ
+
+⚙️ *`virtual-host`* - virtual host to be used when creating a connection to RabbitMQ (default is "/")
+
+⚙️ *`on-message-timeout`* - Timeout in milliseconds for processing messages (default 5000)
