@@ -1,0 +1,48 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  janusAuthUrl: TO_BE_COMPLETED
+  openAMAuthUrl: TO_BE_COMPLETED
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultAuthMode: basic | janus | jwt | openAM | apiKey. 'auth.authMode' when used in a specific request.
+defaultAuthMode: TO_BE_COMPLETED
+# defaultUsername: default username. 'auth.username' when used in a specific request.
+defaultUsername: TO_BE_COMPLETED
+# credentials: pairs of username: password. 'auth.password' / 'auth.oauthClientSecret' when used in a specific request.
+credentials:
+  # username100: Fixed username:password example
+  username100: username100p
+  # usernameFromCyberArk: CyberArk username:password example
+  usernameFromCyberArk: '#(karate.properties["cyberark.credentials.user"])'
+
+# ############################################################
+# openAM Oauth2.0 Defaults
+# ############################################################
+
+# defaultOauthClientId: software ID that attempts to access on behalf of user. 'auth.oauthClientId' when used in a specific request.
+# Applicable only for authorization_code. MANDATORY.
+
+# defaultRedirectURI: Redirection Endpoint. 'auth.redirectURI' when used in a specific request.
+# Applicable only for authorization_code. MANDATORY.
+
+# defaultAuthIndexType: Type of authentication the user will perform. 'auth.authIndexType' when used in a specific request.
+# Applicable only for authorization_code
+# If not defined, the following value will be used
+#   For authorization_code: 'service'
+
+# defaultAuthIndexValue: A value that corresponds to the authIndexType. 'auth.authIndexValue' when used in a specific request.
+# Applicable only for authorization_code
+# If not defined, the following value will be used
+#   For authorization_code: 'itxid_testing'
+
+# defaultRealm: Name of the realm where the authentication process is performed. 'auth.realm' when used in a specific request.
+# Applicable for client_credentials and authorization_code
+# If not defined, the following value will be used
+#   For client_credentials: '/intranet/private'
+#   For authorization_code: '/itxid'
+
+# defaultScope: Scopes of the set of claims obtained for this userid, separated by a space. 'auth.scope' when used in a specific request.
+# Applicable for client_credentials and authorization_code
+# If not defined, the following value will be used
+#   For client_credentials: 'openid intranetPrv'
+#   For authorization_code: 'openid intranet'

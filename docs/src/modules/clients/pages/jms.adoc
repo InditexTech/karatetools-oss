@@ -30,17 +30,7 @@ include::jms-pom-objects.adoc[]
 
 include::jms-config.adoc[]
 
-=== JMS Client Configuration Properties - Apache Active MQ
-
-include::jms-config-activemq.adoc[]
-
-.Example
-[source,yaml,subs="+attributes"]
-----
-include::example$activemq-config-local.yml[]
-----
-
-=== JMS Client Configuration Properties - Rabbit MQ
+=== Rabbit MQ Config
 
 include::jms-config-rabbitmq.adoc[]
 
@@ -48,6 +38,16 @@ include::jms-config-rabbitmq.adoc[]
 [source,yaml,subs="+attributes"]
 ----
 include::example$rabbitmq-config-local.yml[]
+----
+
+=== Apache Active MQ Config
+
+include::jms-config-activemq.adoc[]
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$activemq-config-local.yml[]
 ----
 
 == Client Features and Usage
