@@ -6,9 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import com.jayway.jsonpath.JsonPath;
 import dev.inditex.karate.BasicApplication.DockerComposeServicesReadyEventListener;
 import dev.inditex.karate.controller.DockerHealthControllerIT.TestApplicationLoader;
+
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
