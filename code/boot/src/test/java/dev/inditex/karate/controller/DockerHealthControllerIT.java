@@ -6,10 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import com.jayway.jsonpath.JsonPath;
 import dev.inditex.karate.BasicApplication.DockerComposeServicesReadyEventListener;
 import dev.inditex.karate.controller.DockerHealthControllerIT.TestApplicationLoader;
-
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ public class DockerHealthControllerIT {
     @Test
     void when_docker_ready_expect_app_up_and_health_ok() throws Exception {
 
-      final var result = mvc.perform(get("/health/docker"))
+      final var result = DockerHealthControllerIT.this.mvc.perform(get("/health/docker"))
           .andExpect(status().isOk())
           .andReturn();
 
@@ -46,7 +45,7 @@ public class DockerHealthControllerIT {
       assertThat(result.getResponse()).isNotNull();
       assertThat(result.getResponse().getContentAsString()).isNotNull();
       final List<String> services = (List<String>) JsonPath.parse(result.getResponse().getContentAsString()).read("$[*].name");
-      assertThat(services).isNotNull().containsExactlyInAnyOrder(expectedServices());
+      assertThat(services).isNotNull().containsExactlyInAnyOrder(DockerHealthControllerIT.this.expectedServices());
     }
   }
 
@@ -66,6 +65,7 @@ public class DockerHealthControllerIT {
         "kt-mariadb",
         "kt-mongodb",
         "kt-postgres",
+        "kt-rabbitmq",
         "kt-schema-registry",
         "kt-schema-registry-basic-auth",
         "kt-zookeeper"};
