@@ -149,6 +149,9 @@
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - ActiveMQ -->
     <artemis-jms-client.version>2.42.0</artemis-jms-client.version>
+    <!-- Karate Clients - JMS - RabbitMQ -->
+    <!-- 2.X.X : Version for JMS 2.0 -->
+    <rabbitmq-jms-client.version>2.12.0</rabbitmq-jms-client.version>
     <!-- Karate Clients - Kafka  -->
     <kafka-clients.version>3.9.1</kafka-clients.version>
     <kafka-avro-serializer.version>7.6.2</kafka-avro-serializer.version>
@@ -309,6 +312,12 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>artemis-jms-client</artifactId>
         <version>${artemis-jms-client.version}</version>
+      </dependency>
+      <!-- Karate Clients - JMS - RabbitMQ -->
+      <dependency>
+        <groupId>com.rabbitmq.jms</groupId>
+        <artifactId>rabbitmq-jms</artifactId>
+        <version>${rabbitmq-jms-client.version}</version>
       </dependency>
       <!-- Karate Clients - Kafka -->
       <dependency>

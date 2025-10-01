@@ -1,0 +1,15 @@
+# docker-compose environment variables:  TODO
+# docker-compose folder structure:       NA
+jmsFactory: RabbitMQ
+# host: RabbitMQ host.
+host: localhost
+# port: RabbitMQ port.
+port: 25672
+# username: Login user to authenticate against the broker.
+username: karate
+# password: Login password to authenticate against the broker.
+password: karate-pwd
+# virtual-host: Virtual host to use when connecting to the broker.
+virtual-host: /
+# on-message-timeout: Timeout in milliseconds to wait for a message to be delivered to a consumer.
+on-message-timeout: 5000
