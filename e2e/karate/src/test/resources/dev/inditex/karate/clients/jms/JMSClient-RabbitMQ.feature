@@ -11,7 +11,7 @@ Background:
 
 # public JMSClient(final Map<Object, Object> configMap)
 # Instantiate JMSClient
-Given def config = read('classpath:config/jms/rabbitmq-config.yml');
+Given def config = read('classpath:config/jms/rabbitmq-config-' + karate.env + '.yml')
 Given def JMSClient = Java.type('dev.inditex.karate.jms.JMSClient')
 Given def jmsClient = new JMSClient(config)
 
