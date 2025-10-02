@@ -1,4 +1,4 @@
-@inditex-oss-karate @karate-clients
+@karate-clients
 @jms @rabbitmq @jms-rabbitmq
 @rabbitmq-client
 @env=local
@@ -39,7 +39,8 @@ When jmsClient.send(queue, jmsMessageJSON, jmsProperties)
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
 # Send Message with properties
-Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')
+
+Given def JMSKarateObject = Java.type('dev.inditex.karate.karatetools.jms.JMSKarateObject')
 Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
 Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
 When jmsClient.send(queue, jmsMessageObject, jmsProperties)
