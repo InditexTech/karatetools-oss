@@ -3,7 +3,7 @@
 @activemq-client
 @env=local
 
-Feature: JMS Client Available Operations - Active MQ 
+Feature: JMS Client Available Operations - Active MQ
 
 Background:
 
@@ -19,6 +19,7 @@ Given def jmsClient = new JMSClient(config)
 Given def queue = 'karate.public.queue'
 
 Scenario: JMS Client Available Operations - Active MQ
+
 # public Boolean available()
 When def available = jmsClient.available()
 Then if (!available) karate.fail('JMS Client not available')
@@ -31,14 +32,14 @@ Then karate.log('messages=', messages)
 Then match messages == '#[_ >= 0]'
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
-# Send Message with properties 
+# Send Message with properties
 Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}
 Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
 When jmsClient.send(queue, jmsMessageJSON, jmsProperties)
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
 # Send Message with properties
- 
+
 Given def JMSKarateObject = Java.type('dev.inditex.karate.karatetools.jms.JMSKarateObject')
 Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
 Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
@@ -58,7 +59,7 @@ Then match result[1].name == 'karate-02'
 Then match result[1].value == 2
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
-# Send Message with properties 
+# Send Message with properties
 Given def jmsMessagePlainText = 'Plain Text Message'
 Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
 When jmsClient.send(queue, jmsMessagePlainText, jmsProperties)
@@ -71,8 +72,8 @@ Then assert messages.length == 1
 Then match messages[0].textMessage == jmsMessagePlainText
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
-# Send Message without properties 
-Given text jmsMessageXML = 
+# Send Message without properties
+Given text jmsMessageXML =
 """
 <?xml version="1.0"?>
 <karate id="1">
