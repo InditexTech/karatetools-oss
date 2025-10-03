@@ -23,8 +23,8 @@ public abstract class AbstractKafkaClientsIT {
       throws IOException {
     log.info(" >>>>>>>>>>>> Executing test: {}", testInfo.getDisplayName());
     final Map<Object, Object> config = KarateTestUtils.readYaml(file);
-    final KafkaProducerClient kafkaProducerClient = this.instantiateProducerClient(config);
-    final KafkaConsumerClient kafkaConsumerClient = this.instantiateConsumerClient(config);
+    final KafkaProducerClient kafkaProducerClient = instantiateProducerClient(config);
+    final KafkaConsumerClient kafkaConsumerClient = instantiateConsumerClient(config);
     final String topicV1 = "it.local.karate.test-avro.public." + type + ".v1";
     final String topicV2 = "it.local.karate.test-avro.public." + type + ".v2";
     final String[] topics = Arrays.array(topicV1, topicV2);
@@ -73,8 +73,8 @@ public abstract class AbstractKafkaClientsIT {
       throws IOException {
     log.info(" >>>>>>>>>>>> Executing test: {}", testInfo.getDisplayName());
     final Map<Object, Object> config = KarateTestUtils.readYaml(file);
-    final KafkaProducerClient kafkaProducerClient = this.instantiateProducerClient(config);
-    final KafkaConsumerClient kafkaConsumerClient = this.instantiateConsumerClient(config);
+    final KafkaProducerClient kafkaProducerClient = instantiateProducerClient(config);
+    final KafkaConsumerClient kafkaConsumerClient = instantiateConsumerClient(config);
     final String topicV1 = "it.local.karate.test-string.public." + type + ".v1";
     final String topicV2 = "it.local.karate.test-string.public." + type + ".v2";
     final String[] topics = Arrays.array(topicV1, topicV2);

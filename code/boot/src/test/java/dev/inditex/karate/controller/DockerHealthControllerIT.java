@@ -38,7 +38,7 @@ public class DockerHealthControllerIT {
     @Test
     void when_docker_ready_expect_app_up_and_health_ok() throws Exception {
 
-      final var result = DockerHealthControllerIT.this.mvc.perform(get("/health/docker"))
+      final var result = mvc.perform(get("/health/docker"))
           .andExpect(status().isOk())
           .andReturn();
 
@@ -46,7 +46,7 @@ public class DockerHealthControllerIT {
       assertThat(result.getResponse()).isNotNull();
       assertThat(result.getResponse().getContentAsString()).isNotNull();
       final List<String> services = (List<String>) JsonPath.parse(result.getResponse().getContentAsString()).read("$[*].name");
-      assertThat(services).isNotNull().containsExactlyInAnyOrder(DockerHealthControllerIT.this.expectedServices());
+      assertThat(services).isNotNull().containsExactlyInAnyOrder(expectedServices());
     }
   }
 

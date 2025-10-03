@@ -65,8 +65,8 @@ public class JMSClientIT {
   final String plainText02 = "karate-02";
 
   final List<Map<String, Object>> expectedPlainText = List.of(
-      Map.of("textMessage", this.plainText01),
-      Map.of("textMessage", this.plainText02));
+      Map.of("textMessage", plainText01),
+      Map.of("textMessage", plainText02));
 
   final String xml01 = """
       <?xml version="1.0"?>
@@ -85,14 +85,14 @@ public class JMSClientIT {
       """;
 
   final List<Map<String, Object>> expectedXML = List.of(
-      Map.of("textMessage", this.xml01),
-      Map.of("textMessage", this.xml02));
+      Map.of("textMessage", xml01),
+      Map.of("textMessage", xml02));
 
   final List<Map<String, Object>> expectedMixed = List.of(
       Map.of("id", "1", "name", "karate-01", "value", 1),
       Map.of("id", "2", "name", "karate-02", "value", 2),
-      Map.of("textMessage", this.plainText01),
-      Map.of("textMessage", this.xml02));
+      Map.of("textMessage", plainText01),
+      Map.of("textMessage", xml02));
 
   final String queue = "GLOBAL.CORE.KARATE.PUBLIC.QUEUE";
 
@@ -104,7 +104,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_map_expect_results(final String factory, final String configFile) throws IOException, JMSException {
-      JMSClientIT.this.testJmsMap(configFile);
+      testJmsMap(configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -113,7 +113,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_object_expect_results(final String factory, final String configFile) throws IOException, JMSException {
-      JMSClientIT.this.testJmsObject(configFile);
+      testJmsObject(configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -122,7 +122,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_plain_text_expect_results(final String factory, final String configFile) throws IOException, JMSException {
-      JMSClientIT.this.testJmsPlainText(configFile);
+      testJmsPlainText(configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -131,7 +131,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_xml_expect_results(final String factory, final String configFile) throws IOException, JMSException {
-      JMSClientIT.this.testJmsXml(configFile);
+      testJmsXml(configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -140,7 +140,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_mixed_expect_results(final String factory, final String configFile) throws IOException, JMSException {
-      JMSClientIT.this.testJmsMixed(configFile);
+      testJmsMixed(configFile);
     }
 
   }
@@ -151,83 +151,83 @@ public class JMSClientIT {
 
   protected void testJmsMap(final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
-    final JMSClient client = this.instantiateClient(config);
+    final JMSClient client = instantiateClient(config);
 
     // available
     final var available = client.available();
     // send
-    client.send(this.queue, KarateTestUtils.fromJson(this.message01), KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, KarateTestUtils.fromJson(this.message02), KarateTestUtils.fromJson(this.properties02));
+    client.send(queue, KarateTestUtils.fromJson(message01), KarateTestUtils.fromJson(properties01));
+    client.send(queue, KarateTestUtils.fromJson(message02), KarateTestUtils.fromJson(properties02));
     // consume
-    final var messages = client.consume(this.queue, 10000L);
+    final var messages = client.consume(queue, 10000L);
 
     assertThat(available).isTrue();
-    assertThat(messages).isEqualTo(this.expected);
+    assertThat(messages).isEqualTo(expected);
   }
 
   protected void testJmsObject(final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
-    final JMSClient client = this.instantiateClient(config);
+    final JMSClient client = instantiateClient(config);
 
     // available
     final var available = client.available();
     // send
-    client.send(this.queue, this.object01, KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, this.object02, KarateTestUtils.fromJson(this.properties02));
+    client.send(queue, object01, KarateTestUtils.fromJson(properties01));
+    client.send(queue, object02, KarateTestUtils.fromJson(properties02));
     // consume
-    final var messages = client.consume(this.queue, 10000L);
+    final var messages = client.consume(queue, 10000L);
 
     assertThat(available).isTrue();
-    assertThat(messages).isEqualTo(this.expected);
+    assertThat(messages).isEqualTo(expected);
   }
 
   protected void testJmsPlainText(final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
-    final JMSClient client = this.instantiateClient(config);
+    final JMSClient client = instantiateClient(config);
 
     // available
     final var available = client.available();
     // send
-    client.send(this.queue, this.plainText01, KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, this.plainText02, KarateTestUtils.fromJson(this.properties02));
+    client.send(queue, plainText01, KarateTestUtils.fromJson(properties01));
+    client.send(queue, plainText02, KarateTestUtils.fromJson(properties02));
     // consume
-    final var messages = client.consume(this.queue, 10000L);
+    final var messages = client.consume(queue, 10000L);
 
     assertThat(available).isTrue();
-    assertThat(messages).isEqualTo(this.expectedPlainText);
+    assertThat(messages).isEqualTo(expectedPlainText);
   }
 
   protected void testJmsXml(final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
-    final JMSClient client = this.instantiateClient(config);
+    final JMSClient client = instantiateClient(config);
 
     // available
     final var available = client.available();
     // send
-    client.send(this.queue, this.xml01, KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, this.xml02, KarateTestUtils.fromJson(this.properties02));
+    client.send(queue, xml01, KarateTestUtils.fromJson(properties01));
+    client.send(queue, xml02, KarateTestUtils.fromJson(properties02));
     // consume
-    final var messages = client.consume(this.queue, 10000L);
+    final var messages = client.consume(queue, 10000L);
 
     assertThat(available).isTrue();
-    assertThat(messages).isEqualTo(this.expectedXML);
+    assertThat(messages).isEqualTo(expectedXML);
   }
 
   protected void testJmsMixed(final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
-    final JMSClient client = this.instantiateClient(config);
+    final JMSClient client = instantiateClient(config);
 
     // available
     final var available = client.available();
     // send
-    client.send(this.queue, KarateTestUtils.fromJson(this.message01), KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, this.object02, KarateTestUtils.fromJson(this.properties02));
-    client.send(this.queue, this.plainText01, KarateTestUtils.fromJson(this.properties01));
-    client.send(this.queue, this.xml02, KarateTestUtils.fromJson(this.properties02));
+    client.send(queue, KarateTestUtils.fromJson(message01), KarateTestUtils.fromJson(properties01));
+    client.send(queue, object02, KarateTestUtils.fromJson(properties02));
+    client.send(queue, plainText01, KarateTestUtils.fromJson(properties01));
+    client.send(queue, xml02, KarateTestUtils.fromJson(properties02));
     // consume
-    final var messages = client.consume(this.queue, 10000L);
+    final var messages = client.consume(queue, 10000L);
 
     assertThat(available).isTrue();
-    assertThat(messages).isEqualTo(this.expectedMixed);
+    assertThat(messages).isEqualTo(expectedMixed);
   }
 }
