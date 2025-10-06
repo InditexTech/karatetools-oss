@@ -76,6 +76,7 @@ asciidoc:
 antora:
   extensions:
   - require: '@antora/lunr-extension'
+    index_latest_only: true
 ui:
   bundle:
     url: ./ui-bundle.zip

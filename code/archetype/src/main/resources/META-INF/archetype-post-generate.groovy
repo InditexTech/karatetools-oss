@@ -10,6 +10,7 @@ Properties properties = request.properties
 
 String kafka = properties.get("includeKafkaClients")
 String activemq = properties.get("includeJMSClient_ActiveMQ")
+String rabbitmq = properties.get("includeJMSClient_RabbitMQ")
 String mariadb = properties.get("includeJDBCClient_MariaDB")
 String mongodb = properties.get("includeMongoDBClient")
 String postgresql = properties.get("includeJDBCClient_PostgreSQL")
@@ -20,6 +21,9 @@ if (kafka != "yes" && kafka != "y") {
 }
 if (activemq != "yes" && activemq != "y") {
   FileUtils.getFile(projectPath.toString() + "/src/test/resources/config/jms/activemq-config-local.yml").delete()
+}
+if (rabbitmq != "yes" && rabbitmq != "y") {
+  FileUtils.getFile(projectPath.toString() + "/src/test/resources/config/jms/rabbitmq-config-local.yml").delete()
 }
 if (mariadb != "yes" && mariadb != "y") {
   FileUtils.getFile(projectPath.toString() + "/src/test/resources/config/db/mariadb-config-local.yml").delete()

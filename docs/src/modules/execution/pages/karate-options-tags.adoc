@@ -10,7 +10,7 @@ Karate Tests support *combinations of TAGS*.
 
 * *AND*: Features with both @TAG1 and @TAG2 but not @TAG3.
 +
-`-Dkarate.options="-t @TAG1 -t @TAG2 -t @~TAG3"`.
+`-Dkarate.options="-t @TAG1 -t @TAG2 -t ~@TAG3"`.
 +
 For example:
 

@@ -6,7 +6,7 @@ The main execution arguments are the following:
 * xref:#karate-options[Karate Options]
 ** xref:#karate-options-classpath[Karate Options - Classpath]
 ** xref:#karate-options-tags[Karate Options - Tags]
-** xref:#karate-options-tags-and-classpath[Karate Options - Tags & Classpath]
+** xref:#karate-options-tags-classpath[Karate Options - Tags & Classpath]
 ** xref:#karate-options-number-of-threads[Karate Options - Number of Threads]
 
 TIP: The commands provided in this section are based on *command line execution* to ensure that we will have the *same behaviour* when executing in the scope of *CI/CD*. You can also use your favorite *IDE* for test development, execution, debugging, ....

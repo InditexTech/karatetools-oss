@@ -30,6 +30,9 @@
     <requiredProperty key="includeJMSClient_ActiveMQ">
       <defaultValue>yes</defaultValue>
     </requiredProperty>
+    <requiredProperty key="includeJMSClient_RabbitMQ">
+      <defaultValue>yes</defaultValue>
+    </requiredProperty>
   </requiredProperties>
 
   <fileSets>

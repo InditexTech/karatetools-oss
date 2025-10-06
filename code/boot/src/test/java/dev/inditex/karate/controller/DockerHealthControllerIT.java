@@ -66,6 +66,7 @@ public class DockerHealthControllerIT {
         "kt-mariadb",
         "kt-mongodb",
         "kt-postgres",
+        "kt-rabbitmq",
         "kt-schema-registry",
         "kt-schema-registry-basic-auth",
         "kt-zookeeper"};

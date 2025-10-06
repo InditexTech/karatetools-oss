@@ -82,6 +82,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Karate Clients - JMS - RabbitMQ -->
+    <dependency>
+      <groupId>com.rabbitmq.jms</groupId>
+      <artifactId>rabbitmq-jms</artifactId>
+    </dependency>
     <!-- Karate Clients - Kafka -->
     <dependency>
       <groupId>org.apache.kafka</groupId>

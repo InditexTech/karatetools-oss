@@ -123,8 +123,8 @@ jobs:
         working-directory: code
         run: |
           JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
-          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
-            -Dsonar.projectKey=InditexTech_"${{ steps.version.outputs.github-repository }}" \
+          mvn -X org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
+            -Dsonar.projectKey="InditexTech_${{ steps.version.outputs.github-repository }}" \
             -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
             -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
             -Dsonar.host.url="https://sonarcloud.io/" \
