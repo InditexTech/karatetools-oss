@@ -84,6 +84,26 @@ services:
       timeout: 10s
     labels:
       org.springframework.boot.readiness-check.tcp.disable: true
+  # JMS - Rabbit MQ
+  rabbitmq:
+    container_name: kt-rabbitmq
+    profiles: [ "it", "app" ]
+    image: rabbitmq:3.13.6-management-alpine
+    ports:
+      - "15672:15672" # Web Console
+      - "25672:5672"   # AMQP
+    environment:
+      RABBITMQ_DEFAULT_USER: "karate"
+      RABBITMQ_DEFAULT_PASS: "karate-pwd"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    healthcheck:
+      test: "rabbitmq-diagnostics -q ping || exit 1"
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 10s
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true
   # Kafka / Schema Registry / ZooKeeper - Kafka
   kafka:
     container_name: kt-kafka

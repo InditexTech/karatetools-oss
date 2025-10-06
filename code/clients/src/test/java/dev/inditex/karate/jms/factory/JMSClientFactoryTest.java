@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 
 import java.util.Map;
 
+import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import javax.jms.JMSException;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +38,21 @@ public class JMSClientFactoryTest {
     void when_ActiveMQ_expect_delegate(final String jmsFactoryName) throws JMSException {
       try (final MockedStatic<ActiveMQClientFactory> clientFactoryMock = mockStatic(ActiveMQClientFactory.class)) {
         final ActiveMQConnectionFactory connectionFactoryMock = mock(ActiveMQConnectionFactory.class);
+        final Map<Object, Object> config = getConfig(jmsFactoryName);
+        clientFactoryMock.when(() -> JMSClientFactory.createConnectionFactory(config)).thenReturn(connectionFactoryMock);
+
+        final var result = JMSClientFactory.createConnectionFactory(config);
+
+        assertThat(result).isNotNull();
+        clientFactoryMock.verify(() -> JMSClientFactory.createConnectionFactory(config), times(1));
+      }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"RabbitMQ", "rabbitmq", "RABBITMQ"})
+    void when_RabbitMQ_expect_delegate(final String jmsFactoryName) throws JMSException {
+      try (final MockedStatic<RabbitMQClientFactory> clientFactoryMock = mockStatic(RabbitMQClientFactory.class)) {
+        final var connectionFactoryMock = mock(RMQConnectionFactory.class);
         final Map<Object, Object> config = getConfig(jmsFactoryName);
         clientFactoryMock.when(() -> JMSClientFactory.createConnectionFactory(config)).thenReturn(connectionFactoryMock);
 

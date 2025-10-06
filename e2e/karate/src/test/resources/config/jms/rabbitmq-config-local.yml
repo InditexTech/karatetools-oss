@@ -1,0 +1,15 @@
+# docker-compose environment variables:  <RABBITMQ_DEFAULT_USER> <RABBITMQ_DEFAULT_PASS> <RABBITMQ_DEFAULT_VHOST>
+# docker-compose folder structure:       NA
+jmsFactory: RabbitMQ
+# host: RabbitMQ server host.
+host: localhost
+# port: RabbitMQ server port.
+port: 25672
+# username: User name that the application uses to connect to RabbitMQ.
+username: karate
+# password: Password that the application uses to connect to RabbitMQ.
+password: karate-pwd
+# virtual-host: virtual host to be used when creating a connection to RabbitMQ.
+virtual-host: /
+# on-message-timeout: Timeout in milliseconds for processing messages.
+on-message-timeout: 5000

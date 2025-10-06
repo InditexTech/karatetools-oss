@@ -100,7 +100,8 @@ public class JMSClientIT {
   class JMS {
     @ParameterizedTest(name = "{0}")
     @CsvSource({
-        "ActiveMQ,classpath:config/jms/activemq-config.yml"
+        "ActiveMQ,classpath:config/jms/activemq-config.yml",
+        "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_map_expect_results(final String factory, final String configFile) throws IOException, JMSException {
       testJmsMap(configFile);
@@ -108,7 +109,8 @@ public class JMSClientIT {
 
     @ParameterizedTest(name = "{0}")
     @CsvSource({
-        "ActiveMQ,classpath:config/jms/activemq-config.yml"
+        "ActiveMQ,classpath:config/jms/activemq-config.yml",
+        "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_object_expect_results(final String factory, final String configFile) throws IOException, JMSException {
       testJmsObject(configFile);
@@ -116,7 +118,8 @@ public class JMSClientIT {
 
     @ParameterizedTest(name = "{0}")
     @CsvSource({
-        "ActiveMQ,classpath:config/jms/activemq-config.yml"
+        "ActiveMQ,classpath:config/jms/activemq-config.yml",
+        "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_plain_text_expect_results(final String factory, final String configFile) throws IOException, JMSException {
       testJmsPlainText(configFile);
@@ -124,7 +127,8 @@ public class JMSClientIT {
 
     @ParameterizedTest(name = "{0}")
     @CsvSource({
-        "ActiveMQ,classpath:config/jms/activemq-config.yml"
+        "ActiveMQ,classpath:config/jms/activemq-config.yml",
+        "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_xml_expect_results(final String factory, final String configFile) throws IOException, JMSException {
       testJmsXml(configFile);
@@ -132,7 +136,8 @@ public class JMSClientIT {
 
     @ParameterizedTest(name = "{0}")
     @CsvSource({
-        "ActiveMQ,classpath:config/jms/activemq-config.yml"
+        "ActiveMQ,classpath:config/jms/activemq-config.yml",
+        "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_mixed_expect_results(final String factory, final String configFile) throws IOException, JMSException {
       testJmsMixed(configFile);

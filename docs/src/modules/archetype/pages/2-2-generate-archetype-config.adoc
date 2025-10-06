@@ -5,10 +5,11 @@ It will prompt (*yes/no*) for the properties to include sample configuration fil
 ** `includeJDBCClient_PostgreSQL` to include PostgreSQL JDBC client configuration
 * *MongoDB*
 ** `includeMongoDBClient` to include MongoDB configuration
-* *JMS*
-** `includeJMSClient_ActiveMQ` to include ActiveMQ configuration
 * *Kafka*
 ** `includeKafkaClients` to include Kafka configuration(s).
+* *JMS*
+** `includeJMSClient_ActiveMQ` to include ActiveMQ configuration
+** `includeJMSClient_RabbitMQ` to include RabbitMQ configuration
 
 [source,plaintext,subs="+attributes"]
 ----
@@ -17,6 +18,7 @@ Define value for property 'includeJDBCClient_PostgreSQL' yes: :
 Define value for property 'includeMongoDBClient' yes: :
 Define value for property 'includeKafkaClients' yes: :
 Define value for property 'includeJMSClient_ActiveMQ' yes: :
+Define value for property 'includeJMSClient_RabbitMQ' yes: :
 ----
 
 TIP: For a client not to be included type `n` or `no`, if it's left empty it takes the default value.
