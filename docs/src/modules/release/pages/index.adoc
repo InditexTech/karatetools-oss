@@ -4,8 +4,8 @@
 |===
 | Version | Date | Description
 
-| 6.0.0
-| 2025-10-XX
+| 5.1.0
+| 2025-10-06
 |
 
 ✔️ Karate Tools - Added *JMS Rabbit MQ Client* (send and receive messages from Rabbit MQ queues).
