@@ -15,4 +15,5 @@ Scenario: get with auth
 
 Given path '/get'
 And headers headers
+And request req.body
 When method GET

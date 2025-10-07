@@ -36,6 +36,11 @@ function fn() {
   //    The print step is an exception
   karate.configure('report', { showLog: showLogOption, showAllSteps: showAllStepsOption });
 
+  // Log Masking
+  let HttpLogMasking = Java.type('dev.inditex.karate.logging.HttpLogMasking');
+  let logMasker = new HttpLogMasking();
+  karate.configure('logModifier', logMasker);
+  
   let mocks;
   // Karate - Local Mock Server
   if (karate.env === 'local') {
