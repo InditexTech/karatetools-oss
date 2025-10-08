@@ -8,7 +8,7 @@ If you have any questions, feel free to reach out to us.
 
 == Prerequisites
 
-Before starting to contribute to the code, you must first sign the ✍️ https://github.com/InditexTech/foss/blob/main/documents/ITX_OSS_CLA.pdf[*Contributor License Agreement (CLA)*, window="_blank"] and send it to mailto:oso@inditex.com[📧 oso@inditex.com 🐻].
+Before starting to contribute to the code, you must first sign the ✍️ https://github.com/InditexTech/foss/blob/main/documents/CLA.pdf[*Contributor License Agreement (CLA)*, window="_blank"] and send it to mailto:oso@inditex.com[📧 oso@inditex.com 🐻].
 
 == Contribution Guidelines
 

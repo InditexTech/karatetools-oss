@@ -134,7 +134,7 @@ class HttpLogMaskingTest {
   }
 
   @Nested
-  class request {
+  class Request {
     @Test
     void when_any_request_expect_unchanged() {
       final HttpLogMasking masking = new HttpLogMasking();
@@ -146,7 +146,7 @@ class HttpLogMaskingTest {
   }
 
   @Nested
-  class response {
+  class Response {
     @Test
     void when_any_response_expect_unchanged() {
       final HttpLogMasking masking = new HttpLogMasking();
