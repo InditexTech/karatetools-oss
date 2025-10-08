@@ -5,7 +5,7 @@
 | Version | Date | Description
 
 | 5.1.0
-| 2025-10-07
+| 2025-10-08
 |
 
 ✔️ Karate Tools - Added *HttpLogMasking* capability to mask sensitive information in HTTP logs.
