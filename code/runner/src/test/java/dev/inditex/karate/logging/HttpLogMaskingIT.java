@@ -26,19 +26,22 @@ public class HttpLogMaskingIT extends AbstractKarateTest {
           // karate options
           getKarateOptions(),
           // featuresCount
-          1,
-          // scenariosCount
           2,
+          // scenariosCount
+          4,
           // surefireFiles
           List.of(
-              "/TEST-scenarios.logging.http-log-masking.xml"),
+              "/TEST-scenarios.logging.http-log-masking.xml",
+              "/TEST-scenarios.logging.http-log-masking-disabled.xml"),
           // stats
           Map.of(
-              "package/tag/ops/op-with-auth", new Stats(0, 2, 2)),
+              "package/tag/ops/op-with-auth", new Stats(0, 4, 4)),
           // logs
           List.of(
               "Running Feature[ karate-http-log-masking ] Scenario [ karate-http-log-masking-basic ] ... ",
-              "Running Feature[ karate-http-log-masking ] Scenario [ karate-http-log-masking-jwt ] ... "));
+              "Running Feature[ karate-http-log-masking ] Scenario [ karate-http-log-masking-jwt ] ... ",
+              "Running Feature[ karate-http-log-masking-disabled ] Scenario [ karate-http-log-masking-disabled-basic ] ... ",
+              "Running Feature[ karate-http-log-masking-disabled ] Scenario [ karate-http-log-masking-disabled-jwt ] ... "));
 
       final var result = executeScenarios(test);
 

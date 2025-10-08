@@ -3,7 +3,6 @@ package dev.inditex.karate.logging;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
@@ -21,24 +20,6 @@ class HttpLogMaskingTest {
     @Test
     void when_instance_expect_no_exception() {
       assertThatCode(HttpLogMasking::new).doesNotThrowAnyException();
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void when_instance_with_params_expect_no_exception(final String maskValue, final Set<String> sensitiveHeaders) {
-      assertThatCode(() -> new HttpLogMasking(maskValue, sensitiveHeaders)).doesNotThrowAnyException();
-    }
-
-    static Stream<Arguments> when_instance_with_params_expect_no_exception() {
-      return Stream.of(
-          Arguments.of("MASKED", Set.of("custom-header")),
-          Arguments.of("", Set.of("custom-header")),
-          Arguments.of(null, Set.of("custom-header")),
-          Arguments.of("MASKED", Set.of()),
-          Arguments.of("MASKED", null),
-          Arguments.of(null, null),
-          Arguments.of("", null),
-          Arguments.of(null, Set.of()));
     }
   }
 
@@ -69,33 +50,36 @@ class HttpLogMaskingTest {
 
   @Nested
   class Header {
+    static Stream<Arguments> getTestHeadersArguments() {
+      return Stream.of(
+          // Values
+          Arguments.of("Auth", "Bearer abc.def.ghi", "Bearer *****"),
+          Arguments.of("auth", "Bearer abc.def.ghi", "Bearer *****"),
+          Arguments.of("Auth", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==", "Basic *****"),
+          // Exact Headers
+          Arguments.of("Authorization", "secret-value", "*****"),
+          Arguments.of("authorization", "secret-value", "*****"),
+          Arguments.of("Token", "secret-value", "*****"),
+          Arguments.of("token", "secret-value", "*****"),
+          Arguments.of("Secret", "secret-value", "*****"),
+          Arguments.of("secret", "secret-value", "*****"),
+          Arguments.of("Key", "secret-value", "*****"),
+          Arguments.of("key", "secret-value", "*****"),
+          Arguments.of("Username", "secret-value", "*****"),
+          Arguments.of("username", "secret-value", "*****"),
+          Arguments.of("Password", "secret-value", "*****"),
+          Arguments.of("password", "secret-value", "*****"),
+          // Partial Headers
+          Arguments.of("X-Authorization", "secret-value", "*****"),
+          Arguments.of("X-Token", "secret-value", "*****"),
+          Arguments.of("X-Secret", "secret-value", "*****"),
+          Arguments.of("X-Key", "secret-value", "*****"),
+          Arguments.of("X-OpenAM-Username", "secret-value", "*****"),
+          Arguments.of("X-OpenAM-Password", "secret-value", "*****"));
+    }
+
     @ParameterizedTest
-    @CsvSource({
-        // Values
-        "Auth,Bearer abc.def.ghi,Bearer *****",
-        "auth,Bearer abc.def.ghi,Bearer *****",
-        "Auth,Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==,Basic *****",
-        // Exact Headers
-        "Authorization,secret-value,*****",
-        "authorization,secret-value,*****",
-        "Token,secret-value,*****",
-        "token,secret-value,*****",
-        "Secret,secret-value,*****",
-        "secret,secret-value,*****",
-        "Key,secret-value,*****",
-        "key,secret-value,*****",
-        "Username,secret-value,*****",
-        "username,secret-value,*****",
-        "Password,secret-value,*****",
-        "password,secret-value,*****",
-        // Partial Headers
-        "X-Authorization,secret-value,*****",
-        "X-Token,secret-value,*****",
-        "X-Secret,secret-value,*****",
-        "X-Key,secret-value,*****",
-        "X-OpenAM-Username,secret-value,*****",
-        "X-OpenAM-Password,secret-value,*****"
-    })
+    @MethodSource("getTestHeadersArguments")
     void when_sensitive_header_expect_masked(final String header, final String value, final String expected) {
       final HttpLogMasking masking = new HttpLogMasking();
 
@@ -104,13 +88,15 @@ class HttpLogMaskingTest {
       assertThat(result).isEqualTo(expected);
     }
 
-    @Test
-    void when_custom_mask_value_expect_custom_mask() {
-      final HttpLogMasking masking = new HttpLogMasking("MASKED", Set.of("custom-header"));
+    @ParameterizedTest
+    @MethodSource("getTestHeadersArguments")
+    void when_disabled_sensitive_header_expect_original(final String header, final String value, final String expected) {
+      final HttpLogMasking masking = new HttpLogMasking();
+      masking.setEnabled(false);
 
-      final String result = masking.header("custom-header", "secret-value");
+      final String result = masking.header(header, value);
 
-      assertThat(result).isEqualTo("MASKED");
+      assertThat(result).isEqualTo(value);
     }
 
     @ParameterizedTest
@@ -154,6 +140,30 @@ class HttpLogMaskingTest {
       final String result = masking.response("/any/uri", "any response body");
 
       assertThat(result).isEqualTo("any response body");
+    }
+  }
+
+  @Nested
+  class SetEnabled {
+    @Test
+    void when_set_enabled_expect_no_exception() {
+      final HttpLogMasking masking = new HttpLogMasking();
+
+      assertThatCode(() -> masking.setEnabled(false)).doesNotThrowAnyException();
+      assertThatCode(() -> masking.setEnabled(true)).doesNotThrowAnyException();
+    }
+  }
+
+  @Nested
+  class IsEnabled {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void when_set_enabled_expect_reflect_value(final boolean value) {
+      final HttpLogMasking masking = new HttpLogMasking();
+      masking.setEnabled(value);
+
+      final boolean result = masking.isEnabled();
+      assertThat(result).isEqualTo(value);
     }
   }
 }

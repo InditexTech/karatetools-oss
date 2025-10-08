@@ -1,7 +1,7 @@
 @inditex-oss-karate
 @http-log-masking
 
-Feature: karate-http-log-masking
+Feature: karate-http-log-masking-disabled
 
 Background:
 
@@ -10,10 +10,10 @@ Background:
 
 * def authJS = read('classpath:karate-auth.js')
 
-* logMasker.setEnabled(true)
+* logMasker.setEnabled(false)
 * print 'logMasker.isEnabled()=', logMasker.isEnabled()
 
-Scenario: karate-http-log-masking-basic
+Scenario: karate-http-log-masking-disabled-basic
 
 Given def req =
 """
@@ -49,16 +49,16 @@ Then logger.detachAppender('logWatcher')
 
 # Match last logs - should contain masked Authorization header
 Then def actualLogs = getLastLogs(1)
-Then match actualLogs[0] contains 'authorization: Basic *****'
+Then match actualLogs[0] contains 'authorization: ' + expectedAuthorization
 
 # Match last logs - should contain masked sensitive headers
-Then match actualLogs[0] contains 'token: *****'
-Then match actualLogs[0] contains 'secret: *****'
-Then match actualLogs[0] contains 'key: *****'
-Then match actualLogs[0] contains 'username: *****'
-Then match actualLogs[0] contains 'password: *****'
+Then match actualLogs[0] contains 'token: test'
+Then match actualLogs[0] contains 'secret: test'
+Then match actualLogs[0] contains 'key: test'
+Then match actualLogs[0] contains 'username: test'
+Then match actualLogs[0] contains 'password: test'
 
-Scenario: karate-http-log-masking-jwt
+Scenario: karate-http-log-masking-disabled-jwt
 Given def req =
 """
 {
@@ -92,11 +92,11 @@ Then logger.detachAppender('logWatcher')
 
 # Match last logs - should contain masked Authorization header
 Then def actualLogs = getLastLogs(1)
-Then match actualLogs[0] contains 'authorization: Bearer *****'
+Then match actualLogs[0] contains 'authorization: ' + expectedAuthorization
 
 # Match last logs - should contain masked sensitive headers
-Then match actualLogs[0] contains 'token: *****'
-Then match actualLogs[0] contains 'secret: *****'
-Then match actualLogs[0] contains 'key: *****'
-Then match actualLogs[0] contains 'username: *****'
-Then match actualLogs[0] contains 'password: *****'
+Then match actualLogs[0] contains 'token: test'
+Then match actualLogs[0] contains 'secret: test'
+Then match actualLogs[0] contains 'key: test'
+Then match actualLogs[0] contains 'username: test'
+Then match actualLogs[0] contains 'password: test'

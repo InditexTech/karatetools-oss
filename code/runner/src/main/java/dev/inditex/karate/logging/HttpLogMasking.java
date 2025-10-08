@@ -6,27 +6,32 @@ import com.intuit.karate.http.HttpLogModifier;
 
 public class HttpLogMasking implements HttpLogModifier {
 
-  private String maskValue = "*****";
+  public static final HttpLogModifier INSTANCE = new HttpLogMasking();
 
-  private Set<String> sensitiveHeaders = Set.of(
-      "authorization",
-      "token",
-      "secret",
-      "key",
-      "username",
-      "password");
+  private boolean enabled;
+
+  private final String mask;
+
+  private final Set<String> sensitiveHeadersKeys;
+
+  private final Set<String> sensitiveHeaderValues;
 
   public HttpLogMasking() {
     // Default constructor
-  }
-
-  public HttpLogMasking(final String maskValue, final Set<String> sensitiveHeaders) {
-    if (maskValue != null && !maskValue.isEmpty()) {
-      this.maskValue = maskValue;
-    }
-    if (sensitiveHeaders != null && !sensitiveHeaders.isEmpty()) {
-      this.sensitiveHeaders = sensitiveHeaders;
-    }
+    enabled = true;
+    mask = "*****";
+    sensitiveHeadersKeys = Set.of(
+        "authorization",
+        "token",
+        "secret",
+        "key",
+        "username",
+        "password");
+    sensitiveHeaderValues = Set.of(
+        // Pattern-based detection for JWT tokens
+        "^Bearer\\s+[A-Za-z0-9\\-_]+\\.[A-Za-z0-9\\-_]+\\.[A-Za-z0-9\\-_]*$",
+        // Basic auth detection
+        "^Basic\\s+[A-Za-z0-9+/]+=*$");
   }
 
   @Override
@@ -41,18 +46,18 @@ public class HttpLogMasking implements HttpLogModifier {
 
   @Override
   public String header(final String header, final String value) {
+    if (!enabled) {
+      return value;
+    }
     if (value == null) {
       return value;
     }
 
-    // Pattern-based detection for JWT tokens
-    if (value.matches("^Bearer\\s+[A-Za-z0-9\\-_]+\\.[A-Za-z0-9\\-_]+\\.[A-Za-z0-9\\-_]*$")) {
-      return "Bearer " + maskValue;
-    }
-
-    // Basic auth detection
-    if (value.matches("^Basic\\s+[A-Za-z0-9+/]+=*$")) {
-      return "Basic " + maskValue;
+    for (final String pattern : sensitiveHeaderValues) {
+      if (value.matches(pattern)) {
+        // Return first word of the value followed by mask
+        return value.split("\\s+")[0] + " " + mask;
+      }
     }
 
     if (header == null) {
@@ -61,8 +66,8 @@ public class HttpLogMasking implements HttpLogModifier {
 
     final String lowerHeader = header.toLowerCase();
     // if the header is in the sensitive list even with partial match
-    if (sensitiveHeaders.stream().anyMatch(lowerHeader::contains)) {
-      return maskValue;
+    if (sensitiveHeadersKeys.stream().anyMatch(lowerHeader::contains)) {
+      return mask;
     }
 
     return value;
@@ -76,5 +81,13 @@ public class HttpLogMasking implements HttpLogModifier {
   @Override
   public String response(final String uri, final String response) {
     return response; // No modification to the response body
+  }
+
+  public void setEnabled(final boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
   }
 }
