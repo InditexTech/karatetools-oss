@@ -35,12 +35,15 @@ function() {
 }
 """
 
-# Get Last N Logs from Log Watcher
+# Get Last N Logs from Log Watcher - if zero or greater than total logs, all logs are returned
 * def getLastLogs =
 """
 function(count) {
   var logs = [];
-  for(var i = count; i >= 1; i--) {          
+  if (count <= 0 || count > logWatcher.list.size()) {
+    count = logWatcher.list.size();
+  }
+  for(var i = count; i >= 1; i--) {
     logs.push(logWatcher.list.get(logWatcher.list.size() - i).getFormattedMessage().trim());
   }
   return logs;
@@ -50,7 +53,7 @@ function(count) {
 # Remove all auth default configurations so we can test config error management
 * def configureAuth =
 """
-function() {  
+function() {
   karate.set('defaultAuthMode', null);
   karate.set('defaultUsername', null);
   karate.set('credentials', null);

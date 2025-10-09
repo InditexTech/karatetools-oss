@@ -5,8 +5,10 @@
 | Version | Date | Description
 
 | 5.1.0
-| 2025-10-06
+| 2025-10-09
 |
+
+✔️ Karate Tools - Added *HttpLogMasking* capability to mask sensitive information in HTTP logs.
 
 ✔️ Karate Tools - Added *JMS Rabbit MQ Client* (send and receive messages from Rabbit MQ queues).
 
