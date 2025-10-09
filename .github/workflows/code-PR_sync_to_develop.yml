@@ -12,7 +12,7 @@ jobs:
     name: Add Friendly Reminder Comment
     if: github.head_ref != 'develop' && !startsWith(github.head_ref, 'develop-') && vars.DEVELOPMENT_FLOW != 'trunk-based-development'
     timeout-minutes: 30
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
       develop-branch: ${{ steps.sync-branch.outputs.DEVELOP_BRANCH }}
@@ -78,7 +78,7 @@ jobs:
     timeout-minutes: 30
     needs: add-friendly-reminder
     if: needs.add-friendly-reminder.outputs.detected == 'false' && github.event.pull_request.merged == true && vars.DEVELOPMENT_FLOW != 'trunk-based-development'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     concurrency:
       group: ${{ github.workflow }}-${{ github.job }}
       cancel-in-progress: true

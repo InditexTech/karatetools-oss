@@ -43,6 +43,20 @@ parse_failsafe() {
       | $FAILSAFE_SUCCESS_RATE \
       | $FAILSAFE_TIME |" >> "$GITHUB_STEP_SUMMARY"
 
+    # Build Annotation Message
+    MESSAGE="| \
+      #️⃣ Tests: $FAILSAFE_TESTS | \
+      ✔️ Passed: $FAILSAFE_PASSED | \
+      ❌ Failed: $FAILSAFE_FAILED | \
+      ⏭ Skipped: $FAILSAFE_SKIPPED | \
+      📊 Success Rate: $FAILSAFE_SUCCESS_RATE | \
+      ⏱ Time: $FAILSAFE_TIME |"
+    # Clean Annotation Message (Remove newlines and extra spaces)
+    MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
+    # Echo Annotation Message
+    # echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    echo "::notice ::$ICON $TYPE: $MESSAGE"
+
     # Set Output Variables
     LABEL="📊 Success Rate %"
     RESULT=$(echo "$FAILSAFE_SUCCESS_RATE" | tr -d '%')

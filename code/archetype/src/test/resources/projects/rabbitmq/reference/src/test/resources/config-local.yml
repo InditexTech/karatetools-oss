@@ -1,0 +1,12 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultAuthMode: basic | jwt. 'auth.authMode' when used in a specific request.
+defaultAuthMode: basic
+# defaultUsername: default username. 'auth.username' when used in a specific request.
+defaultUsername: username100
+# credentials: pairs of username: password. 'auth.password' when used in a specific request.
+credentials:
+  # username100: Fixed username:password example
+  username100: username100p

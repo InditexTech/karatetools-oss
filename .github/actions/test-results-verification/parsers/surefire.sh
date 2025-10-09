@@ -43,6 +43,20 @@ parse_surefire() {
       | $SUREFIRE_SUCCESS_RATE \
       | $SUREFIRE_TIME |" >> "$GITHUB_STEP_SUMMARY"
 
+    # Build Annotation Message
+    MESSAGE="| \
+      #️⃣ Tests: $SUREFIRE_TESTS | \
+      ✔️ Passed: $SUREFIRE_PASSED | \
+      ❌ Failed: $SUREFIRE_FAILED | \
+      ⏭ Skipped: $SUREFIRE_SKIPPED | \
+      📊 Success Rate: $SUREFIRE_SUCCESS_RATE | \
+      ⏱ Time: $SUREFIRE_TIME |"
+    # Clean Annotation Message (Remove newlines and extra spaces)
+    MESSAGE=$(echo "$MESSAGE" | tr -s ' ')
+    # Echo Annotation Message
+    # echo "::notice title=Results [$ICON $TYPE] ::$MESSAGE"
+    echo "::notice ::$ICON $TYPE: $MESSAGE"
+
     # Set Output Variables
     LABEL="📊 Success Rate %"
     RESULT=$(echo "$SUREFIRE_SUCCESS_RATE" | tr -d '%')

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#42](https://github.com/InditexTech/karatetools-oss/issues/42) \[Karate-Tools] Add HttpLogMasking
+
+- [#40](https://github.com/InditexTech/karatetools-oss/issues/40) \[Karate-Tools] RabbitMQ Support
+
+- [#38](https://github.com/InditexTech/karatetools-oss/issues/38) \[Karate-Tools] Versions update (Maven Deps and Docker Containers)
+
+- [#30](https://github.com/InditexTech/karatetools-oss/issues/30) \[Karate Tools] [CI/CD] Add test results annotations
+
 ## [5.0.1] - 2025-01-17
 
 - [#19](https://github.com/InditexTech/karatetools-oss/issues/19) \[Karate Tools] Bug-Fix - exec-maven-plugin:3.5.0 causes Could not load library for *jansi*

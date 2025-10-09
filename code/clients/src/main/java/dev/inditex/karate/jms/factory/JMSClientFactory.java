@@ -32,6 +32,8 @@ public class JMSClientFactory {
       final JMSFactory jmsFactory = JMSFactory.valueOf(jmsFactoryConfig.toUpperCase());
       if (jmsFactory == JMSFactory.ACTIVEMQ) {
         return ActiveMQClientFactory.createConnectionFactory(config);
+      } else if (jmsFactory == JMSFactory.RABBITMQ) {
+        return RabbitMQClientFactory.createConnectionFactory(config);
       }
     } catch (final IllegalArgumentException e) {
       throw new JMSException("Invalid JMSClientFactory: " + jmsFactoryConfig);
@@ -41,5 +43,6 @@ public class JMSClientFactory {
 }
 
 enum JMSFactory {
-  ACTIVEMQ
+  ACTIVEMQ,
+  RABBITMQ
 }

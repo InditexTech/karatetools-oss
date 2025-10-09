@@ -58,7 +58,7 @@ class ActiveMQClientFactoryTest {
     }
 
     @Test
-    void when_create_with_custom_timeput_expect_valid() throws JMSException {
+    void when_create_with_custom_timeout_expect_valid() throws JMSException {
       final Map<Object, Object> config = getValidConfig(1000);
       final String brokerURL = String.valueOf(config.get(BROKER_URL));
       final String user = String.valueOf(config.get(USERNAME));

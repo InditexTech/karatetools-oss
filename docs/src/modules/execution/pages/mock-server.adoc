@@ -45,6 +45,8 @@ This feature is useful to test the mock server endpoints without running the tes
 +
 [source,bash,subs="+attributes"]
 ----
+mvn test-compile
+
 mvn exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.intuit.karate.Main" -Dexec.args="-p 58082 -m classpath:mocks/mock-templates.feature"
 ----
 

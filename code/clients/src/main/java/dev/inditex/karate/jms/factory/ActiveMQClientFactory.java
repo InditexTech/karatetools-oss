@@ -10,9 +10,6 @@ import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
  */
 public class ActiveMQClientFactory {
 
-  /** The Constant KARATE_JMS_ACTIVE_MQ. */
-  public static final String KARATE_JMS_ACTIVE_MQ = "karate-jms-active-mq";
-
   /** The Constant BROKER_URL. */
   public static final String BROKER_URL = "brokerURL"; // Identifies the URL where the ActiveMQ broker is listening.
 

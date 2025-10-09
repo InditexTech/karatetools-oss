@@ -11,6 +11,7 @@ node "<$java-icon,scale=0.15>\n karatetools-clients (karatetools-starter)" as ka
 }
 
 queue "<$apache,scale=0.5,color=#832878>\n Active MQ" as activemq
+queue "<$rabbitmq,scale=1,color=#FF6600>\n Rabbit MQ" as rabbitmq
 
 json "<$json,scale=0.5> JSON" as JSON {
   "response": [
@@ -22,6 +23,7 @@ json "<$json,scale=0.5> JSON" as JSON {
 ' Relationships
 
 jmsClient --> activemq
+jmsClient --> rabbitmq
 
 test -right-> jmsClient
 note bottom of link : send('queue', { 'id': 1, 'name': 'karate-01', 'value': 1 })
