@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2025-10-09
+
 - [#42](https://github.com/InditexTech/karatetools-oss/issues/42) \[Karate-Tools] Add HttpLogMasking
 
 - [#40](https://github.com/InditexTech/karatetools-oss/issues/40) \[Karate-Tools] RabbitMQ Support
 
 - [#38](https://github.com/InditexTech/karatetools-oss/issues/38) \[Karate-Tools] Versions update (Maven Deps and Docker Containers)
 
-- [#30](https://github.com/InditexTech/karatetools-oss/issues/30) \[Karate Tools] [CI/CD] Add test results annotations
+- [#30](https://github.com/InditexTech/karatetools-oss/issues/30) \[Karate Tools] \[CI/CD] Add test results annotations
 
 ## [5.0.1] - 2025-01-17
 
@@ -28,7 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First Open Source Release
 
-[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.0.1...HEAD
+[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.1.0...HEAD
+
+[5.1.0]: https://github.com/InditexTech/karatetools-oss/compare/5.0.1...5.1.0
 
 [5.0.1]: https://github.com/InditexTech/karatetools-oss/compare/5.0.0...5.0.1
 
