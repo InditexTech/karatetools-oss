@@ -5,7 +5,7 @@
 | Version | Date | Description
 
 | 5.2.0
-| 2026-02-27
+| 2026-03-02
 |
 
 ✔️ Karate Tools - Fixed Open Api Generation - Operation ID Sanitize
