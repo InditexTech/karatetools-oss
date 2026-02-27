@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#48](https://github.com/InditexTech/karatetools-oss/issues/48) \[Karate-Tools] Open Api Generation - Invalid Operation ID Sanitize
+
 ## [5.1.0] - 2025-10-09
 
 - [#42](https://github.com/InditexTech/karatetools-oss/issues/42) \[Karate-Tools] Add HttpLogMasking
