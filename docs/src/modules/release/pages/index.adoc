@@ -4,6 +4,19 @@
 |===
 | Version | Date | Description
 
+| 5.2.0
+| 2026-02-27
+|
+
+✔️ Karate Tools - Fixed Open Api Generation - Operation ID Sanitize
+
+👉 Added configurable `open-api-operation-id-sanitize.mode` Maven property (default: `alphanumeric`). See xref:open-api-generator:index.adoc#operation-id-sanitize-mode[Open API Generator - Configuration - Operation ID Sanitize Mode].
+
+👉 Supported modes: `alphanumeric` (removes non-word characters, preserves digits and underscores) and `letters-only` (keeps only `[a-zA-Z]` characters).
+
+👉 The property is forwarded as a JVM system property via `exec-maven-plugin` and can be overridden at the command line with `-Dopen-api-operation-id-sanitize.mode=<mode>`. See xref:open-api-generator:index.adoc#execution[Open API Generator - Execution].
+
+
 | 5.1.0
 | 2025-10-09
 |

@@ -5,13 +5,24 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import dev.inditex.karate.openapi.ExampleBasicApiMother;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class OpenApiParserTest extends KarateTest {
+
+  private static final String OPERATION_ID_SANITIZE_MODE_PROPERTY = "open-api-operation-id-sanitize.mode";
+
+  private static final String OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY = "letters-only";
+
+  private static final String OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC = "alphanumeric";
 
   @Nested
   class Constructor {
@@ -23,6 +34,11 @@ class OpenApiParserTest extends KarateTest {
 
   @Nested
   class GetOperationsByTag {
+
+    @AfterEach
+    void afterEach() {
+      System.clearProperty(OPERATION_ID_SANITIZE_MODE_PROPERTY);
+    }
 
     @Test
     void when_parse_pets_OpenApi_from_file_expect_parsed() {
@@ -63,21 +79,36 @@ class OpenApiParserTest extends KarateTest {
       });
     }
 
-    @Test
-    void when_parse_OpenApi_normalize_operationId_from_file_expect_parsed() {
+    @ParameterizedTest
+    @MethodSource
+    void when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed(final String mode, final String[] expectedOperationIds) {
+      if (mode != null) {
+        System.setProperty(OPERATION_ID_SANITIZE_MODE_PROPERTY, mode);
+      }
       final String file = getPathFromResources("/openapi/unit/parser/openapi-test-sanitize-operationId.yml");
 
       final Map<String, List<OpenApiParser.OperationPath>> operationsByTag = OpenApiParser.getOperationsByTag(file);
 
-      final Object[] expectedOperationIds = {"getuser", "putuser", "postUser", "deleteUser", "patchuser"};
-      assertThat(operationsByTag.get("NoTag")).hasSize(5);
+      assertThat(operationsByTag.get("NoTag")).hasSize(expectedOperationIds.length);
       operationsByTag.get("NoTag").forEach(op -> {
-        assertThat(op.operation().getOperationId()).isNotNull().isIn(expectedOperationIds);
+        assertThat(op.operation().getOperationId()).isNotNull().isIn((Object[]) expectedOperationIds);
         assertThat(op.operation().getTags()).isNull();
         assertThat(op.method()).isNotNull();
         assertThat(op.path()).isNotNull();
       });
     }
 
+    static Stream<Arguments> when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed() {
+      final String[] expectedOperationIdsLettersOnly = {"getuser", "postUser", "putuser", "deleteUser", "patchuser",
+          "getUserV", "getUserV", "postUserV", "VpostUserV"};
+      final String[] expectedOperationIdsAlphanumeric = {"getuser", "post_User", "putuser", "deleteUser", "patchuser01",
+          "getUserV2", "getUserV3", "_postUserV2", "VpostUserV3"};
+      return Stream.of(
+          Arguments.of(OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
+          Arguments.of(OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
+          Arguments.of("", expectedOperationIdsAlphanumeric), // default is alphanumeric
+          Arguments.of(null, expectedOperationIdsAlphanumeric) // default is alphanumeric
+      );
+    }
   }
 }

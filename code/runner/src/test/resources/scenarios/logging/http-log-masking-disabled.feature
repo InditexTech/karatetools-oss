@@ -47,11 +47,11 @@ Then match res.responseHeaders['authorization'][0] == expectedAuthorization
 # Detach logWatcher appender to be able to print captured logs and not enter into recursive mode
 Then logger.detachAppender('logWatcher')
 
-# Match last logs - should contain masked Authorization header
+# Match last logs - should contain unmasked Authorization header
 Then def actualLogs = getLastLogs(1)
 Then match actualLogs[0] contains 'authorization: ' + expectedAuthorization
 
-# Match last logs - should contain masked sensitive headers
+# Match last logs - should contain unmasked sensitive headers
 Then match actualLogs[0] contains 'token: test'
 Then match actualLogs[0] contains 'secret: test'
 Then match actualLogs[0] contains 'key: test'
@@ -90,11 +90,11 @@ Then match res.responseHeaders['authorization'][0] == expectedAuthorization
 # Detach logWatcher appender to be able to print captured logs and not enter into recursive mode
 Then logger.detachAppender('logWatcher')
 
-# Match last logs - should contain masked Authorization header
+# Match last logs - should contain unmasked Authorization header
 Then def actualLogs = getLastLogs(1)
 Then match actualLogs[0] contains 'authorization: ' + expectedAuthorization
 
-# Match last logs - should contain masked sensitive headers
+# Match last logs - should contain unmasked sensitive headers
 Then match actualLogs[0] contains 'token: test'
 Then match actualLogs[0] contains 'secret: test'
 Then match actualLogs[0] contains 'key: test'

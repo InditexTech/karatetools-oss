@@ -29,3 +29,26 @@ paths:
       responses:
         '200':
           description: OK
+  /users/v2:
+    get:
+      operationId: getUserV2
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: _postUserV2
+      responses:
+        '200':
+          description: OK
+
+  /users/v3:
+    get:
+      operationId: getUserV3
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: 3VpostUserV3
+      responses:
+        '200':
+          description: OK
