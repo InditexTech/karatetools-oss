@@ -19,6 +19,19 @@ import io.swagger.v3.parser.core.models.ParseOptions;
  */
 public class OpenApiParser {
 
+  // Runtime configuration property key for operationId sanitize mode
+  private static final String OPERATION_ID_SANITIZE_MODE_PROPERTY = "open-api-operation-id-sanitize.mode";
+
+  // Supported operationId sanitize modes
+  private static final String OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY = "letters-only";
+
+  private static final String OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC = "alphanumeric";
+
+  // Regular expression patterns for each operationId sanitize mode
+  private static final String OPERATION_ID_SANITIZE_PATTERN_LETTERS_ONLY = "[^a-zA-Z]";
+
+  private static final String OPERATION_ID_SANITIZE_PATTERN_ALPHANUMERIC = "(?:^[^A-Za-z_]+|\\W)";
+
   /**
    * The Record OperationPath.
    *
@@ -105,9 +118,24 @@ public class OpenApiParser {
    * @param openAPI the open API
    */
   protected static void sanitizeOperationIds(final OpenAPI openAPI) {
+
+    final String mode = System.getProperty(OPERATION_ID_SANITIZE_MODE_PROPERTY, "");
+
+    // Default pattern is alphanumeric if mode is not recognized or not set
+    final String pattern = switch (mode) {
+      case OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY -> OPERATION_ID_SANITIZE_PATTERN_LETTERS_ONLY;
+      case OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC -> OPERATION_ID_SANITIZE_PATTERN_ALPHANUMERIC;
+      default -> OPERATION_ID_SANITIZE_PATTERN_ALPHANUMERIC;
+    };
+
     openAPI.getPaths().entrySet().stream().forEach(
         path -> path.getValue().readOperations().forEach(
-            op -> op.setOperationId(op.getOperationId().replaceAll("[^a-zA-Z]+", ""))));
+            op -> {
+              String operationId = op.getOperationId();
+              if (operationId == null || operationId.isEmpty() || operationId.isBlank()) {
+                operationId = "NoOp";
+              }
+              op.setOperationId(operationId.replaceAll(pattern, ""));
+            }));
   }
-
 }

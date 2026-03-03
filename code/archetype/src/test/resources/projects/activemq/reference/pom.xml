@@ -27,6 +27,10 @@
     <!-- Karate Tools -->
     <karatetools.version>@archetype-${project.version}</karatetools.version>
     <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+
+    <!-- Configuration Properties -->
+    <!-- Open Api OperationId Sanitize Mode -->
+    <open-api-operation-id-sanitize.mode>alphanumeric</open-api-operation-id-sanitize.mode>
   </properties>
 
   <dependencies>
@@ -108,6 +112,10 @@
                 <systemProperty>
                   <key>logback.configurationFile</key>
                   <value>src/test/resources/logback-test.xml</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>open-api-operation-id-sanitize.mode</key>
+                  <value>${open-api-operation-id-sanitize.mode}</value>
                 </systemProperty>
               </systemProperties>
             </configuration>

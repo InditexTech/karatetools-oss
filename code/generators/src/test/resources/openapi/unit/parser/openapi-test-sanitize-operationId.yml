@@ -29,3 +29,42 @@ paths:
       responses:
         '200':
           description: OK
+  /users/v2:
+    get:
+      operationId: getUserV2
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: _postUserV2
+      responses:
+        '200':
+          description: OK
+    put:
+      # Empty operationId, should be sanitized to NoOp
+      operationId: ""
+      responses:
+        '200':
+          description: OK
+    delete:
+      # Blank operationId, should be sanitized to NoOp
+      operationId: "  "
+      responses:
+        '200':
+          description: OK
+  /users/v3:
+    get:
+      operationId: getUserV3
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: 3VpostUserV3
+      responses:
+        '200':
+          description: OK
+    put:
+      # No operationId provided, should be sanitized to NoOp
+      responses:
+        '200':
+          description: OK
