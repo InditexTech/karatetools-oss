@@ -52,6 +52,11 @@ paths:
       responses:
         '200':
           description: OK
+    patch:
+      operationId: patch-user-02
+      responses:
+        '200':
+          description: OK
   /users/v3:
     get:
       operationId: getUserV3
@@ -65,6 +70,16 @@ paths:
           description: OK
     put:
       # No operationId provided, should be sanitized to NoOp
+      responses:
+        '200':
+          description: OK
+    delete:
+      operationId: delete.User.3
+      responses:
+        '200':
+          description: OK
+    patch:
+      operationId: patch-user-03
       responses:
         '200':
           description: OK

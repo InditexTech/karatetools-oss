@@ -79,9 +79,10 @@ class OpenApiParserTest extends KarateTest {
       });
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "sanitizeOperationIds_{0}")
     @MethodSource
-    void when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed(final String mode, final String[] expectedOperationIds) {
+    void when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed(final String testId, final String mode,
+        final String[] expectedOperationIds) {
       if (mode != null) {
         System.setProperty(OPERATION_ID_SANITIZE_MODE_PROPERTY, mode);
       }
@@ -100,16 +101,16 @@ class OpenApiParserTest extends KarateTest {
 
     static Stream<Arguments> when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed() {
       final String[] expectedOperationIdsLettersOnly = {"getuser", "postUser", "putuser", "deleteUser", "patchuser",
-          "getUserV", "getUserV", "NoOp", "NoOp",
-          "postUserV", "VpostUserV", "NoOp"};
+          "getUserV", "getUserV", "NoOp", "NoOp", "patchuser",
+          "postUserV", "VpostUserV", "NoOp", "deleteUser", "patchuser"};
       final String[] expectedOperationIdsAlphanumeric = {"getuser", "post_User", "putuser", "deleteUser", "patchuser01",
-          "getUserV2", "getUserV3", "NoOp", "NoOp",
-          "_postUserV2", "VpostUserV3", "NoOp"};
+          "getUserV2", "getUserV3", "NoOp", "NoOp", "patchuser02",
+          "_postUserV2", "VpostUserV3", "NoOp", "deleteUser3", "patchuser03"};
       return Stream.of(
-          Arguments.of(OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
-          Arguments.of(OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
-          Arguments.of("", expectedOperationIdsAlphanumeric), // default is alphanumeric
-          Arguments.of(null, expectedOperationIdsAlphanumeric) // default is alphanumeric
+          Arguments.of("sanitizeOperationIds-LettersOnly", OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
+          Arguments.of("sanitizeOperationIds-Alphanumeric", OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
+          Arguments.of("sanitizeOperationIds-Blank", "", expectedOperationIdsAlphanumeric), // default is alphanumeric
+          Arguments.of("sanitizeOperationIds-Null", null, expectedOperationIdsAlphanumeric) // default is alphanumeric
       );
     }
   }
