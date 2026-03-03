@@ -5,6 +5,13 @@ Execute *open-api-generator* and enter the requested inputs, starting by the *ge
 mvn exec:java@open-api-generator
 ----
 
+TIP: To override the *operationId sanitize mode* at generation time, pass the property on the command line (see xref:open-api-generator:index.adoc#operation-id-sanitize-mode[Open API Generator - Configuration - Operation ID Sanitize Mode] for available modes):
+
+[source,bash,subs="+attributes"]
+----
+mvn exec:java@open-api-generator -Dopen-api-operation-id-sanitize.mode=letters-only
+----
+
 TIP: Select *generation mode* using the up/down arrows `&#x2191;` `&#x2193;` and afterwards `intro` to proceed `&#x21b2;` to next step.
 
 [source,plaintext,subs="+attributes"]
@@ -14,7 +21,7 @@ include::example$open-api-generator-operations-select.txt[]
 
 image::open-api-generator-cmd-operations.png[role="no-border, zoom-in"]
 
-Once the *generation mode* has been selected you can proceeed the chosen mode:
+Once the *generation mode* has been selected you can proceed the chosen mode:
 
 . xref:open-api-generator:open-api-generator-operations.adoc[Karate Open Api Generator - Operations]
 . xref:open-api-generator:open-api-generator-smoke.adoc[Karate Open Api Generator - Smoke Tests]

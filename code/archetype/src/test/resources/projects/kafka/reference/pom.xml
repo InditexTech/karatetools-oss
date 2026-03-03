@@ -30,6 +30,10 @@
 
     <!-- Karate Clients -->
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+
+    <!-- Configuration Properties -->
+    <!-- Open Api OperationId Sanitize Mode -->
+    <open-api-operation-id-sanitize.mode>alphanumeric</open-api-operation-id-sanitize.mode>
   </properties>
 
   <dependencies>
@@ -120,6 +124,10 @@
                 <systemProperty>
                   <key>logback.configurationFile</key>
                   <value>src/test/resources/logback-test.xml</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>open-api-operation-id-sanitize.mode</key>
+                  <value>${open-api-operation-id-sanitize.mode}</value>
                 </systemProperty>
               </systemProperties>
             </configuration>

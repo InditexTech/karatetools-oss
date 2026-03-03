@@ -8,3 +8,71 @@ NOTE: If the project has been generated using the xref:archetype:index.adoc[Kara
 include::example$open-api-generator-pom.xml[]
 ----
 ====
+
+=== Operation ID Sanitize Mode
+
+The *operationId sanitize mode* controls how special characters in Open API `operationId` values are removed before generation.
+
+It is configured via the `open-api-operation-id-sanitize.mode` Maven property, which is forwarded as a JVM system property to the generator.
+
+[cols="1,2,1"]
+|===
+| Mode | Description | Example (`get-user-V1`)
+
+| `alphanumeric` *(default)*
+| Removes leading non-letter/non-underscore characters and any non-word characters. Preserves digits and underscores.
+| `getuserV1`
+
+| `letters-only`
+| Removes everything that is not a letter `[a-zA-Z]`.
+| `getuserV`
+
+|===
+
+TIP: Override the default permanently in your `pom.xml` `<properties>`, or at the command line per execution (see xref:open-api-generator:index.adoc#execution[Open API Generator - Execution]).
+
+.Configure `open-api-operation-id-sanitize.mode` in the karate pom:
+[%collapsible]
+====
+[source,xml,subs="+attributes"]
+----
+<properties>
+  ...
+  <!-- Configuration Properties -->
+  <!-- Open Api OperationId Sanitize Mode -->
+  <!-- override default (alphanumeric) -->
+  <open-api-operation-id-sanitize.mode>letters-only</open-api-operation-id-sanitize.mode>
+  ...
+</properties>
+...
+
+<build>
+  <plugins>
+    <!-- Karate Tools - Generators -->
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>${exec-maven-plugin.version}</version>
+      <executions>
+        <!-- Karate Tools - Generators - OpenApi -->
+        <execution>
+          <id>open-api-generator</id>
+          ...
+          <configuration>
+            <systemProperties>
+              ...
+              <systemProperty>
+                <key>open-api-operation-id-sanitize.mode</key>
+                <value>${open-api-operation-id-sanitize.mode}</value>
+              </systemProperty>
+            </systemProperties>
+          </configuration>
+        </execution>
+      </executions>
+      ...
+    </plugin>
+  </plugins>
+</build>
+----
+====
+

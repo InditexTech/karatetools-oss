@@ -23,6 +23,8 @@ npm start
 
 This command will start a local server that will serve the documentation at `http://localhost:8080`. If port `8080` is already in use, the server will use the next available port, such as `8081` or `8082`.
 
+If you want to specify a particular port, you can run: `npm start -- --port <desired-port>`.
+
 image::karatetools-oss-antora-npm-start.png[role="no-border, zoom-in"]
 
 image::karatetools-oss-localhost-8080.png[role="no-border, zoom-in"]
