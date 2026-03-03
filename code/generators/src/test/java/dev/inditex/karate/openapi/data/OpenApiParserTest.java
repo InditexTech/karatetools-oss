@@ -107,10 +107,10 @@ class OpenApiParserTest extends KarateTest {
           "getUserV2", "getUserV3", "NoOp", "NoOp", "patchuser02",
           "_postUserV2", "VpostUserV3", "NoOp", "deleteUser3", "patchuser03"};
       return Stream.of(
-          Arguments.of("sanitizeOperationIds-LettersOnly", OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
-          Arguments.of("sanitizeOperationIds-Alphanumeric", OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
-          Arguments.of("sanitizeOperationIds-Blank", "", expectedOperationIdsAlphanumeric), // default is alphanumeric
-          Arguments.of("sanitizeOperationIds-Null", null, expectedOperationIdsAlphanumeric) // default is alphanumeric
+          Arguments.of("sanitizeOperationIds_LettersOnly", OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
+          Arguments.of("sanitizeOperationIds_Alphanumeric", OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
+          Arguments.of("sanitizeOperationIds_Blank", "", expectedOperationIdsAlphanumeric), // default is alphanumeric
+          Arguments.of("sanitizeOperationIds_Null", null, expectedOperationIdsAlphanumeric) // default is alphanumeric
       );
     }
   }
