@@ -130,6 +130,12 @@ public class OpenApiParser {
 
     openAPI.getPaths().entrySet().stream().forEach(
         path -> path.getValue().readOperations().forEach(
-            op -> op.setOperationId(op.getOperationId().replaceAll(pattern, ""))));
+            op -> {
+              String operationId = op.getOperationId();
+              if (operationId == null || operationId.isEmpty() || operationId.isBlank()) {
+                operationId = "NoOp";
+              }
+              op.setOperationId(operationId.replaceAll(pattern, ""));
+            }));
   }
 }

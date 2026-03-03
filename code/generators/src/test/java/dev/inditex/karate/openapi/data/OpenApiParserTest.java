@@ -100,9 +100,11 @@ class OpenApiParserTest extends KarateTest {
 
     static Stream<Arguments> when_parse_OpenApi_sanitize_operationId_from_file_expect_parsed() {
       final String[] expectedOperationIdsLettersOnly = {"getuser", "postUser", "putuser", "deleteUser", "patchuser",
-          "getUserV", "getUserV", "postUserV", "VpostUserV"};
+          "getUserV", "getUserV", "NoOp", "NoOp",
+          "postUserV", "VpostUserV", "NoOp"};
       final String[] expectedOperationIdsAlphanumeric = {"getuser", "post_User", "putuser", "deleteUser", "patchuser01",
-          "getUserV2", "getUserV3", "_postUserV2", "VpostUserV3"};
+          "getUserV2", "getUserV3", "NoOp", "NoOp",
+          "_postUserV2", "VpostUserV3", "NoOp"};
       return Stream.of(
           Arguments.of(OPERATION_ID_SANITIZE_MODE_LETTERS_ONLY, expectedOperationIdsLettersOnly),
           Arguments.of(OPERATION_ID_SANITIZE_MODE_ALPHANUMERIC, expectedOperationIdsAlphanumeric),
