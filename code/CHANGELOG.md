@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.2.0] - 2026-03-03
+
 - [#48](https://github.com/InditexTech/karatetools-oss/issues/48) \[Karate-Tools] Fixed Open Api Generation - Operation ID Sanitize
 
 ## [5.1.0] - 2025-10-09
@@ -32,7 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First Open Source Release
 
-[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.1.0...HEAD
+[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.2.0...HEAD
+
+[5.2.0]: https://github.com/InditexTech/karatetools-oss/compare/5.1.0...5.2.0
 
 [5.1.0]: https://github.com/InditexTech/karatetools-oss/compare/5.0.1...5.1.0
 
