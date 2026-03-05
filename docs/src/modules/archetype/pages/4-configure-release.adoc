@@ -55,7 +55,7 @@ NOTE: The *workingDirectory* defined in the plugins pom, must point to the relat
               <executable>mvn</executable>
               <workingDirectory>../../e2e/karate</workingDirectory>
               <arguments>
-                <argument>versions:set</argument>
+                <argument>org.codehaus.mojo:versions-maven-plugin:set</argument>
                 <argument>-DnewVersion=${project.version}</argument>
               </arguments>
             </configuration>
