@@ -103,7 +103,7 @@ jobs:
       - name: Commit changes
         id: commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_PUSH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           develop="${{ needs.add-friendly-reminder.outputs.develop-branch }}"
           if [[ -z $(git ls-remote --heads origin $develop) ]]; then
@@ -140,7 +140,7 @@ jobs:
 
       - name: Create Automated PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_PUSH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           develop="${{ needs.add-friendly-reminder.outputs.develop-branch }}"
           pull_request="${{ steps.get-info.outputs.PULL_REQUEST }}"

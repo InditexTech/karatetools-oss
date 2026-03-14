@@ -97,7 +97,9 @@ jobs:
       # asdf-install
       - name: asdf-install
         id: asdf-install
-        uses: asdf-vm/actions/install@v3
+        uses: asdf-vm/actions/install@v4
+        # https://github.com/asdf-vm/actions/issues/356
+        if: steps.asdf-cache.outputs.cache-hit != 'true'
         with:
           tool_versions: ${{ env.TOOL_VERSIONS }}
 

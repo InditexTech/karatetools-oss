@@ -62,7 +62,9 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Maven / Setup asdf tools
-        uses: asdf-vm/actions/install@v3
+        uses: asdf-vm/actions/install@v4
+        # https://github.com/asdf-vm/actions/issues/356
+        if: steps.asdf-cache.outputs.cache-hit != 'true'
         with:
           tool_versions: ${{ env.TOOL_VERSIONS }}
 
@@ -92,7 +94,7 @@ jobs:
           echo "github-repository=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> "$GITHUB_OUTPUT"
 
       - name: SonarCloud / Setup asdf tools
-        uses: asdf-vm/actions/install@v3
+        uses: asdf-vm/actions/install@v4
         with:
           tool_versions: |
             java temurin-21.0.4+7.0.LTS
