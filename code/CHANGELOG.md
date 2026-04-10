@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#61](https://github.com/InditexTech/karatetools-oss/issues/61) \[Karate-Tools] Add support RabbitMQ - AMQP
+
 ## [5.2.0] - 2026-03-03
 
 - [#48](https://github.com/InditexTech/karatetools-oss/issues/48) \[Karate-Tools] Fixed Open Api Generation - Operation ID Sanitize

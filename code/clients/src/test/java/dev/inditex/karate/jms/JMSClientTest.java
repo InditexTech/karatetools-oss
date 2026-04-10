@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.jms.BytesMessage;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -30,8 +32,10 @@ import javax.jms.JMSRuntimeException;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
@@ -135,6 +139,23 @@ public class JMSClientTest extends AbstractClientTest {
             && log.getFormattedMessage().contains("available()=true"));
       }
     }
+
+    @Test
+    void when_already_not_available_expect_no_connection_test() {
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        when(connectionFactory.createContext()).thenThrow(new RuntimeException("JMS"));
+
+        final var resultFirst = client.available();
+        final var result = client.available();
+
+        assertThat(resultFirst).isFalse();
+        assertThat(result).isFalse();
+        verify(connectionFactory, times(1)).createContext();
+      }
+    }
   }
 
   @Nested
@@ -223,6 +244,26 @@ public class JMSClientTest extends AbstractClientTest {
         verify(jmsProducer, never()).send(destination, jmsTextMessage);
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.ERROR)
             && log.getFormattedMessage().contains("send() Exception"));
+      }
+    }
+
+    @Test
+    void when_send_serializable_in_amqp_mode_expect_jms_exception() {
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getAmqpConfig();
+        final JMSClient client = instantiateClient(config);
+        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        final JMSContext jmsContext = mock(JMSContext.class);
+        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        final Queue destination = mock(Queue.class);
+        when(jmsContext.createQueue(queue)).thenReturn(destination);
+        final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
+
+        assertThatThrownBy(() -> {
+          client.send(queue, message);
+        }).isInstanceOf(JMSRuntimeException.class)
+            .hasMessage("ObjectMessage not supported for AMQP destinations. Use Map or String instead.");
       }
     }
 
@@ -500,15 +541,106 @@ public class JMSClientTest extends AbstractClientTest {
         final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
         when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenThrow(new JMSRuntimeException("JMSClient.consume()"));
+        final ThrowingCallable result = () -> client.consume(queue);
 
-        assertThatThrownBy(() -> {
-          client.consume(queue);
-        }).isInstanceOf(JMSRuntimeException.class).hasMessage("JMSClient.consume()");
+        assertThatThrownBy(result).isInstanceOf(JMSRuntimeException.class).hasMessage("JMSClient.consume()");
 
         verify(jmsConsumer, times(1)).receive(DEFAULT_TIMEOUT);
         assertThat(logWatcher.list)
             .anyMatch(log -> log.getLevel().equals(Level.ERROR)
                 && log.getFormattedMessage().contains("consume() Exception [JMSClient.consume()]"));
+      }
+    }
+
+    @Test
+    void when_consume_bytes_message_json_expect_delegate() throws JMSException, JsonProcessingException {
+      ((Logger) LoggerFactory.getLogger(KarateClientLogger.class)).setLevel(Level.DEBUG);
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        final JMSContext jmsContext = mock(JMSContext.class);
+        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        final Queue destination = mock(Queue.class);
+        when(jmsContext.createQueue(queue)).thenReturn(destination);
+        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
+        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        final BytesMessage jmsBytesMessage = mock(BytesMessage.class);
+        when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsBytesMessage).thenReturn(null);
+        final Map<String, Object> message = Map.of("id", "1", "name", "name");
+        final String messageText = new ObjectMapper().writeValueAsString(message);
+        final byte[] messageBytes = messageText.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        when(jmsBytesMessage.getBodyLength()).thenReturn((long) messageBytes.length);
+        when(jmsBytesMessage.readBytes(any())).thenAnswer(inv -> {
+          System.arraycopy(messageBytes, 0, inv.getArgument(0), 0, messageBytes.length);
+          return messageBytes.length;
+        });
+
+        final var result = client.consume(queue);
+
+        verify(jmsConsumer, times(2)).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().hasSize(1);
+        assertThat(logWatcher.list)
+            .anyMatch(log -> log.getLevel().equals(Level.INFO) && log.getFormattedMessage().contains("consume() from queue [queue] => #1"));
+      }
+    }
+
+    @Test
+    void when_consume_bytes_message_text_expect_text_message_wrapper() throws JMSException, JsonProcessingException {
+      ((Logger) LoggerFactory.getLogger(KarateClientLogger.class)).setLevel(Level.DEBUG);
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        final JMSContext jmsContext = mock(JMSContext.class);
+        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        final Queue destination = mock(Queue.class);
+        when(jmsContext.createQueue(queue)).thenReturn(destination);
+        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
+        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        final BytesMessage jmsBytesMessage = mock(BytesMessage.class);
+        when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsBytesMessage).thenReturn(null);
+        final String plainText = PLAIN_TEXT_MESSAGE;
+        final byte[] messageBytes = plainText.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        when(jmsBytesMessage.getBodyLength()).thenReturn((long) messageBytes.length);
+        when(jmsBytesMessage.readBytes(any())).thenAnswer(inv -> {
+          System.arraycopy(messageBytes, 0, inv.getArgument(0), 0, messageBytes.length);
+          return messageBytes.length;
+        });
+
+        final var result = client.consume(queue);
+
+        verify(jmsConsumer, times(2)).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().isEqualTo(List.of(Map.of("textMessage", plainText)));
+        assertThat(logWatcher.list)
+            .anyMatch(log -> log.getLevel().equals(Level.DEBUG) && log.getFormattedMessage().contains("BytesMessage not JSON"))
+            .anyMatch(log -> log.getLevel().equals(Level.INFO) && log.getFormattedMessage().contains("consume() from queue [queue] => #1"));
+      }
+    }
+
+    @Test
+    void when_consume_with_custom_timeout_expect_uses_timeout() throws JMSException, JsonProcessingException {
+      final String queue = "queue";
+      final long customTimeout = 1000L;
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        final JMSContext jmsContext = mock(JMSContext.class);
+        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        final Queue destination = mock(Queue.class);
+        when(jmsContext.createQueue(queue)).thenReturn(destination);
+        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
+        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        when(jmsConsumer.receive(customTimeout)).thenReturn(null);
+
+        final var result = client.consume(queue, customTimeout);
+
+        verify(jmsConsumer, times(1)).receive(customTimeout);
+        verify(jmsConsumer, never()).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().isEmpty();
       }
     }
 
@@ -635,12 +767,19 @@ public class JMSClientTest extends AbstractClientTest {
     return Map.of(JMS_FACTORY, "any");
   }
 
+  protected static Map<Object, Object> getAmqpConfig() {
+    final Map<Object, Object> config = new HashMap<>();
+    config.put(JMS_FACTORY, "RabbitMQ");
+    config.put("amqp", "true");
+    return config;
+  }
+
   protected JMSClient instantiateClient(final Map<Object, Object> config) {
     return new JMSClient(config);
   }
 
   protected MockedStatic<? extends JMSClientFactory> mockStaticFactory() {
-    return mockStatic(JMSClientFactory.class);
+    return mockStatic(JMSClientFactory.class, Answers.CALLS_REAL_METHODS);
   }
 
   protected ConnectionFactory createConnectionFactoryMock(final MockedStatic<? extends JMSClientFactory> clientFactory,
