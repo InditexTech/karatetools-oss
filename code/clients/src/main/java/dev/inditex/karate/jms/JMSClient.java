@@ -209,25 +209,24 @@ public class JMSClient {
       try (final JMSConsumer consumer = context.createConsumer(destination)) {
         while (true) {
           final Message message = consumer.receive(timeout);
-          if (message != null) {
-            if (message instanceof final TextMessage textMessage) {
+          if (message == null) {
+            break;
+          }
+          switch (message) {
+            case final TextMessage textMessage -> {
               log.debug("consume() Received TextMessage: {}", textMessage);
               // javax.jms.TextMessage
               jsonMessages.add(parseTextMessage(textMessage));
-            } else if (message instanceof final BytesMessage bytesMessage) {
+            }
+            case final BytesMessage bytesMessage -> {
               log.debug("consume() Received BytesMessage: {}", bytesMessage);
               // javax.jms.BytesMessage - raw AMQP message body
               jsonMessages.add(parseBytesMessage(bytesMessage));
-            } else {
-              log.debug("consume() Received ObjectMessage or other type: {}", message);
-              final Object value = message.getBody(Object.class);
-              final ObjectMapper mapper = new ObjectMapper();
-              mapper.registerModule(new JavaTimeModule());
-              final JsonObject messageJSON = JsonParser.parseString(mapper.writer().writeValueAsString(value)).getAsJsonObject();
-              jsonMessages.add(messageJSON);
             }
-          } else {
-            break;
+            default -> {
+              log.debug("consume() Received ObjectMessage or other type: {}", message);
+              jsonMessages.add(parseObjectMessage(message));
+            }
           }
         }
       }
@@ -282,5 +281,20 @@ public class JMSClient {
       wrapper.addProperty("textMessage", text);
       return wrapper;
     }
+  }
+
+  /**
+   * Parses the object message.
+   *
+   * @param message the message
+   * @return the json object
+   * @throws JMSException the JMS exception
+   * @throws JsonProcessingException the json processing exception
+   */
+  protected JsonObject parseObjectMessage(final Message message) throws JMSException, JsonProcessingException {
+    final Object value = message.getBody(Object.class);
+    final ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    return JsonParser.parseString(mapper.writer().writeValueAsString(value)).getAsJsonObject();
   }
 }
