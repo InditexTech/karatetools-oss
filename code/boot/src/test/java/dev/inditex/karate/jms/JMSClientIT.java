@@ -94,8 +94,6 @@ public class JMSClientIT {
       Map.of("textMessage", plainText01),
       Map.of("textMessage", xml02));
 
-  final String queue = "GLOBAL.CORE.KARATE.PUBLIC.QUEUE";
-
   @Nested
   class JMS {
     @ParameterizedTest(name = "{0}")
@@ -105,7 +103,7 @@ public class JMSClientIT {
         "RabbitMQ-AMQP,classpath:config/jms/rabbitmq-amqp-config.yml"
     })
     void when_jms_map_expect_results(final String testID, final String configFile) throws IOException, JMSException {
-      testJmsMap(configFile);
+      testJmsMap(testID, configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -114,7 +112,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_object_expect_results(final String testID, final String configFile) throws IOException, JMSException {
-      testJmsObject(configFile);
+      testJmsObject(testID, configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -124,7 +122,7 @@ public class JMSClientIT {
         "RabbitMQ-AMQP,classpath:config/jms/rabbitmq-amqp-config.yml"
     })
     void when_jms_plain_text_expect_results(final String testID, final String configFile) throws IOException, JMSException {
-      testJmsPlainText(configFile);
+      testJmsPlainText(testID, configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -134,7 +132,7 @@ public class JMSClientIT {
         "RabbitMQ-AMQP,classpath:config/jms/rabbitmq-amqp-config.yml"
     })
     void when_jms_xml_expect_results(final String testID, final String configFile) throws IOException, JMSException {
-      testJmsXml(configFile);
+      testJmsXml(testID, configFile);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -143,7 +141,7 @@ public class JMSClientIT {
         "RabbitMQ,classpath:config/jms/rabbitmq-config.yml"
     })
     void when_jms_mixed_expect_results(final String testID, final String configFile) throws IOException, JMSException {
-      testJmsMixed(configFile);
+      testJmsMixed(testID, configFile);
     }
 
   }
@@ -152,9 +150,16 @@ public class JMSClientIT {
     return new JMSClient(config);
   }
 
-  protected void testJmsMap(final String configFile) throws IOException, JMSException {
+  protected String getQueue(final String testID, final String prefix) {
+    // Generate a unique queue name based on the test ID and prefix
+    // Example: "rabbitmq.map.it.karate.public.queue"
+    return "it." + testID.toLowerCase().replaceAll("\\s+", "-") + "." + prefix + ".karate.public.queue";
+  }
+
+  protected void testJmsMap(final String testID, final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
     final JMSClient client = instantiateClient(config);
+    final String queue = getQueue(testID, "map");
 
     // available
     final var available = client.available();
@@ -168,9 +173,10 @@ public class JMSClientIT {
     assertThat(messages).isEqualTo(expected);
   }
 
-  protected void testJmsObject(final String configFile) throws IOException, JMSException {
+  protected void testJmsObject(final String testID, final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
     final JMSClient client = instantiateClient(config);
+    final String queue = getQueue(testID, "object");
 
     // available
     final var available = client.available();
@@ -184,9 +190,10 @@ public class JMSClientIT {
     assertThat(messages).isEqualTo(expected);
   }
 
-  protected void testJmsPlainText(final String configFile) throws IOException, JMSException {
+  protected void testJmsPlainText(final String testID, final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
     final JMSClient client = instantiateClient(config);
+    final String queue = getQueue(testID, "text");
 
     // available
     final var available = client.available();
@@ -200,9 +207,10 @@ public class JMSClientIT {
     assertThat(messages).isEqualTo(expectedPlainText);
   }
 
-  protected void testJmsXml(final String configFile) throws IOException, JMSException {
+  protected void testJmsXml(final String testID, final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
     final JMSClient client = instantiateClient(config);
+    final String queue = getQueue(testID, "xml");
 
     // available
     final var available = client.available();
@@ -216,9 +224,10 @@ public class JMSClientIT {
     assertThat(messages).isEqualTo(expectedXML);
   }
 
-  protected void testJmsMixed(final String configFile) throws IOException, JMSException {
+  protected void testJmsMixed(final String testID, final String configFile) throws IOException, JMSException {
     final Map<Object, Object> config = KarateTestUtils.readYaml(configFile);
     final JMSClient client = instantiateClient(config);
+    final String queue = getQueue(testID, "mixed");
 
     // available
     final var available = client.available();

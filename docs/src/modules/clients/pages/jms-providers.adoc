@@ -1,1 +1,2 @@
-* xref:#jms-client-configuration-properties-apache-active-mq[Apache Active MQ]
+* xref:#apache-active-mq-config[Apache Active MQ]
+* xref:#rabbit-mq-config[Rabbit MQ]

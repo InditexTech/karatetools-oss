@@ -83,12 +83,15 @@ public class RabbitMQClientFactory {
    * @return the RMQ destination with amqp=true
    */
   public static RMQDestination createAmqpDestination(final String queue) {
-    // amqp=true: bypass JMS serialization, use raw AMQP wire format
     final RMQDestination destination = new RMQDestination(queue, true, false);
+    // Bypass JMS serialization, use raw AMQP wire format
     destination.setAmqp(true);
     // Use AMQP default exchange ("") which routes directly to queues by name
     destination.setAmqpExchangeName("");
+    // Routing key matches queue name for default exchange direct routing
     destination.setAmqpRoutingKey(queue);
+    // Explicit queue name so the consumer reads from the named queue instead of creating a temporary one
+    destination.setAmqpQueueName(queue);
     return destination;
   }
 }

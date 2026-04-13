@@ -90,12 +90,11 @@ services:
     profiles: [ "it", "app" ]
     image: rabbitmq:3.13.6-management-alpine
     ports:
-      - "15672:15672" # Web Console
+      - "15672:15672"  # Web Console
       - "25672:5672"   # AMQP
-    environment:
-      RABBITMQ_DEFAULT_USER: "karate"
-      RABBITMQ_DEFAULT_PASS: "karate-pwd"
-      RABBITMQ_DEFAULT_VHOST: "/"
+    volumes:
+      - "./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
+      - "./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json"
     healthcheck:
       test: "rabbitmq-diagnostics -q ping || exit 1"
       start_period: 10s

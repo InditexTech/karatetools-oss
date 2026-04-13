@@ -38,6 +38,24 @@ When def available = jmsClient.available()
 Then if (!available) karate.fail('JMS Client not available')
 ----
 
+=== RabbitMQ AMQP mode
+
+The RabbitMQ JMS client operates in two modes:
+
+* *JMS mode* (`amqp: false`, default): Messages are routed through JMS-managed destinations (e.g., `jms.durable.queues` exchange). ObjectMessage payloads are serialized using Java serialization. This mode is compatible with other JMS clients consuming from the same queues.
+
+* *AMQP mode* (`amqp: true`): Messages are sent as raw AMQP using the default exchange, which routes directly to queues by name. No JMS serialization layer is involved. Only TextMessage and BytesMessage are supported (ObjectMessage will throw a `JMSRuntimeException`).
+
+Use *AMQP mode* when the application under test uses *native AMQP* rather than JMS to interact with RabbitMQ. Common cases include:
+
+* *Spring Cloud Stream* applications bound to RabbitMQ - these publish and consume raw AMQP messages, not JMS-serialized ones.
+* Applications using the *native RabbitMQ client* (`com.rabbitmq:amqp-client`) directly.
+* Any framework that interacts with RabbitMQ via the AMQP 0-9-1 protocol without a JMS layer.
+
+If the application under test uses the *RabbitMQ JMS client* (`com.rabbitmq.jms:rabbitmq-jms`) to produce and consume messages, use *JMS mode* (the default).
+
+NOTE: When targeting a Spring Cloud Stream consumer, you must also set the `contentType` JMS property (e.g., `{'contentType': 'application/json'}`) so that Spring can deserialize the message payload correctly.
+
 === Send a message to a queue
 
 *Send a message to a queue*

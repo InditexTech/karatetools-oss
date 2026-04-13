@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#63](https://github.com/InditexTech/karatetools-oss/issues/63) \[Karate-Tools] Containers Update - confluentinc/cp-kafka:7.6.2 -> apache/kafka:3.8.1, kafka zookeeper deprecated and removed
+
 - [#61](https://github.com/InditexTech/karatetools-oss/issues/61) \[Karate-Tools] Add support RabbitMQ - AMQP
 
 ## [5.2.0] - 2026-03-03

@@ -1,0 +1,44 @@
+
+{
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "users": [
+    {
+      "name": "karate",
+      "password": "karate-pwd",
+      "tags": ["administrator"]
+    }
+  ],
+  "permissions": [
+    {
+      "user": "karate",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {"name": "it.rabbitmq.map.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq.object.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq.mixed.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq-amqp.map.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq-amqp.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.rabbitmq-amqp.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq.json-object.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq-amqp.json.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq-amqp.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "it.scenario.rabbitmq-amqp.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq.json-object.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq-amqp.json.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq-amqp.text.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+    {"name": "e2e.rabbitmq-amqp.xml.karate.public.queue", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}}
+  ]
+}
