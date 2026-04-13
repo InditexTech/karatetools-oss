@@ -104,11 +104,11 @@ services:
       timeout: 10s
     labels:
       org.springframework.boot.readiness-check.tcp.disable: true
-  # Kafka / Schema Registry / ZooKeeper - Kafka
+  # Kafka / Schema Registry (KRaft mode - no ZooKeeper required)
   kafka:
     container_name: kt-kafka
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-kafka:7.6.2
+    image: apache/kafka:3.8.1
     ports:
       # No auth
       - 39091:39091
@@ -120,16 +120,20 @@ services:
       # general
       KAFKA_ALLOW_AUTO_CREATE_TOPICS: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      # zookeeper
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      ZOOKEEPER_SASL_ENABLED: "false"
+      # KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       # listeners
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:
+        CONTROLLER:PLAINTEXT,
         INTERNAL:PLAINTEXT,
         NOAUTH:PLAINTEXT,
         SASLPLAIN:SASL_PLAINTEXT,
         SASLSCRAM:SASL_PLAINTEXT
       KAFKA_LISTENERS:
+        CONTROLLER://0.0.0.0:9093,
         INTERNAL://0.0.0.0:9090,
         NOAUTH://0.0.0.0:39091,
         SASLPLAIN://0.0.0.0:39092,
@@ -155,11 +159,38 @@ services:
       KAFKA_LISTENER_NAME_SASLSCRAM_SASL_ENABLED_MECHANISMS: SCRAM-SHA-512
       KAFKA_LISTENER_NAME_SASLSCRAM_SCRAM___SHA___512_SASL_JAAS_CONFIG:
         org.apache.kafka.common.security.scram.ScramLoginModule required;
-    # Add user for SASL SCRAM SHA 512
+    # Add user for SASL SCRAM SHA 512 (added at runtime via kafka-configs after broker starts)
     command:
-      /bin/sh -c "kafka-configs --zookeeper zookeeper:2181 --alter \
-      --add-config SCRAM-SHA-512=[iterations=4096,password=saslscram-pwd] \
-      --entity-type users --entity-name saslscram && /etc/confluent/docker/run"
+      - bash
+      - -c
+      - |
+          set -e
+
+          # Start Kafka in background
+          /etc/kafka/docker/run &
+
+          echo "Waiting for Kafka to open port 9090 (timeout 60s)..."
+
+          # Wait up to 60 seconds for Kafka to listen on 9090
+          if ! timeout 60 sh -c 'until nc -z localhost 9090; do sleep 0.5; done'; then
+            echo "❌ Kafka did not start within 60 seconds"
+            exit 1
+          fi
+
+          echo "✅ Kafka port is open, creating SCRAM user"
+
+          # Create SCRAM-SHA-512 user
+          /opt/kafka/bin/kafka-configs.sh \
+            --bootstrap-server localhost:9090 \
+            --alter \
+            --entity-type users \
+            --entity-name saslscram \
+            --add-config "SCRAM-SHA-512=[iterations=4096,password=saslscram-pwd]"
+
+          echo "✅ SCRAM user created"
+
+          # Keep container alive
+          wait
     volumes:
       - "./kafka/data:/tmp/data"
     healthcheck:
@@ -168,16 +199,13 @@ services:
       interval: 10s
       retries: 10
       timeout: 10s
-    depends_on:
-      zookeeper:
-        condition: service_healthy
     labels:
       org.springframework.boot.readiness-check.tcp.disable: true
-  # Kafka / Schema Registry / ZooKeeper - Schema Registry (No Auth)
+  # Kafka / Schema Registry - Schema Registry (No Auth)
   schema-registry:
     container_name: kt-schema-registry
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.6.2
+    image: confluentinc/cp-schema-registry:7.8.2
     ports:
     - 38081:8081
     volumes:
@@ -200,17 +228,15 @@ services:
       retries: 10
       timeout: 10s
     depends_on:
-      zookeeper:
-        condition: service_healthy
       kafka:
         condition: service_healthy
     labels:
       org.springframework.boot.readiness-check.tcp.disable: true
-  # Kafka / Schema Registry / ZooKeeper - Schema Registry (Basic Auth)
+  # Kafka / Schema Registry - Schema Registry (Basic Auth)
   schema-registry-basic-auth:
     container_name: kt-schema-registry-basic-auth
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.6.2
+    image: confluentinc/cp-schema-registry:7.8.2
     ports:
       - 38082:8082
     environment:
@@ -240,29 +266,7 @@ services:
       retries: 10
       timeout: 10s
     depends_on:
-      zookeeper:
-        condition: service_healthy
       kafka:
         condition: service_healthy
-    labels:
-      org.springframework.boot.readiness-check.tcp.disable: true
-  # Kafka / Schema Registry / ZooKeeper - ZooKeeper
-  zookeeper:
-    container_name: kt-zookeeper
-    profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-zookeeper:7.6.2
-    ports:
-      - 2181:2181
-    environment:
-      # general
-      ZOOKEEPER_CLIENT_PORT: 2181
-      # authentication
-      ZOOKEEPER_SASL_ENABLED: "false"
-    healthcheck:
-      test: "echo ruok | nc localhost 2181"
-      start_period: 10s
-      interval: 10s
-      retries: 10
-      timeout: 10s
     labels:
       org.springframework.boot.readiness-check.tcp.disable: true

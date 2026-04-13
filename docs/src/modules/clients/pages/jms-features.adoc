@@ -78,6 +78,8 @@ Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject
 Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
 ----
 
+IMPORTANT: When using RabbitMQ in AMQP mode (`amqp: true` in config), *ObjectMessage is not supported*. Use JSON Map, Plain Text, or XML payloads instead. Attempting to send an ObjectMessage in AMQP mode will throw a `JMSRuntimeException`.
+
 .Java Signature
 [source,java,subs="+attributes"]
 ----
@@ -177,6 +179,27 @@ IMPORTANT: In order for an XML to be sent as JMS Text Message you need to use `t
 ----
 Given def JMSKarateObject = Java.type('{karatetools-package}.jms.JMSKarateObject')
 Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+----
+
+IMPORTANT: When using RabbitMQ in AMQP mode (`amqp: true` in config), *ObjectMessage is not supported*. Use JSON Map, Plain Text, or XML payloads instead. Attempting to send an ObjectMessage in AMQP mode will throw a `JMSRuntimeException`.
+
+TIP: When the target consumer is a *Spring Cloud Stream* application, you must include `contentType: 'application/json'` in the JMS properties so the message is deserialized correctly. Without it, Spring defaults to `application/octet-stream` and deserialization fails.
+
+.Gherkin Usage - RabbitMQ AMQP with Spring Cloud Stream consumer
+[source,gherkin,subs="+attributes"]
+----
+# Instantiate JMSClient with AMQP config (amqp: true)
+Given def config = read('classpath:config/jms/rabbitmq-amqp-config-' + karate.env + '.yml')
+Given def JMSClient = Java.type('{karatetools-package}.jms.JMSClient')
+Given def jmsClient = new JMSClient(config)
+
+# Define Queue
+Given def queue = 'my-app.my-input-queue'
+
+# Send JSON message with contentType for Spring Cloud Stream
+Given def jmsMessage = {'id': '1', 'name': 'karate-01', 'value': 1}
+Given def jmsProperties = {'contentType': 'application/json'}
+When jmsClient.send(queue, jmsMessage, jmsProperties)
 ----
 
 .JMS Properties
