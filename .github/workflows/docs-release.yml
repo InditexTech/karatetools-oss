@@ -186,11 +186,13 @@ jobs:
       - name: Release / Commit and Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
         working-directory: docs
         run: |
           git add package.json package-lock.json src/antora.yml || true
           git commit -m "chore: bumped docs version" || true
-          git tag docs/v${{ steps.determine-version.outputs.version }}
+          TAG_NAME="docs/v${RELEASE_VERSION}"
+          git tag -a -m "Release ${TAG_NAME}" "${TAG_NAME}"
           git push --tags --no-verify --follow-tags origin HEAD
 
       - name:  Next Development Iteration / Bump Version
