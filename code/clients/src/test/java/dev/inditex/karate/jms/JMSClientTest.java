@@ -54,15 +54,15 @@ public class JMSClientTest extends AbstractClientTest {
       </karate>
       """;
 
-  private ConnectionFactory connectionFactory;
+  protected ConnectionFactory connectionFactory;
 
-  private JMSContext jmsContext;
+  protected JMSContext jmsContext;
 
-  private Queue destination;
+  protected Queue destination;
 
-  private JMSProducer jmsProducer;
+  protected JMSProducer jmsProducer;
 
-  private JMSConsumer jmsConsumer;
+  protected JMSConsumer jmsConsumer;
 
   @Nested
   class Constructor {
