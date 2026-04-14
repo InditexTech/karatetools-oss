@@ -6,4 +6,4 @@
 
 🛠️ usual operations such as *authentication*, *database interaction*, *messaging (Kafka & JMS)*, ...
 
-⏩ *execution* in different enviroments of karate tests for a REST artifact.
+⏩ *execution* in different environments of karate tests for a REST artifact.

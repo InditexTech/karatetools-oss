@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.jms.BytesMessage;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -32,6 +34,7 @@ import javax.jms.Queue;
 import javax.jms.TextMessage;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +53,16 @@ public class JMSClientTest extends AbstractClientTest {
         <value>1</value>
       </karate>
       """;
+
+  private ConnectionFactory connectionFactory;
+
+  private JMSContext jmsContext;
+
+  private Queue destination;
+
+  private JMSProducer jmsProducer;
+
+  private JMSConsumer jmsConsumer;
 
   @Nested
   class Constructor {
@@ -87,9 +100,8 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
 
         final var result = client.available();
 
@@ -104,7 +116,7 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
+        createConnectionFactoryMock(clientFactory, config);
         when(connectionFactory.createContext()).thenThrow(new RuntimeException("JMS"));
 
         final var result = client.available();
@@ -121,9 +133,8 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
 
         final var resultFirst = client.available();
         final var result = client.available();
@@ -133,6 +144,23 @@ public class JMSClientTest extends AbstractClientTest {
         verify(connectionFactory, times(1)).createContext();
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.INFO)
             && log.getFormattedMessage().contains("available()=true"));
+      }
+    }
+
+    @Test
+    void when_already_not_available_expect_no_connection_test() {
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        createConnectionFactoryMock(clientFactory, config);
+        when(connectionFactory.createContext()).thenThrow(new RuntimeException("JMS"));
+
+        final var resultFirst = client.available();
+        final var result = client.available();
+
+        assertThat(resultFirst).isFalse();
+        assertThat(result).isFalse();
+        verify(connectionFactory, times(1)).createContext();
       }
     }
   }
@@ -145,13 +173,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final Map<String, Object> message = Map.of("id", "1", "name", "name", "value", 1);
@@ -173,13 +198,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final Map<String, Object> message = Map.of("id", "1", "name", "name", "value", 1);
@@ -202,13 +224,11 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenThrow(new JMSRuntimeException("JMSClient.send()"));
         final Map<String, Object> message = Map.of("id", "1", "name", "name", "value", 1);
@@ -227,18 +247,34 @@ public class JMSClientTest extends AbstractClientTest {
     }
 
     @Test
+    void when_send_serializable_in_amqp_mode_expect_jms_exception() {
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getAmqpConfig();
+        final JMSClient client = instantiateClient(config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
+        final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
+
+        assertThatThrownBy(() -> {
+          client.send(queue, message);
+        }).isInstanceOf(JMSRuntimeException.class)
+            .hasMessage("ObjectMessage not supported for AMQP destinations. Use Map or String instead.");
+      }
+    }
+
+    @Test
     void when_send_object_expect_delegate() throws JMSException, JsonProcessingException {
       final String queue = "queue";
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final ObjectMessage jmsObjectMessage = mock(ObjectMessage.class);
         when(jmsContext.createObjectMessage(any())).thenReturn(jmsObjectMessage);
         final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
@@ -259,13 +295,11 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final ObjectMessage jmsObjectMessage = mock(ObjectMessage.class);
         when(jmsContext.createObjectMessage(any())).thenReturn(jmsObjectMessage);
         final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
@@ -287,13 +321,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final ObjectMessage jmsObjectMessage = mock(ObjectMessage.class);
         when(jmsContext.createObjectMessage(any())).thenThrow(new JMSRuntimeException("JMSClient.send()"));
         final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
@@ -316,13 +347,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final String message = PLAIN_TEXT_MESSAGE;
@@ -343,13 +371,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final String message = PLAIN_TEXT_MESSAGE;
@@ -371,13 +396,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenThrow(new JMSRuntimeException("JMSClient.send()"));
         final String message = PLAIN_TEXT_MESSAGE;
@@ -401,13 +423,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final String message = XML_MESSAGE;
@@ -430,13 +449,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenReturn(jmsTextMessage);
         final String message = XML_MESSAGE;
@@ -459,13 +475,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSProducer jmsProducer = mock(JMSProducer.class);
-        when(jmsContext.createProducer()).thenReturn(jmsProducer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createProducerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsContext.createTextMessage(any())).thenThrow(new JMSRuntimeException("JMSClient.send()"));
         final String message = XML_MESSAGE;
@@ -492,13 +505,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
-        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenThrow(new JMSRuntimeException("JMSClient.consume()"));
 
         assertThatThrownBy(() -> {
@@ -513,19 +523,100 @@ public class JMSClientTest extends AbstractClientTest {
     }
 
     @Test
+    void when_consume_bytes_message_json_expect_delegate() throws JMSException, JsonProcessingException {
+      ((Logger) LoggerFactory.getLogger(KarateClientLogger.class)).setLevel(Level.DEBUG);
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
+        final BytesMessage jmsBytesMessage = mock(BytesMessage.class);
+        when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsBytesMessage).thenReturn(null);
+        final Map<String, Object> message = Map.of("id", "1", "name", "name");
+        final String messageText = new ObjectMapper().writeValueAsString(message);
+        final byte[] messageBytes = messageText.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        when(jmsBytesMessage.getBodyLength()).thenReturn((long) messageBytes.length);
+        when(jmsBytesMessage.readBytes(any())).thenAnswer(inv -> {
+          System.arraycopy(messageBytes, 0, inv.getArgument(0), 0, messageBytes.length);
+          return messageBytes.length;
+        }).thenReturn(-1);
+
+        final var result = client.consume(queue);
+
+        verify(jmsConsumer, times(2)).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().hasSize(1);
+        assertThat(logWatcher.list)
+            .anyMatch(log -> log.getLevel().equals(Level.INFO) && log.getFormattedMessage().contains("consume() from queue [queue] => #1"));
+      }
+    }
+
+    @Test
+    void when_consume_bytes_message_text_expect_text_message_wrapper() throws JMSException, JsonProcessingException {
+      ((Logger) LoggerFactory.getLogger(KarateClientLogger.class)).setLevel(Level.DEBUG);
+      final String queue = "queue";
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        createConnectionFactoryMock(clientFactory, config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
+        final BytesMessage jmsBytesMessage = mock(BytesMessage.class);
+        when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsBytesMessage).thenReturn(null);
+        final String plainText = PLAIN_TEXT_MESSAGE;
+        final byte[] messageBytes = plainText.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        when(jmsBytesMessage.getBodyLength()).thenReturn((long) messageBytes.length);
+        when(jmsBytesMessage.readBytes(any())).thenAnswer(inv -> {
+          System.arraycopy(messageBytes, 0, inv.getArgument(0), 0, messageBytes.length);
+          return messageBytes.length;
+        }).thenReturn(-1);
+
+        final var result = client.consume(queue);
+
+        verify(jmsConsumer, times(2)).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().isEqualTo(List.of(Map.of("textMessage", plainText)));
+        assertThat(logWatcher.list)
+            .anyMatch(log -> log.getLevel().equals(Level.DEBUG) && log.getFormattedMessage().contains("BytesMessage not JSON"))
+            .anyMatch(log -> log.getLevel().equals(Level.INFO) && log.getFormattedMessage().contains("consume() from queue [queue] => #1"));
+      }
+    }
+
+    @Test
+    void when_consume_with_custom_timeout_expect_uses_timeout() throws JMSException, JsonProcessingException {
+      final String queue = "queue";
+      final long customTimeout = 1000L;
+      try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
+        final Map<Object, Object> config = getConfig();
+        final JMSClient client = instantiateClient(config);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
+        when(jmsConsumer.receive(customTimeout)).thenReturn(null);
+
+        final var result = client.consume(queue, customTimeout);
+
+        verify(jmsConsumer, times(1)).receive(customTimeout);
+        verify(jmsConsumer, never()).receive(DEFAULT_TIMEOUT);
+        assertThat(result).isNotNull().isEmpty();
+      }
+    }
+
+    @Test
     void when_consume_map_expect_delegate() throws JMSException, JsonProcessingException {
       ((Logger) LoggerFactory.getLogger(KarateClientLogger.class)).setLevel(Level.DEBUG);
       final String queue = "queue";
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
-        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsTextMessage).thenReturn(null);
         final Map<String, Object> message = Map.of("id", "1", "name", "name", "value", 1);
@@ -549,13 +640,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
-        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
         final ObjectMessage jmsObjectMessage = mock(ObjectMessage.class);
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsObjectMessage).thenReturn(null);
         final JMSKarateObject message = new JMSKarateObject("1", "name", 1);
@@ -579,13 +667,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
-        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsTextMessage).thenReturn(null);
         final String message = PLAIN_TEXT_MESSAGE;
@@ -608,13 +693,10 @@ public class JMSClientTest extends AbstractClientTest {
       try (final MockedStatic<? extends JMSClientFactory> clientFactory = mockStaticFactory()) {
         final Map<Object, Object> config = getConfig();
         final JMSClient client = instantiateClient(config);
-        final ConnectionFactory connectionFactory = createConnectionFactoryMock(clientFactory, config);
-        final JMSContext jmsContext = mock(JMSContext.class);
-        when(connectionFactory.createContext()).thenReturn(jmsContext);
-        final Queue destination = mock(Queue.class);
-        when(jmsContext.createQueue(queue)).thenReturn(destination);
-        final JMSConsumer jmsConsumer = mock(JMSConsumer.class);
-        when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
+        createConnectionFactoryMock(clientFactory, config);
+        createJMSContextMock();
+        createQueueMock(queue);
+        createConsumerMock();
         final TextMessage jmsTextMessage = mock(TextMessage.class);
         when(jmsConsumer.receive(DEFAULT_TIMEOUT)).thenReturn(jmsTextMessage).thenReturn(null);
         final String message = XML_MESSAGE;
@@ -629,10 +711,18 @@ public class JMSClientTest extends AbstractClientTest {
             .anyMatch(log -> log.getLevel().equals(Level.DEBUG) && log.getFormattedMessage().contains("consume() jsonMessages="));
       }
     }
+
   }
 
   protected static Map<Object, Object> getConfig() {
     return Map.of(JMS_FACTORY, "any");
+  }
+
+  protected static Map<Object, Object> getAmqpConfig() {
+    final Map<Object, Object> config = new HashMap<>();
+    config.put(JMS_FACTORY, "RabbitMQ");
+    config.put("amqp", "true");
+    return config;
   }
 
   protected JMSClient instantiateClient(final Map<Object, Object> config) {
@@ -640,14 +730,33 @@ public class JMSClientTest extends AbstractClientTest {
   }
 
   protected MockedStatic<? extends JMSClientFactory> mockStaticFactory() {
-    return mockStatic(JMSClientFactory.class);
+    return mockStatic(JMSClientFactory.class, Answers.CALLS_REAL_METHODS);
   }
 
-  protected ConnectionFactory createConnectionFactoryMock(final MockedStatic<? extends JMSClientFactory> clientFactory,
+  protected void createConnectionFactoryMock(final MockedStatic<? extends JMSClientFactory> clientFactory,
       final Map<Object, Object> config) {
-    final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+    connectionFactory = mock(ConnectionFactory.class);
     clientFactory.when(() -> JMSClientFactory.createConnectionFactory(config)).thenReturn(connectionFactory);
-    return connectionFactory;
+  }
+
+  protected void createJMSContextMock() {
+    jmsContext = mock(JMSContext.class);
+    when(connectionFactory.createContext()).thenReturn(jmsContext);
+  }
+
+  protected void createQueueMock(final String queue) {
+    destination = mock(Queue.class);
+    when(jmsContext.createQueue(queue)).thenReturn(destination);
+  }
+
+  protected void createProducerMock() {
+    jmsProducer = mock(JMSProducer.class);
+    when(jmsContext.createProducer()).thenReturn(jmsProducer);
+  }
+
+  protected void createConsumerMock() {
+    jmsConsumer = mock(JMSConsumer.class);
+    when(jmsContext.createConsumer(any())).thenReturn(jmsConsumer);
   }
 
 }

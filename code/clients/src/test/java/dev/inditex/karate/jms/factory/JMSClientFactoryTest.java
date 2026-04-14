@@ -3,13 +3,19 @@ package dev.inditex.karate.jms.factory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.Nested;
@@ -71,6 +77,49 @@ public class JMSClientFactoryTest {
       assertThatThrownBy(() -> JMSClientFactory.createConnectionFactory(config))
           .isInstanceOf(JMSException.class)
           .hasMessage("Invalid JMSClientFactory: " + jmsFactoryName);
+    }
+  }
+
+  @Nested
+  class CreateDestination {
+    @Test
+    void when_rabbitmq_amqp_config_expect_amqp_destination() {
+      final JMSContext context = mock(JMSContext.class);
+      final String queue = "queue";
+      final Map<Object, Object> config = Map.of(JMS_FACTORY, "RabbitMQ", "amqp", "true");
+
+      final Destination result = JMSClientFactory.createDestination(context, queue, config);
+
+      assertThat(result).isNotNull().isInstanceOf(com.rabbitmq.jms.admin.RMQDestination.class);
+      verify(context, never()).createQueue(any());
+    }
+
+    @Test
+    void when_default_config_expect_queue_destination() {
+      final JMSContext context = mock(JMSContext.class);
+      final String queue = "queue";
+      final Map<Object, Object> config = Map.of(JMS_FACTORY, "RabbitMQ", "amqp", "false");
+      final javax.jms.Queue queueDestination = mock(javax.jms.Queue.class);
+      when(context.createQueue(queue)).thenReturn(queueDestination);
+
+      final Destination result = JMSClientFactory.createDestination(context, queue, config);
+
+      assertThat(result).isNotNull().isEqualTo(queueDestination);
+      verify(context, times(1)).createQueue(queue);
+    }
+
+    @Test
+    void when_invalid_factory_expect_queue_destination() {
+      final JMSContext context = mock(JMSContext.class);
+      final String queue = "queue";
+      final Map<Object, Object> config = Map.of(JMS_FACTORY, "invalid_factory");
+      final javax.jms.Queue queueDestination = mock(javax.jms.Queue.class);
+      when(context.createQueue(queue)).thenReturn(queueDestination);
+
+      final Destination result = JMSClientFactory.createDestination(context, queue, config);
+
+      assertThat(result).isNotNull().isEqualTo(queueDestination);
+      verify(context, times(1)).createQueue(queue);
     }
   }
 

@@ -1,9 +1,9 @@
 @inditex-oss-karate @karate-clients
 @jms @rabbitmq @jms-rabbitmq
-@rabbitmq-client
+@rabbitmq-client @amqp
 @env=local
 
-Feature: JMS Client Available Operations - Rabbit MQ
+Feature: JMS Client Available Operations - Rabbit MQ (AMQP)
 
 Background:
 
@@ -17,8 +17,8 @@ Background:
 * def getQueue = function(testID, prefix){ return "it.scenario." + testID.toLowerCase().replace(/\s+/g, '-') + '.' + prefix + '.karate.public.queue' }
 
 # public JMSClient(final Map<Object, Object> configMap)
-# Instantiate JMSClient
-Given def config = read('classpath:config/jms/rabbitmq-config.yml');
+# Instantiate JMSClient with AMQP config
+Given def config = read('classpath:config/jms/rabbitmq-amqp-config.yml');
 Given def JMSClient = Java.type('dev.inditex.karate.jms.JMSClient')
 Given def jmsClient = new JMSClient(config)
 
@@ -26,10 +26,10 @@ Given def jmsClient = new JMSClient(config)
 When def available = jmsClient.available()
 Then if (!available) karate.fail('JMS Client not available')
 
-Scenario: JMS Client Available Operations - Rabbit MQ - JSON and Object
+Scenario: JMS Client Available Operations - Rabbit MQ (AMQP) - JSON
 
 # Define Queue
-Given def queue = getQueue ('RabbitMQ', 'json-object')
+Given def queue = getQueue ('RabbitMQ-AMQP', 'json')
 
 # Consume Any Previous Messages
 # public List<Map<String, Object>> consume(final String queue, final long timeout)
@@ -46,10 +46,9 @@ When jmsClient.send(queue, jmsMessageJSON, jmsProperties)
 
 # public void send(final String queue, final Object value, final Map<String, Object> properties)
 # Send Message with properties
-Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')
-Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)
+Given def jmsMessageJSON2 = {'id': '2', 'name': 'karate-02', 'value': 2}
 Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}
-When jmsClient.send(queue, jmsMessageObject, jmsProperties)
+When jmsClient.send(queue, jmsMessageJSON2, jmsProperties)
 
 # public List<Map<String, Object>> consume(final String queue, final long timeout)
 When def messages = jmsClient.consume(queue, 10000)
@@ -64,10 +63,10 @@ Then match result[1].id == '2'
 Then match result[1].name == 'karate-02'
 Then match result[1].value == 2
 
-Scenario: JMS Client Available Operations - Rabbit MQ - Plain Text
+Scenario: JMS Client Available Operations - Rabbit MQ (AMQP) - Plain Text
 
 # Define Queue
-Given def queue = getQueue ('RabbitMQ', 'text')
+Given def queue = getQueue ('RabbitMQ-AMQP', 'text')
 
 # Consume Any Previous Messages
 # public List<Map<String, Object>> consume(final String queue, final long timeout)
@@ -89,10 +88,10 @@ Then karate.log('messages=', messages)
 Then assert messages.length == 1
 Then match messages[0].textMessage == jmsMessagePlainText
 
-Scenario: JMS Client Available Operations - Rabbit MQ - XML
+Scenario: JMS Client Available Operations - Rabbit MQ (AMQP) - XML
 
 # Define Queue
-Given def queue = getQueue ('RabbitMQ', 'xml')
+Given def queue = getQueue ('RabbitMQ-AMQP', 'xml')
 
 # Consume Any Previous Messages
 # public List<Map<String, Object>> consume(final String queue, final long timeout)
