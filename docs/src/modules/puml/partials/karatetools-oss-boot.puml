@@ -47,19 +47,18 @@ frame "karatetools-oss-boot" {
 
 frame docker {
   [artemis] #Silver
-  [cp-kafka] #Silver
-  [cp-schema-registry] #Silver
+  [rabbitmq] #Silver
+  [kafka & schema-registry] #Silver
   [mariadb] #Silver
   [mongo] #Silver
   [postgres] #Silver
 
   ' Relationships
-
   [artemis] -[hidden]left- [mariadb]
+  [artemis] -[hidden]down- [rabbitmq]
   [mariadb] -[hidden]down- [postgres]
   [postgres] -[hidden]down- [mongo]
-  [mariadb] -[hidden]left- [cp-kafka]
-  [cp-kafka] -[hidden]down- [cp-schema-registry]
+  [mariadb] -[hidden]left- [kafka & schema-registry]
 }
 
 ' Relationships

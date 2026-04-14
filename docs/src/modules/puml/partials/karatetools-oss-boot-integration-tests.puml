@@ -48,7 +48,8 @@ frame "karatetools-oss-boot" {
 
 frame docker {
   [artemis] #Silver
-  [cp-kafka & schema-registry] #Silver
+  [rabbitmq] #Silver
+  [kafka & schema-registry] #Silver
   [mariadb] #Silver
   [mongo] #Silver
   [postgres] #Silver
@@ -59,8 +60,9 @@ frame docker {
 [JDBCClientMariaDBIT.java] -up-> [mariadb] : tests
 [JDBCClientPostgreSQLIT.java] -up-> [postgres] : tests
 [MongoDBClientIT.java] -up-> [mongo] : tests
-[KafkaClientsIT.java] -up-> [cp-kafka & schema-registry] : tests
+[KafkaClientsIT.java] -up-> [kafka & schema-registry] : tests
 [JMSClientIT.java] -up-> [artemis] : tests
+[JMSClientIT.java] -up-> [rabbitmq] : tests
 
 [scenarios] --> [docker] : tests
 @enduml
