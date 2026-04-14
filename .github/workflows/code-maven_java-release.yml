@@ -182,7 +182,10 @@ jobs:
           git add CHANGELOG.md
           git commit -m "chore: Update CHANGELOG with ${{ steps.update-changelog.outputs.version }} version"
           git push --no-verify -u origin HEAD
-          mvn -B release:prepare release:perform --settings=.mvn/settings.xml -DreleaseVersion=${{ steps.update-changelog.outputs.version }}
+          mvn -B release:prepare release:perform --settings=.mvn/settings.xml \
+            -DreleaseVersion=${{ steps.update-changelog.outputs.version }} \
+            -Dgpg.passphrase="${MAVEN_GPG_PASSPHRASE}" \
+            -Dgpg.pinentry-mode=loopback
 
       - name: Next Development Iteration / Create Sync Branch PR into Develop
         id: sync-branch-pr
