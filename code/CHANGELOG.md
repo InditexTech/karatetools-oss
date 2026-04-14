@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.0] - 2026-04-14
+
 - [#64](https://github.com/InditexTech/karatetools-oss/issues/64) \[Karate-Tools] Update github workflows asdf install version to v4
 
 - [#63](https://github.com/InditexTech/karatetools-oss/issues/63) \[Karate-Tools] Containers Update - confluentinc/cp-kafka:7.6.2 -> apache/kafka:3.8.1, kafka zookeeper deprecated and removed
@@ -42,7 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First Open Source Release
 
-[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.2.0...HEAD
+[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.3.0...HEAD
+
+[5.3.0]: https://github.com/InditexTech/karatetools-oss/compare/5.2.0...5.3.0
 
 [5.2.0]: https://github.com/InditexTech/karatetools-oss/compare/5.1.0...5.2.0
 
