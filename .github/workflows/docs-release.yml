@@ -51,6 +51,7 @@ jobs:
       - name: Checkout merge commit
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.BASELINE_BRANCH }}
           fetch-depth: 0
           persist-credentials: false
 
