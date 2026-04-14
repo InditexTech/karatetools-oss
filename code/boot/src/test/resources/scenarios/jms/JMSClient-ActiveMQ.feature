@@ -92,7 +92,7 @@ Then match messages[0].textMessage == jmsMessagePlainText
 Scenario: JMS Client Available Operations - Active MQ - XML
 
 # Define Queue
-Given def queue = getQueue ('ActiveMQ', 'text')
+Given def queue = getQueue ('ActiveMQ', 'xml')
 
 # Consume Any Previous Messages
 # public List<Map<String, Object>> consume(final String queue, final long timeout)

@@ -1,5 +1,6 @@
 package dev.inditex.karate.jms;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -17,7 +18,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import javax.jms.BytesMessage;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -142,7 +142,7 @@ public class JMSClient {
       final Destination destination = createDestination(context, queue);
       if (!(value instanceof Map<?, ?> || value instanceof String) && value instanceof final Serializable serial) {
         // If value is not instance of Map or String and Serializable -> Object Message
-        final boolean amqpMode = Boolean.parseBoolean(String.valueOf(config.getOrDefault("amqp", "false")));
+        final boolean amqpMode = Boolean.parseBoolean(String.valueOf(config.getOrDefault(AMQP, AMQP_DEFAULT)));
         if (amqpMode) {
           throw new JMSRuntimeException("ObjectMessage not supported for AMQP destinations. Use Map or String instead.");
         }
@@ -196,10 +196,9 @@ public class JMSClient {
    * @return the list
    * @throws JMSException the JMS exception
    * @throws JsonProcessingException the json processing exception
-   * @throws JsonSyntaxException the json syntax exception
    */
   public List<Map<String, Object>> consume(final String queue, final long timeout)
-      throws JMSException, JsonProcessingException, JsonSyntaxException {
+      throws JMSException, JsonProcessingException {
     final JsonArray jsonMessages = new JsonArray();
     log.debug("consume({}) ...", queue);
     final ConnectionFactory cf = createConnectionFactory();
@@ -270,9 +269,18 @@ public class JMSClient {
    * @throws JMSException the JMS exception
    */
   protected JsonObject parseBytesMessage(final BytesMessage bytesMessage) throws JMSException {
-    final byte[] bytes = new byte[(int) bytesMessage.getBodyLength()];
-    bytesMessage.readBytes(bytes);
-    final String text = new String(bytes, StandardCharsets.UTF_8);
+    final long bodyLength = bytesMessage.getBodyLength();
+    if (bodyLength > Integer.MAX_VALUE) {
+      throw new JMSException("BytesMessage body too large: " + bodyLength + " bytes");
+    }
+    final int length = (int) bodyLength;
+    final ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
+    final byte[] buffer = new byte[Math.min(length, 8192)];
+    int read;
+    while ((read = bytesMessage.readBytes(buffer)) != -1) {
+      baos.write(buffer, 0, read);
+    }
+    final String text = new String(baos.toByteArray(), StandardCharsets.UTF_8);
     try {
       return JsonParser.parseString(text).getAsJsonObject();
     } catch (final Exception ex) {
