@@ -49,7 +49,6 @@ frame docker {
   [artemis] #Silver
   [cp-kafka] #Silver
   [cp-schema-registry] #Silver
-  [cp-zookeeper] #Silver
   [mariadb] #Silver
   [mongo] #Silver
   [postgres] #Silver
@@ -60,8 +59,7 @@ frame docker {
   [mariadb] -[hidden]down- [postgres]
   [postgres] -[hidden]down- [mongo]
   [mariadb] -[hidden]left- [cp-kafka]
-  [cp-kafka] -[hidden]down- [cp-zookeeper]
-  [cp-zookeeper] -[hidden]down- [cp-schema-registry]
+  [cp-kafka] -[hidden]down- [cp-schema-registry]
 }
 
 ' Relationships

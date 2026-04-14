@@ -3,6 +3,7 @@ package dev.inditex.karate.jms.factory;
 import java.util.Map;
 
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
+import com.rabbitmq.jms.admin.RMQDestination;
 
 /**
  * A factory for creating RabbitMQ ConnectionFactory objects.
@@ -19,7 +20,7 @@ public class RabbitMQClientFactory {
   public static final String USERNAME = "username"; // User name that the application uses to connect to RabbitMQ.
 
   /** The Constant PASSWORD. */
-  public static final String PASSWORD = "password"; //  Password that the application uses to connect to RabbitMQ.
+  public static final String PASSWORD = "password"; // Password that the application uses to connect to RabbitMQ.
 
   /** The Constant VIRTUAL_HOST. */
   public static final String VIRTUAL_HOST = "virtual-host"; // virtual host to be used when creating a connection to RabbitMQ.
@@ -73,5 +74,24 @@ public class RabbitMQClientFactory {
     cf.setVirtualHost(vhost);
     cf.setOnMessageTimeoutMs(timeout);
     return cf;
+  }
+
+  /**
+   * Creates an AMQP destination with amqp=true flag.
+   *
+   * @param queue the queue name
+   * @return the RMQ destination with amqp=true
+   */
+  public static RMQDestination createAmqpDestination(final String queue) {
+    final RMQDestination destination = new RMQDestination(queue, true, false);
+    // Bypass JMS serialization, use raw AMQP wire format
+    destination.setAmqp(true);
+    // Use AMQP default exchange ("") which routes directly to queues by name
+    destination.setAmqpExchangeName("");
+    // Routing key matches queue name for default exchange direct routing
+    destination.setAmqpRoutingKey(queue);
+    // Explicit queue name so the consumer reads from the named queue instead of creating a temporary one
+    destination.setAmqpQueueName(queue);
+    return destination;
   }
 }

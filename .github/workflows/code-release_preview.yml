@@ -69,7 +69,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Setup asdf environment
-        uses: asdf-vm/actions/install@v3
+        uses: asdf-vm/actions/install@v4
         with:
           tool_versions: ${{ env.TOOL_VERSIONS }}
 

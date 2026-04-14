@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
+import com.rabbitmq.jms.admin.RMQDestination;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
@@ -21,7 +22,7 @@ class RabbitMQClientFactoryTest {
 
   public static final String USERNAME = "username"; // User name that the application uses to connect to RabbitMQ.
 
-  public static final String PASSWORD = "password"; //  Password that the application uses to connect to RabbitMQ.
+  public static final String PASSWORD = "password"; // Password that the application uses to connect to RabbitMQ.
 
   public static final String VIRTUAL_HOST = "virtual-host"; // virtual host to be used when creating a connection to RabbitMQ.
 
@@ -93,6 +94,21 @@ class RabbitMQClientFactoryTest {
         verify(jmsConnectionFactory, times(1)).setVirtualHost(vhost);
         verify(jmsConnectionFactory, times(1)).setOnMessageTimeoutMs(timeout);
       }
+    }
+  }
+
+  @Nested
+  class CreateAmqpDestination {
+    @Test
+    void when_create_amqp_destination_expect_valid() {
+      final String queue = "myQueue";
+
+      final RMQDestination result = RabbitMQClientFactory.createAmqpDestination(queue);
+
+      assertThat(result).isNotNull();
+      assertThat(result.isAmqp()).isTrue();
+      assertThat(result.getAmqpExchangeName()).isEmpty();
+      assertThat(result.getAmqpRoutingKey()).isEqualTo(queue);
     }
   }
 

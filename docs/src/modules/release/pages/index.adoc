@@ -4,6 +4,14 @@
 |===
 | Version | Date | Description
 
+| 5.3.0
+| 2026-04-14
+|
+
+✔️ Karate Tools - Added *RabbitMQ - AMQP Support*
+
+✔️ Karate Tools - *Containers Update* (confluentinc/cp-kafka:7.6.2 -> apache/kafka:3.8.1, kafka zookeeper deprecated and removed)
+
 | 5.2.0
 | 2026-03-03
 |

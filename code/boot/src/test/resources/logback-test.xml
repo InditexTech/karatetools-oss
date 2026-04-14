@@ -30,10 +30,11 @@
     <appender-ref ref="docker" />
   </logger>
 
-  <logger name="io.confluent.kafka" level="ERROR" />
-  <logger name="org.apache.kafka" level="ERROR" />
+  <logger name="io.confluent.kafka" level="WARN" />
+  <logger name="io.confluent.kafka.serializers" level="WARN" />
+  <logger name="org.apache.kafka" level="WARN" />
   <logger name="com.intuit.karate" level="DEBUG" />
-  <logger name="dev.inditex.karate" level="INFO" />
+  <logger name="dev.inditex.karate" level="DEBUG" />
 
   <root level="info">
     <appender-ref ref="STDOUT" />

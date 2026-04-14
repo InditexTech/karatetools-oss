@@ -13,3 +13,5 @@ password: karate-pwd
 virtual-host: /
 # on-message-timeout: Timeout in milliseconds for processing messages.
 on-message-timeout: 5000
+# amqp: When true, uses AMQP destinations (default exchange routing) instead of JMS queues.
+amqp: false

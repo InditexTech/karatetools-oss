@@ -68,7 +68,6 @@ public class DockerHealthControllerIT {
         "kt-postgres",
         "kt-rabbitmq",
         "kt-schema-registry",
-        "kt-schema-registry-basic-auth",
-        "kt-zookeeper"};
+        "kt-schema-registry-basic-auth"};
   }
 }
