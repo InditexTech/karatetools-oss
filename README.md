@@ -114,6 +114,18 @@ org.junit.platform:junit-platform-engine:1.13.4
 License: Eclipse Public License v1.0 (EPL-1.0)
 License text: docs/compliance/third-party-licenses/EPL-1.0.txt
 
+de.dentrassi.crypto:pem-keystore:3.0.0
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: docs/compliance/third-party-licenses/EPL-1.0.txt
+
+ch.qos.logback:logback-core:1.5.18
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: docs/compliance/third-party-licenses/EPL-1.0.txt
+
+ch.qos.logback:logback-classic:1.5.18
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: docs/compliance/third-party-licenses/EPL-1.0.txt
+
 org.checkerframework:checker-compat-qual:2.5.5
 License: The GNU General Public License v2.0 (GPL-2.0)
 License text: docs/compliance/third-party-licenses/GPL-2.0.txt
