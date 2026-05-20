@@ -50,13 +50,13 @@ jobs:
       && needs.check-triggered-release.outputs.skip == 'false' }}
     steps:
       - name: Checkout / Branch Head
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: NPM / Setup Dependencies Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Setup asdf Cache
         id: asdf-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -152,7 +152,7 @@ jobs:
 
       - name: Dispatch / Execute Publish Docs
         if: ${{ !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs/no-publish') }}
-        uses: benc-uk/workflow-dispatch@798e70c97009500150087d30d9f11c5444830385
+        uses: benc-uk/workflow-dispatch@31e2b3319479a63f0ab15bf800eff9e913504e26
         with:
           workflow: docs-publish
           ref: ${{ github.ref }}

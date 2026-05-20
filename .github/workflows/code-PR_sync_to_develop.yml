@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Check for changed files in specific paths
         id: changes
-        uses: dorny/paths-filter@ebc4d7e9ebcb0b1eb21480bb8f43113e996ac77a
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d
 
         with:
           filters: |
@@ -41,7 +41,7 @@ jobs:
 
       - name: Checkout
         if: steps.changes.outputs.paths == 'false' && github.event.pull_request.merged == false
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -84,7 +84,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
