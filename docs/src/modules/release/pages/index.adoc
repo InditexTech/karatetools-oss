@@ -4,6 +4,16 @@
 |===
 | Version | Date | Description
 
+| 5.4.0
+| 2026-05-21
+|
+
+✔️ Karate Tools - *Bump Node related actions to Node 24* (GitHub Actions updated to use Node 24 runtime)
+
+✔️ Karate Tools - *Add exclusions and update dependencies in pom.xml* (excluded transitive dependencies: mailapi, checker-compat-qual, jaxb-api from rabbitmq-jms and swagger-inflector)
+
+✔️ Karate Tools - *Updated features background description*
+
 | 5.3.0
 | 2026-04-14
 |
