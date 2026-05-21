@@ -1,6 +1,6 @@
 name: karatetools-oss
 title: InditexTech Karate Tools
-prerelease: true
+prerelease: false
 start_page: HOME:index.adoc
 nav:
   - modules/HOME/nav.adoc
