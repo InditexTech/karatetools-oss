@@ -127,7 +127,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         id: update-changelog
-        uses: release-flow/keep-a-changelog-action@v3.0.0
+        uses: release-flow/keep-a-changelog-action@07fee08b513add69e62b0ec90bdb736d7047ff5a #v3.0.1 - Unreleased
         with:
           command: bump
           version: ${{ env.RELEASE_VERSION }}
