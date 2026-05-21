@@ -28,5 +28,5 @@ outputs:
   config:
     description: "A JSON object that contains all the processed files as JSON objects with replaced properties from input-vars"
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'

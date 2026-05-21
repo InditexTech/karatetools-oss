@@ -31,14 +31,14 @@ jobs:
     steps:
       - name: Trigger / Release Concurrently
         if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
-        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
+        uses: benc-uk/workflow-dispatch@31e2b3319479a63f0ab15bf800eff9e913504e26
         with:
           workflow: ${{ github.workflow }}
           inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "CONCURRENCY_REF": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
 
       - name: Trigger / Release Job
         if: (!contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type'))
-        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
+        uses: benc-uk/workflow-dispatch@31e2b3319479a63f0ab15bf800eff9e913504e26
         with:
           workflow: ${{ github.workflow }}
           inputs: '{ "BASELINE_BRANCH": "${{ github.ref }}", "RELEASE_LABELS": "${{ join(github.event.pull_request.labels.*.name, '', '') }}" }'
@@ -49,14 +49,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout merge commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.BASELINE_BRANCH }}
           fetch-depth: 0
           persist-credentials: false
 
       - name: NPM / Setup Dependencies Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Setup asdf Cache
         id: asdf-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -253,7 +253,7 @@ jobs:
           Please create a branch from \`main\` (e.g. \`internal/sync-main-with-develop\`) and then create a pull request against \`develop\` to finish the release process."
 
       - name: Dispatch / Execute Publish Docs
-        uses: benc-uk/workflow-dispatch@e2e5e9a103e331dad343f381a29e654aea3cf8fc
+        uses: benc-uk/workflow-dispatch@31e2b3319479a63f0ab15bf800eff9e913504e26
         with:
           workflow: docs-publish
           ref: ${{ github.ref }}
