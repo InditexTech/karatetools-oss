@@ -5,7 +5,7 @@
 
 Feature: Mongo DB Client Available Operations 
 
-Background:
+Background: MongoDB Client Setup
 # public MongoDBClient(final Map<Object, Object> configMap)
 # Instantiate MongoDBClient
 Given def config = read('classpath:config/db/mongodb-config-' + karate.env + '.yml')

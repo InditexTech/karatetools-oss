@@ -5,7 +5,7 @@
 
 Feature: JMS Client Available Operations - Active MQ
 
-Background:
+Background: JMS Client Setup - ActiveMQ
 
 * def sleep = function(millis){ java.lang.Thread.sleep(millis) }
 

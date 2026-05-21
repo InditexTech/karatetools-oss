@@ -5,7 +5,7 @@
 
 Feature: JDBC Client Available Operations - PostgreSQL 
 
-Background:
+Background: JDBC Client Setup - PostgreSQL
 # public JDBCClient(final Map<Object, Object> configMap)
 # Instantiate JDBCClient
 Given def config = read('classpath:config/db/postgresql-config-' + karate.env + '.yml')
