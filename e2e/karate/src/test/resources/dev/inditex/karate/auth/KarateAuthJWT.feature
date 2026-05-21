@@ -3,7 +3,7 @@
 
 Feature: karate-auth-jwt
 
-Background:
+Background: Auth Config Setup - JWT
 * call read('KarateAuthBackgroundScenario.feature')
 
 * def authJS = read('classpath:karate-auth.js')

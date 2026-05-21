@@ -54,7 +54,7 @@ jobs:
           echo "BASELINE_BRANCH=${BASELINE_BRANCH#refs/heads/}" >> "$GITHUB_ENV"
 
       - name: Checkout merge commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.BASELINE_BRANCH }}
           fetch-depth: 0
@@ -73,17 +73,17 @@ jobs:
           fi
 
       - name: Setup Maven Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      
+
       - name: Setup asdf Cache
         id: asdf-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -161,7 +161,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         id: update-changelog
-        uses: release-flow/keep-a-changelog-action@v3.0.0
+        uses: release-flow/keep-a-changelog-action@07fee08b513add69e62b0ec90bdb736d7047ff5a #v3.0.1 - Unreleased
         with:
           command: bump
           version: ${{ env.RELEASE_VERSION }}
@@ -205,7 +205,7 @@ jobs:
           fi
 
       - name: Github Release / Create
-        uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd
         id: github-release
         continue-on-error: true
         with:

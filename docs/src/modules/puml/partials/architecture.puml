@@ -41,6 +41,7 @@ node "<$spring,scale=1>" {
   node "messaging" {
     queue "<$kafka-icon,scale=1>\n Kafka" as kafka
     queue "<$apache,scale=0.5,color=#832878>\n Active MQ" as activemq
+    queue "<$rabbitmq,scale=1,color=#FF6600>\n Rabbit MQ" as rabbitmq
   }
 
   node "application" {
@@ -72,6 +73,7 @@ jdbcClient --> postgresql
 mongodbClient --> mongodb
 kafkaClient --> kafka
 jmsClient --> activemq
+jmsClient --> rabbitmq
 
 application --> karateMockServer : "<$swagger,scale=0.1>\nexternal service"
 karateRunner --> RESTApi : test

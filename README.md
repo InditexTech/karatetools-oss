@@ -41,3 +41,95 @@ For more information, see the [**🔖 Karate Tools OSS - 📖 Overview**](https:
 ## License
 
 This tool is avaliable as open source under the terms of the [Apache-2.0](LICENSE).
+limitations under the License.
+
+---
+
+Third-Party Notices
+
+This project includes the following third-party dependencies as external Maven dependencies.
+Their source code is not incorporated or modified.
+
+jakarta.annotation:jakarta.annotation-api:1.3.5
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+jakarta.annotation:jakarta.annotation-api:3.0.0
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+jakarta.jms:jakarta.jms-api:2.0.3
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+jakarta.ws.rs:jakarta.ws.rs-api:2.1.6
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2:hk2-api:2.6.1
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2:hk2-locator:2.6.1
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2:hk2-utils:2.6.1
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2:osgi-resource-locator:1.0.3
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2.external:aopalliance-repackaged:2.6.1
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.glassfish.hk2.external:jakarta.inject:2.6.1
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.jupiter:junit-jupiter:5.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.jupiter:junit-jupiter-api:5.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.jupiter:junit-jupiter-engine:5.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.jupiter:junit-jupiter-params:5.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.platform:junit-platform-commons:1.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.junit.platform:junit-platform-engine:1.13.4
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+de.dentrassi.crypto:pem-keystore:3.0.0
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+ch.qos.logback:logback-core:1.5.18
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+ch.qos.logback:logback-classic:1.5.18
+License: Eclipse Public License v1.0 (EPL-1.0)
+License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+
+org.checkerframework:checker-compat-qual:2.5.5
+License: The GNU General Public License v2.0 (GPL-2.0)
+License text: THIRD-PARTY-LICENSES/GPL-2.0.txt
+
+com.rabbitmq:amqp-client:5.26.0
+License: The GNU General Public License v2.0 (GPL-2.0)
+License text: THIRD-PARTY-LICENSES/GPL-2.0.txt

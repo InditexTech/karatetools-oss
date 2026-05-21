@@ -5,7 +5,7 @@
 
 Feature: Kafka Clients Available Operations
 
-Background:
+Background: Kafka Clients Setup - Local
 Given def config = read('classpath:config/kafka/kafka-config-' + karate.env + '.yml')
 
 # public KafkaConsumerClient(final Map<Object, Object> config)

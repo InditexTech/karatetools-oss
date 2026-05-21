@@ -3,7 +3,7 @@
 
 Feature: karate-auth-basic
 
-Background:
+Background: Auth Config Setup - Basic
 * call read('KarateAuthBackgroundScenario.feature')
 
 * def authJS = read('classpath:karate-auth.js')

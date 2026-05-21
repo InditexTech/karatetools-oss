@@ -9,6 +9,7 @@ The *core* packages are:
 * 📦 `dev.inditex.karate.kafka`: *Kafka clients* to interact with *Kafka*.
 * 📦 `dev.inditex.karate.jms`: *JMS client* to interact with *JMS*. The included clients are:
 ** ✉️ Active MQ Artemis
+** ✉️ Rabbit MQ
 
 The *support* packages are:
 

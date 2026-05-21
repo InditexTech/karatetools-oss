@@ -45,7 +45,7 @@ runs:
     - name: test-results-verification
       id: test-results-verification
       if: ${{ ( inputs.threshold != null && steps.test-results-summary.outputs.result-value != null ) }}
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       with:
         script: |
 

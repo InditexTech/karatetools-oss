@@ -69,7 +69,7 @@ jobs:
       # checkout
       - name: checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -170,7 +170,7 @@ jobs:
 
       # setup-maven-cache
       - name: setup-maven-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.m2/repository
@@ -180,7 +180,7 @@ jobs:
 
       # setup-asdf-cache
       - name: setup-asdf-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -364,7 +364,7 @@ jobs:
       - name: karate-report-upload
         id: karate-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-karate-report
           path: ${{ fromJSON(steps.config.outputs.config).karate.report.folder }}
@@ -461,7 +461,7 @@ jobs:
           ${{ always() && !cancelled()
           && fromJSON(steps.config.outputs.config).karate.app.enabled == true
           && steps.start-java-app.outcome == 'success' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-jacoco-report
           path: ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }}
@@ -470,7 +470,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |

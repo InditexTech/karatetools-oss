@@ -26,13 +26,13 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Maven Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.m2/repository
@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup asdf Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -84,7 +84,7 @@ jobs:
 
       - name: Maven / Process Surefire report and annotate PR
         if: ${{ always() && !cancelled() }}
-        uses: scacap/action-surefire-report@a2911bd1a4412ec18dde2d93b1758b3e56d2a880
+        uses: scacap/action-surefire-report@fa13579fdd93ed8fc7e717a25eceedcfcbc39dda
         with:
           fail_if_no_tests: false
           create_check: false

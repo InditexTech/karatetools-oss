@@ -19,7 +19,7 @@ The main `code` modules are:
 
 * 👩‍💻 `karatetools-oss-archetype`: *archetype* to generate a *karate project from scratch* with the necessary *configurations* and *utilities* for the execution of tests.
 
-* 👩‍💻 `karatetools-oss-clients`: *clients* to interact with *relational databases via JDBC (MariaDB and PostgreSQL)*, *MongoDB*, *Kafka* and *JMS (Active MQ)*
+* 👩‍💻 `karatetools-oss-clients`: *clients* to interact with *relational databases via JDBC (MariaDB and PostgreSQL)*, *MongoDB*, *Kafka* and *JMS (Active MQ and Rabbit MQ)*
 * 👩‍💻 `karatetools-oss-generators`: *generators* of *tests* from *Open API*
 * 👩‍💻 `karatetools-oss-runner`: *karate runner* and all related utilities (*authentication*, *JWT tokens*, *karate base configuration*, *karate utils*, *karate mocks*, *karate cache*, *karate results and reports*, ...)
 

@@ -5,7 +5,7 @@
 
 Feature: JMS Client Available Operations - Rabbit MQ
 
-Background:
+Background: JMS Client Setup - RabbitMQ
 
 * def sleep = function(millis){ java.lang.Thread.sleep(millis) }
 

@@ -32,11 +32,19 @@ frame "karatetools-oss" {
 [karate] #Silver
 [swagger-parser] #Silver
 
-[activemq-artemis-jms-client] #Silver
+[activemq-jms-client] #Silver
+[rabbitmq-jms-client] #Silver
 [kafka-clients] #Silver
 [mariadb-jdbc-driver] #Silver
 [mongodb-driver] #Silver
 [postgresql-jdbc-driver] #Silver
+
+' Positioning
+[activemq-jms-client] -[hidden]right- [rabbitmq-jms-client]
+[rabbitmq-jms-client] -[hidden]right- [kafka-clients]
+[kafka-clients] -[hidden]right- [mariadb-jdbc-driver]
+[mariadb-jdbc-driver] -[hidden]right- [postgresql-jdbc-driver]
+[postgresql-jdbc-driver] -[hidden]right- [mongodb-driver]
 
 ' Relationships
 
@@ -64,11 +72,7 @@ frame "karatetools-oss" {
 [karatetools-oss-clients] .down.> [postgresql-jdbc-driver] : uses
 [karatetools-oss-clients] .down.> [mongodb-driver] : uses
 [karatetools-oss-clients] .down.> [kafka-clients] : uses
-[karatetools-oss-clients] .down.> [activemq-artemis-jms-client] : uses
-
-[activemq-artemis-jms-client] -[hidden]right- [kafka-clients]
-[kafka-clients] -[hidden]right- [mariadb-jdbc-driver]
-[mariadb-jdbc-driver] -[hidden]right- [postgresql-jdbc-driver]
-[postgresql-jdbc-driver] -[hidden]right- [mongodb-driver]
+[karatetools-oss-clients] .down.> [activemq-jms-client] : uses
+[karatetools-oss-clients] .down.> [rabbitmq-jms-client] : uses
 
 @enduml

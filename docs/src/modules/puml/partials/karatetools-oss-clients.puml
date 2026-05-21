@@ -11,6 +11,7 @@ frame "karatetools-oss-clients" {
       [JMSClient.java]
       package "dev.inditex.karate.jms.factory" {
         [ActiveMQClientFactory.java]
+        [RabbitMQClientFactory.java]
         [JMSClientFactory.java]
       }
     }
@@ -38,6 +39,7 @@ frame "karatetools-oss-clients" {
 
 [JMSClient.java] --> [JMSClientFactory.java] : calls
 [JMSClientFactory.java] --> [ActiveMQClientFactory.java] : creates
+[JMSClientFactory.java] --> [RabbitMQClientFactory.java] : creates
 
 [KafkaAbstractClient.java] <|-- [KafkaConsumerClient.java] : extends
 [KafkaAbstractClient.java] <|-- [KafkaProducerClient.java] : extends
