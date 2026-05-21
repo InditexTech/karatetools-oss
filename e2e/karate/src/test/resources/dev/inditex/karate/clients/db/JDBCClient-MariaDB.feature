@@ -5,7 +5,7 @@
 
 Feature: JDBC Client Available Operations - MariaDB 
 
-Background:
+Background: JDBC Client Setup - MariaDB
 # public JDBCClient(final Map<Object, Object> configMap)
 # Instantiate JDBCClient
 Given def config = read('classpath:config/db/mariadb-config-' + karate.env + '.yml');

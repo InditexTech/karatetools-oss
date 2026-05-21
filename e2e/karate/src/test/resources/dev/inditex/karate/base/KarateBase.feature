@@ -2,7 +2,7 @@
 
 Feature: karate-base
 
-Background:
+Background: Karate Base Variables
 
 * print '---- ScenarioEngine.getAllVariablesAsMap()                ----'
 * def variables = karate.getEngine().getAllVariablesAsMap()

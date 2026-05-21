@@ -3,7 +3,7 @@
 
 Feature: e2e
 
-Background:
+Background: Reset All Items
 
 * callonce read('classpath:dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable/common/reset/reset.feature')
 

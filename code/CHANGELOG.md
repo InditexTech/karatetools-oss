@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#75](https://github.com/InditexTech/karatetools-oss/issues/75) \[Karate-Tools] Updated features background description
+
+- [#73](https://github.com/InditexTech/karatetools-oss/issues/73) \[Karate-Tools] Bump Node related actions to Node 24
+
+- [#72](https://github.com/InditexTech/karatetools-oss/pull/72) \[Karate-Tools] Add exclusions and update dependencies in pom.xml
+
 ## [5.3.0] - 2026-04-14
 
 - [#64](https://github.com/InditexTech/karatetools-oss/issues/64) \[Karate-Tools] Update github workflows asdf install version to v4
