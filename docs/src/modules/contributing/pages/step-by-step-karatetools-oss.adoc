@@ -12,7 +12,7 @@ The required versions are defined in `.tool-versions` files (`code/` and `e2e/ka
 [source,plaintext]
 ----
 maven 3.9.14
-java temurin-25.0.2+7.0.LTS
+java temurin-25.0.2+10.0.LTS
 ----
 
 Add the Java and Maven plugins and install the required versions:
@@ -27,14 +27,12 @@ asdf plugin add maven
 cat .tool-versions
 # Install the versions defined in the .tool-versions file
 asdf install
-# Enforce Java Home
-. ~/.asdf/plugins/java/set-java-home.bash
+# Set JAVA_HOME for Maven
+export JAVA_HOME=$(asdf where java)
 # Verify the versions are active:
 java --version
 mvn --version
 ----
-
-NOTE: `asdf` automatically selects the correct versions when a `.tool-versions` file is present in the current directory.
 
 a|
 image::steps-kt-oss-asdf-install.png[role="no-border, zoom-in"]
