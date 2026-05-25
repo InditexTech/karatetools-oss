@@ -8,11 +8,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import com.intuit.karate.core.FeatureRuntime;
-import com.intuit.karate.core.ScenarioEngine;
-import com.intuit.karate.core.ScenarioFileReader;
-import com.intuit.karate.graal.JsValue;
-import com.intuit.karate.http.HttpClientFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -28,7 +23,7 @@ class SystemPropertiesParserIT {
   protected Level defaultLogLevel;
 
   @BeforeEach
-  protected void beforeEach() {
+  void beforeEach() {
     defaultLogLevel = ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).getLevel();
     logWatcher = new ListAppender<>();
     logWatcher.start();
@@ -37,7 +32,7 @@ class SystemPropertiesParserIT {
   }
 
   @AfterEach
-  protected void afterEach() {
+  void afterEach() {
     ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).detachAppender(logWatcher);
     ((Logger) LoggerFactory.getLogger(SystemPropertiesParser.class)).setLevel(defaultLogLevel);
   }
@@ -49,11 +44,9 @@ class SystemPropertiesParserIT {
     @Test
     void when_config_no_system_properties_expect_parsed_and_logged() {
       // Read the file in the same way as Karate does
-      final ScenarioEngine scenarioEngine = ScenarioEngine.forTempUse(HttpClientFactory.DEFAULT);
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final ScenarioFileReader karateFileReader = new ScenarioFileReader(scenarioEngine, featureRuntime);
-      final var configFile = karateFileReader.readFile("classpath:config/config-sys-properties-test.yml");
-      final var config = JsValue.fromJava(configFile);
+      final var root = io.karatelabs.common.Resource.path("classpath:");
+      final var karate = new io.karatelabs.core.KarateJs(root);
+      final var config = karate.engine.eval("read('classpath:config/config-sys-properties-test.yml')");
 
       final var result = SystemPropertiesParser.parseConfiguration((Map<Object, Object>) config);
 
@@ -110,11 +103,9 @@ class SystemPropertiesParserIT {
     @Test
     void when_config_with_system_properties_expect_parsed_and_logged() {
       // Read the file in the same way as Karate does
-      final ScenarioEngine scenarioEngine = ScenarioEngine.forTempUse(HttpClientFactory.DEFAULT);
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final ScenarioFileReader karateFileReader = new ScenarioFileReader(scenarioEngine, featureRuntime);
-      final var configFile = karateFileReader.readFile("classpath:config/config-sys-properties-test.yml");
-      final var config = JsValue.fromJava(configFile);
+      final var root = io.karatelabs.common.Resource.path("classpath:");
+      final var karate = new io.karatelabs.core.KarateJs(root);
+      final var config = karate.engine.eval("read('classpath:config/config-sys-properties-test.yml')");
       // setSystemProperties
       System.setProperty("number-var", "200");
       System.setProperty("boolean-var", "false");

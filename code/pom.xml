@@ -100,7 +100,7 @@
     <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
 
     <!-- Common -->
-    <karate.version>1.5.2</karate.version>
+    <karate.version>2.0.9</karate.version>
     <lombok.version>1.18.46</lombok.version>
     <jackson.version>2.20.0</jackson.version>
     <gson.version>2.13.2</gson.version>
