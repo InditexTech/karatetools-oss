@@ -18,18 +18,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Test Execution & Reporting -->
-    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>
 
     <!-- Open Api Source Generation -->
-    <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
 
     <!-- Karate Tools -->
     <karatetools.version>${project.version}</karatetools.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
 
     <!-- Karate Clients -->
-    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
     <!-- APIs -->
     <xxx-api-rest-stable.version>${karatetools.version}</xxx-api-rest-stable.version>

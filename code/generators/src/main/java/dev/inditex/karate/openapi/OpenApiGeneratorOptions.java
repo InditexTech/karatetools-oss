@@ -311,13 +311,14 @@ public class OpenApiGeneratorOptions {
    * @return true, if is open api
    */
   protected boolean isOpenApi(final File dir, final String name) {
+    log.debug("OpenApiGeneratorOptions.isOpenApi() - name {} in folder {}", name, dir);
     final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     if (name.endsWith(".yml")) {
       final File file = new File(dir.getAbsolutePath() + File.separator + name);
       try {
         final String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         final Map<String, Object> yaml = yamlMapper.readValue(content, new TypeReference<Map<String, Object>>() {});
-        return yaml.containsKey("openapi");
+        return yaml != null && yaml.containsKey("openapi");
       } catch (final IOException e) {
         OpenApiGeneratorANSILogger.debug(
             String.format("Not an Open Api file %s in folder %s %n    Exception [%s]", name, dir, e.getMessage()));
