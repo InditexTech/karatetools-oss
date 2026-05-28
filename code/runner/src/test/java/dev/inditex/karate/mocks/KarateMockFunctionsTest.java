@@ -36,7 +36,7 @@ public class KarateMockFunctionsTest extends AbstractKarateTest {
     @ParameterizedTest(name = "when_{0}_expect_no_error")
     @CsvSource({
         "list-templates-no-folder,>> karate.tools >> mock-templates >> listTemplates >> "
-            + "ERROR >> Cannot read property \"getPath\" from null",
+            + "ERROR >> not found: mocks/templates/no-folder",
         "list-templates-empty-folder,>> karate.tools >> mock-templates >> listTemplates >> "
             + "# files >> 0",
         "list-templates-folder-with-mocks,>> karate.tools >> mock-templates >> listTemplates >> "

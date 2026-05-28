@@ -14,30 +14,39 @@ function fn() {
         karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> files >> EMPTY');
         return list;
       }
-      karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> files', files.lenght);
+      karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> files' + files.length);
       for (const file of files) {
         const f = file;
-        if (f.directory) {
+        if (f.isDirectory()) {
           list.addAll(traverse(f, base));
-        } else if(file.getName().endsWith(".yml")) {
+        } else if (file.getName().endsWith(".yml")) {
           const relative = base.toURI().relativize(f.toURI()).getPath();
-          karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> file >>', relative);
+          karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> file >>' + relative);
           list.add("classpath:" + relative);
         } else {
-          karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> file >>', file, 'SKIPPING');
+          karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> file >>' + file + ' SKIPPING');
         }
       }
-      if(list.size() > 0) {
+      if (list.size() > 0) {
         java.util.Collections.sort(list);
       }
-      karate.log('>> karate.tools >> mock-templates >> listTemplates >> # files >>', list.size());
+      karate.log('>> karate.tools >> mock-templates >> listTemplates >> # files >> ' + list.size());
       return list;
     }
     try {
-      const url = java.lang.Thread.currentThread().getContextClassLoader().getResource(folder);
-      const root = new java.io.File(url.getPath());
-      const urlBase = java.lang.Thread.currentThread().getContextClassLoader().getResource(".");
-      const base = new java.io.File(urlBase.getPath());
+      // Java 25 - ✅ FIX
+      // Replace ClassLoader access (blocked in Java 25) to karate classpath resolution (which works in Java 21+)
+      const normalized = folder.startsWith('classpath:') ? folder : 'classpath:' + folder;
+      const rootPath = karate.toAbsolutePath(normalized);
+      const root = new java.io.File(rootPath);
+      const basePath = karate.toAbsolutePath('classpath:');
+      const base = new java.io.File(basePath);
+
+      // Java 21
+      // const url = java.lang.Thread.currentThread().getContextClassLoader().getResource(folder);
+      // const root = new java.io.File(url.getPath());
+      // const urlBase = java.lang.Thread.currentThread().getContextClassLoader().getResource(".");
+      // const base = new java.io.File(urlBase.getPath());
       return traverse(root, base);
     } catch (e) {
       karate.log('>> karate.tools >> mock-templates >> listTemplates >> ERROR >>', e.message);
@@ -146,7 +155,7 @@ function fn() {
 
     return match;
   }
-  
+
   /**
    * Check if the path matches the template path
    *
@@ -159,7 +168,7 @@ function fn() {
     karate.logger.debug(">> karate.tools >> mock-templates >> pathMatch >> \n    >> path        >>", path, "\n    >> templatePath>>", templatePath, "\n    >> pathParts   >>", pathParts);
     return pathParts !== null;
   }
-  
+
   /**
    * Check if the method matches the template method
    *
@@ -169,7 +178,7 @@ function fn() {
   function methodMatch(method, templateMethod) {
     return method.toUpperCase() === templateMethod.toUpperCase();
   }
-    
+
   return {
     listTemplates, readTemplates, parseParams, findTemplate, pathMatch, methodMatch
   }
