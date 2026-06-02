@@ -1,3 +1,43 @@
+=== Install Maven and Java
+
+[cols="2,1",grid=rows]
+|===
+a|
+This project uses https://asdf-vm.com[asdf, window=_blank] to manage tool versions.
+
+- Install `asdf` following the https://asdf-vm.com/guide/getting-started.html[official guide, window=_blank].
+
+The required versions are defined in `.tool-versions` files (`code/` and `e2e/karate/`). For example:
+
+[source,plaintext]
+----
+maven 3.9.14
+java temurin-25.0.2+10.0.LTS
+----
+
+Add the Java and Maven plugins and install the required versions:
+[source,bash]
+----
+cd code # or cd e2e/karate
+
+# Install asdf plugins
+asdf plugin add java
+asdf plugin add maven
+# Check the versions defined in the .tool-versions file
+cat .tool-versions
+# Install the versions defined in the .tool-versions file
+asdf install
+# Set JAVA_HOME for Maven
+export JAVA_HOME=$(asdf where java)
+# Verify the versions are active:
+java --version
+mvn --version
+----
+
+a|
+image::steps-kt-oss-asdf-install.png[role="no-border, zoom-in"]
+|===
+
 === Identify
 
 [cols="2,1",grid=rows]

@@ -18,8 +18,22 @@
     </encoder>
   </appender>
 
-  <logger name="com.intuit.karate" level="INFO" />
+  <logger name="io.karatelabs" level="INFO" />
   <logger name="dev.inditex.karate" level="INFO" />
+
+  <!-- Karate 2.x SLF4J categories -->
+  <!-- karate.runtime:  Feature/scenario lifecycle, step execution, suite orchestration -->
+  <logger name="karate.runtime" level="INFO" />
+  <!-- karate.http:     HTTP client - request/response bodies, headers, retries -->
+  <logger name="karate.http" level="INFO" />
+  <!-- karate.mock:     Mock server - incoming requests, matched scenarios, responses -->
+  <logger name="karate.mock" level="INFO" />
+  <!-- karate.server:   Embedded HTTP server - request/response logs -->
+  <logger name="karate.server" level="INFO" />
+  <!-- karate.scenario: User output - print, karate.log(), scenario-scoped messages -->
+  <logger name="karate.scenario" level="INFO" />
+  <!-- karate.console:  CLI console output - summary, colors, progress -->
+  <logger name="karate.console" level="INFO" />
 
   <root level="info">
     <appender-ref ref="STDOUT" />

@@ -10,8 +10,10 @@ Background:
 
 * def authJS = read('classpath:karate-auth.js')
 
-* logMasker.setEnabled(false)
-* print 'logMasker.isEnabled()=', logMasker.isEnabled()
+# reset masking from karate-base.js configure logging
+* def loggingMaskConfig = { mask: { headers: [], patterns: [] } }
+* configure logging = loggingMaskConfig
+* print loggingMaskConfig
 
 Scenario: karate-http-log-masking-disabled-basic
 

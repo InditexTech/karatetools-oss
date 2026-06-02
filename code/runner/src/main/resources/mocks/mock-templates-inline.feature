@@ -22,7 +22,7 @@ Scenario: Mock templates processor - inline
 * configure afterScenario = 
 """
 function(){
-  if (mockServer) mockServer.stop().join()
+  if (mockServer) mockServer.stopAndWait()
 }
 """
 # ###############################################

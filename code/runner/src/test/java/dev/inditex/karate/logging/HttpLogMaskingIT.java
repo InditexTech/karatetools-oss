@@ -50,7 +50,7 @@ public class HttpLogMaskingIT extends AbstractKarateTest {
   }
 
   protected String getKarateOptions() {
-    return "-t ~@ignore -t ~@mock.templates.standalone -t @inditex-oss-karate -t @http-log-masking";
+    return "-t ~@ignore -t ~@mock.templates.standalone -t @inditex-oss-karate -t @http-log-masking -t @test";
   }
 
 }

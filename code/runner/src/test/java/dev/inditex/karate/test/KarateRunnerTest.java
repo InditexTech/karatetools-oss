@@ -8,8 +8,9 @@ import java.util.stream.Stream;
 import dev.inditex.karate.AbstractKarateTest;
 
 import ch.qos.logback.classic.Level;
-import com.intuit.karate.Constants;
+import io.karatelabs.core.KarateOptionsHandler;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,14 +24,14 @@ public class KarateRunnerTest extends AbstractKarateTest {
     void when_execute_expect_result(final String env, final String opts,
         final String expectedEnv, final int expectedThreads, final List<String> expectedPaths, final List<String> expectedTags) {
       if (env != null && !env.isEmpty()) {
-        System.setProperty(Constants.KARATE_ENV, env);
+        System.setProperty(KarateOptionsHandler.PROP_ENV, env);
       } else {
-        System.clearProperty(Constants.KARATE_ENV);
+        System.clearProperty(KarateOptionsHandler.PROP_ENV);
       }
       if (opts != null && !opts.isEmpty()) {
-        System.setProperty(Constants.KARATE_OPTIONS, opts);
+        System.setProperty(KarateOptionsHandler.PROP_OPTIONS, opts);
       } else {
-        System.clearProperty(Constants.KARATE_OPTIONS);
+        System.clearProperty(KarateOptionsHandler.PROP_OPTIONS);
       }
       final KarateRunner runner = instantiateRunner();
 
@@ -38,12 +39,12 @@ public class KarateRunnerTest extends AbstractKarateTest {
       final var options = runner.options;
 
       assertThat(result).isNotNull();
-      assertThat(result.getFailCount()).isZero();
+      assertThat(result.getScenarioFailedCount()).isZero();
       assertThat(options).isNotNull();
-      assertThat(options.getEnv()).isEqualTo(expectedEnv);
-      assertThat(options.getPaths()).isEqualTo(expectedPaths);
-      assertThat(options.getTags()).isEqualTo(expectedTags);
-      assertThat(runner.threads).isEqualTo(expectedThreads);
+      assertThat(options.env()).isEqualTo(expectedEnv);
+      assertThat(options.paths()).isEqualTo(expectedPaths);
+      assertThat(options.tags()).isEqualTo(expectedTags);
+      assertThat(options.threads()).isEqualTo(expectedThreads);
     }
 
     static Stream<Arguments> executeArguments() {
@@ -73,20 +74,44 @@ public class KarateRunnerTest extends AbstractKarateTest {
 
   @Nested
   class ParseKarateOptions {
+
+    @Test
+    void when_env_in_options_and_sysprop_expect_options_wins() {
+      System.setProperty(KarateOptionsHandler.PROP_ENV, "dev");
+      System.setProperty(KarateOptionsHandler.PROP_OPTIONS, "-e qa -t @smoke");
+      final KarateRunner runner = instantiateRunner();
+
+      runner.parseKarateOptions();
+
+      // - If `karate.options` sets `--env qa` **and** `-Dkarate.env=dev` is also set, `karate.options` wins (it's applied last).
+      assertThat(runner.options.env()).isEqualTo("qa");
+    }
+
+    @Test
+    void when_env_in_options_without_sysprop_expect_options_value() {
+      System.clearProperty(KarateOptionsHandler.PROP_ENV);
+      System.setProperty(KarateOptionsHandler.PROP_OPTIONS, "-e qa -t @smoke");
+      final KarateRunner runner = instantiateRunner();
+
+      runner.parseKarateOptions();
+
+      assertThat(runner.options.env()).isEqualTo("qa");
+    }
+
     @ParameterizedTest
     @MethodSource("parseKarateOptionsArguments")
     void when_parse_expect_options(final String opts, final List<String> expectedTags, final int expectedThreads, final String warning) {
       if (opts != null && !opts.isEmpty()) {
-        System.setProperty(Constants.KARATE_OPTIONS, opts);
+        System.setProperty(KarateOptionsHandler.PROP_OPTIONS, opts);
       } else {
-        System.clearProperty(Constants.KARATE_OPTIONS);
+        System.clearProperty(KarateOptionsHandler.PROP_OPTIONS);
       }
       final KarateRunner runner = instantiateRunner();
 
       runner.parseKarateOptions();
 
-      assertThat(runner.options.getTags()).isEqualTo(expectedTags);
-      assertThat(runner.threads).isEqualTo(expectedThreads);
+      assertThat(runner.options.tags()).isEqualTo(expectedTags);
+      assertThat(runner.options.threads()).isEqualTo(expectedThreads);
       if (warning != null) {
         assertThat(logWatcher.list).anyMatch(log -> log.getLevel().equals(Level.WARN)
             && log.getFormattedMessage().contains(warning));
@@ -97,32 +122,67 @@ public class KarateRunnerTest extends AbstractKarateTest {
 
     static Stream<Arguments> parseKarateOptionsArguments() {
       return Stream.of(
+          // --- TAGS: default behavior ---
+          // Empty options -> default tag ~@ignore
           Arguments.of("",
               List.of("~@ignore"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+          // Only paths, no tags -> default tag ~@ignore
           Arguments.of("classpath:dev/inditex/",
-              null, getExpectedThreads(1), getExpectedThreadsWarning(1)),
+              List.of("~@ignore"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+
+          // --- TAGS: explicit values ---
+          // Multiple tags (AND logic)
           Arguments.of("-t @TAG1 -t @TAG2 -t ~@TAG3",
               List.of("@TAG1", "@TAG2", "~@TAG3"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+          // Comma-separated tags (OR logic within a single -t)
           Arguments.of("-t @TAG1,@TAG2",
               List.of("@TAG1,@TAG2"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+          // Combined AND + OR
           Arguments.of("-t @TAG1,@TAG2 -t @TAG3 -t ~@TAG4",
               List.of("@TAG1,@TAG2", "@TAG3", "~@TAG4"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+
+          // --- THREADS: default behavior ---
+          // --threads present without tags -> default tag still added
           Arguments.of("--threads 1",
               List.of("~@ignore"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+
+          // --- THREADS + TAGS: position independence ---
+          // Tags before --threads
           Arguments.of("-t @TAG1 --threads 1",
               List.of("@TAG1"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+          // Tags after --threads
           Arguments.of("--threads 1 -t @TAG2",
               List.of("@TAG2"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+          // Tags on both sides of --threads
           Arguments.of("-t @TAG1 --threads 1 -t @TAG2",
               List.of("@TAG1", "@TAG2"), getExpectedThreads(1), getExpectedThreadsWarning(1)),
+
+          // --- THREADS: capping ---
+          // Threads within cap
           Arguments.of("--threads 2",
               List.of("~@ignore"), getExpectedThreads(2), getExpectedThreadsWarning(2)),
+          // Threads at boundary
           Arguments.of("--threads 5",
               List.of("~@ignore"), getExpectedThreads(5), getExpectedThreadsWarning(5)),
+          // Threads over cap -> capped with WARN
           Arguments.of("--threads 10",
-              List.of("~@ignore"), getExpectedThreads(10), getExpectedThreadsWarning(10))
+              List.of("~@ignore"), getExpectedThreads(10), getExpectedThreadsWarning(10)),
 
-      );
+          // --- THREADS: short form -T ---
+          // -T short form (RunCommand supports both -T and --threads)
+          Arguments.of("-T 2",
+              List.of("~@ignore"), getExpectedThreads(2), getExpectedThreadsWarning(2)),
+          // -T with tags
+          Arguments.of("-T 3 -t @TAG1",
+              List.of("@TAG1"), getExpectedThreads(3), getExpectedThreadsWarning(3)),
+
+          // --- MALFORMED OPTIONS: graceful fallback ---
+          // Invalid --threads value -> ParameterException, WARN, defaults
+          Arguments.of("--threads abc",
+              List.of("~@ignore"), 1, "invalid karate.options ignored"),
+          // Unknown flag -> ParameterException, WARN, defaults
+          Arguments.of("--unknown-flag xyz",
+              List.of("~@ignore"), 1, "invalid karate.options ignored"));
     }
 
     private static int getExpectedThreads(final int threads) {
@@ -133,7 +193,7 @@ public class KarateRunnerTest extends AbstractKarateTest {
     private static String getExpectedThreadsWarning(final int threads) {
       final int cores = Runtime.getRuntime().availableProcessors();
       return threads > cores / 2
-          ? "parseKarateOptions() karateThreads Capped from [" + threads + "] to [" + getExpectedThreads(threads) + "]"
+          ? "parseKarateOptions() threads capped from [" + threads + "] to [" + getExpectedThreads(threads) + "]"
           : null;
     }
   }

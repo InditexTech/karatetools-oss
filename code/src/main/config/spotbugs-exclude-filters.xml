@@ -154,6 +154,15 @@
     </Or>
   </Match>
 
+  <Match>
+    <!-- Public Constructor / Setters / Getters for extension purposes -->
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Bug pattern="EI_EXPOSE_REP2" />
+    </Or>
+    <Class name="dev.inditex.karate.test.KarateRunner$KarateRunOptions" />
+  </Match>
+
   <!-- =================== -->
   <!-- Karate Tools - Boot -->
   <!-- =================== -->

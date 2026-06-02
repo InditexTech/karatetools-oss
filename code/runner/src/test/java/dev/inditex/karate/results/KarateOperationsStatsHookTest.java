@@ -19,14 +19,16 @@ import dev.inditex.karate.results.KarateOperationsStatsHook.Stats;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intuit.karate.Runner;
-import com.intuit.karate.Suite;
-import com.intuit.karate.core.FeatureRuntime;
-import com.intuit.karate.core.Scenario;
-import com.intuit.karate.core.Step;
-import com.intuit.karate.core.StepResult;
-import com.intuit.karate.core.Tag;
-import com.intuit.karate.http.HttpClientFactory;
+import io.karatelabs.common.Resource;
+import io.karatelabs.core.FeatureRuntime;
+import io.karatelabs.core.Runner;
+import io.karatelabs.core.ScenarioRuntime;
+import io.karatelabs.core.StepResult;
+import io.karatelabs.core.Suite;
+import io.karatelabs.gherkin.Feature;
+import io.karatelabs.gherkin.Scenario;
+import io.karatelabs.gherkin.Step;
+import io.karatelabs.gherkin.Tag;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,13 +53,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
     @MethodSource("dev.inditex.karate.results.KarateOperationsStatsHookTest#getSingleScenarioArguments")
     void when_single_scenario_expect_stats(final String label, final String tag, final List<String> steps,
         final Map<String, Stats> expected, final List<String> expectedLogs) {
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final var scenarioRuntime = featureRuntime.scenarios.next();
-
-      if (tag != null) {
-        scenarioRuntime.scenario.setTags(List.of(new Tag(1, tag)));
-      }
-      steps.forEach(s -> scenarioRuntime.result.addFakeStepResult(s, null));
+      final var scenarioRuntime = prepareScenarioRuntime(label, tag, steps);
       final var hook = new KarateOperationsStatsHook();
 
       hook.afterScenario(scenarioRuntime);
@@ -70,12 +66,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
     @MethodSource("dev.inditex.karate.results.KarateOperationsStatsHookTest#getMultipleScenarioArguments")
     void when_multiple_scenario_expect_stats(final String label, final String tag, final List<String> steps,
         final Map<String, Stats> expected, final List<String> expectedLogs) {
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final var scenarioRuntime = featureRuntime.scenarios.next();
-      if (tag != null) {
-        scenarioRuntime.scenario.setTags(List.of(new Tag(1, tag)));
-      }
-      steps.forEach(s -> scenarioRuntime.result.addFakeStepResult(s, null));
+      final var scenarioRuntime = prepareScenarioRuntime(label, tag, steps);
       final KarateOperationsStatsHook hook = new KarateOperationsStatsHook();
 
       hook.afterScenario(scenarioRuntime);
@@ -92,12 +83,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
     @MethodSource("dev.inditex.karate.results.KarateOperationsStatsHookTest#getSingleScenarioArguments")
     void when_single_scenario_expect_stats(final String label, final String tag, final List<String> steps,
         final Map<String, Stats> expected, final List<String> expectedLogs) throws IOException {
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final var scenarioRuntime = featureRuntime.scenarios.next();
-      if (tag != null) {
-        scenarioRuntime.scenario.setTags(List.of(new Tag(1, tag)));
-      }
-      steps.forEach(s -> scenarioRuntime.result.addFakeStepResult(s, null));
+      final var scenarioRuntime = prepareScenarioRuntime(label, tag, steps);
       final var suite = getSuite();
       final KarateOperationsStatsHook hook = new KarateOperationsStatsHook();
       hook.afterScenario(scenarioRuntime);
@@ -114,12 +100,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
     @MethodSource("dev.inditex.karate.results.KarateOperationsStatsHookTest#getMultipleScenarioArguments")
     void when_multiple_scenario_expect_stats(final String label, final String tag, final List<String> steps,
         final Map<String, Stats> expected, final List<String> expectedLogs) throws IOException {
-      final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-      final var scenarioRuntime = featureRuntime.scenarios.next();
-      if (tag != null) {
-        scenarioRuntime.scenario.setTags(List.of(new Tag(1, tag)));
-      }
-      steps.forEach(s -> scenarioRuntime.result.addFakeStepResult(s, null));
+      final var scenarioRuntime = prepareScenarioRuntime(label, tag, steps);
       final var suite = getSuite();
       final KarateOperationsStatsHook hook = new KarateOperationsStatsHook();
       hook.afterScenario(scenarioRuntime);
@@ -138,15 +119,12 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
       try (final MockedStatic<FileUtils> fileUtils = mockStatic(FileUtils.class)) {
         fileUtils.when(() -> FileUtils.writeStringToFile(any(File.class), anyString(), any(Charset.class)))
             .thenThrow(new IOException("FileUtils.writeStringToFile"));
-
-        final var featureRuntime = FeatureRuntime.forTempUse(HttpClientFactory.DEFAULT);
-        final var scenarioRuntime = featureRuntime.scenarios.next();
-        scenarioRuntime.scenario.setTags(List.of(new Tag(1, "@smoke")));
-
+        final String label = "write-exception";
+        final String tag = "@smoke";
         final List<String> steps = List.of("def req = call utils.readTestData <testDataFile>",
             "def result = call read('classpath:apis/dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems.feature') req",
             "match result.responseStatus == <status>");
-        steps.forEach(s -> scenarioRuntime.result.addFakeStepResult(s, null));
+        final var scenarioRuntime = prepareScenarioRuntime(label, tag, steps);
         final var suite = getSuite();
         final KarateOperationsStatsHook hook = new KarateOperationsStatsHook();
         hook.afterScenario(scenarioRuntime);
@@ -170,7 +148,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
       final Step step = new Step(new Scenario(null, null, 0), -1);
       step.setText(text);
 
-      final var operation = KarateOperationsStatsHook.getOperation(new StepResult(step, null));
+      final var operation = KarateOperationsStatsHook.getOperation(StepResult.passed(step, 0, 0));
 
       assertThat(operation).isEqualTo(expected);
     }
@@ -202,7 +180,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(0, 1, 1)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[no-tags][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=1, calls=1)]")),
         Arguments.of("smoke",
             "@smoke",
@@ -213,7 +191,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(1, 0, 1)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[smoke][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=1, functional=0, calls=1)]")),
         Arguments.of("functional_single",
             "@functional",
@@ -238,11 +216,11 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems", new Stats(0, 1, 1),
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById", new Stats(0, 1, 1)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=1, calls=1)]",
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=1, calls=1)]",
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=1, calls=1)]")),
         Arguments.of("functional_multiple",
             "@functional",
@@ -260,7 +238,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(0, 1, 2)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[functional_multiple][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=1, calls=2)]")));
   }
 
@@ -275,7 +253,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(0, 2, 2)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[no-tags][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=2, calls=2)]")),
         Arguments.of("smoke",
             "@smoke",
@@ -286,7 +264,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(2, 0, 2)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[smoke][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=2, functional=0, calls=2)]")),
         Arguments.of("functional_single",
             "@functional",
@@ -311,11 +289,11 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems", new Stats(0, 2, 2),
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById", new Stats(0, 2, 2)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=2, calls=2)]",
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/listItems/listItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=2, calls=2)]",
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById]="
+                "KarateRunner.stats[functional_single][dev/inditex/api/xxx-api-rest-stable/BasicApi/showItemById/showItemById]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=2, calls=2)]")),
         Arguments.of("functional_multiple",
             "@functional",
@@ -333,7 +311,7 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             Map.of(
                 "dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems", new Stats(0, 2, 4)),
             List.of(
-                "KarateRunner.stats[][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
+                "KarateRunner.stats[functional_multiple][dev/inditex/api/xxx-api-rest-stable/BasicApi/createItems/createItems]="
                     + "[KarateOperationsStatsHook.Stats(smoke=0, functional=2, calls=4)]")));
   }
 
@@ -344,7 +322,6 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
     return mapper.readValue(file, typeRef);
   }
 
-  @SuppressWarnings("rawtypes")
   protected Suite getSuite() {
     final String path = "classpath:scenarios/karate-stats";
     final Runner.Builder runner =
@@ -352,6 +329,25 @@ public class KarateOperationsStatsHookTest extends AbstractKarateTest {
             .outputCucumberJson(true)
             .outputJunitXml(true)
             .outputHtmlReport(true);
-    return new Suite(runner);
+    return runner.buildSuite();
+  }
+
+  private ScenarioRuntime prepareScenarioRuntime(final String label, final String tag, final List<String> steps) {
+    // Create a minimal feature from text (same pattern v2 uses internally in evalAsStep)
+    final var feature = Feature.read(Resource.text("Feature:\nScenario: " + label + "\n* print '" + label + "'"));
+    final var featureRuntime = new FeatureRuntime(feature); // suite=null => no config eval
+    final var scenario = feature.getSections().get(0).getScenario();
+    final var scenarioRuntime = new ScenarioRuntime(featureRuntime, scenario);
+    // Set tags
+    if (tag != null) {
+      scenarioRuntime.getScenario().setTags(List.of(new Tag(1, tag)));
+    }
+    // Add fake step results
+    steps.forEach(s -> {
+      final var step = new Step(scenarioRuntime.getScenario(), -1);
+      step.setText(s);
+      scenarioRuntime.getResult().addStepResult(StepResult.passed(step, 0, 0));
+    });
+    return scenarioRuntime;
   }
 }

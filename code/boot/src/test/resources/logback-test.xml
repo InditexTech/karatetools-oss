@@ -33,8 +33,22 @@
   <logger name="io.confluent.kafka" level="WARN" />
   <logger name="io.confluent.kafka.serializers" level="WARN" />
   <logger name="org.apache.kafka" level="WARN" />
-  <logger name="com.intuit.karate" level="DEBUG" />
+  <logger name="io.karatelabs" level="DEBUG" />
   <logger name="dev.inditex.karate" level="DEBUG" />
+
+  <!-- Karate 2.x SLF4J categories -->
+  <!-- karate.runtime:  Feature/scenario lifecycle, step execution, suite orchestration -->
+  <logger name="karate.runtime" level="DEBUG" />
+  <!-- karate.http:     HTTP client - request/response bodies, headers, retries -->
+  <logger name="karate.http" level="DEBUG" />
+  <!-- karate.mock:     Mock server - incoming requests, matched scenarios, responses -->
+  <logger name="karate.mock" level="DEBUG" />
+  <!-- karate.server:   Embedded HTTP server - request/response logs -->
+  <logger name="karate.server" level="DEBUG" />
+  <!-- karate.scenario: User output - print, karate.log(), scenario-scoped messages -->
+  <logger name="karate.scenario" level="DEBUG" />
+  <!-- karate.console:  CLI console output - summary, colors, progress -->
+  <logger name="karate.console" level="DEBUG" />
 
   <root level="info">
     <appender-ref ref="STDOUT" />

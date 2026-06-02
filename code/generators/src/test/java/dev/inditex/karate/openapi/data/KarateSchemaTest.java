@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.intuit.karate.Results;
-import com.intuit.karate.Runner;
+import io.karatelabs.core.Runner;
+import io.karatelabs.core.SuiteResult;
 import io.swagger.oas.inflector.examples.ExampleBuilder;
 import io.swagger.oas.inflector.examples.models.Example;
 import io.swagger.oas.inflector.processors.JsonNodeExampleSerializer;
@@ -75,13 +75,13 @@ class KarateSchemaTest extends KarateTest {
     }
 
     private static void runKarateTest(final Path path) {
-      final Results results = Runner.path(path.toAbsolutePath().toString())
+      final SuiteResult results = Runner.path(path.toAbsolutePath().toString())
           .outputCucumberJson(false)
           .outputHtmlReport(false)
           .outputJunitXml(false)
-          .reportDir(karateReportDir)
+          .outputDir(karateReportDir)
           .parallel(1);
-      assertThat(results.getFailCount()).isZero();
+      assertThat(results.getScenarioFailedCount()).isZero();
     }
 
     private Path writeKarateTestToFile(final String jsonExample, final KarateSchema schemaResult) throws IOException {

@@ -4,6 +4,9 @@
 Feature: Mocks
 
 Background:
+
+* print karate.toJson(karate.config)
+
 # ###############################################
 # Mock Templates settings
 # ###############################################
@@ -20,7 +23,10 @@ Background:
 # Start Mock
 # ###############################################
 * karate.logger.debug('>> karate.tools >> mock-templates-standalone >> start mock')
-* def mockArgs = karate.getEngine().getAllVariablesAsMap()
+* print 'karate >>>' + karate
+* print 'karate.engine >>>' + karate.engine
+# * def mockArgs = karate.getEngine().getAllVariablesAsMap()
+* def mockArgs = karate.toMap(karate.getContext())
 * def mockServer = com.intuit.karate.core.MockServer.feature(mockFile).http(mockPort).args(mockArgs).build()
 * karate.logger.debug('>> karate.tools >> mock-templates-standalone >> start mock >> DONE')
 # ###############################################

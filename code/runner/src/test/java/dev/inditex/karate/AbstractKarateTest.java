@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import dev.inditex.karate.results.KarateOperationsStatsHook.Stats;
 import dev.inditex.karate.results.KarateReportsGenerator;
@@ -21,14 +22,20 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intuit.karate.Constants;
-import com.intuit.karate.Results;
+import io.karatelabs.core.KarateOptionsHandler;
+import io.karatelabs.core.SuiteResult;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractKarateTest {
+
+  private static final String KARATE_OUTPUT_DIR = "karate.output.dir";
+
+  private static final String KARATE_REPORTS = "karate-reports";
+
+  private static final String KARATE_JSON_SUFFIX = ".karate-json.txt";
 
   protected String targetFolderName;
 
@@ -46,16 +53,40 @@ public abstract class AbstractKarateTest {
 
   protected Level defaultLogLevelKarateTools;
 
+  protected String[] defaultLogLevelIntuitKarateCategories = {
+      "karate.runtime",
+      "karate.http",
+      "karate.mock",
+      "karate.server",
+      "karate.scenario",
+      "karate.console"
+  };
+
+  // karate.runtime: Feature/scenario lifecycle, step execution, suite orchestration
+  // karate.http: HTTP client - request/response bodies, headers, retries
+  // karate.mock: Mock server - incoming requests, matched scenarios, responses
+  // karate.server: Embedded HTTP server - request/response logs
+  // karate.scenario: User output - print, karate.log(), scenario-scoped messages
+  // karate.console: CLI console output - summary, colors, progress
+  protected Map<String, Level> defaultLogLevelIntuitKarateByCategory = new TreeMap<>();
+
   @BeforeEach
   protected void beforeEach(final TestInfo testInfo) throws IOException {
-    defaultLogLevelIntuitKarate = ((Logger) LoggerFactory.getLogger("com.intuit.karate")).getLevel();
+    defaultLogLevelIntuitKarate = ((Logger) LoggerFactory.getLogger("io.karatelabs")).getLevel();
     defaultLogLevelKarateTools = ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).getLevel();
+    for (final String category : defaultLogLevelIntuitKarateCategories) {
+      defaultLogLevelIntuitKarateByCategory.put(category, ((Logger) LoggerFactory.getLogger(category)).getLevel());
+    }
     logWatcher = new ListAppender<>();
     logWatcher.start();
-    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).addAppender(logWatcher);
-    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).setLevel(Level.DEBUG);
+    ((Logger) LoggerFactory.getLogger("io.karatelabs")).addAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("io.karatelabs")).setLevel(Level.DEBUG);
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).addAppender(logWatcher);
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).setLevel(Level.DEBUG);
+    for (final String category : defaultLogLevelIntuitKarateCategories) {
+      ((Logger) LoggerFactory.getLogger(category)).addAppender(logWatcher);
+      ((Logger) LoggerFactory.getLogger(category)).setLevel(Level.DEBUG);
+    }
     clearKarateSystemProperties();
     prepareReportFolders(testInfo);
     setRamdomPortForKarateMockServer();
@@ -63,20 +94,23 @@ public abstract class AbstractKarateTest {
 
   @AfterEach
   protected void afterEach() {
-    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).detachAppender(logWatcher);
-    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).setLevel(defaultLogLevelIntuitKarate);
+    ((Logger) LoggerFactory.getLogger("io.karatelabs")).detachAppender(logWatcher);
+    ((Logger) LoggerFactory.getLogger("io.karatelabs")).setLevel(defaultLogLevelIntuitKarate);
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).detachAppender(logWatcher);
     ((Logger) LoggerFactory.getLogger("dev.inditex.karate")).setLevel(defaultLogLevelKarateTools);
+    for (final String category : defaultLogLevelIntuitKarateCategories) {
+      ((Logger) LoggerFactory.getLogger(category)).detachAppender(logWatcher);
+      ((Logger) LoggerFactory.getLogger(category)).setLevel(defaultLogLevelIntuitKarateByCategory.get(category));
+    }
   }
 
   protected void clearKarateSystemProperties() {
-    System.clearProperty(Constants.KARATE_ENV);
-    System.clearProperty(Constants.KARATE_CONFIG_DIR);
-    System.clearProperty(Constants.KARATE_CONFIG_INCL_RESULT_METHOD);
-    System.clearProperty(Constants.KARATE_OUTPUT_DIR);
-    System.clearProperty(Constants.KARATE_OPTIONS);
-    System.clearProperty(Constants.KARATE_REPORTS);
-    System.clearProperty(Constants.KARATE_JSON_SUFFIX);
+    System.clearProperty(KarateOptionsHandler.PROP_ENV);
+    System.clearProperty(KarateOptionsHandler.PROP_CONFIG_DIR);
+    System.clearProperty(KARATE_OUTPUT_DIR);
+    System.clearProperty(KarateOptionsHandler.PROP_OPTIONS);
+    System.clearProperty(KARATE_REPORTS);
+    System.clearProperty(KARATE_JSON_SUFFIX);
   }
 
   protected void prepareReportFolders(final TestInfo testInfo) throws IOException {
@@ -88,7 +122,7 @@ public abstract class AbstractKarateTest {
     surefireReportsFolder = targetFolder.getAbsolutePath() + File.separator + "surefire-reports";
     operationStatsFile = targetFolder.getAbsolutePath() + File.separator + "karate-reports" + File.separator + "karate-operations-json.txt";
     KarateReportsGenerator.setFolders(surefireReportsFolder, cucumberResultsFile);
-    System.setProperty(Constants.KARATE_OUTPUT_DIR, targetFolderName);
+    System.setProperty(KARATE_OUTPUT_DIR, targetFolderName);
   }
 
   public record KarateExecutionTest(
@@ -102,12 +136,12 @@ public abstract class AbstractKarateTest {
   }
 
   protected int executeScenarios(final KarateExecutionTest test) throws IOException {
-    System.setProperty(Constants.KARATE_ENV, test.env);
-    System.setProperty(Constants.KARATE_OPTIONS, test.options);
+    System.setProperty(KarateOptionsHandler.PROP_ENV, test.env);
+    System.setProperty(KarateOptionsHandler.PROP_OPTIONS, test.options);
     System.setProperty("karate.report.options", "--showLog true");
     final KarateRunner runner = instantiateRunner();
 
-    final Results results = runner.execute();
+    final SuiteResult results = runner.execute();
     final var result = KarateReportsGenerator.generate(results);
 
     assertResults(results);
@@ -116,7 +150,7 @@ public abstract class AbstractKarateTest {
     assertSurefireReports(test.surefireFiles);
     assertStats(test.stats);
     assertLogs(test.logs);
-    return results.getFailCount();
+    return results.getScenarioFailedCount();
   }
 
   protected KarateRunner instantiateRunner() {
@@ -131,10 +165,10 @@ public abstract class AbstractKarateTest {
     }
   }
 
-  protected void assertResults(final Results results) {
+  protected void assertResults(final SuiteResult results) {
     // No failures or errors
     assertThat(results).isNotNull();
-    assertThat(results.getFailCount()).as("Karate Fail Count [%s]", results.getScenariosFailed()).isZero();
+    assertThat(results.getScenarioFailedCount()).as("Karate Fail Count [%s]", results.getScenarioFailedCount()).isZero();
   }
 
   protected void assertSummary(final String summary, final int features, final int scenarios) {
