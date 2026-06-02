@@ -9,11 +9,15 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intuit.karate.RuntimeHook;
-import com.intuit.karate.Suite;
-import com.intuit.karate.core.Scenario;
-import com.intuit.karate.core.ScenarioRuntime;
-import com.intuit.karate.core.StepResult;
+import io.karatelabs.core.RunEvent;
+import io.karatelabs.core.RunEventType;
+import io.karatelabs.core.RunListener;
+import io.karatelabs.core.ScenarioRunEvent;
+import io.karatelabs.core.ScenarioRuntime;
+import io.karatelabs.core.StepResult;
+import io.karatelabs.core.Suite;
+import io.karatelabs.core.SuiteRunEvent;
+import io.karatelabs.gherkin.Scenario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +28,7 @@ import org.apache.commons.io.FileUtils;
  * The Class KarateOperationsStatsHook.
  */
 @Slf4j
-public class KarateOperationsStatsHook implements RuntimeHook {
+public class KarateOperationsStatsHook implements RunListener {
 
   /** The Constant OPERATION_START. */
   public static final String OPERATION_START = "call read('classpath:apis/";
@@ -39,18 +43,35 @@ public class KarateOperationsStatsHook implements RuntimeHook {
   protected Map<String, Stats> operationStats = new ConcurrentHashMap<>();
 
   /**
+   * Called for all runtime events.
+   *
+   * @param event the event containing type, runtime objects, and results
+   * @return true to continue execution, false to skip (only meaningful for *_ENTER events)
+   */
+  @Override
+  public boolean onEvent(final RunEvent event) {
+    if (event.getType() == RunEventType.SCENARIO_EXIT) {
+      afterScenario(((ScenarioRunEvent) event).source());
+    } else if (event.getType() == RunEventType.SUITE_EXIT) {
+      afterSuite(((SuiteRunEvent) event).source());
+    }
+    return true;
+  }
+
+  /**
    * After scenario.
    *
    * @param runtime the runtime
    */
-  @Override
-  public void afterScenario(final ScenarioRuntime runtime) {
-    log.debug("KarateRunner.stats[{}]afterScenario", runtime.scenario.getName());
+  @SuppressWarnings("unused")
+  protected void afterScenario(final ScenarioRuntime runtime) {
+    log.debug("KarateRunner.stats[{}]afterScenario", runtime.getScenario().getName());
     try {
       // Get unique operations to count smoke and functional
-      final List<String> scenarioUniqueOperations = runtime.result.getStepResults().stream().map(KarateOperationsStatsHook::getOperation)
-          .filter(Objects::nonNull).distinct().toList();
-      final boolean isSmoke = isSmoke(runtime.scenario);
+      final List<String> scenarioUniqueOperations =
+          runtime.getResult().getStepResults().stream().map(KarateOperationsStatsHook::getOperation)
+              .filter(Objects::nonNull).distinct().toList();
+      final boolean isSmoke = isSmoke(runtime.getScenario());
       scenarioUniqueOperations.forEach(operation -> operationStats.compute(operation, (k, v) -> {
         if (v == null) {
           if (isSmoke) {
@@ -66,11 +87,11 @@ public class KarateOperationsStatsHook implements RuntimeHook {
         return v;
       }));
       // Get all operations to count calls
-      final List<String> operations = runtime.result.getStepResults().stream().map(KarateOperationsStatsHook::getOperation)
+      final List<String> operations = runtime.getResult().getStepResults().stream().map(KarateOperationsStatsHook::getOperation)
           .filter(Objects::nonNull).toList();
       operations.forEach(operation -> operationStats.compute(operation, (k, v) -> {
         v.setCalls(v.getCalls() + 1);
-        log.info("KarateRunner.stats[{}][{}]=[{}]", runtime.scenario.getName(), operation, operationStats.get(operation));
+        log.info("KarateRunner.stats[{}][{}]=[{}]", runtime.getScenario().getName(), operation, operationStats.get(operation));
         return v;
       }));
     } catch (final RuntimeException e) {
@@ -83,12 +104,11 @@ public class KarateOperationsStatsHook implements RuntimeHook {
    *
    * @param suite the suite
    */
-  @Override
-  public void afterSuite(final Suite suite) {
+  protected void afterSuite(final Suite suite) {
     log.debug("KarateRunner.statsReport() saving ...");
     try {
       final ObjectMapper objectMapper = new ObjectMapper();
-      final File file = new File(suite.reportDir + File.separator + KARATE_OPERATIONS_FILE);
+      final File file = new File(suite.outputDir + File.separator + KARATE_OPERATIONS_FILE);
       FileUtils.writeStringToFile(file, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(operationStats),
           Charset.defaultCharset());
       log.info("KarateRunner.statsReport() saved [{}]", file.getAbsolutePath());
@@ -127,7 +147,7 @@ public class KarateOperationsStatsHook implements RuntimeHook {
   private static boolean isSmoke(final Scenario scenario) {
     boolean isSmoke = false;
     if (scenario.getTagsEffective() != null) {
-      isSmoke = scenario.getTagsEffective().getTags().stream().anyMatch(t -> t.equals("smoke"));
+      isSmoke = scenario.getTagsEffective().stream().anyMatch(t -> t.getName().equals("smoke"));
     }
     if (!isSmoke && scenario.getTags() != null) {
       isSmoke = scenario.getTags().stream().anyMatch(t -> t.getName().equals("smoke"));

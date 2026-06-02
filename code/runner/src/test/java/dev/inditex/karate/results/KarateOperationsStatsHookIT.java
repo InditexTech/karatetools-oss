@@ -9,8 +9,8 @@ import java.util.Map;
 import dev.inditex.karate.AbstractKarateTest;
 import dev.inditex.karate.results.KarateOperationsStatsHook.Stats;
 
-import com.intuit.karate.Runner;
-import com.intuit.karate.Suite;
+import io.karatelabs.core.Runner;
+import io.karatelabs.core.Suite;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,6 @@ public class KarateOperationsStatsHookIT extends AbstractKarateTest {
     return "-t ~@ignore -t ~@mock.templates.standalone -t @inditex-oss-karate -t @karate-stats";
   }
 
-  @SuppressWarnings("rawtypes")
   protected Suite getSuite() {
     final String path = "classpath:scenarios/karate-stats";
     final Runner.Builder runner =
@@ -58,6 +57,6 @@ public class KarateOperationsStatsHookIT extends AbstractKarateTest {
             .outputCucumberJson(true)
             .outputJunitXml(true)
             .outputHtmlReport(true);
-    return new Suite(runner);
+    return runner.buildSuite();
   }
 }

@@ -20,10 +20,10 @@ import ch.qos.logback.classic.Level;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.intuit.karate.Results;
-import com.intuit.karate.Runner;
-import com.intuit.karate.Suite;
-import com.intuit.karate.core.FeatureResult;
+import io.karatelabs.core.FeatureResult;
+import io.karatelabs.core.Runner;
+import io.karatelabs.core.Suite;
+import io.karatelabs.core.SuiteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -57,7 +57,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   class Generate {
     @Test
     void when_informed_results_expect_aggregated_report_and_files_copied() throws IOException {
-      final Results results = getTestResults("");
+      final SuiteResult results = getTestResults("");
 
       final var result = generateResults(results);
 
@@ -74,7 +74,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
 
     @Test
     void when_null_results_expect_aggregated_report_and_files_not_copied() throws IOException {
-      final Results results = null;
+      final SuiteResult results = null;
 
       final var result = generateResults(results);
 
@@ -86,7 +86,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     }
   }
 
-  protected String generateResults(final Results results) {
+  protected String generateResults(final SuiteResult results) {
     return KarateReportsGenerator.generate(results);
   }
 
@@ -94,7 +94,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   class GenerateAggregatedCucumberReport {
     @Test
     void when_informed_results_expect_aggregated_report() throws IOException {
-      final Results results = getTestResults("");
+      final SuiteResult results = getTestResults("");
 
       final var result = KarateReportsGenerator.generateAggregatedCucumberReport(results);
       final var cucumberReport = new File(cucumberResultsFile);
@@ -106,7 +106,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
 
     @Test
     void when_null_results_expect_aggregated_report() throws IOException {
-      final Results results = null;
+      final SuiteResult results = null;
 
       final var result = KarateReportsGenerator.generateAggregatedCucumberReport(results);
       final var cucumberReport = new File(cucumberResultsFile);
@@ -119,8 +119,8 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     @Test
     void when_read_exception_expect_logged() {
       try (final MockedStatic<FileUtils> fileUtils = mockStatic(FileUtils.class)) {
-        final Results results = getTestResults("reports-example-1.feature");
-        fileUtils.when(() -> FileUtils.listFiles(new File(results.getReportDir()), new String[]{"json"}, true))
+        final SuiteResult results = getTestResults("reports-example-1.feature");
+        fileUtils.when(() -> FileUtils.listFiles(results.getReportDir().toFile(), new String[]{"json"}, true))
             .thenReturn(List.of(new File("dummy.json")));
         fileUtils.when(() -> FileUtils.readFileToString(any(File.class), any(Charset.class)))
             .thenThrow(new IOException("FileUtils.readFileToString"));
@@ -137,8 +137,8 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     @Test
     void when_write_exception_expect_logged() {
       try (final MockedStatic<FileUtils> fileUtils = mockStatic(FileUtils.class)) {
-        final Results results = getTestResults("reports-example-1.feature");
-        fileUtils.when(() -> FileUtils.listFiles(new File(results.getReportDir()), new String[]{"json"}, true))
+        final SuiteResult results = getTestResults("reports-example-1.feature");
+        fileUtils.when(() -> FileUtils.listFiles(results.getReportDir().toFile(), new String[]{"json"}, true))
             .thenReturn(List.of(new File("dummy.json")));
         fileUtils.when(() -> FileUtils.readFileToString(any(File.class), any(Charset.class)))
             .thenReturn("[ { dummy : 0} ]");
@@ -159,7 +159,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   class CopyJUnitFileToSurefire {
     @Test
     void when_informed_results_expect_files_copied() {
-      final Results results = getTestResults("");
+      final SuiteResult results = getTestResults("");
 
       KarateReportsGenerator.copyJUnitFileToSurefire(results);
       final Collection<File> xmlFiles =
@@ -172,7 +172,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
 
     @Test
     void when_null_results_expect_files_not_copied() {
-      final Results results = null;
+      final SuiteResult results = null;
 
       KarateReportsGenerator.copyJUnitFileToSurefire(results);
 
@@ -182,8 +182,8 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     @Test
     void when_copy_exception_expect_logged() {
       try (final MockedStatic<FileUtils> fileUtils = mockStatic(FileUtils.class)) {
-        final Results results = getTestResults("reports-example-1.feature");
-        fileUtils.when(() -> FileUtils.listFiles(new File(results.getReportDir()), new String[]{"xml"}, true))
+        final SuiteResult results = getTestResults("reports-example-1.feature");
+        fileUtils.when(() -> FileUtils.listFiles(results.getReportDir().toFile(), new String[]{"xml"}, true))
             .thenReturn(List.of(new File("dummy.xml")));
         fileUtils.when(() -> FileUtils.copyFile(any(File.class), any(File.class))).thenThrow(new IOException("FileUtils.copyFile"));
 
@@ -200,7 +200,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
   class GenerateSummary {
     @Test
     void when_informed_results_expect_informed_summary() {
-      final Results results = getTestResults("");
+      final SuiteResult results = getTestResults("");
 
       final var result = KarateReportsGenerator.generateSummary(results);
 
@@ -209,7 +209,7 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
 
     @Test
     void when_null_results_expect_zeros_summary() {
-      final Results results = null;
+      final SuiteResult results = null;
 
       final var result = KarateReportsGenerator.generateSummary(results);
 
@@ -217,24 +217,23 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
     }
   }
 
-  protected void assertCucumberReport(final File actual, final Results expected) throws IOException {
+  protected void assertCucumberReport(final File actual, final SuiteResult expected) throws IOException {
     final String jsonString = FileUtils.readFileToString(actual, StandardCharsets.UTF_8);
     final JsonArray cucumberResult = (JsonArray) JsonParser.parseString(jsonString);
     if (expected == null) {
       assertThat(cucumberResult).isEmpty();
     } else {
-      assertThat(cucumberResult).hasSize(expected.getFeaturesTotal());
-      final List<FeatureResult> features = expected.getFeatureResults().toList();
+      assertThat(cucumberResult).hasSize(expected.getFeatureCount());
+      final List<FeatureResult> features = expected.getFeatureResults();
       final List<String> actualTestNames = IntStream.range(0,
-          cucumberResult.size()).mapToObj(i -> ((JsonObject) cucumberResult.get(i)).get("name").getAsString()).sorted().toList();
+          cucumberResult.size()).mapToObj(i -> ((JsonObject) cucumberResult.get(i)).get("uri").getAsString()).sorted().toList();
       final List<String> expectedTestNames = IntStream.range(0,
           features.size()).mapToObj(i -> features.get(i).getDisplayName()).sorted().toList();
       assertThat(actualTestNames).isEqualTo(expectedTestNames);
     }
   }
 
-  @SuppressWarnings("rawtypes")
-  protected Results getTestResults(final String file) {
+  protected SuiteResult getTestResults(final String file) {
     String path = "classpath:scenarios/karate-reports";
     if (file != null && !file.isEmpty()) {
       path = path + File.separator + file;
@@ -244,9 +243,9 @@ public class KarateReportsGeneratorTest extends AbstractKarateTest {
             .outputCucumberJson(true)
             .outputJunitXml(true)
             .outputHtmlReport(true);
-    final Suite suite = new Suite(runner);
-    suite.run();
-    return suite.buildResults();
+
+    final Suite suite = runner.buildSuite();
+    return suite.run();
   }
 
 }

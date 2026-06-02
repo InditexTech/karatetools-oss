@@ -12,9 +12,9 @@ import dev.inditex.karate.AbstractKarateTest;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import com.intuit.karate.Results;
-import com.intuit.karate.Runner;
-import com.intuit.karate.Suite;
+import io.karatelabs.core.Runner;
+import io.karatelabs.core.Suite;
+import io.karatelabs.core.SuiteResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ public class KarateMockFunctionsTest extends AbstractKarateTest {
   @BeforeEach
   protected void beforeEach(final TestInfo testInfo) throws IOException {
     super.beforeEach(testInfo);
-    ((Logger) LoggerFactory.getLogger("com.intuit.karate")).setLevel(Level.DEBUG);
+    ((Logger) LoggerFactory.getLogger("io.karatelabs")).setLevel(Level.DEBUG);
   }
 
   @Nested
@@ -36,7 +36,7 @@ public class KarateMockFunctionsTest extends AbstractKarateTest {
     @ParameterizedTest(name = "when_{0}_expect_no_error")
     @CsvSource({
         "list-templates-no-folder,>> karate.tools >> mock-templates >> listTemplates >> "
-            + "ERROR >> Cannot read property \"getPath\" from null",
+            + "ERROR >> cannot find resource: classpath:mocks/templates/no-folder",
         "list-templates-empty-folder,>> karate.tools >> mock-templates >> listTemplates >> "
             + "# files >> 0",
         "list-templates-folder-with-mocks,>> karate.tools >> mock-templates >> listTemplates >> "
@@ -61,10 +61,10 @@ public class KarateMockFunctionsTest extends AbstractKarateTest {
           new ArrayList<>(Arrays.asList(getKarateOptions().split("-t ")).stream().filter(s -> !s.isEmpty()).toList());
       tagsList.add("@" + tag);
 
-      final Results results = getTestResults(tagsList);
+      final SuiteResult results = getTestResults(tagsList);
 
-      assertThat(results.getScenariosTotal()).isPositive();
-      assertThat(results.getFailCount()).isZero();
+      assertThat(results.getScenarioCount()).isPositive();
+      assertThat(results.getScenarioFailedCount()).isZero();
       if (expectedLog != null && !expectedLog.isEmpty()) {
         assertThat(logWatcher.list).anyMatch(e -> e.getFormattedMessage().contains(expectedLog));
       }
@@ -113,18 +113,16 @@ public class KarateMockFunctionsTest extends AbstractKarateTest {
     return "-t ~@ignore -t @inditex-oss-karate -t @karate-mock-functions";
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  protected Results getTestResults(final List<String> tags) {
+  protected SuiteResult getTestResults(final List<String> tags) {
     final String path = "classpath:scenarios/karate-mocks";
     final Runner.Builder runner =
         Runner.builder()
             .path(path)
-            .tags(tags)
+            .tags(tags.toArray(new String[0]))
             .outputCucumberJson(true)
             .outputJunitXml(true)
             .outputHtmlReport(true);
-    final Suite suite = new Suite(runner);
-    suite.run();
-    return suite.buildResults();
+    final Suite suite = runner.buildSuite();
+    return suite.run();
   }
 }

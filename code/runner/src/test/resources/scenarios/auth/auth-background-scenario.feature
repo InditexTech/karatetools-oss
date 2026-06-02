@@ -18,7 +18,7 @@ function() {
   logWatcher.setName('logWatcher');
   logWatcher.start();
 
-  var logger = LoggerFactory.getLogger("com.intuit.karate");
+  var logger = LoggerFactory.getLogger("io.karatelabs");
   logger.addAppender(logWatcher);
   logger.setLevel(Level.DEBUG);
   return {

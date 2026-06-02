@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.intuit.karate.Results;
+import io.karatelabs.core.SuiteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -59,7 +59,7 @@ public class KarateReportsGenerator {
    * @param results the results
    * @return the string
    */
-  public static String generate(final Results results) {
+  public static String generate(final SuiteResult results) {
     final String summary = generateAggregatedCucumberReport(results);
     copyJUnitFileToSurefire(results);
     return summary;
@@ -71,12 +71,12 @@ public class KarateReportsGenerator {
    * @param results the results
    * @return the string
    */
-  public static String generateAggregatedCucumberReport(final Results results) {
+  public static String generateAggregatedCucumberReport(final SuiteResult results) {
     log.debug("KarateRunner.cucumberReport() saving ...");
     final JsonArray jsonResults = new JsonArray();
     Collection<File> jsonFiles = List.of();
     if (results != null) {
-      jsonFiles = FileUtils.listFiles(new File(results.getReportDir()), new String[]{"json"}, true);
+      jsonFiles = FileUtils.listFiles(results.getReportDir().toFile(), new String[]{"json"}, true);
     }
     jsonFiles.forEach(jsonFile -> {
       try {
@@ -102,13 +102,16 @@ public class KarateReportsGenerator {
    *
    * @param results the results
    */
-  public static void copyJUnitFileToSurefire(final Results results) {
+  public static void copyJUnitFileToSurefire(final SuiteResult results) {
     if (results != null) {
       log.debug("KarateRunner.surefireXMLs() saving ...");
-      final Collection<File> xmlFiles = FileUtils.listFiles(new File(results.getReportDir()), new String[]{"xml"}, true);
+      final Collection<File> xmlFiles = FileUtils.listFiles(results.getReportDir().toFile(), new String[]{"xml"}, true);
       xmlFiles.forEach(xmlFile -> {
         try {
-          FileUtils.copyFile(xmlFile, new File(surefireReportFolder + "/TEST-" + xmlFile.getName()));
+          // Karate 2.X generates "TEST-target.test-classes.*.xml" files
+          // We need to rename them to clean up "target.test-classes." prefix if present.
+          final String xmlFileName = xmlFile.getName().replace("target.test-classes.", "");
+          FileUtils.copyFile(xmlFile, new File(surefireReportFolder + File.separator + "TEST-" + xmlFileName));
           log.debug("KarateRunner.surefireXMLs() saving [{}]", xmlFile);
         } catch (final IOException e) {
           log.error("KarateRunner.surefireXMLs() saving Exception for [{}] => [{}:{}]",
@@ -125,10 +128,10 @@ public class KarateReportsGenerator {
    * @param results the results
    * @return the string
    */
-  public static String generateSummary(final Results results) {
+  public static String generateSummary(final SuiteResult results) {
     if (results != null) {
-      return String.format(SUMMARY_FORMAT, results.getFeaturesTotal(), results.getFeaturesPassed(), results.getFeaturesFailed(),
-          results.getScenariosTotal(), results.getScenariosPassed(), results.getScenariosFailed());
+      return String.format(SUMMARY_FORMAT, results.getFeatureCount(), results.getFeaturePassedCount(), results.getFeatureFailedCount(),
+          results.getScenarioCount(), results.getScenarioPassedCount(), results.getScenarioFailedCount());
     }
     return String.format(SUMMARY_FORMAT, 0, 0, 0, 0, 0, 0);
   }

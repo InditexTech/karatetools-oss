@@ -10,9 +10,10 @@ Background:
 
 * def authJS = read('classpath:karate-auth.js')
 
-* logMasker.setEnabled(true)
-* print 'logMasker.isEnabled()=', logMasker.isEnabled()
+# masking is already active from karate-base.js configure logging
+* print loggingMaskConfig
 
+@test
 Scenario: karate-http-log-masking-basic
 
 Given def req =
@@ -42,14 +43,14 @@ When def res = call read('classpath:apis/package/tag/ops/op-with-auth.feature') 
 Then match res.responseStatus == 200
 # Match header
 Then def expectedAuthorization = 'Basic YmFzaWM6YmFzaWM='
-Then match res.responseHeaders['authorization'][0] == expectedAuthorization
+Then match res.responseHeaders['Authorization'][0] == expectedAuthorization
 
 # Detach logWatcher appender to be able to print captured logs and not enter into recursive mode
 Then logger.detachAppender('logWatcher')
 
 # Match last logs - should contain masked Authorization header
 Then def actualLogs = getLastLogs(1)
-Then match actualLogs[0] contains 'authorization: Basic *****'
+Then match actualLogs[0] contains 'Authorization: Basic *****'
 
 # Match last logs - should contain masked sensitive headers
 Then match actualLogs[0] contains 'token: *****'
