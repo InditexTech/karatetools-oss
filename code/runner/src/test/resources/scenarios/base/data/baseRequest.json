@@ -1,0 +1,8 @@
+{
+  "source": "baseRequest",
+  "flags": ["base"],
+  "payload": {
+    "requestType": "order",
+    "channel": "web"
+  }
+}

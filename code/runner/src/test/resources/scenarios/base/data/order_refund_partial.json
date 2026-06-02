@@ -1,0 +1,8 @@
+{
+  "source": "order_refund_partial",
+  "flags": ["partial"],
+  "payload": {
+    "amount": 15.5,
+    "status": "approved"
+  }
+}

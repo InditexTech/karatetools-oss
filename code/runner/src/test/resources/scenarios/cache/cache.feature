@@ -5,6 +5,12 @@ Feature: karate-cache
 
 Background:
 
+Given def options = karate.properties['karate.options']
+Given print 'options >>' + options
+
+Given print 'cache >>' + cache
+Given match cache == '#notnull'
+
 Scenario: karate-cache-static
 
 Given cache.clear()
