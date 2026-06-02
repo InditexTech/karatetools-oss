@@ -30,16 +30,16 @@ public class KarateBaseUtilsIT extends AbstractKarateTest {
         "local",
         getKarateOptions(),
         1,
-      6,
+        6,
         List.of("/TEST-scenarios.base.utils.xml"),
         Map.of(),
         List.of(
-        "Running Feature[ karate-base-utils ] Scenario [ utils-read-test-data-merges-hierarchy ] ... ",
-        "Running Feature[ karate-base-utils ] Scenario [ utils-is-array-detects-array-values ] ... ",
+            "Running Feature[ karate-base-utils ] Scenario [ utils-read-test-data-merges-hierarchy ] ... ",
+            "Running Feature[ karate-base-utils ] Scenario [ utils-is-array-detects-array-values ] ... ",
             "Running Feature[ karate-base-utils ] Scenario [ utils-merge-combines-objects ] ... ",
-        "Running Feature[ karate-base-utils ] Scenario [ utils-deep-merge-mutates-target ] ... ",
-        "Running Feature[ karate-base-utils ] Scenario [ utils-replace-expressions-resolves-known-vars ] ... ",
-        "Running Feature[ karate-base-utils ] Scenario [ utils-manipulate-leaf-values-applies-callback ] ... "));
+            "Running Feature[ karate-base-utils ] Scenario [ utils-deep-merge-mutates-target ] ... ",
+            "Running Feature[ karate-base-utils ] Scenario [ utils-replace-expressions-resolves-known-vars ] ... ",
+            "Running Feature[ karate-base-utils ] Scenario [ utils-manipulate-leaf-values-applies-callback ] ... "));
   }
 
   protected String getKarateOptions() {
