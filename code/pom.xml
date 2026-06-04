@@ -169,6 +169,9 @@
     <!-- Karate Runner - JWTGenerator -->
     <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
 
+    <!-- Netty BOM version to avoid conflicts between rabbitmq-jms-client (4.2.10.Final) and armeria (4.2.6.Final) -->
+    <netty.version>4.2.6.Final</netty.version>
+
   </properties>
 
   <dependencyManagement>
@@ -323,10 +326,6 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>mailapi</artifactId>
           </exclusion>
-          <exclusion>
-            <groupId>io.netty</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <!-- Karate Clients - Kafka -->
@@ -415,6 +414,15 @@
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt-gson</artifactId>
         <version>${jsonwebtoken.version}</version>
+      </dependency>
+
+      <!-- Netty BOM version to avoid conflicts between rabbitmq-jms-client (4.2.10.Final) and armeria (4.2.6.Final) -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
