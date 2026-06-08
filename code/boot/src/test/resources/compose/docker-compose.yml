@@ -221,7 +221,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_ZK_NAMESPACE: schema_registry
     healthcheck:
-      test: "nc -z localhost 8081 || exit 1"
+      test: "curl -f http://localhost:8081/subjects || exit 1"
       start_period: 10s
       interval: 10s
       retries: 10
@@ -259,7 +259,7 @@ services:
       - "./schema_registry/schema_registry.jaas:/etc/schema_registry/schema_registry.jaas"
       - "./schema_registry/schema_registry.users:/etc/schema_registry/schema_registry.users"
     healthcheck:
-      test: "nc -z localhost 8082 || exit 1"
+      test: "curl -f -u schemaregistry:schemaregistry-pwd http://localhost:8082/subjects || exit 1"
       start_period: 10s
       interval: 10s
       retries: 10
