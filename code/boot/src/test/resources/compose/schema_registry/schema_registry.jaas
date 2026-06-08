@@ -1,4 +1,4 @@
 karate {
-  org.eclipse.jetty.jaas.spi.PropertyFileLoginModule required
+  org.eclipse.jetty.security.jaas.spi.PropertyFileLoginModule required
   file="/etc/schema_registry/schema_registry.users";
 };
