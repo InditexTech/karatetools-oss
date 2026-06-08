@@ -136,7 +136,7 @@
 
     <!-- Open Api Source Generator -->
     <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
-    <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
     <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
 
