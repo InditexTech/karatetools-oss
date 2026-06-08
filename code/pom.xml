@@ -328,6 +328,14 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <!-- Karate Clients - Kafka -->
