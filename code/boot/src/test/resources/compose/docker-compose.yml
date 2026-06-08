@@ -47,7 +47,7 @@ services:
   mongodb:
     container_name: kt-mongodb
     profiles: [ "it", "app" ]
-    image: mongo:7.0.12
+    image: mongo:7.0.34
     ports:
       - "27017:27017"
     environment:
@@ -204,7 +204,7 @@ services:
   schema-registry:
     container_name: kt-schema-registry
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.8.2
+    image: confluentinc/cp-schema-registry:8.1.2
     ports:
     - 38081:8081
     volumes:
@@ -235,7 +235,7 @@ services:
   schema-registry-basic-auth:
     container_name: kt-schema-registry-basic-auth
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.8.2
+    image: confluentinc/cp-schema-registry:8.1.2
     ports:
       - 38082:8082
     environment:
