@@ -184,6 +184,14 @@
         <artifactId>lombok</artifactId>
         <version>${lombok.version}</version>
       </dependency>
+      <!-- Jackson BOM to align jackson versions across dependencies -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
@@ -198,14 +206,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${maven-jar-plugin.version}</version>
-      </dependency>
-      <!-- Jackson BOM to align jackson versions across dependencies -->
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
 
       <!-- Logging -->
