@@ -8,18 +8,18 @@ function fn() {
     karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> ' + folder);
     function traverse(file, base) {
       karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> ' + file);
-      let list = new java.util.ArrayList();
-      const files = file.listFiles();
+      var list = new java.util.ArrayList();
+      var files = file.listFiles();
       if (!files) {
         karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> files >> EMPTY');
         return list;
       }
       karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> traverse >> files ' + files.length);
-      for (const f of files) {
+      for (var f of files) {
         if (f.isDirectory()) {
           list.addAll(traverse(f, base));
         } else if (f.getName().endsWith(".yml")) {
-          const relative = base.toURI().relativize(f.toURI()).getPath();
+          var relative = base.toURI().relativize(f.toURI()).getPath();
           karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> file >> ' + relative);
           list.add("classpath:" + relative);
         } else {
@@ -34,16 +34,16 @@ function fn() {
     }
     try {
       // JDK 25
-      const normalized = folder.startsWith('classpath:') ? folder : 'classpath:' + folder;
-      const rootPath = karate.toAbsolutePath(normalized);
-      const root = new java.io.File(rootPath);
+      var normalized = folder.startsWith('classpath:') ? folder : 'classpath:' + folder;
+      var rootPath = karate.toAbsolutePath(normalized);
+      var root = new java.io.File(rootPath);
 
       if (!root.exists()) {
         karate.logger.debug('>> karate.tools >> mock-templates >> listTemplates >> rootPath >> ' + rootPath + ' DOES NOT EXIST');
         return new java.util.ArrayList();
       }
-      const basePath = karate.toAbsolutePath('classpath:.');
-      const base = new java.io.File(basePath);
+      var basePath = karate.toAbsolutePath('classpath:.');
+      var base = new java.io.File(basePath);
 
       // JDK 21
       // const url = java.lang.Thread.currentThread().getContextClassLoader().getResource(folder);
@@ -63,10 +63,10 @@ function fn() {
    */
   function readTemplates(templatesList) {
     karate.logger.debug('>> karate.tools >> mock-templates >> readTemplates >> templatesList >> ' + templatesList);
-    let templates = new java.util.ArrayList();
-    for (const templateFile of templatesList) {
+    var templates = new java.util.ArrayList();
+    for (var templateFile of templatesList) {
       karate.logger.debug('>> karate.tools >> mock-templates >> readTemplates >> templateFile >> ' + templateFile);
-      let template = karate.read(templateFile);
+      var template = karate.read(templateFile);
       if (template.params) {
         karate.logger.debug('>> karate.tools >> mock-templates >> readTemplates >> template.params IF >> ' + template.params);
         template.params = parseParams(template.params);
@@ -88,7 +88,7 @@ function fn() {
    */
   function parseParams(paramsString) {
     karate.logger.debug(">> karate.tools >> mock-templates >> parseParams  >>" + paramsString);
-    let templateParams = {};
+    var templateParams = {};
     if (paramsString) {
       if (paramsString.startsWith('#?')) {
         // Accept karate marker matchers (#?...) as provided
@@ -99,14 +99,14 @@ function fn() {
         templateParams = '##object';
       }
       else {
-        const params = paramsString.split('&');
+        var params = paramsString.split('&');
         karate.logger.debug(">> karate.tools >> mock-templates >> parseParams  >>" + params);
-        for (const param of params) {
-          const indexOfEqual = param.indexOf('=');
-          const key = param.substring(0, indexOfEqual);
-          const value = param.substring(indexOfEqual + 1);
+        for (var param of params) {
+          var indexOfEqual = param.indexOf('=');
+          var key = param.substring(0, indexOfEqual);
+          var value = param.substring(indexOfEqual + 1);
           if (!templateParams[key]) templateParams[key] = [];
-          const templateParamsIndex = templateParams[key].length;
+          var templateParamsIndex = templateParams[key].length;
           templateParams[key][templateParamsIndex] = value;
         }
       }
@@ -125,23 +125,23 @@ function fn() {
   function findTemplate(templates, requestMethod, requestUri, requestParams, request) {
     karate.logger.debug(">> karate.tools >> mock-templates >> findTemplate >> \n    >> method      >>" + requestMethod + "\n    >> path        >>" + requestUri + "\n    >> params      >>" + requestParams + "\n    >> request     >>" + request);
 
-    let match = { "responseStatus": 404, "responseHeaders": { "Content-Type": "application/json" }, "response": { "mock": "404" } };
-    let matchFound = false;
-    for (let i = 0; i < templates.length; i++) {
-      let template = templates[i];
+    var match = { "responseStatus": 404, "responseHeaders": { "Content-Type": "application/json" }, "response": { "mock": "404" } };
+    var matchFound = false;
+    for (var i = 0; i < templates.length; i++) {
+      var template = templates[i];
       karate.logger.debug(">> karate.tools >> mock-templates >> findTemplate >> CHECKING [ " + i + " ][ " + template.file + " ]");
 
       if (!pathMatch(requestUri, template.path)) continue;
       if (!methodMatch(requestMethod, template.method)) continue;
       if (requestParams && template.params) {
-        const paramsMatch = karate.match(requestParams, template.params);
+        var paramsMatch = karate.match(requestParams, template.params);
         if (!paramsMatch.pass) continue;
       } else {
         karate.logger.debug(">> karate.tools >> mock-templates >> findTemplate >> params      EMPTY[ " + i + " ][ " + template.file + " ] >>" + requestParams + ">> template.params  >>" + template.params);
       }
 
       if (request && template.request) {
-        const requestMatch = karate.match(request, template.request);
+        var requestMatch = karate.match(request, template.request);
         if (!requestMatch.pass) continue;
       } else {
         karate.logger.debug(">> karate.tools >> mock-templates >> findTemplate >> request     EMPTY[ " + i + " ][ " + template.file + " ] >>" + request + ">> template.request  >>" + template.request);
