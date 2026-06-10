@@ -12,16 +12,13 @@
 
 ✔️ Karate Tools - *Maven Update* (3.9.4 -> 3.9.14)
 
+✔️ Karate Tools - *Archetype Update* (generated projects now target Java 25, Maven 3.9.14, and include all plugin updates)
+
 ✔️ Karate Tools - *Dependencies Update* (artemis-jms-client 2.42.0 -> 2.54.0, assertj-core 3.27.6 -> 3.27.7, checkstyle 11.0.1 -> 11.1.0, commons-io 2.20.0 -> 2.22.0, gson 2.13.2 -> 2.14.0, jackson 2.20.0 -> 2.22.0, junit 5.13.4 -> 5.14.4, kafka-avro-serializer 7.6.2 -> 7.8.5, kafka-clients 3.9.1 -> 3.9.2, karate 1.5.1 -> 1.5.2, logback 1.5.18 -> 1.5.34, lombok 1.18.42 -> 1.18.46, mariadb-java-client 3.5.6 -> 3.5.8, maven-model 3.9.11 -> 3.9.16, mockito 5.20.0 -> 5.23.0, mongodb-driver-sync 5.6.0 -> 5.8.0, postgresql 42.7.8 -> 42.7.11, rabbitmq-jms 2.12.0 -> 2.13.0, com.github.spotbugs 4.9.6 -> 4.9.8, spring-boot 3.5.6 -> 3.5.14, spring-core 6.2.11 -> 6.2.18, swagger-inflector 2.0.14 -> 2.0.17, swagger-parser 2.1.34 -> 2.1.43)
 
 ✔️ Karate Tools - *Plugins Update* (central-publishing-maven-plugin 0.9.0 -> 0.10.0, exec-maven-plugin 3.1.0 -> 3.6.3, jacoco-maven-plugin 0.8.13 -> 0.8.15, maven-archetype-plugin 3.4.0 -> 3.4.1, maven-dependency-plugin 3.8.1 -> 3.11.0, maven-enforcer-plugin 3.6.1 -> 3.6.3, maven-failsafe-plugin 3.5.3 -> 3.5.6, maven-jar-plugin 3.4.2 -> 3.5.0, maven-release-plugin 3.1.1 -> 3.3.1, maven-resources-plugin 3.3.1 -> 3.5.0, maven-source-plugin 3.3.1 -> 3.4.0, maven-surefire-plugin 3.5.3 -> 3.5.6, maven-surefire-report-plugin 3.5.3 -> 3.5.6, pitest 1.20.3 -> 1.25.3, spotbugs-maven-plugin 4.9.6.0 -> 4.9.8.3, spring-boot-maven-plugin 3.5.6 -> 3.5.14)
 
 ✔️ Karate Tools - *Containers Update* (postgres 16.8 -> 18.2, mongodb 7.0.12 -> 7.0.34, apache/kafka 3.8.1 -> 4.1.2, schema-registry 7.8.2 -> 8.1.2)
-
-✔️ Karate Tools - *Archetype Update* (generated projects now target Java 25, Maven 3.9.14, and include all plugin updates)
-
-|===
-| Version | Date | Description
 
 | 5.4.0
 | 2026-05-21
