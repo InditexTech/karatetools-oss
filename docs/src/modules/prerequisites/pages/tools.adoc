@@ -1,5 +1,4 @@
 The tools requirements to be working with Karate Tools are:
 
 . https://git-scm.com/about[*Git*, window=_blank]
-. https://www.java.com/es/download/[*Java 25*, window=_blank]
-. https://maven.apache.org/download.cgi[*Maven*, window=_blank] (v3.9.14 or higher)
+. https://asdf-vm.com/guide/getting-started.html[*asdf*, window=_blank] (version management)

@@ -1,0 +1,4 @@
+. The required asdf plugins and versions are defined in the `.tool-versions` file. The current required versions are:
++
+* `maven 3.9.14`
+* `java temurin-25.0.2+10.0.LTS`
