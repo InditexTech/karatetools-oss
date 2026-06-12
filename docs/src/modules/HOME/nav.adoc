@@ -34,6 +34,7 @@
 *** xref:execution:karate-cache.adoc[Karate Cache]
 
 * xref:release:index.adoc[Release Notes]
+** xref:release:migration-guide.adoc[Migration Guide]
 
 * xref:contributing:index.adoc[Contributing]
 ** xref:contributing:development-guide.adoc[Development Guide]
