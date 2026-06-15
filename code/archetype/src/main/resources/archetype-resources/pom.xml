@@ -30,7 +30,7 @@
 #if (${includeKafkaClients} == 'yes' || ${includeKafkaClients} == 'y')
 
     <!-- Karate Clients -->
-    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
 #end
 
     <!-- Configuration Properties -->

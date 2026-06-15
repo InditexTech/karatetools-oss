@@ -94,8 +94,8 @@
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
     <!-- Static code analysis - Spotbugs -->
-    <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
-    <com.github.spotbugs.spotbugs.version>4.9.8</com.github.spotbugs.spotbugs.version>
+    <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
+    <com.github.spotbugs.spotbugs.version>4.10.2</com.github.spotbugs.spotbugs.version>
     <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
     <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
 
@@ -124,7 +124,7 @@
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->
-    <pitest.version>1.25.3</pitest.version>
+    <pitest.version>1.25.4</pitest.version>
     <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
     <pitest-skip>false</pitest-skip>
 
@@ -143,7 +143,7 @@
     <!-- Karate Clients -->
     <!-- Karate Clients - JDBC -->
     <postgresql.version>42.7.11</postgresql.version>
-    <mariadb-java-client.version>3.5.8</mariadb-java-client.version>
+    <mariadb-java-client.version>3.5.9</mariadb-java-client.version>
     <!-- Karate Clients - MongoDB -->
     <mongodb-driver-sync.version>5.8.0</mongodb-driver-sync.version>
     <!-- Karate Clients - JMS -->
@@ -163,7 +163,7 @@
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
     <maven-model.version>3.9.16</maven-model.version>
-    <swagger-parser.version>2.1.43</swagger-parser.version>
+    <swagger-parser.version>2.1.44</swagger-parser.version>
     <swagger-inflector.version>2.0.17</swagger-inflector.version>
 
     <!-- Karate Runner - JWTGenerator -->
