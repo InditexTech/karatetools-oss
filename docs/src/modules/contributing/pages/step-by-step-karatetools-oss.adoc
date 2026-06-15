@@ -218,6 +218,9 @@ image::steps-kt-oss-new-jms-client-documentation-local.png[role="no-border, zoom
 a|
 [start=13]
 . Make clear and descriptive commits that explain the changes implemented in the new branch and push them to the repository.
+** Sign off your commits (`Signed-off-by`) to comply with DCO requirements.
+** Configure signoff in your local clone with `git config format.signoff true`.
+** You can also configure it globally with `git config --global format.signoff true`.
 
 a|
 image::steps-kt-oss-github-commit.png[role="no-border, zoom-in"]
