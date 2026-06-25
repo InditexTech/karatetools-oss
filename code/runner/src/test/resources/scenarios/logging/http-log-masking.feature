@@ -5,6 +5,12 @@ Feature: karate-http-log-masking
 
 Background:
 
+Given def options = karate.properties['karate.options']
+Given print 'options >>' + options
+
+Given print 'logMasker >>' + logMasker
+Given match logMasker == '#notnull'
+
 * callonce read('../auth/auth-background-feature.feature')
 * call read('../auth/auth-background-scenario.feature')
 

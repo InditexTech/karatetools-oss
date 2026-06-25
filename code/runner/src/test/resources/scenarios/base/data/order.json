@@ -1,0 +1,8 @@
+{
+  "source": "order",
+  "flags": ["order"],
+  "payload": {
+    "country": "ES",
+    "currency": "EUR"
+  }
+}

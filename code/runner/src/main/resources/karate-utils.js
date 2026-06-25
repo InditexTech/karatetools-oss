@@ -1,5 +1,5 @@
 function fn() {
-  const utils = {};
+  var utils = {};
   /**
    * Reads a testFile and meges json contents with base files.
    * @param {string} file
@@ -89,7 +89,7 @@ function fn() {
     var callback = function(leafValue) {
       if (typeof leafValue === 'string') {
         var replaced = leafValue;
-        const EXPRESSION_REGEX = /#\(([\w\.]+)\)/gm;
+        var EXPRESSION_REGEX = /#\(([\w\.]+)\)/gm;
         while ((m = EXPRESSION_REGEX.exec(leafValue)) !== null) {
           replaced = replaced.replace(m[0], karate.get(m[1], '#(' + m[1] + ')'));
         }

@@ -1,0 +1,14 @@
+# urls: karate urls used for target environments and authentication
+urls:
+  # Point the tests to the mocks
+  xxxApiRestStableUrl: "#('http://dev.inditex.com/karate')"
+  #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
+
+# defaultAuthMode: basic | jwt. 'auth.authMode' when used in a specific request.
+defaultAuthMode: basic
+# defaultUsername: default username. 'auth.username' when used in a specific request.
+defaultUsername: devuser
+# credentials: pairs of username: password. 'auth.password' when used in a specific request.
+credentials:
+  # username100: Fixed username:password example
+  userdev: "#(karate.properties['cyberark.credentials.userdev'])"

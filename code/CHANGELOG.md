@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#71](https://github.com/InditexTech/karatetools-oss/issues/71) \[Karate-Tools] JDK 25
+
 ## [5.4.0] - 2026-05-21
 
 - [#75](https://github.com/InditexTech/karatetools-oss/issues/75) \[Karate-Tools] Updated features background description

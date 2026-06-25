@@ -4,7 +4,7 @@ services:
   postgres:
     container_name: kt-postgres
     profiles: [ "it", "app" ]
-    image: postgres:16.8
+    image: postgres:18.2
     ports:
       - "5432:5432"
     environment:
@@ -47,7 +47,7 @@ services:
   mongodb:
     container_name: kt-mongodb
     profiles: [ "it", "app" ]
-    image: mongo:7.0.12
+    image: mongo:7.0.34
     ports:
       - "27017:27017"
     environment:
@@ -107,7 +107,7 @@ services:
   kafka:
     container_name: kt-kafka
     profiles: [ "it", "app", "kafka" ]
-    image: apache/kafka:3.8.1
+    image: apache/kafka:4.1.2
     ports:
       # No auth
       - 39091:39091
@@ -204,7 +204,7 @@ services:
   schema-registry:
     container_name: kt-schema-registry
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.8.2
+    image: confluentinc/cp-schema-registry:8.1.2
     ports:
     - 38081:8081
     volumes:
@@ -221,7 +221,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_ZK_NAMESPACE: schema_registry
     healthcheck:
-      test: "nc -z localhost 8081 || exit 1"
+      test: "curl -f http://localhost:8081/subjects || exit 1"
       start_period: 10s
       interval: 10s
       retries: 10
@@ -235,7 +235,7 @@ services:
   schema-registry-basic-auth:
     container_name: kt-schema-registry-basic-auth
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:7.8.2
+    image: confluentinc/cp-schema-registry:8.1.2
     ports:
       - 38082:8082
     environment:
@@ -259,7 +259,7 @@ services:
       - "./schema_registry/schema_registry.jaas:/etc/schema_registry/schema_registry.jaas"
       - "./schema_registry/schema_registry.users:/etc/schema_registry/schema_registry.users"
     healthcheck:
-      test: "nc -z localhost 8082 || exit 1"
+      test: "curl -f -u schemaregistry:schemaregistry-pwd http://localhost:8082/subjects || exit 1"
       start_period: 10s
       interval: 10s
       retries: 10
