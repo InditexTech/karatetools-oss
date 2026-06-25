@@ -25,7 +25,7 @@
   </developers>
 
   <properties>
-    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+    <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
     <maven-archetype-packaging.version>3.3.1</maven-archetype-packaging.version>
     <maven-archetype-plugin.version>3.4.1</maven-archetype-plugin.version>
   </properties>

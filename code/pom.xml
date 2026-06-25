@@ -68,6 +68,8 @@
     <project.scm.id>inditextech-scm-github</project.scm.id>
 
     <!-- Maven -->
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
@@ -79,7 +81,7 @@
     <release.strategy.developmentBranch>develop</release.strategy.developmentBranch>
     <release.strategy.syncPullReqLabels>kind/internal</release.strategy.syncPullReqLabels>
     <release.strategy.createSyncPR>true</release.strategy.createSyncPR>
-    <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+    <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
 
     <!-- Code Format and Style -->
     <project.parent.relativePath />
@@ -108,7 +110,7 @@
     <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
 
     <!-- Logging -->
-    <logback.version>1.5.34</logback.version>
+    <logback.version>1.5.35</logback.version>
     <slf4j.version>2.0.17</slf4j.version>
 
     <!-- Test -->
@@ -124,7 +126,7 @@
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->
-    <pitest.version>1.25.4</pitest.version>
+    <pitest.version>1.25.5</pitest.version>
     <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
     <pitest-skip>false</pitest-skip>
 
@@ -136,7 +138,6 @@
 
     <!-- Open Api Source Generator -->
     <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
-    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
     <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
 
@@ -163,7 +164,7 @@
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
     <maven-model.version>3.9.16</maven-model.version>
-    <swagger-parser.version>2.1.44</swagger-parser.version>
+    <swagger-parser.version>2.1.45</swagger-parser.version>
     <swagger-inflector.version>2.0.17</swagger-inflector.version>
 
     <!-- Karate Runner - JWTGenerator -->
@@ -493,9 +494,11 @@
     <finalName>${project.artifactId}-${project.version}</finalName>
     <pluginManagement>
       <plugins>
+        <!-- Maven Compiler Plugin - Lombok Annotation Processing -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
           <configuration>
             <annotationProcessorPaths>
               <path>
@@ -506,6 +509,13 @@
             </annotationProcessorPaths>
           </configuration>
         </plugin>
+        <!-- Maven Dependency Plugin -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
+        </plugin>
+        <!-- Maven Javadoc Plugin -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -522,7 +532,7 @@
             </execution>
           </executions>
         </plugin>
-        <!-- Maven Release -->
+        <!-- Maven Release Plugin -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -546,6 +556,7 @@
             <completionGoals>-pl karate-release exec:exec@sync-karate-version scm:add@sync-karate-version</completionGoals>
           </configuration>
         </plugin>
+        <!-- Maven Source Plugin -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
@@ -608,6 +619,7 @@
             <skip>${pitest-skip}</skip>
           </configuration>
         </plugin>
+        <!-- Central Publishing Maven Plugin -->
         <plugin>
           <groupId>org.sonatype.central</groupId>
           <artifactId>central-publishing-maven-plugin</artifactId>
