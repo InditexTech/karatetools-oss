@@ -6,6 +6,8 @@
 
 include::tools.adoc[]
 
+include::asdf-versions.adoc[]
+
 == Minimum checklist before starting with Karate Tools
 
 include::checklist.adoc[]

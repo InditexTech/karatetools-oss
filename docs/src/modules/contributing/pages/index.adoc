@@ -18,6 +18,9 @@ Detailed instructions on how to proceed can be found [*Contributor License Agree
 * If you wish to work on an existing issue, comment on the issue to inform other contributors that you are working on it. This will help coordinate efforts and prevent conflicts.
 * It is always advisable to discuss and gather feedback from the community before making significant changes to the project's structure or architecture.
 * Ensure a clean and organized commit history. Divide your changes into logical and descriptive commits.
+* Sign off your commits (`Signed-off-by`) to comply with requirements.
+** Use `git commit -s` (or `git commit --signoff`) to add the trailer to each commit.
+** Or enable it automatically for this repository: `git config commit.signoff true`.
 * Document any new changes or features you add. This will help other contributors and project users understand your work and its purpose.
 * Be sure to link the corresponding issue in your pull request to maintain proper tracking of contributions.
 * Remember to add license and copyright information following the https://reuse.software/spec/#copyright-and-licensing-information[*REUSE Specification*, window="_blank"].
@@ -39,7 +42,7 @@ Detailed instructions on how to proceed can be found [*Contributor License Agree
 ** Update documentation as needed
 ** For more information, see the xref:development-guide.adoc[*👩‍💻 Development Guide*]
 
-. Make clear and descriptive commits that explain your changes
+. Make clear and descriptive signed-off commits that explain your changes
 
 . Push your branch to the remote repository: `git push origin your-branch-name`
 

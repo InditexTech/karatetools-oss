@@ -1,0 +1,2 @@
+# baseline configuration loaded before environment-specific files
+baseConfigMarker: default-config-loaded

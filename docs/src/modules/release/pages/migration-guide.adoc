@@ -1,0 +1,64 @@
+= Karate Tools Migration Guide
+
+== Karate Tools Migration to 6.0.0 - JDK 25
+
+To migrate to 6.0.0, the following changes must be applied:
+
+* `.tool-versions`:
+** `maven 3.9.4` to `maven 3.9.14`
+** `java temurin-21.0.4+7.0.LTS` to `java temurin-25.0.3+9.0.LTS`
+
+* `pom.xml`:
+** Update java version properties:
+*** `<maven.compiler.source>25</maven.compiler.source>`
+*** `<maven.compiler.target>25</maven.compiler.target>`
+*** `<java.version>25</java.version>`
+** Update karate-tools version property:
+*** `<karatetools.version>6.0.0</karatetools.version>`
+** Update testing plugins version properties:
+*** `<maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>`
+*** `<maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>`
+** Update build plugins version properties:
+*** `<maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>`
+*** `<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>`
+*** `<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>`
+** Add the following property and plugin configuration to the `pom.xml`:
++
+[source,xml,subs="+attributes"]
+----
+<properties>
+  ...
+  <!-- Maven Enforcer Plugin -->
+  <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+</properties>
+
+<build>
+  <plugins>
+    ...
+    <!-- Maven Enforcer Plugin -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-enforcer-plugin</artifactId>
+      <version>${maven-enforcer-plugin.version}</version>
+      <executions>
+        <execution>
+          <id>enforce-versions</id>
+          <phase>validate</phase>
+          <goals>
+            <goal>enforce</goal>
+          </goals>
+          <configuration>
+            <rules>
+              <requireMavenVersion>
+                <version>[3.9.14]</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>[25,26)</version>
+              </requireJavaVersion>
+            </rules>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+----
