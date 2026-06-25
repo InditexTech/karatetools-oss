@@ -22,8 +22,7 @@ To migrate to 6.0.0, the following changes must be applied:
 *** `<maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>`
 *** `<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>`
 *** `<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>`
-
-** Add the following dependency to the `pom.xml`:
+** Add the following property and plugin configuration to the `pom.xml`:
 +
 [source,xml,subs="+attributes"]
 ----
