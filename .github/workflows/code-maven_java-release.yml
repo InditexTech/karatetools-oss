@@ -194,6 +194,11 @@ jobs:
                 <id>gpg.passphrase</id>
                 <passphrase>${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}</passphrase>
               </server>
+              <server>
+                <id>inditextech-scm-github</id>
+                <username>x-access-token</username>
+                <password>${{ steps.app-token.outputs.token }}</password>
+              </server>
             </servers>
           </settings>
           EOF
