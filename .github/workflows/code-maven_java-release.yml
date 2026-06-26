@@ -53,6 +53,12 @@ jobs:
           BASELINE_BRANCH=${{ github.event.inputs.BASELINE || github.ref }}
           echo "BASELINE_BRANCH=${BASELINE_BRANCH#refs/heads/}" >> "$GITHUB_ENV"
 
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout merge commit
         uses: actions/checkout@v6
         with:
@@ -62,7 +68,7 @@ jobs:
 
       - name: Check if CHANGELOG.md has changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           if git diff --quiet HEAD^ HEAD -- code/CHANGELOG.md; then
             echo "::error title={No CHANGELOG.md changes}::{No CHANGELOG.md changes were found. Update the UNRELEASED section with the new changes.}"
@@ -131,14 +137,11 @@ jobs:
 
       - name: Prepare committer information
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GPG_PRIVATE_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
           GPG_PASSPHRASE: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
         run: |
-          git config --global credential.helper store
-          cat <<EOT >> ~/.git-credentials
-          https://ci-user:$GITHUB_TOKEN@github.com
-          EOT
+          git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
 
           # GPG: non-interactive signing setup
           mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
@@ -173,23 +176,39 @@ jobs:
       - name: Deploy released artifact
         id: maven-release-deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
         working-directory: code
         run: |
+          mkdir -p ~/.m2
+          cat <<EOF > ~/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.MAVEN_CENTRAL_USERNAME }}</username>
+                <password>${{ secrets.MAVEN_CENTRAL_PASSWORD }}</password>
+              </server>
+              <server>
+                <id>gpg.passphrase</id>
+                <passphrase>${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}</passphrase>
+              </server>
+            </servers>
+          </settings>
+          EOF
           git add CHANGELOG.md
-          git commit -m "chore: Update CHANGELOG with ${{ steps.update-changelog.outputs.version }} version"
+          git commit -S -m "chore: Update CHANGELOG with ${{ steps.update-changelog.outputs.version }} version Signed-off-by: srvcosoitxtech <oso@inditex.com>"
           git push --no-verify -u origin HEAD
-          mvn -B release:prepare release:perform --settings=.mvn/settings.xml -DreleaseVersion=${{ steps.update-changelog.outputs.version }}
+          mvn -B release:prepare release:perform -DreleaseVersion=${{ steps.update-changelog.outputs.version }} -DdeveloperConnection="scm:git:https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git" -Dconnection="scm:git:https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
+          git push --follow-tags origin HEAD
 
       - name: Next Development Iteration / Create Sync Branch PR into Develop
         id: sync-branch-pr
         continue-on-error: true
         if: ${{ vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           DEVELOP=${BASELINE_BRANCH/main/develop}
           echo "DEVELOP=$DEVELOP" >> "$GITHUB_OUTPUT"
@@ -211,14 +230,14 @@ jobs:
         with:
           name: ${{ steps.update-changelog.outputs.version }}
           tag: ${{ steps.update-changelog.outputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           body: |
             Check out the [changelog](code/CHANGELOG.md) for version ${{ steps.update-changelog.outputs.version }}
 
       - name: Comment in PR / Sync PR creation failed
         if: ${{ vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           DEVELOP=${BASELINE_BRANCH/main/develop}
           git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
@@ -231,7 +250,7 @@ jobs:
       - name: Comment in PR / Release creation failed
         if: ${{ steps.github-release.outcome == 'failure' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: >
           gh pr comment ${{ github.event.number }} --body "An error occurred creating the Github Release.
           Don't panic! Your artifacts were successfully uploaded to the Distribution Platform and the new release tag was created.
