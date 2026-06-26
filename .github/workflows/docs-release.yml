@@ -48,6 +48,12 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' && contains(inputs.RELEASE_LABELS, 'release-docs') }}
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout merge commit
         uses: actions/checkout@v6
         with:
@@ -90,14 +96,11 @@ jobs:
 
       - name: Prepare committer information
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GPG_PRIVATE_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
           GPG_PASSPHRASE: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
         run: |
-          git config --global credential.helper store
-          cat <<EOT >> ~/.git-credentials
-          https://ci-user:$GITHUB_TOKEN@github.com
-          EOT
+          git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
 
           # GPG: non-interactive signing setup
           mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
@@ -174,7 +177,7 @@ jobs:
       - name: Release / Force Tag
         if: contains(inputs.RELEASE_LABELS, 'release-docs/force')
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         working-directory: docs
         run: |
           git pull --tags
@@ -185,7 +188,7 @@ jobs:
 
       - name: Release / Commit and Tag
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
         working-directory: docs
         run: |
@@ -213,7 +216,7 @@ jobs:
 
       - name: Next Development Iteration / Commit Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         working-directory: docs
         run: |
           git commit --allow-empty -i package.json package-lock.json .docsconfig.yml src/antora.yml -m "chore: bumped docs to development version"
@@ -225,7 +228,7 @@ jobs:
         continue-on-error: true
         env:
           BASELINE_BRANCH: ${{ github.ref }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           RELEASE_VERSION: ${{ steps.determine-version.outputs.version }}
           NO_PUBLISH: ${{ contains(inputs.RELEASE_LABELS, 'release-docs/no-publish') }}
         run: |
@@ -247,7 +250,7 @@ jobs:
       - name: Comment in PR / Sync PR failed
         if: ${{ steps.sync-branch-pr.outcome == 'failure' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: >
           gh pr comment ${{ github.event.number }} --body "An error occurred creating the \`sync\` branch that synchronizes the \`main\` and \`develop\` branches.
           Please create a branch from \`main\` (e.g. \`internal/sync-main-with-develop\`) and then create a pull request against \`develop\` to finish the release process."
@@ -257,7 +260,7 @@ jobs:
         with:
           workflow: docs-publish
           ref: ${{ github.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           inputs: |
             {
               "VERSION": "${{ steps.determine-version.outputs.version }}",
