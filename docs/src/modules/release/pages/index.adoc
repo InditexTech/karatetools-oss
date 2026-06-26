@@ -5,7 +5,7 @@
 | Version | Date | Description
 
 | 6.0.0
-| 2026-06-25
+| 2026-06-26
 |
 
 ✔️ Karate Tools - *Java 25 Update* (21.0.4 -> 25.0.3)

@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.0.0] - 2026-06-26
-
 - [#71](https://github.com/InditexTech/karatetools-oss/issues/71) \[Karate-Tools] JDK 25
 
 - [#83](https://github.com/InditexTech/karatetools-oss/issues/83) Release workflow permissions update
