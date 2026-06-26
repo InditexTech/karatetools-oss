@@ -58,9 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First Open Source Release
 
-[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/6.0.0...HEAD
-
-[6.0.0]: https://github.com/InditexTech/karatetools-oss/compare/5.4.0...6.0.0
+[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/5.4.0...HEAD
 
 [5.4.0]: https://github.com/InditexTech/karatetools-oss/compare/5.3.0...5.4.0
 
