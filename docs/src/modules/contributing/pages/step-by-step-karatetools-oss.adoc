@@ -192,11 +192,21 @@ a|
 [start=11]
 . Implement the corresponding *documentation*.
 +
+--
 For example:
 
 .. `jms-providers.adoc`: Add the new `Rabbit MQ` client to the list of supported JMS providers.
 .. `jms-config-rabbbitmq.adoc`: Document the configuration properties for the `Rabbit MQ` client.
 .. ...
+--
++
+Ensure the proper target version is set in the `docs/.docsconfig.yml` file:
++
+[source,yaml,subs="+attributes"]
+----
+release:
+  version: X.X.X
+----
 
 a|
 image::steps-kt-oss-new-jms-client-documentation.png[role="no-border, zoom-in"]
