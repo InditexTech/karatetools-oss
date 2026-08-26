@@ -12,6 +12,10 @@ jobs:
   check-triggered-release:
     name: Check release-docs labeled
     runs-on: ubuntu-24.04
+    # Least-privilege: reads the commit and its associated PR labels via the API; no writes
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       labels: ${{ steps.get-labels.outputs.LABELS }}
       skip: ${{ steps.release-commits.outputs.SKIP }}
@@ -44,6 +48,10 @@ jobs:
     name: Build Snapshot
     needs: check-triggered-release
     runs-on: ubuntu-24.04
+    # Least-privilege: clones the repo (persist-credentials:false) and dispatches docs-publish via the default token
+    permissions:
+      contents: read
+      actions: write
     if: ${{ ((vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
       || (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))))
       && !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs')

@@ -28,6 +28,9 @@ jobs:
     name: Docs / Dispatch
     if: ${{ github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release-docs') }}
     runs-on: ubuntu-24.04
+    # Least-privilege: only re-dispatches this workflow via the default token; no checkout
+    permissions:
+      actions: write
     steps:
       - name: Trigger / Release Concurrently
         if: contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
@@ -47,6 +50,10 @@ jobs:
     name: Release Docs Process
     if: ${{ github.event_name == 'workflow_dispatch' && contains(inputs.RELEASE_LABELS, 'release-docs') }}
     runs-on: ubuntu-24.04
+    # Least-privilege: every git push, tag, PR and dispatch uses the App token (steps.app-token);
+    # the default workflow token only clones the repo.
+    permissions:
+      contents: read
     steps:
       - uses: actions/create-github-app-token@v3
         id: app-token
