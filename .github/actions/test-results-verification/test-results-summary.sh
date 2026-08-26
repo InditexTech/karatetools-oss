@@ -39,11 +39,11 @@ parse_results() {
       # Load parser
       # shellcheck disable=SC1090
       source "$PARSER"
-      # Define command, for example parse_surefire surefire code/target/reports
-      COMMAND="parse_$RESULTS_TYPE $RESULTS_TYPE $RESULTS_FOLDER"
-      # Execute command
-      echo "Executing       [$COMMAND]"
-      eval "$COMMAND"
+      # Execute command directly, for example parse_surefire surefire code/target/reports
+      # (RESULTS_TYPE is validated above against an existing parser file, so the
+      #  function name is not attacker-controlled; call it directly instead of eval)
+      echo "Executing       [parse_$RESULTS_TYPE $RESULTS_TYPE $RESULTS_FOLDER]"
+      "parse_$RESULTS_TYPE" "$RESULTS_TYPE" "$RESULTS_FOLDER"
     else
       echo "Unsupported Type [$RESULTS_TYPE]"
     fi
