@@ -52,6 +52,10 @@ env:
   WORKFLOW_VERSION: 1.0.0
   MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
+# Least-privilege: this QA job only reads the repo, builds/runs the app locally, and uploads artifacts
+permissions:
+  contents: read
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
@@ -72,6 +76,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       # config
       - name: config
@@ -88,6 +93,16 @@ jobs:
         id: app-config
         if: ${{ fromJSON(steps.config.outputs.config).karate.app.enabled == true }}
         working-directory: code
+        # Config values come from github_config.yml, which a fork PR can edit.
+        # Bind them to env vars so their contents cannot inject shell via ${{ }} splicing.
+        env:
+          CFG_APP_PORT: ${{ fromJSON(steps.config.outputs.config).karate.app.port }}
+          CFG_APP_JAR: ${{ fromJSON(steps.config.outputs.config).karate.app.jar }}
+          CFG_APP_HEALTH_PROBE: ${{ fromJSON(steps.config.outputs.config).karate.app.health_probe }}
+          CFG_JACOCO_REPORT_FOLDER: ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }}
+          CFG_JACOCO_INCLUDES: ${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.includes, ':') }}
+          CFG_JACOCO_EXCLUDES: ${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.excludes, ':') }}
+          CFG_JACOCO_SOURCE_FILES: ${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.sourcefiles, ' --sourcefiles ') }}
         run: |
 
           # app-config
@@ -95,7 +110,7 @@ jobs:
           echo "::group::+++ app-config +++"
 
           # App Port
-          APP_PORT=${{ fromJSON(steps.config.outputs.config).karate.app.port }}
+          APP_PORT="$CFG_APP_PORT"
           echo "APP_PORT=$APP_PORT"
 
           # Project Version from pom.xml
@@ -103,7 +118,7 @@ jobs:
           echo "PROJECT_VERSION=$PROJECT_VERSION"
 
           # App Path to Jar
-          APP_PATH_TO_JAR="${{ fromJSON(steps.config.outputs.config).karate.app.jar }}-$PROJECT_VERSION.jar"
+          APP_PATH_TO_JAR="$CFG_APP_JAR-$PROJECT_VERSION.jar"
           echo "APP_PATH_TO_JAR=$APP_PATH_TO_JAR"
 
           # App Options
@@ -111,7 +126,7 @@ jobs:
           echo "APP_OPTIONS=$APP_OPTIONS"
 
           # App Health Probe from config
-          APP_HEALTH_PROBE="${{ fromJSON(steps.config.outputs.config).karate.app.health_probe }}"
+          APP_HEALTH_PROBE="$CFG_APP_HEALTH_PROBE"
           echo "APP_HEALTH_PROBE=$APP_HEALTH_PROBE"
 
           # App Health Check URL
@@ -123,19 +138,19 @@ jobs:
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
           # JaCoCo report folder relative to the code folder
-          JACOCO_RELATIVE_FOLDER=$(echo ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }} | sed -E "s/^code\///" )
+          JACOCO_RELATIVE_FOLDER=$(echo "$CFG_JACOCO_REPORT_FOLDER" | sed -E "s/^code\///" )
           echo "JACOCO_RELATIVE_FOLDER=$JACOCO_RELATIVE_FOLDER"
 
           # JaCoCo Settings - Includes
-          JACOCO_INCLUDES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.includes, ':') }}"
+          JACOCO_INCLUDES="$CFG_JACOCO_INCLUDES"
           echo "JACOCO_INCLUDES=$JACOCO_INCLUDES"
 
           # JaCoCo Settings - Excludes
-          JACOCO_EXCLUDES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.excludes, ':') }}"
+          JACOCO_EXCLUDES="$CFG_JACOCO_EXCLUDES"
           echo "JACOCO_EXCLUDES=$JACOCO_EXCLUDES"
 
           # JaCoCo Settings - Source Files
-          JACOCO_SOURCE_FILES="${{ join(fromJSON(steps.config.outputs.config).karate.jacoco.sourcefiles, ' --sourcefiles ') }}"
+          JACOCO_SOURCE_FILES="$CFG_JACOCO_SOURCE_FILES"
           echo "JACOCO_SOURCE_FILES=$JACOCO_SOURCE_FILES"
 
           # JaCoCo Settings - Class Dump Directory
@@ -191,16 +206,17 @@ jobs:
       # save-tool-versions-content
       - name: save-tool-versions-content
         run: |
+          DELIMITER="EOF_$(openssl rand -hex 16)"
           {
-            echo "TOOL_VERSIONS<<EOF"
+            echo "TOOL_VERSIONS<<${DELIMITER}"
             cat code/.tool-versions
-            echo "EOF"
+            echo "${DELIMITER}"
           } >> "$GITHUB_ENV"
 
       # asdf-install
       - name: asdf-install
         id: asdf-install
-        uses: asdf-vm/actions/install@v4
+        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47 # v4
         with:
           tool_versions: ${{ env.TOOL_VERSIONS }}
 
@@ -244,6 +260,15 @@ jobs:
         id: start-java-app
         if: ${{ fromJSON(steps.config.outputs.config).karate.app.enabled == true }}
         working-directory: code
+        # Bind config/step-output values to env vars so their contents cannot
+        # inject shell via ${{ }} splicing into this run: block.
+        env:
+          CFG_APP_LOGFILE: ${{ fromJSON(steps.config.outputs.config).karate.app.logfile }}
+          OUT_JACOCO_VERSION: ${{ steps.app-config.outputs.jacoco-version }}
+          OUT_APP_PATH_TO_JAR: ${{ steps.app-config.outputs.app-path-to-jar }}
+          OUT_APP_OPTIONS: ${{ steps.app-config.outputs.app-options }}
+          OUT_JACOCO_AGENT_OPTIONS: ${{ steps.app-config.outputs.jacoco-agent-options }}
+          OUT_APP_HEALTH_CHECK_URL: ${{ steps.app-config.outputs.app-health-check-url }}
         run: |
 
           # start-java-app
@@ -251,10 +276,10 @@ jobs:
           echo "::group::+++ download-jacoco-agent +++"
           # Download JaCoCo agent
 
-          JACOCO_VERSION="${{ steps.app-config.outputs.jacoco-version }}"
+          JACOCO_VERSION="$OUT_JACOCO_VERSION"
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
-          curl -k -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar
+          curl -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar
 
           echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
 
@@ -263,10 +288,10 @@ jobs:
           echo "::group::+++ start-java-app +++"
           # Start the app
 
-          APP_LOG_FILE="${{ fromJSON(steps.config.outputs.config).karate.app.logfile }}"
-          APP_PATH_TO_JAR="${{ steps.app-config.outputs.app-path-to-jar }}"
-          APP_OPTIONS="${{ steps.app-config.outputs.app-options }}"
-          JACOCO_AGENT_OPTIONS="${{ steps.app-config.outputs.jacoco-agent-options }}"
+          APP_LOG_FILE="$CFG_APP_LOGFILE"
+          APP_PATH_TO_JAR="$OUT_APP_PATH_TO_JAR"
+          APP_OPTIONS="$OUT_APP_OPTIONS"
+          JACOCO_AGENT_OPTIONS="$OUT_JACOCO_AGENT_OPTIONS"
 
           START_APP_CMD="java $JACOCO_AGENT_OPTIONS -jar $APP_PATH_TO_JAR $APP_OPTIONS"
 
@@ -288,8 +313,7 @@ jobs:
           echo "::group::+++ wait-for-app-health-check +++"
 
           # Wait for the app to start
-          APP_HEALTH_CHECK_URL="${{ steps.app-config.outputs.app-health-check-url }}"
-          APP_HEALTH_CHECK_CMD="curl -s -o /dev/null -w \"%{http_code}\" $APP_HEALTH_CHECK_URL"
+          APP_HEALTH_CHECK_URL="$OUT_APP_HEALTH_CHECK_URL"
 
           echo ">> Waiting for healthcheck to return 200: $APP_HEALTH_CHECK_URL"
 
@@ -305,7 +329,7 @@ jobs:
           while [ $RETRY_COUNT -lt $((RETRY_TIMES)) ]; do
             RETRY_COUNT=$((RETRY_COUNT+1));
             echo ">> Executing healthcheck [$APP_HEALTH_CHECK_URL], try [$RETRY_COUNT of $RETRY_TIMES]";
-            response=$(eval "$APP_HEALTH_CHECK_CMD");
+            response=$(curl -s -o /dev/null -w "%{http_code}" "$APP_HEALTH_CHECK_URL");
             if [[ $response -eq 200 ]]; then
               echo ">> Started app with pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
               break;
@@ -326,6 +350,12 @@ jobs:
       - name: mvn-clean-verify
         id: mvn-clean-verify
         working-directory: e2e/karate
+        # Config values come from github_config.yml, which a fork PR can edit.
+        # Bind them to env vars so their contents cannot inject shell via ${{ }} splicing.
+        env:
+          CFG_APP_PORT: ${{ fromJSON(steps.config.outputs.config).karate.app.port }}
+          CFG_KARATE_ENV: ${{ fromJSON(steps.config.outputs.config).karate.env }}
+          CFG_KARATE_OPTIONS: ${{ fromJSON(steps.config.outputs.config).karate.options }}
         run: |
 
           # mvn-clean-verify
@@ -333,9 +363,9 @@ jobs:
           echo "::group::+++ mvn-clean-verify +++"
 
           # Maven Properties
-          APP_PORT=${{ fromJSON(steps.config.outputs.config).karate.app.port }}
-          KARATE_ENV=${{ fromJSON(steps.config.outputs.config).karate.env }}
-          KARATE_OPTIONS="${{ fromJSON(steps.config.outputs.config).karate.options }}"
+          APP_PORT="$CFG_APP_PORT"
+          KARATE_ENV="$CFG_KARATE_ENV"
+          KARATE_OPTIONS="$CFG_KARATE_OPTIONS"
           echo "MVN_PROPERTIES=-DAPP_PORT=$APP_PORT -Dkarate.env=$KARATE_ENV -Dkarate.options=$KARATE_OPTIONS"
 
           # mvn clean verify
@@ -377,6 +407,9 @@ jobs:
           && fromJSON(steps.config.outputs.config).karate.app.enabled == true
           && steps.start-java-app.outcome == 'success' }}
         working-directory: code
+        env:
+          OUT_APP_PID: ${{ steps.start-java-app.outputs.app-pid }}
+          OUT_JACOCO_RELATIVE_FOLDER: ${{ steps.app-config.outputs.jacoco-relative-folder }}
         run: |
 
           # stop-java-app
@@ -385,7 +418,7 @@ jobs:
           # Stop the app
 
           # Kill the app using the app-pid
-          APP_PID=${{ steps.start-java-app.outputs.app-pid }}
+          APP_PID="$OUT_APP_PID"
 
           echo ">> Killing app-pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
           while kill -15 $APP_PID 2>/dev/null; do sleep 1; done
@@ -393,7 +426,7 @@ jobs:
 
           # Check JaCoCo agent Dump Files
           echo ">> JaCoCo agent dump files:"
-          echo "$(ls -l ${{ steps.app-config.outputs.jacoco-relative-folder }})"
+          ls -l "$OUT_JACOCO_RELATIVE_FOLDER"
 
           echo "::endgroup::"
 
@@ -405,6 +438,9 @@ jobs:
           && fromJSON(steps.config.outputs.config).karate.app.enabled == true
           && steps.start-java-app.outcome == 'success' }}
         working-directory: code
+        env:
+          OUT_JACOCO_VERSION: ${{ steps.app-config.outputs.jacoco-version }}
+          OUT_JACOCO_CLI_REPORT_OPTIONS: ${{ steps.app-config.outputs.jacoco-cli-report-options }}
         run: |
 
           # generate-jacoco-report
@@ -412,11 +448,11 @@ jobs:
           echo "::group::+++ download-jacoco-cli +++"
           # Download JaCoCo CLI
 
-          JACOCO_VERSION="${{ steps.app-config.outputs.jacoco-version }}"
+          JACOCO_VERSION="$OUT_JACOCO_VERSION"
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
           # Donwload the JaCoCo CLI
-          curl -k -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar
+          curl -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar
 
           echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
 
@@ -425,7 +461,7 @@ jobs:
           echo "::group::+++ generate-jacoco-report +++"
 
           # JaCoCo CLI Report Options
-          JACOCO_CLI_REPORT_OPTIONS="${{ steps.app-config.outputs.jacoco-cli-report-options }}"
+          JACOCO_CLI_REPORT_OPTIONS="$OUT_JACOCO_CLI_REPORT_OPTIONS"
 
           # Generate JaCoCo report
           echo ">> Generating JaCoCo report with options: $JACOCO_CLI_REPORT_OPTIONS"
