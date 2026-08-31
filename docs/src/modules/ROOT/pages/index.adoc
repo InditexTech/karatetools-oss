@@ -110,8 +110,7 @@ https://github.com/InditexTech/karatetools-oss[Star the repository on GitHub,win
 
 == Frequently asked questions
 
-Have more questions? Check the xref:main:faq.adoc[FAQ] or open an issue —
-we'll respond as quickly as possible.
+Have more questions? Open an issue — we'll respond as quickly as possible.
 
 [accordion,aria-label="Frequently asked questions"]
 --

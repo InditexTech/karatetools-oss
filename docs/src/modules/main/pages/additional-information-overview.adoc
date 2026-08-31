@@ -21,8 +21,4 @@ Report privately — do not open a public issue.
 [card]
 .xref:release-notes/overview.adoc[Release notes]
 Highlights and major changes of each release.
-
-[card]
-.xref:faq.adoc[FAQ]
-Common questions and known issues.
 ====

@@ -42,7 +42,6 @@
 * xref:main:additional-information-overview.adoc[Overview]
 * xref:main:release-notes/overview.adoc[Release notes]
 ** xref:main:release-notes/migration-guide.adoc[Migration guide]
-* xref:main:faq.adoc[FAQ]
 
 * Contributing
 * xref:main:contributing-overview.adoc[Overview]
