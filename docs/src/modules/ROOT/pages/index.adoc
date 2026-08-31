@@ -4,9 +4,9 @@
 :description: Replace this with a one-line description of InditexTech Karate Tools — it feeds page metadata as well as the hero.
 :page-tags: replace, these, tags
 :page-action: Get started
-:page-action-url: main:getting-started.adoc
+:page-action-url: main:quickstart.adoc
 :page-action-secondary: About
-:page-action-secondary-url: main:index.adoc
+:page-action-secondary-url: main:about.adoc
 :page-hero-image: hero-placeholder.png
 :page-hero-image-alt: Placeholder standing in for a product screenshot or diagram.
 
@@ -19,7 +19,7 @@ and is the first thing a reader sees beside the hero.
 [cards,type=image-square,columns="1 s:2 m:4",width=container]
 ====
 [card,subheader="Start here"]
-.xref:main:getting-started.adoc[Getting started]
+.xref:main:quickstart.adoc[Getting started]
 --
 image::card-placeholder.png[Placeholder card image]
 
@@ -27,7 +27,7 @@ Add a page, build the site, publish it.
 --
 
 [card,subheader="Overview"]
-.xref:main:index.adoc[About]
+.xref:main:about.adoc[About]
 --
 image::card-placeholder.png[Placeholder card image]
 
@@ -66,7 +66,7 @@ image::feature-placeholder-dark.png[role=dark]
 Describe the first thing worth knowing about InditexTech Karate Tools here.
 
 [.cta]
-xref:main:index.adoc[Learn more]
+xref:main:about.adoc[Learn more]
 --
 
 [feature,label="Replace me too"]

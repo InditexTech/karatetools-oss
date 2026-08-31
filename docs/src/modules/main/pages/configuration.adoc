@@ -1,0 +1,13 @@
+= Configuration
+:description: Every Karate Tools configuration property: type, default, and effect.
+
+// TODO(#96 phase 3/5): derive from the karate-config/logging/urls/auth
+// guides and the archetype's own generated config files, as an exhaustive
+// lookup table (see docouture-authoring-guides skill's reference.md).
+
+// == <Namespace or functional area>
+//
+// [cols="20%,20%,20%,40%"]
+// |===
+// | Key | Type | Default value | Description
+// |===

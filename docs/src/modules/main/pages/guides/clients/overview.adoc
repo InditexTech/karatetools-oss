@@ -1,0 +1,8 @@
+= Clients
+:description: JDBC, MongoDB, Kafka and JMS clients for use in tests.
+
+// TODO(#96 phase 3): migrate from the old docs/src/modules/clients/ pages:
+// jdbc, mongodb, kafka, jms.
+
+This guide covers the clients Karate Tools ships for use in tests: JDBC,
+MongoDB, Kafka and JMS.

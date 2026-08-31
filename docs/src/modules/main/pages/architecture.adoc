@@ -1,6 +1,19 @@
-= Architecture
+= Karate Tools architecture
+:description: How Karate Tools is built: its modules, and how they fit together.
 
-Describe the system's architecture here — its major components, how they
-fit together, and the boundaries between them. A diagram is often the most
-useful thing on this page; AsciiDoc's `image::` macro embeds one from
-`modules/main/images/`.
+// TODO(#96 phase 3): draft real content from the old docs/src/modules/overview/
+// and docs/src/modules/archetype/ pages and diagrams.
+
+This page describes the modules that make up Karate Tools and how they relate
+to each other.
+
+== Overview
+
+// Walk through the module diagram carried over from the old overview/archetype
+// pages: each artifact, its purpose, and its dependencies on the others.
+
+== Project structure
+
+// karatetools-oss-archetype, -clients, -generators, -runner, -starter, -boot,
+// -openapi-test, -karate-test — one paragraph each, sourced from the old
+// contributing/karatetools-oss.adoc anchor sections (see Guides > Archetype).

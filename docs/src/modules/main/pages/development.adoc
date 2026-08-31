@@ -1,0 +1,19 @@
+= Development
+:description: Set up a development environment and work on Karate Tools.
+
+// TODO(#96 phase 3): migrate from docs/src/modules/contributing/
+// {development-guide,karatetools-oss,step-by-step}.adoc — the old
+// karatetools-oss.adoc page used an 8-level anchor-xref hack (one
+// sub-anchor per package: archetype, clients, generators, runner, starter,
+// boot, openapi-test, karate-test, docs) that should become real subpages
+// under this one instead, per the issue's decision.
+
+This page explains how to set up a development environment for Karate Tools
+and the workflow to build, run, and test it locally. For the contribution
+process, see xref:contributing-overview.adoc[Contributing].
+
+== Environment setup
+
+== Development process
+
+== Testing

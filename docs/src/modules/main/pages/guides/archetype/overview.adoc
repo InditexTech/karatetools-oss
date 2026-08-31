@@ -1,0 +1,7 @@
+= Archetype
+:description: Scaffold and initialize a new Karate module.
+
+// TODO(#96 phase 3): migrate from the old docs/src/modules/archetype/ pages.
+
+This guide covers generating a new Karate module from the Maven archetype and
+its initial configuration.

@@ -1,0 +1,38 @@
+= About Karate Tools
+:description: What Karate Tools is, who it is for, and why it exists.
+
+// TODO(#96 phase 3): draft real content from README.md and the archetype/module
+// diagrams under the old docs/src/modules/{overview,archetype}/. See the
+// docouture-authoring-guides skill's reference/overview.md for the full contract.
+
+Karate Tools is a toolkit that facilitates a Karate module's initialization,
+configuration, test generation and execution for teams building REST-based
+functional tests.
+
+== Key features
+
+* *Archetype-based initialization* — scaffold a new Karate module from a Maven
+  archetype, see xref:guides/overview.adoc[Guides].
+* *Open API generation* — automatically generate test scenarios, test data and
+  service mocks from an Open API definition.
+* *Common operations* — authentication, database interaction, and messaging
+  (Kafka & JMS) clients ready to use in tests.
+* *Execution* — run Karate tests against different environments.
+
+== Benefits
+
+* *Faster onboarding:* a new module starts from a working, opinionated
+  structure instead of a blank project.
+* *Less boilerplate:* Open API generation removes most of the manual work of
+  writing scenarios, test data and mocks by hand.
+
+== What Karate Tools is not
+
+* Karate Tools does not replace https://karatelabs.github.io/karate/[Karate]
+  itself — it is a set of conventions, generators and clients built on top of
+  it.
+
+== Status and roadmap
+
+Karate Tools is actively maintained and used internally at InditexTech; this
+site tracks its current, stable feature set.

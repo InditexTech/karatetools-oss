@@ -1,6 +1,0 @@
-= Contributing
-
-Describe how someone proposes a change — to the project, or to these docs
-themselves. For the docs specifically, see
-xref:main:getting-started.adoc[Getting started] for how to add a page, build
-the site, and publish it.

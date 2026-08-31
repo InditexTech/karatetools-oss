@@ -1,0 +1,8 @@
+= Open API generator
+:description: Generate operations, tests and mock data from an Open API definition.
+
+// TODO(#96 phase 3): migrate from the old docs/src/modules/open-api-generator/
+// pages: operations, smoke tests, functional tests, mock data.
+
+This guide covers generating Karate operations, smoke tests, functional tests
+and mock data automatically from an Open API definition.

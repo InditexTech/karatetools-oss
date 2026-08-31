@@ -1,4 +1,0 @@
-= Roadmap
-
-Describe what is planned next here — in enough detail to set expectations,
-without promising dates this page will have to walk back.

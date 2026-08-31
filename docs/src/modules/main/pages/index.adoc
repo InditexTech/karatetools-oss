@@ -1,9 +1,0 @@
-= About
-
-This is the `main` module — a placeholder content module scaffolded by
-`docouture new`, structured the way a real documentation set typically is:
-an overview, a getting-started path, a section for the thing being
-documented, and additional reference material.
-
-Replace this page with a real introduction to what InditexTech Karate Tools is and
-who it is for.

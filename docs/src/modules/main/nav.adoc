@@ -1,19 +1,30 @@
-* Welcome to docouture
-* xref:main:prerequisites.adoc[Prerequisites]
-* xref:main:getting-started.adoc[Getting started]
-* xref:main:components.adoc[AsciiDoc components]
 * Overview
-* xref:main:index.adoc[About]
+* xref:main:about.adoc[About]
 * xref:main:architecture.adoc[Architecture]
-* xref:main:structure.adoc[Structure]
 * xref:main:glossary.adoc[Glossary]
+
 * Getting started
-* xref:main:requirements.adoc[Requirements]
+* xref:main:prerequisites.adoc[Prerequisites]
 * xref:main:quickstart.adoc[Quickstart]
-* App
-* xref:main:app.adoc[Overview]
+
+* Guides
+* xref:main:guides/overview.adoc[Overview]
+** xref:main:guides/archetype/overview.adoc[Archetype]
+** xref:main:guides/configuration/overview.adoc[Configuration]
+** xref:main:guides/open-api-generator/overview.adoc[Open API generator]
+** xref:main:guides/clients/overview.adoc[Clients]
+** xref:main:guides/execution/overview.adoc[Execution]
+
+* Reference
+* xref:main:reference-overview.adoc[Overview]
+** xref:main:configuration.adoc[Configuration]
+
 * Additional information
-* xref:main:release-notes/index.adoc[Release notes]
-* xref:main:changelog/index.adoc[Changelog]
-* xref:main:roadmap.adoc[Roadmap]
-* xref:main:contributing.adoc[Contributing]
+* xref:main:additional-information-overview.adoc[Overview]
+** xref:main:release-notes/overview.adoc[Release notes]
+** xref:main:changelog/overview.adoc[Changelog]
+** xref:main:faq.adoc[FAQ]
+
+* Contributing
+* xref:main:contributing-overview.adoc[Overview]
+** xref:main:development.adoc[Development]

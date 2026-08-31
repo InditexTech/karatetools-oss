@@ -1,21 +1,30 @@
 = Quickstart
+:description: Scaffold and run your first Karate module in minutes.
 
-Walk through the smallest path to a working result, as concrete steps.
+// TODO(#96 phase 4, per issue #96): this page does not exist in the old site —
+// author it from scratch once the Guides > Archetype content has landed.
 
-== 1. Install
+In this quickstart, you scaffold a new Karate module from the archetype and
+run its first test. Before you begin, make sure you meet the
+xref:prerequisites.adoc[prerequisites].
 
-[,console]
+== Step by step
+
+=== 1. Generate a module from the archetype
+
+[source,bash]
 ----
-$ echo "replace with the real install command"
+<archetype generation command>
 ----
 
-== 2. Run
+=== 2. Run the tests
 
-[,console]
+[source,bash]
 ----
-$ echo "replace with the real run command"
+<run command>
 ----
 
-== 3. Verify
+== Next steps
 
-Describe what success looks like here.
+* xref:guides/overview.adoc[Guides] — configuration, Open API generation,
+  clients and execution in depth.

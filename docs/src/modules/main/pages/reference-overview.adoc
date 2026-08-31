@@ -1,0 +1,16 @@
+= Reference
+:description: Reference material for Karate Tools: configuration properties and options.
+
+// TODO(#96 phase 3/5): mostly new — the old site has almost no pure
+// lookup-table content; derive this from the archetype/generator/client
+// source (config schemas, generator options) rather than the old docs.
+
+This section is the lookup material for Karate Tools: every configuration
+property, described exhaustively.
+
+[cards,columns="1 s:2 m:3"]
+====
+[card]
+.xref:configuration.adoc[Configuration]
+Every Karate Tools configuration property: type, default, and effect.
+====

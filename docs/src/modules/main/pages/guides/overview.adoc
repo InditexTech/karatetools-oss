@@ -1,0 +1,32 @@
+= Guides
+:description: Step-by-step guides to accomplish specific tasks with Karate Tools.
+
+// TODO(#96 phase 3): migrated from the old docs/src/modules/{archetype,
+// configuration,open-api-generator,clients,execution}/ — ~90 pages total.
+// See the issue's "Section -> content mapping" table.
+
+These guides show how to accomplish specific tasks with Karate Tools, grouped
+by area.
+
+[cards,columns="1 s:2 m:3"]
+====
+[card]
+.xref:guides/archetype/overview.adoc[Archetype]
+Scaffold and initialize a new Karate module.
+
+[card]
+.xref:guides/configuration/overview.adoc[Configuration]
+Karate config, logging, environment URLs and authentication.
+
+[card]
+.xref:guides/open-api-generator/overview.adoc[Open API generator]
+Generate operations, smoke/functional tests and mock data from an Open API definition.
+
+[card]
+.xref:guides/clients/overview.adoc[Clients]
+JDBC, MongoDB, Kafka and JMS clients for use in tests.
+
+[card]
+.xref:guides/execution/overview.adoc[Execution]
+Arguments, logging, the mock server, reports and the Karate cache.
+====

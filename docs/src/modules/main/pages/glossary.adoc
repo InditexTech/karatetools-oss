@@ -1,8 +1,8 @@
 = Glossary
+:description: Terms and abbreviations used across the Karate Tools documentation.
 
-Define project-specific terms here, one per section, so other pages can
-link to a definition instead of re-explaining it inline.
+// TODO(#96 phase 3): populate with real terms as content migrates (archetype,
+// smoke/functional/mock tests, karate-config, etc.) — one == section per term.
 
-== Example term
-
-A short definition of the term goes here. Replace with real terminology.
+This glossary lists the terms, abbreviations, and phrases used across the
+Karate Tools documentation, together with their definitions.

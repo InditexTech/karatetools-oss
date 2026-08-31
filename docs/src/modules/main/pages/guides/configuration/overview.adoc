@@ -1,0 +1,9 @@
+= Configuration
+:description: Karate config, logging, environment URLs and authentication.
+
+// TODO(#96 phase 3): migrate from the old docs/src/modules/configuration/ pages:
+// karate-config, logging, urls, auth, auth-basic, auth-jwt,
+// local-machine-secrets.
+
+This guide covers configuring a Karate module: `karate-config`, logging,
+environment URLs, and authentication (basic and JWT).

@@ -54,7 +54,7 @@ nav:
 nav_modules:
   - module: main
     title: Documentation
-    description: Placeholder documentation module — replace with your own content.
+    description: Overview, guides, reference and everything else about Karate Tools.
     icon: grid-3x3
 
 # Which module's navigation the generated 404 page's side menu shows, read
@@ -82,4 +82,4 @@ footer:
         - text: Home
           url: ROOT:index.adoc
         - text: Getting started
-          url: main:getting-started.adoc
+          url: main:prerequisites.adoc

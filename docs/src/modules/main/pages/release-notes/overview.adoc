@@ -1,0 +1,12 @@
+= Release notes
+:description: Highlights of every Karate Tools release.
+
+// TODO(#96 phase 3): migrate from the old docs/src/modules/release/ pages
+// (index.adoc, migration-guide.adoc).
+
+For the complete list of changes, see the
+xref:main:changelog/overview.adoc[changelog].
+
+== v0.1.0
+
+Placeholder entry. Replace with the real first release's notes.

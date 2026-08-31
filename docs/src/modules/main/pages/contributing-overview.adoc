@@ -1,0 +1,21 @@
+= Contributing
+:description: How to contribute to Karate Tools.
+
+// TODO(#96 phase 3): migrate real contributor-facing content from
+// docs/src/modules/contributing/{index,step-by-step}.adoc.
+
+We welcome contributions to Karate Tools — from bug reports and typo fixes to
+new features.
+
+== Ways to contribute
+
+* *Report a bug* — open an issue in our
+  link:https://github.com/InditexTech/karatetools-oss/issues[issue tracker].
+* *Suggest a feature* — open an issue explaining your idea.
+* *Contribute code* — read the xref:development.adoc[development guide] below.
+
+== Before you start
+
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/CONTRIBUTING.md[Contribution guide]
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/CODE_OF_CONDUCT.md[Code of conduct]
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/LICENSE[License]
