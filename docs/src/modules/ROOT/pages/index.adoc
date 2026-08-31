@@ -1,124 +1,148 @@
 = InditexTech Karate Tools
 :page-layout: home
 :page-nav-module: main
-:description: Replace this with a one-line description of InditexTech Karate Tools — it feeds page metadata as well as the hero.
-:page-tags: replace, these, tags
-:page-action: Get started
+:description: A toolkit to initialize, configure, generate and run Karate REST test suites.
+:page-tags: testing, karate, rest, open-api, java
+:page-action: Quickstart
 :page-action-url: main:quickstart.adoc
 :page-action-secondary: About
 :page-action-secondary-url: main:about.adoc
-:page-hero-image: hero-placeholder.png
-:page-hero-image-alt: Placeholder standing in for a product screenshot or diagram.
+:page-hero-image: main:archetype/archetype-execution.png
+:page-hero-image-alt: Terminal output of generating a new Karate module from the Karate Tools archetype.
 
-Replace this preamble with a short lead-in for InditexTech Karate Tools — one or two
-sentences, no heading of its own. It sits above the `Get started` row below
-and is the first thing a reader sees beside the hero.
+Karate Tools is a toolkit for teams testing REST APIs with
+https://karatelabs.github.io/karate/[Karate,window=_blank]. It scaffolds a
+new Karate module from a Maven archetype, generates test scenarios, data
+sets and mocks straight from an Open API definition, and ships ready-to-use
+clients for the databases and messaging systems your tests need to talk to.
+
+- *One archetype, one command* — a working Karate project, configured and
+  ready to run.
+- *Tests you don't have to write* — Open API in, Gherkin scenarios and mocks
+  out.
+- *Clients included* — JDBC, MongoDB, Kafka and JMS, ready to use in tests.
 
 == Get started
 
 [cards,type=image-square,columns="1 s:2 m:4",width=container]
 ====
 [card,subheader="Start here"]
-.xref:main:quickstart.adoc[Getting started]
---
-image::card-placeholder.png[Placeholder card image]
-
-Add a page, build the site, publish it.
---
-
-[card,subheader="Overview"]
-.xref:main:about.adoc[About]
---
-image::card-placeholder.png[Placeholder card image]
-
-What this placeholder module is, and how to replace it with real content.
---
-
-[card,subheader="Reference"]
 .xref:main:quickstart.adoc[Quickstart]
 --
-image::card-placeholder.png[Placeholder card image]
+image::ROOT:tools.png[Gear icon]
 
-The smallest path to a working result, as concrete steps.
+Scaffold a module and run your first test.
 --
 
-[card,subheader="Design"]
-.xref:main:architecture.adoc[Architecture]
+[card,subheader="Tasks"]
+.xref:main:guides/overview.adoc[Guides]
 --
-image::card-placeholder.png[Placeholder card image]
+image::ROOT:training.png[Teacher icon]
 
-Where to describe the system's major components and how they fit together.
+Step-by-step guides for configuration, generation, clients and execution.
+--
+
+[card,subheader="Look it up"]
+.xref:main:reference-overview.adoc[Reference]
+--
+image::ROOT:lab.png[Test tube icon]
+
+Configuration properties, exact and complete.
+--
+
+[card,subheader="Community"]
+.xref:main:contributing-overview.adoc[Contributing]
+--
+image::ROOT:dev.png[Woman technologist icon]
+
+Report bugs, improve the docs, or contribute code.
 --
 ====
 
-== Key features
-
-Replace this `[feature-tabs]` block with InditexTech Karate Tools's own — each slide
-is a media still, a short paragraph, and an optional call to action.
+== Key capabilities
 
 [feature-tabs]
 ====
-[feature,label="Replace me"]
+[feature,label="Scaffold a module in one command"]
 --
-image::feature-placeholder.png[Placeholder feature image]
-image::feature-placeholder-dark.png[role=dark]
+image::main:archetype/archetype-execution.png[Terminal running the Karate Tools archetype]
 
-Describe the first thing worth knowing about InditexTech Karate Tools here.
+Generate a fully-configured Karate module from a Maven archetype — Karate
+config, logging, authentication and mock-server wiring already in place.
 
 [.cta]
-xref:main:about.adoc[Learn more]
+xref:main:guides/archetype/overview.adoc[Learn more]
 --
 
-[feature,label="Replace me too"]
+[feature,label="Generate tests from Open API"]
 --
-image::feature-placeholder.png[Placeholder feature image]
-image::feature-placeholder-dark.png[role=dark]
+image::main:open-api-generator/open-api-generator-cmd-operations.png[Terminal running the Open API generator]
 
-A second slide, same shape — media, prose, an optional call to action.
+Point the generator at an Open API definition and get Gherkin scenarios,
+test data and service mocks back — no scenario written by hand.
 
 [.cta]
-xref:main:architecture.adoc[Learn more]
+xref:main:guides/open-api-generator/overview.adoc[Learn more]
 --
 
-[feature,label="And this one"]
+[feature,label="Run and get reports that matter"]
 --
-image::feature-placeholder.png[Placeholder feature image]
-image::feature-placeholder-dark.png[role=dark]
+image::main:execution/karate-reports-default-karate.png[Karate HTML test report]
 
-A third slide. A slide with no call to action is fine too — it is optional.
+Run against any environment, with a mock server for external services and
+HTML reports that show exactly what ran.
+
+[.cta]
+xref:main:guides/execution/overview.adoc[Learn more]
 --
 ====
 
 == Free & open source
 
-Replace or remove this `[cta]` block — a flat one-line pitch plus a single
-primary action, styled apart from the ordinary body copy above it.
-
 [cta]
 ====
-Replace this with a short pitch for InditexTech Karate Tools — why it is worth a
-reader's attention.
+Karate Tools is developed in the open at InditexTech, and built for teams
+to actually use — bug reports, fixes and new features are all welcome.
 
 [.primary]
-https://github.com[Replace with a real link]
+https://github.com/InditexTech/karatetools-oss[Star the repository on GitHub,window=_blank]
 ====
 
 == Frequently asked questions
 
-Replace this `[accordion]` block with InditexTech Karate Tools's own real questions —
-this is a placeholder shape, not sample copy to keep.
+Have more questions? Check the xref:main:faq.adoc[FAQ] or open an issue —
+we'll respond as quickly as possible.
 
 [accordion,aria-label="Frequently asked questions"]
 --
-.Replace this with a real question?
+.Is Karate Tools free and open source?
 [%collapsible]
 ====
-Replace this with a real answer.
+Yes. Karate Tools is distributed under the Apache 2.0 License: you can use,
+modify and distribute it, including in commercial applications.
 ====
 
-.And a second one?
+.Do I need an Open API definition to use Karate Tools?
 [%collapsible]
 ====
-Answers can be as short or as long as the question needs.
+No. The Open API generator is optional — the archetype gives you a working
+Karate project either way; the generator just saves you from writing
+scenarios, test data and mocks by hand when a definition exists. See
+xref:main:guides/open-api-generator/overview.adoc[Open API generator].
+====
+
+.Do I need to write Java to use Karate Tools?
+[%collapsible]
+====
+Mostly no — tests are plain Karate `.feature` files and YAML/JS
+configuration. Java is only involved if you extend the clients or
+generators themselves. See the xref:main:quickstart.adoc[quickstart].
+====
+
+.Can I use Karate Tools outside InditexTech?
+[%collapsible]
+====
+Yes — Karate Tools is public open-source software, usable by anyone under
+the Apache 2.0 License.
 ====
 --

@@ -61,56 +61,28 @@ SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "docs/src/modules/HOME/images/clients.png"
+path = "docs/src/modules/ROOT/images/dev.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
 
 [[annotations]]
-path = "docs/src/modules/HOME/images/dev.png"
+path = "docs/src/modules/ROOT/images/lab.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
 
 [[annotations]]
-path = "docs/src/modules/HOME/images/integration.png"
+path = "docs/src/modules/ROOT/images/tools.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
 
 [[annotations]]
-path = "docs/src/modules/HOME/images/lab.png"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
-SPDX-License-Identifier = "Apache-2.0"
-SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
-
-[[annotations]]
-path = "docs/src/modules/HOME/images/notes.png"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
-SPDX-License-Identifier = "Apache-2.0"
-SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
-
-[[annotations]]
-path = "docs/src/modules/HOME/images/toolbox.png"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
-SPDX-License-Identifier = "Apache-2.0"
-SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
-
-[[annotations]]
-path = "docs/src/modules/HOME/images/tools.png"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
-SPDX-License-Identifier = "Apache-2.0"
-SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
-
-[[annotations]]
-path = "docs/src/modules/HOME/images/training.png"
+path = "docs/src/modules/ROOT/images/training.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2013 Google, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
