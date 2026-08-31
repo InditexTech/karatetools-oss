@@ -2,17 +2,14 @@
 :description: Step-by-step guides to accomplish specific tasks with Karate Tools.
 
 These guides show how to accomplish specific tasks with Karate Tools, grouped
-by area.
+by area. New to Karate Tools? Start with the xref:quickstart.adoc[quickstart]
+instead — it walks the same areas in the recommended order.
 
 [cards,columns="1 s:2 m:3"]
 ====
 [card]
 .xref:guides/archetype/overview.adoc[Archetype]
 Scaffold and initialize a new Karate module.
-
-[card]
-.xref:guides/configuration/overview.adoc[Configuration]
-Karate config, logging, environment URLs and authentication.
 
 [card]
 .xref:guides/open-api-generator/overview.adoc[Open API generator]
@@ -26,61 +23,3 @@ JDBC, MongoDB, Kafka and JMS clients for use in tests.
 .xref:guides/execution/overview.adoc[Execution]
 Arguments, logging, the mock server, reports and the Karate cache.
 ====
-
-== Recommended path
-
-To set up a Karate project for testing a REST artifact, follow these steps:
-
-. Ensure the xref:prerequisites.adoc[prerequisites] are met.
-. Run the xref:guides/archetype/overview.adoc[archetype] to set up the
-  initial Karate project.
-. Follow the xref:guides/configuration/overview.adoc[configuration] steps.
-. Generate tests, data sets and mocks from Open API definitions with the
-  xref:guides/open-api-generator/overview.adoc[Open API generator].
-. Integrate xref:guides/clients/overview.adoc[Karate clients] in the tests
-  for test data preparation and test validation.
-. Follow the xref:guides/execution/overview.adoc[execution] instructions:
-  running, reporting, starting a local application and other utilities
-  (KarateCache, ...).
-
-== Examples in this repository
-
-The Karate Tools repository includes working examples for each of the areas
-above, under `e2e/karate/src/test/resources`:
-
-[source,plaintext,subs="+attributes"]
-----
-e2e/karate/src/test/resources
-└── com
-    └── inditextech
-        └── karate
-            ├── auth
-            ├── base
-            ├── clients
-            │   ├── db
-            │   │   ├── JDBCClient-MariaDB.feature
-            │   │   ├── JDBCClient-PostgreSQL.feature
-            │   ├── jms
-            │   │   └── JMSClient-ActiveMQ.feature
-            │   ├── kafka
-            │   │   └── KafkaClients.feature
-            │   └── mongodb
-            │       └── MongoDBClient.feature
-            └── karatetools-openapi-test
-                └── xxx-api-rest-stable
-                    ├── functional
-                    │   └── e2e
-                    │       ├── e2e.feature
-                    │       └── test-data
-                    └── smoke
-                        └── BasicApi
-                            ├── createItems
-                            │   ├── createItems.feature
-                            │   └── test-data
-                            ├── listItems
-                            │   ├── listItems.feature
-                            │   └── test-data
-                            └── showItemById
-                                ├── showItemById.feature
-                                └── test-data
-----

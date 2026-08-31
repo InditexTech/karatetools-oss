@@ -1,9 +1,8 @@
 = Release notes
 :description: Highlights of every Karate Tools release.
 
-For the complete list of changes, see the
-xref:main:changelog/overview.adoc[changelog]. For upgrade instructions
-between major versions, see the xref:release-notes/migration-guide.adoc[migration guide].
+For upgrade instructions between major versions, see the
+xref:release-notes/migration-guide.adoc[migration guide].
 
 [cols="1,1,6"]
 |===

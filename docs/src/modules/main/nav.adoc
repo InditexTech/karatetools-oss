@@ -1,7 +1,6 @@
 * Overview
 * xref:main:about.adoc[About]
 * xref:main:architecture.adoc[Architecture]
-* xref:main:glossary.adoc[Glossary]
 
 * Getting started
 * xref:main:prerequisites.adoc[Prerequisites]
@@ -10,14 +9,6 @@
 * Guides
 * xref:main:guides/overview.adoc[Overview]
 ** xref:main:guides/archetype/overview.adoc[Archetype]
-** xref:main:guides/configuration/overview.adoc[Configuration]
-*** xref:main:guides/configuration/karate-config.adoc[Karate config]
-*** xref:main:guides/configuration/logging.adoc[Logging]
-*** xref:main:guides/configuration/urls.adoc[Environment URLs]
-*** xref:main:guides/configuration/auth.adoc[Authentication]
-**** xref:main:guides/configuration/auth-basic.adoc[Basic authentication]
-**** xref:main:guides/configuration/auth-jwt.adoc[JWT authentication]
-**** xref:main:guides/configuration/local-machine-secrets.adoc[Local machine secrets management]
 ** xref:main:guides/open-api-generator/overview.adoc[Open API generator]
 *** xref:main:guides/open-api-generator/open-api-generator-operations.adoc[Operations]
 *** xref:main:guides/open-api-generator/open-api-generator-smoke.adoc[Smoke tests]
@@ -37,14 +28,20 @@
 **** xref:main:guides/execution/karate-cache.adoc[Karate cache]
 
 * Reference
-* xref:main:reference-overview.adoc[Overview]
-** xref:main:configuration.adoc[Configuration]
+* xref:main:reference/overview.adoc[Overview]
+** xref:main:reference/configuration/overview.adoc[Configuration]
+*** xref:main:reference/configuration/karate-config.adoc[Karate config]
+*** xref:main:reference/configuration/logging.adoc[Logging]
+*** xref:main:reference/configuration/urls.adoc[Environment URLs]
+*** xref:main:reference/configuration/auth.adoc[Authentication]
+**** xref:main:reference/configuration/auth-basic.adoc[Basic authentication]
+**** xref:main:reference/configuration/auth-jwt.adoc[JWT authentication]
+**** xref:main:reference/configuration/local-machine-secrets.adoc[Local machine secrets management]
 
 * Additional information
 * xref:main:additional-information-overview.adoc[Overview]
 ** xref:main:release-notes/overview.adoc[Release notes]
 *** xref:main:release-notes/migration-guide.adoc[Migration guide]
-** xref:main:changelog/overview.adoc[Changelog]
 ** xref:main:faq.adoc[FAQ]
 
 * Contributing

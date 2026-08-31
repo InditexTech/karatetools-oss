@@ -39,11 +39,11 @@ Scaffold a module and run your first test.
 --
 image::ROOT:training.png[Teacher icon]
 
-Step-by-step guides for configuration, generation, clients and execution.
+Step-by-step guides for scaffolding, generation, clients and execution.
 --
 
 [card,subheader="Look it up"]
-.xref:main:reference-overview.adoc[Reference]
+.xref:main:reference/overview.adoc[Reference]
 --
 image::ROOT:lab.png[Test tube icon]
 

@@ -23,10 +23,6 @@ Report privately — do not open a public issue.
 Highlights and major changes of each release.
 
 [card]
-.xref:changelog/overview.adoc[Changelog]
-The complete list of additions, changes, fixes, and deprecations.
-
-[card]
 .xref:faq.adoc[FAQ]
 Common questions and known issues.
 ====
