@@ -89,6 +89,13 @@ asciidoc:
     # Same as the real antora-playbook.yml — see its own comment.
     kroki-enabled: true
     kroki-diagram-types: mermaid,plantuml,bpmn,excalidraw
+    # Same as the real antora-playbook.yml — see its own comment.
+    karatetools-package: dev.inditex.karate
+    karatetools-version: 6.0.0
+    karatetools-unit-coverage-threshold: 90%
+    karatetools-mutation-coverage-threshold: 90%
+    karatetools-integration-coverage-threshold: 80%
+    karatetools-karate-coverage-threshold: 80%
   extensions:
     # Same as the real antora-playbook.yml — see its own comment and the
     # writing-docs-pages skill's reference/docouture-blocks.md.

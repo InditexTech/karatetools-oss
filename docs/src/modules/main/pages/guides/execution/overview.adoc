@@ -1,8 +1,3 @@
-= Execution
-:description: Arguments, logging, the mock server, reports and the Karate cache.
+= Karate Tools Execution
 
-// TODO(#96 phase 3): migrate from the old docs/src/modules/execution/ pages:
-// arguments, logging, mock-server, reports, karate-cache.
-
-This guide covers running Karate tests: arguments, logging, the mock server,
-reports, and the Karate cache utility.
+include::partial$execution/summary.adoc[]

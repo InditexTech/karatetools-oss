@@ -1,8 +1,19 @@
-= Open API generator
-:description: Generate operations, tests and mock data from an Open API definition.
+= Karate Open Api Generator
 
-// TODO(#96 phase 3): migrate from the old docs/src/modules/open-api-generator/
-// pages: operations, smoke tests, functional tests, mock data.
+*Automatic generation* of tests in Gherkin, with their related data sets and schemas for response validation as well as data to mock external services from *Open Api definitions*
 
-This guide covers generating Karate operations, smoke tests, functional tests
-and mock data automatically from an Open API definition.
+Karate *open-api-generator* has the following generation modes:
+
+include::partial$open-api-generator/open-api-generator-modes.adoc[]
+
+== Configuration
+
+include::partial$open-api-generator/configuration.adoc[]
+
+== API Dependencies
+
+include::partial$open-api-generator/api-dependencies.adoc[]
+
+== Execution
+
+include::partial$open-api-generator/execution.adoc[]

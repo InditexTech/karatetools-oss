@@ -1,0 +1,3 @@
+🔐 `basic`:: see xref:guides/configuration/auth-basic.adoc[Basic Authentication].
+
+🔐 `jwt`:: see xref:guides/configuration/auth-jwt.adoc[JWT Authentication].
