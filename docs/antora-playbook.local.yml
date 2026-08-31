@@ -38,7 +38,7 @@ site:
   # plain-text fallback. Harmless here: this playbook is dev/PR-verify only,
   # never used for a real publish (see the file header above).
   url: http://localhost:5000
-  start_page: ROOT::index.adoc
+  start_page: karatetools-oss::index.adoc
   # Same placeholder logo/favicon as the real antora-playbook.yml — see its
   # own comment. Harmless here too: this playbook is dev/PR-verify only.
   keys:

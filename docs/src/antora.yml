@@ -4,9 +4,14 @@
 # `name` is either this site's own name (a real URL path segment on
 # publish) or Antora's reserved `ROOT` (contributes no segment at all) —
 # decided by the `docouture new` wizard's "extra URL path segment" question (or
-# `--url-segment`), default off/ROOT. See antora-playbook.yml's own
-# site.url comment for the full GitHub Pages URL shape either way.
-name: ROOT
+# `--url-segment`), default off/ROOT. This site deliberately uses its own
+# name, `karatetools-oss`, instead of `ROOT` — matching the exact component
+# name every pre-docouture docs/v4.0.0-docs/v6.0.0 tag already carries, so
+# this migration extends that same version history instead of forking a
+# second, unrelated component with no shared version dropdown. See
+# antora-playbook.yml's own site.url comment for the full GitHub Pages URL
+# shape this produces.
+name: karatetools-oss
 title: InditexTech Karate Tools
 # This descriptor is identical for BOTH versioning modes — see the docouture
 # docs-site-package skill's reference/versioning-modes.md. `main` permanently

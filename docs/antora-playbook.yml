@@ -24,11 +24,14 @@ site:
   # url: https://docs.example.com
   #
   # A second /<component-name>/ segment only appears below (in
-  # site.start_page) if this site opted into one (`docouture new`'s "extra URL
-  # path segment" question, or `--url-segment`) — off by default, in which
-  # case docs/antora.yml's component name is Antora's reserved `ROOT` and
-  # contributes no segment.
-  start_page: ROOT::index.adoc
+  # site.start_page) if this site's component isn't Antora's reserved `ROOT`
+  # (docouture new's "extra URL path segment" question, or `--url-segment`,
+  # default off/ROOT). This site opted into one on purpose — `name:
+  # karatetools-oss` in docs/src/antora.yml, not `ROOT` — to keep continuity
+  # with the pre-docouture site's own published URL shape
+  # (github.io/karatetools-oss/<version>/HOME/...), which every one of the
+  # docs/v4.0.0-docs/v6.0.0 legacy tags already used before this migration.
+  start_page: karatetools-oss::index.adoc
   # Side-menu brand mark (nav-brand.hbs) and browser tab icon (head-icons.hbs)
   # — placeholder artwork under supplemental-ui/, wired via
   # ui.supplemental_files below. Supplemental files land under the UI's own
@@ -66,6 +69,30 @@ content:
       # one every release and nothing here ever needs editing again.
       branches: [develop]
       tags: ['docs/v*']
+      # The 7 pre-docouture release tags (docs/v4.0.0-docs/v5.4.0) predate this
+      # site's antora.yml carrying a `version:` key at all, and will never
+      # gain one themselves (left untouched deliberately, not republished).
+      # Antora's own component descriptor loader hard-fails ("antora.yml is
+      # missing a version") if a source passes no version override at all —
+      # this map is that override, read only when `version` is absent from
+      # the descriptor itself (`'version' in data` always wins otherwise, so
+      # it's inert for every real docouture-cut tag). An explicit entry per
+      # legacy tag also keeps the label clean; without one, an unmatched
+      # `docs/v*` ref still wouldn't crash (the object form falls back to
+      # deriving a version from the ref name itself) but would show up as
+      # the uglier synthesized 'docs-vX.Y.Z' — see docs/v6.0.0 below: its own
+      # entry is redundant, not required, once Phase 8 republishes that tag
+      # with a real version key, but keeps this build's report clean before
+      # that happens too. See aggregate-content.js's loadComponentDescriptor.
+      version:
+        docs/v4.0.0: '4.0.0'
+        docs/v5.0.0: '5.0.0'
+        docs/v5.0.1: '5.0.1'
+        docs/v5.1.0: '5.1.0'
+        docs/v5.2.0: '5.2.0'
+        docs/v5.3.0: '5.3.0'
+        docs/v5.4.0: '5.4.0'
+        docs/v6.0.0: '6.0.0'
 
 ui:
   bundle:
