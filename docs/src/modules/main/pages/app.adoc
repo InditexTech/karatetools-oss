@@ -1,0 +1,5 @@
+= Overview
+
+Describe the application (or product, or API) this module documents — what
+it does, and the shape of the reference material a reader will find under
+this section as it grows.

@@ -1,0 +1,124 @@
+= InditexTech Karate Tools
+:page-layout: home
+:page-nav-module: main
+:description: Replace this with a one-line description of InditexTech Karate Tools — it feeds page metadata as well as the hero.
+:page-tags: replace, these, tags
+:page-action: Get started
+:page-action-url: main:getting-started.adoc
+:page-action-secondary: About
+:page-action-secondary-url: main:index.adoc
+:page-hero-image: hero-placeholder.png
+:page-hero-image-alt: Placeholder standing in for a product screenshot or diagram.
+
+Replace this preamble with a short lead-in for InditexTech Karate Tools — one or two
+sentences, no heading of its own. It sits above the `Get started` row below
+and is the first thing a reader sees beside the hero.
+
+== Get started
+
+[cards,type=image-square,columns="1 s:2 m:4",width=container]
+====
+[card,subheader="Start here"]
+.xref:main:getting-started.adoc[Getting started]
+--
+image::card-placeholder.png[Placeholder card image]
+
+Add a page, build the site, publish it.
+--
+
+[card,subheader="Overview"]
+.xref:main:index.adoc[About]
+--
+image::card-placeholder.png[Placeholder card image]
+
+What this placeholder module is, and how to replace it with real content.
+--
+
+[card,subheader="Reference"]
+.xref:main:quickstart.adoc[Quickstart]
+--
+image::card-placeholder.png[Placeholder card image]
+
+The smallest path to a working result, as concrete steps.
+--
+
+[card,subheader="Design"]
+.xref:main:architecture.adoc[Architecture]
+--
+image::card-placeholder.png[Placeholder card image]
+
+Where to describe the system's major components and how they fit together.
+--
+====
+
+== Key features
+
+Replace this `[feature-tabs]` block with InditexTech Karate Tools's own — each slide
+is a media still, a short paragraph, and an optional call to action.
+
+[feature-tabs]
+====
+[feature,label="Replace me"]
+--
+image::feature-placeholder.png[Placeholder feature image]
+image::feature-placeholder-dark.png[role=dark]
+
+Describe the first thing worth knowing about InditexTech Karate Tools here.
+
+[.cta]
+xref:main:index.adoc[Learn more]
+--
+
+[feature,label="Replace me too"]
+--
+image::feature-placeholder.png[Placeholder feature image]
+image::feature-placeholder-dark.png[role=dark]
+
+A second slide, same shape — media, prose, an optional call to action.
+
+[.cta]
+xref:main:architecture.adoc[Learn more]
+--
+
+[feature,label="And this one"]
+--
+image::feature-placeholder.png[Placeholder feature image]
+image::feature-placeholder-dark.png[role=dark]
+
+A third slide. A slide with no call to action is fine too — it is optional.
+--
+====
+
+== Free & open source
+
+Replace or remove this `[cta]` block — a flat one-line pitch plus a single
+primary action, styled apart from the ordinary body copy above it.
+
+[cta]
+====
+Replace this with a short pitch for InditexTech Karate Tools — why it is worth a
+reader's attention.
+
+[.primary]
+https://github.com[Replace with a real link]
+====
+
+== Frequently asked questions
+
+Replace this `[accordion]` block with InditexTech Karate Tools's own real questions —
+this is a placeholder shape, not sample copy to keep.
+
+[accordion,aria-label="Frequently asked questions"]
+--
+.Replace this with a real question?
+[%collapsible]
+====
+Replace this with a real answer.
+====
+
+.And a second one?
+[%collapsible]
+====
+Answers can be as short or as long as the question needs.
+====
+--

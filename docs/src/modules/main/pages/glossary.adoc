@@ -1,0 +1,8 @@
+= Glossary
+
+Define project-specific terms here, one per section, so other pages can
+link to a definition instead of re-explaining it inline.
+
+== Example term
+
+A short definition of the term goes here. Replace with real terminology.

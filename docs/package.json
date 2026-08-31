@@ -1,23 +1,39 @@
 {
   "name": "karatetools-oss",
-  "version": "6.1.0-SNAPSHOT",
-  "description": "InditexTech Karate Tools OSS",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InditexTech Karate Tools documentation, built with Antora",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "npm@11.11.0",
   "scripts": {
-    "start": "npx antora --clean --stacktrace --fetch antora-playbook-local.yml && npx http-server build/site -c-1 -p 0",
-    "build": "npx -y antora --clean --fetch antora-playbook.yml --stacktrace",
-    "verify": "npm ci && npm run build",
-    "publish": "npm run build",
-    "post:provisioning": "npm i",
-    "release:prepare": "npm run build",
-    "version:development": "npm version $(npm version minor --no-git-tag-version)-SNAPSHOT --no-git-tag-version && npm run antoradocs:development",
-    "version:release": "npm --tag-version-prefix \"\" version $RELEASE_VERSION --allow-same-version --no-git-tag-version && npm run antoradocs:release",
-    "antoradocs:release": "yq eval \".prerelease = false\" -i src/antora.yml",
-    "antoradocs:development": "yq eval \".prerelease = true\" -i src/antora.yml"
+    "build": "antora --fetch antora-playbook.yml",
+    "dev": "docouture dev",
+    "clean": "node -e \"require('fs').rmSync('build', { recursive: true, force: true })\"",
+    "check-links": "node scripts/check-links.mjs"
   },
   "devDependencies": {
-    "@antora/lunr-extension": "1.0.0-alpha.8",
-    "antora": "3.1.9",
-    "asciidoctor-kroki": "0.18.1",
-    "http-server": "14.1.1"
+    "@inditextech/docouture-cli": "0.1.0-SNAPSHOT.74.1",
+    "@inditextech/docouture-ui-bundle": "0.1.0-SNAPSHOT.74.1",
+    "@inditextech/docouture-asciidoc-extensions": "0.1.0-SNAPSHOT.74.1",
+    "@inditextech/docouture-antora-extensions": "0.1.0-SNAPSHOT.74.1",
+    "@inditextech/docouture-publish-gh-pages": "0.1.0-SNAPSHOT.74.1",
+    "antora": "3.2.0",
+    "linkinator": "8.0.4"
+  },
+  "docouture": {
+    "branching": "git-flow",
+    "publish": {
+      "gh-pages": {}
+    },
+    "checkLinks": {
+      "ignore": [
+        "*/edit/HEAD/*",
+        "https://<org>.github.io/<repo>",
+        "docouture-new:no-origin-remote-configured"
+      ]
+    }
   }
 }

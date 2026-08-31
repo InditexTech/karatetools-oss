@@ -1,0 +1,5 @@
+= Structure
+
+Describe the project's own structure here — the layout of its repository,
+packages, or modules, and where a contributor would look for a given piece
+of functionality.

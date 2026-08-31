@@ -150,6 +150,12 @@ SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
+path = "AGENTS.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
 path = "README.md"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"

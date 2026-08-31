@@ -1,0 +1,9 @@
+= Release notes
+
+Summarize what changed for users in each release here, newest first — in
+contrast to xref:main:changelog/index.adoc[Changelog], which is the
+unabridged commit-level record.
+
+== v0.1.0
+
+Placeholder entry. Replace with the real first release's notes.

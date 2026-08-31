@@ -1,0 +1,21 @@
+= Quickstart
+
+Walk through the smallest path to a working result, as concrete steps.
+
+== 1. Install
+
+[,console]
+----
+$ echo "replace with the real install command"
+----
+
+== 2. Run
+
+[,console]
+----
+$ echo "replace with the real run command"
+----
+
+== 3. Verify
+
+Describe what success looks like here.

@@ -1,0 +1,55 @@
+= Prerequisites
+
+Before following xref:main:getting-started.adoc[Getting started] through to a
+published site, three things need to be true about this repository and its
+GitHub settings. None of them are things `docouture new` can do on your behalf —
+they all require repository-admin access this CLI never has.
+
+== The repository must be public
+
+GitHub Pages serves a `gh-pages` branch to the public internet on a free
+plan only for a public repository — a private one needs GitHub Enterprise
+(GitHub Pages on a paid plan can be restricted to organisation members, but
+is still not the "publish this to the world" flow `docouture-publish.yml`
+assumes). If this repository is private and is meant to stay that way,
+publishing to GitHub Pages is not the right target — use `docouture build` and
+ship `build/site` some other way instead.
+
+== Enable GitHub Pages, serving from `gh-pages`
+
+Settings → Pages → **Build and deployment** → **Source**: "Deploy from a
+branch" → **Branch**: `gh-pages` / `/ (root)`.
+
+The `gh-pages` branch does not exist yet on a brand-new repository — it is
+created the first time `docouture publish gh-pages` (or the scaffolded
+`.github/workflows/docouture-publish.yml`, which calls it) actually runs. Publish
+once first — either by pushing to `main` and letting that workflow run, or
+manually per xref:main:getting-started.adoc[Getting started]'s own "Publish
+the docs" section — then come back and point Pages at the branch it created.
+Turning Pages on before that branch exists just leaves the picker with
+nothing to select.
+
+== Create the `docs/release` label
+
+`.github/workflows/docouture-release.yml` (scaffolded by `docouture new`) can cut a
+release two ways: `workflow_dispatch` (run it by hand from the Actions tab —
+works immediately, nothing to set up), or automatically whenever a pull
+request merges into `main` carrying a `docs/release` label.
+
+That label is not created automatically — GitHub does not create labels
+referenced by a workflow's `if:` condition, and `docouture new` does not call the
+GitHub API on your behalf. Until the label exists, only the manual
+`workflow_dispatch` path works; a PR merged with what would otherwise be the
+intended label name is a silent no-op, not an error.
+
+Create it once, from this repository:
+
+[,console]
+----
+$ gh label create docs/release --description "Merging this PR cuts a release" --color 0E8A16
+----
+
+Or via the GitHub UI: repository → Issues or Pull requests → Labels → New
+label, named exactly `docs/release`. `docouture doctor` warns (without failing)
+if it does not find this label, when the `gh` CLI is available and
+authenticated.

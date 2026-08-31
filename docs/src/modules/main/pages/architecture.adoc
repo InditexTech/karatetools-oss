@@ -1,0 +1,6 @@
+= Architecture
+
+Describe the system's architecture here — its major components, how they
+fit together, and the boundaries between them. A diagram is often the most
+useful thing on this page; AsciiDoc's `image::` macro embeds one from
+`modules/main/images/`.

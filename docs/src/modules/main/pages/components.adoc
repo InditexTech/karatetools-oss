@@ -1,0 +1,701 @@
+= AsciiDoc components
+:page-toclevels: 3
+:experimental:
+
+Every block and macro this scaffold's toolchain understands, rendered once so you can see
+what each one actually looks like before reaching for it in real content. The first half
+is plain AsciiDoc — nothing docouture-specific, all of it documented in full in the
+`writing-docs-pages` skill's `reference/language-basics.md`. The second half is this
+site's own custom blocks, registered by `@inditextech/docouture-asciidoc-extensions` and
+documented in that same skill's `reference/docouture-blocks.md`. Delete this page (and its
+`nav.adoc` entry) once you no longer need the reference — nothing else on the site links
+to it.
+
+== AsciiDoc basics
+
+=== Headings and structure
+
+Sections nest by repeating `=` — `==`, `===`, `====`, `=====` — never by skipping a
+level. This page is itself at the first real section level (`==`); the next few
+subsections go one level deeper.
+
+[discrete]
+==== A discrete heading
+
+`[discrete]` above a heading keeps it out of both the navigation outline and the page's
+own TOC — useful for a heading that organizes the page visually without being a real
+subsection of it.
+
+=== Text formatting
+
+*bold* and **b*o*ld mid-word**, _italic_ and it__ali__c mid-word, `mono`, `+literal, no
+subs+`, #marked text#, [.underline]#a span with a role#. Chemical formula: H~2~0.
+Exponent: E = mc^2^. A footnote after this sentencefootnote:[The footnote text itself,
+rendered at the bottom of the page.].
+
+=== Lists
+
+Unordered, with a nested item carrying its own attached paragraph:
+
+[,asciidoc]
+----
+* first
+* second
+** nested
++
+Attached via the `+` continuation.
+----
+
+* first
+* second
+** nested
++
+Attached via the `+` continuation.
+
+Ordered, custom numbering:
+
+[upperalpha]
+. first
+. second
+. third
+
+Custom unordered markers:
+
+[square]
+* square-marked
+* another
+
+[circle]
+* circle-marked
+* another
+
+Description list, then its horizontal variant:
+
+term:: definition
+another term:: definition
+
+[horizontal]
+term:: definition
+another term:: definition
+
+A checklist:
+
+* [ ] not done yet
+* [x] done
+
+=== Links and cross references
+
+https://example.com[An external link], https://example.com[same, opened in a new
+tab^], link:https://example.com[the explicit macro], mailto:docs@example.com[a mail
+link]. Referring to another page on this site: xref:main:getting-started.adoc[] — empty
+xref text renders that page's own title, so it stays correct if the title changes. A
+fragment: xref:main:getting-started.adoc#add-a-page[a specific section on that page].
+
+=== Images and icons
+
+.A block image, capped at its own natural size
+image::ROOT:hero-placeholder.png[A placeholder image,480]
+
+An inline image sits mid-paragraph: image:ROOT:card-placeholder.png[A small inline
+placeholder,20,20] like so. Font icons, keyboard shortcuts and UI paths:
+icon:check[] done, kbd:[Ctrl+C] to copy, btn:[Save] to save, menu:File[Save As] to open
+the save-as dialog.
+
+=== Admonitions
+
+NOTE: The one-line form — good for a single sentence.
+
+[TIP]
+====
+The multi-line form — anything can go inside, including another block.
+
+[,console]
+----
+$ npm run build
+----
+====
+
+IMPORTANT: Five types exist: NOTE, TIP, IMPORTANT, WARNING, CAUTION. A sixth needs a role
+plus custom CSS, not a new admonition type.
+
+[WARNING]
+====
+Multi-line WARNING.
+====
+
+[CAUTION]
+====
+Multi-line CAUTION.
+====
+
+=== Source code
+
+[,typescript]
+----
+const answer: number = 42
+----
+
+A block with no language at all still gets the code surface and copy button, just no
+syntax colour:
+
+[source]
+----
+plain text, no highlighting
+----
+
+Callouts, explained in a colon list right after the block:
+
+[,js]
+----
+const x = 1 // <1>
+const y = x + 1 // <2>
+----
+<1> Set `x` to `1`.
+<2> Derive `y` from it.
+
+The `.wrap` role lets long lines wrap instead of scrolling horizontally:
+
+[.wrap,js]
+----
+const config = { alpha: 1, beta: 2, gamma: 3, delta: 4, epsilon: 5, zeta: 6, eta: 7 }
+----
+
+=== Tables
+
+A basic table with a header row:
+
+[cols="1,2,1"]
+|===
+|Name |Description |Default
+
+|`retry.max-attempts`
+|Number of times a failed request is retried.
+|`3`
+
+|`retry.backoff`
+|Base delay between retries; doubles each attempt.
+|`200ms`
+|===
+
+`%autowidth` shrinks the table to its content instead of filling the column:
+
+[%autowidth]
+|===
+|Status |Value
+|Build |passing
+|Coverage |92%
+|===
+
+`%noheader` with a percentage width:
+
+[%noheader,width=50%]
+|===
+|Node.js |`>= 24`
+|pnpm |`>= 10`
+|===
+
+An absolute pixel width via `table-width=` (bypasses Asciidoctor's own percentage-only
+`width=`), with `nowrap-cols=` pinning specific columns so their tokens never break
+mid-word:
+
+[table-width=520px,cols="2,1,2",nowrap-cols="1,2"]
+|===
+|Property |Type |Notes
+
+|`timeout.connect`
+|`duration`
+|Maximum time to wait for a connection.
+
+|`timeout.read`
+|`duration`
+|Maximum time to wait for a response once connected.
+|===
+
+Column/cell styles (`a` asciidoc, `l` literal, `m` monospace, `h` header, `s` strong) and
+a column span:
+
+[cols="1,1,2"]
+|===
+|Name |Type |Values
+
+|size
+|enum
+|`small` \| `medium` \| `large`
+
+2+|spans two columns
+|third cell
+|===
+
+=== Quotes and sidebars
+
+[quote,Grace Hopper]
+____
+The most dangerous phrase in the language is, "We've always done it this way."
+____
+
+[verse]
+____
+Two roads diverged in a wood, and I—
+I took the one less traveled by.
+____
+
+.A sidebar
+****
+Asides, pull quotes, or background information that supplements the main flow without
+interrupting it.
+****
+
+=== Collapsible
+
+A single, standalone collapsible — for grouping several together with proper `role=group`
+semantics and single-open behaviour, see `[accordion]` below instead.
+
+.Click to expand
+[%collapsible]
+====
+Rendered as a native `<details>` element — works with JavaScript off.
+====
+
+== Custom blocks
+
+Registered by `@inditextech/docouture-asciidoc-extensions`. Every one of these degrades to
+plain, readable HTML with JavaScript disabled.
+
+=== Tabs
+
+A switcher for equivalent alternatives. Each `[tabs]` block is independent — picking a
+tab in one never affects another further down the page.
+
+[tabs]
+--
+[tab,label="pnpm"]
+****
+[,bash]
+----
+pnpm add some-package
+----
+****
+
+[tab,label="npm"]
+****
+[,bash]
+----
+npm install some-package
+----
+****
+
+[tab,label="yarn"]
+****
+[,bash]
+----
+yarn add some-package
+----
+****
+--
+
+A second, independent set:
+
+[tabs]
+--
+[tab,label="pnpm"]
+****
+[,bash]
+----
+pnpm run dev
+----
+****
+
+[tab,label="npm"]
+****
+[,bash]
+----
+npm run dev
+----
+****
+--
+
+=== Cards
+
+Text-only — no image, no open block needed:
+
+[cards]
+====
+[card]
+.xref:main:getting-started.adoc[Getting started]
+Add a page, build the site, publish it.
+
+[card,subheader="Reference"]
+.xref:main:quickstart.adoc[Quickstart]
+The smallest path to a working result, as concrete steps.
+
+[card,icon="grid-3x3"]
+.xref:main:architecture.adoc[Architecture]
+This one carries a header icon instead of a subheader.
+====
+
+With images, a fixed square aspect, four columns, let out to the container's full width —
+the same shape the landing's own quicklinks use (`ROOT:card-placeholder.png` reused
+across modules via a cross-module image resource ID):
+
+[cards,type=image-square,columns="1 s:2 m:4",width=container]
+====
+[card,subheader="One"]
+.xref:main:getting-started.adoc[First]
+--
+image::ROOT:card-placeholder.png[Placeholder card image]
+
+Every card in a block shares one aspect ratio.
+--
+
+[card,subheader="Two"]
+.xref:main:index.adoc[Second]
+--
+image::ROOT:card-placeholder.png[Placeholder card image]
+
+The image crops to fill; it is never letterboxed.
+--
+====
+
+=== Accordion
+
+Groups a run of `[%collapsible]` items with `role=group` semantics. `%single-open` closes
+whichever other item was open; without it, items are independent.
+
+[accordion%single-open,aria-label="Single-open example"]
+--
+.First question?
+[%collapsible]
+====
+First answer.
+====
+
+.Second question?
+[%collapsible]
+====
+Second answer. Opening this closes the first.
+====
+--
+
+Grouped, but independent (the default — no `%single-open`):
+
+[accordion,aria-label="Multiple-open example"]
+--
+.Can both of these be open at once?
+[%collapsible]
+====
+Yes — this group has no `%single-open`, so each item toggles independently.
+====
+
+.Is this still one accessible group?
+[%collapsible]
+====
+Yes — `aria-label=` (or a block `.Title`) names the group as a whole.
+====
+--
+
+=== Feature tabs
+
+A media-plus-prose switcher for a handful of top-level capabilities, same block the
+landing's "Key features" section uses:
+
+[feature-tabs]
+====
+[feature,label="With a call to action"]
+--
+image::ROOT:feature-placeholder.png[Placeholder feature image]
+image::ROOT:feature-placeholder-dark.png[role=dark]
+
+A slide is a media still, prose, and an optional call to action, in that order.
+
+[.cta]
+xref:main:getting-started.adoc[Learn more]
+--
+
+[feature,label="Without one"]
+--
+image::ROOT:feature-placeholder.png[Placeholder feature image]
+image::ROOT:feature-placeholder-dark.png[role=dark]
+
+A call to action is optional — a slide without one just ends at its prose.
+--
+====
+
+=== CTA
+
+A single, full-width call-to-action band:
+
+[cta]
+====
+A short pitch, plus one prominent action.
+
+[.primary]
+xref:main:getting-started.adoc[Get started]
+====
+
+=== Diagrams
+
+`[mermaid]`, `[plantuml]`, `[graphviz]` and a handful of other diagram languages (see
+`@inditextech/docouture-asciidoc-extensions`' `lib/kroki-config.js` for the full list) render
+as real diagrams via a self-hosted https://kroki.io[Kroki] service — a literal block
+(four dots, not a fenced code block) styled with the diagram language's name:
+
+[,asciidoc]
+----
+[mermaid]
+....
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Running : start
+  Running --> Idle : stop
+....
+----
+
+[mermaid]
+....
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Running : start
+  Running --> Idle : stop
+....
+
+This feature is **enabled by default** in this starter (see `antora-playbook.yml`'s
+`kroki-enabled`/`kroki-diagram-types` attributes) — it needs Docker available, since the
+build starts a self-hosted Kroki service the first time a build needs it, no manual step
+required (it isn't stopped automatically either — run `docouture teardown kroki` once you're
+done with it). Run `docouture eject kroki` if you ever need to customize the container
+definition, or comment the two attributes back out to turn the feature off entirely — a
+block like the one above then renders exactly as plain AsciiDoc already would: the raw
+diagram source, as literal text, same as the fenced listing shows it above.
+
+==== Styling
+
+Mermaid diagrams are themed to match this site automatically — square
+corners, black-on-white (light mode; inverted for dark), body typography — via a
+`%%{init: {...}}%%` directive this extension prepends to the diagram's own source
+before it ever reaches Kroki, not via CSS. Write your own `%%{init...}%%` as the
+diagram's first line to opt out and take full control of Mermaid's own theming instead.
+Every other diagram type's font is still normalized via CSS (safe — a tool's typeface
+choice carries no meaning); BPMN's two-tone palette is still remapped via CSS too
+(its bpmn-js renderer has no source-level theming hook this package uses yet, unlike
+Mermaid's). BPMN's own rounded task-box corners could not be un-rounded by any means
+found — bpmn-js hardcodes that radius; this is a real, currently-unfixed limitation,
+not an oversight.
+
+==== PNG output
+
+`[mermaid,format=png]` (or any other diagram language Kroki can rasterize — see
+`kroki-config.js`'s `PNG_SUPPORTED_TYPES` for the full list; `bpmn` and `excalidraw`
+are notably **not** on it, Kroki itself rejects `/bpmn/png` and `/excalidraw/png`
+outright) renders a transparent PNG instead of inline SVG:
+
+[,asciidoc]
+----
+[mermaid,format=png]
+....
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Running : start
+  Running --> Idle : stop
+....
+----
+
+[mermaid,format=png]
+....
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Running : start
+  Running --> Idle : stop
+....
+
+Embedded as a plain `<img>` with a base64 `data:` URI — no extra file written, no extra
+HTTP request. Reach for this only when you actually need a raster image (an export, an
+email, a renderer that can't handle inline SVG); the inline-SVG default stays sharper at
+every zoom level and lets a reader select/search the diagram's own text, neither of
+which a PNG can do. An unsupported type or a typo'd `format=` value both fall back to
+`svg` with a build warning, the same degrade-not-fail posture as an unknown
+`kroki-diagram-types` entry.
+
+==== BPMN
+
+`[bpmn]` renders BPMN 2.0 XML (the same format bpmn.io and most process-modeling tools
+export). Like `mermaid` and `excalidraw`, it needs its own headless-Chrome companion
+container — the bundled `kroki-compose.yml` already includes one:
+
+[,asciidoc]
+----
+[bpmn]
+....
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    id="definitions" targetNamespace="http://bpmn.io/schema/bpmn">
+  <process id="process_1" isExecutable="false">
+    <startEvent id="start" name="Request received"/>
+    <task id="task" name="Handle request"/>
+    <endEvent id="end" name="Done"/>
+    <sequenceFlow id="flow_1" sourceRef="start" targetRef="task"/>
+    <sequenceFlow id="flow_2" sourceRef="task" targetRef="end"/>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram">
+    <bpmndi:BPMNPlane id="plane" bpmnElement="process_1">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <omgdc:Bounds x="100" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_di" bpmnElement="task">
+        <omgdc:Bounds x="200" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <omgdc:Bounds x="360" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_1_di" bpmnElement="flow_1">
+        <omgdi:waypoint x="136" y="118"/>
+        <omgdi:waypoint x="200" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_2_di" bpmnElement="flow_2">
+        <omgdi:waypoint x="300" y="118"/>
+        <omgdi:waypoint x="360" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
+....
+----
+
+[bpmn]
+....
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    id="definitions" targetNamespace="http://bpmn.io/schema/bpmn">
+  <process id="process_1" isExecutable="false">
+    <startEvent id="start" name="Request received"/>
+    <task id="task" name="Handle request"/>
+    <endEvent id="end" name="Done"/>
+    <sequenceFlow id="flow_1" sourceRef="start" targetRef="task"/>
+    <sequenceFlow id="flow_2" sourceRef="task" targetRef="end"/>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram">
+    <bpmndi:BPMNPlane id="plane" bpmnElement="process_1">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <omgdc:Bounds x="100" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_di" bpmnElement="task">
+        <omgdc:Bounds x="200" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <omgdc:Bounds x="360" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_1_di" bpmnElement="flow_1">
+        <omgdi:waypoint x="136" y="118"/>
+        <omgdi:waypoint x="200" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_2_di" bpmnElement="flow_2">
+        <omgdi:waypoint x="300" y="118"/>
+        <omgdi:waypoint x="360" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
+....
+
+==== Excalidraw
+
+`[excalidraw]` renders an Excalidraw scene (the JSON a `.excalidraw` file, or
+https://excalidraw.com[excalidraw.com]'s own "Save to..." export, contains). Unlike
+`bpmn`, this type *does* need its own companion — the bundled `kroki-compose.yml`
+includes an `excalidraw` service alongside `mermaid` for exactly that reason:
+
+[,asciidoc]
+----
+[excalidraw]
+....
+{
+  "type": "excalidraw",
+  "version": 2,
+  "elements": [
+    {
+      "type": "rectangle",
+      "id": "rect1",
+      "x": 100,
+      "y": 100,
+      "width": 200,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "seed": 1
+    },
+    {
+      "type": "text",
+      "id": "text1",
+      "x": 130,
+      "y": 135,
+      "width": 140,
+      "height": 25,
+      "text": "Hello, Excalidraw",
+      "fontSize": 20,
+      "seed": 2
+    }
+  ]
+}
+....
+----
+
+[excalidraw]
+....
+{
+  "type": "excalidraw",
+  "version": 2,
+  "elements": [
+    {
+      "type": "rectangle",
+      "id": "rect1",
+      "x": 100,
+      "y": 100,
+      "width": 200,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "seed": 1
+    },
+    {
+      "type": "text",
+      "id": "text1",
+      "x": 130,
+      "y": 135,
+      "width": 140,
+      "height": 25,
+      "text": "Hello, Excalidraw",
+      "fontSize": 20,
+      "seed": 2
+    }
+  ]
+}
+....
+
+=== Inline macros: `label:` and `mono:`
+
+label:grey[Default] label:red[Blocked] label:orange[Pending] label:green[Stable]
+label:blue[Info] label:purple[Beta] label:pink[New] label:teal[Docs] label:white[White]
+
+`mono:` is plain monospaced text with no code-chip styling — for a table cell whose
+entire content is a bare token (see `retry.max-attempts` above, which uses backtick code
+instead; mono:[className] is the deliberate opt-out when a whole column of cells is
+tokens and the chip would be noise).
+
+=== Table and video sizing attributes
+
+`table-width=` and `nowrap-cols=` are demonstrated in the table section above. The one
+remaining sizing attribute, for a video block, is not rendered live on this page (it
+would embed a real, unrelated third-party video) — the syntax is:
+
+[,asciidoc]
+----
+video::VIDEO_ID[youtube,640,360]
+----
+
+`640,360` both caps the embed's width and locks its aspect ratio at any narrower
+viewport; width alone caps the width and leaves the ratio at the 16:9 fallback.
