@@ -1,0 +1,9 @@
+<1> Antora playbooks — the real one, and the one used for local development and PR verification.
+<2> Plain-text file holding the next release's target version, read by the release workflow.
+<3> Node modules folder.
+<4> Node package configuration file.
+<5> Helper scripts (e.g. check-links.mjs).
+<6> Content source root folder.
+<7> `antora.yml` (reserved file name): Antora component version descriptor file. This file indicates to Antora that the contents of a directory named `modules` should be collected and processed.
+<8> `modules` (reserved directory name): Antora required directory located at the same hierarchical level as the `antora.yml` file — `ROOT` (the home page only) and `main` (every other page).
+<9> Supplemental UI assets (logo, favicon) layered on top of the docouture UI bundle.

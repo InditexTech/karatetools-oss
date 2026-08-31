@@ -1,3 +1,5 @@
+= Generators module
+:description: The karatetools-oss-generators module.
 
 The `karatetools-oss-generators` module includes the following packages:
 
@@ -7,5 +9,5 @@ The `karatetools-oss-generators` module includes the following packages:
 .Karate Tools Generators Overview
 [plantuml,development-guide-karatetools-oss-generators,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-generators.puml[]
+include::partial$puml/karatetools-oss-generators.puml[]
 ....

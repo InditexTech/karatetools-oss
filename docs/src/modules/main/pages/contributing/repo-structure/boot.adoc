@@ -1,3 +1,6 @@
+= Boot module
+:description: The karatetools-oss-boot module.
+
 The `karatetools-oss-boot` module includes the following packages:
 
 * 📦 `dev.inditex.karate`: *Spring Boot Application*
@@ -12,7 +15,7 @@ The docker containers are defined in the `docker-compose.yml` file and are start
 .Karate Tools Boot Overview
 [plantuml,development-guide-karatetools-oss-boot,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-boot.puml[]
+include::partial$puml/karatetools-oss-boot.puml[]
 ....
 
 The `karatetools-oss-boot` module includes all the *integration tests* for the *karate tools*.
@@ -22,5 +25,5 @@ IMPORTANT: Any changes made in the Karate Tools *codebase* must be reflected in 
 .Karate Tools Boot Integration Tests
 [plantuml,development-guide-karatetools-oss-boot-integration-tests,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-boot-integration-tests.puml[]
+include::partial$puml/karatetools-oss-boot-integration-tests.puml[]
 ....

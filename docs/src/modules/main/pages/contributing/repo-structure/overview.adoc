@@ -1,19 +1,22 @@
+= Repository structure
+:description: How the Karate Tools Open Source repository is organized.
+
 This library is a general purpose library that can be used by any Karate project.
 
 The *Karate Tools* Open Source Repository is organized as follows:
 
 * `code` - Karate Tools Open Source *codebase* with the corresponding *unit* and *integration tests*
-** 👩‍💻 xref:#karatetools-oss-code[karatetools-oss-code]
+** 👩‍💻 xref:contributing/repo-structure/code.adoc[karatetools-oss-code]
 * `e2e/karate` - Karate Tools Open Source *karate tests*
-** 🧪 xref:#karatetools-oss-karate-test[karatetools-oss-karate-test]
+** 🧪 xref:contributing/repo-structure/karate-test.adoc[karatetools-oss-karate-test]
 * `docs` - Karate Tools Open Source *documentation* based on *asciidoc and antora*
-** 📄 xref:#karatetools-oss-docs[karatetools-oss-docs]
+** 📄 xref:contributing/repo-structure/docs.adoc[karatetools-oss-docs]
 
 [source,subs="attributes+"]
 ----
-include::example$root-tree.txt[]
+include::example$contributing/root-tree.txt[]
 ----
-include::example$root-tree-callouts.txt[]
+include::example$contributing/root-tree-callouts.txt[]
 
 The main `code` modules are:
 
@@ -38,7 +41,7 @@ It includes a spring boot module:
 The karate test module is defined in the `e2e/karate` folder:
 
 * 🧪 `karatetools-oss-karate-test`: *karate module* to *test* the *karate tools*.
-** This module has been generated using the xref:archetype:index.adoc[⚙️ Karate Tools - Archetype]
+** This module has been generated using the xref:guides/archetype/overview.adoc[⚙️ Karate Tools - Archetype]
 ** Includes auto-generated tests and mocks for sample api (`karatetools-oss-openapi-test`)
 ** uses the `karatetools-oss-starter` to test the karate clients and the sample application (`karatetools-oss-boot`) and containers.
 
@@ -49,5 +52,5 @@ The documentation is defined in the `docs` folder:
 .Karate Tools Open Source Modules
 [plantuml,development-guide-karatetools-oss-modules,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-modules.puml[]
+include::partial$puml/karatetools-oss-modules.puml[]
 ....

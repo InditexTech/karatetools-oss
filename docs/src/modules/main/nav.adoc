@@ -43,9 +43,22 @@
 * Additional information
 * xref:main:additional-information-overview.adoc[Overview]
 ** xref:main:release-notes/overview.adoc[Release notes]
+*** xref:main:release-notes/migration-guide.adoc[Migration guide]
 ** xref:main:changelog/overview.adoc[Changelog]
 ** xref:main:faq.adoc[FAQ]
 
 * Contributing
 * xref:main:contributing-overview.adoc[Overview]
 ** xref:main:development.adoc[Development]
+*** xref:main:contributing/step-by-step.adoc[Step by step]
+*** xref:main:contributing/repo-structure/overview.adoc[Repository structure]
+**** xref:main:contributing/repo-structure/code.adoc[Code]
+***** xref:main:contributing/repo-structure/archetype.adoc[Archetype]
+***** xref:main:contributing/repo-structure/clients.adoc[Clients]
+***** xref:main:contributing/repo-structure/generators.adoc[Generators]
+***** xref:main:contributing/repo-structure/runner.adoc[Runner]
+***** xref:main:contributing/repo-structure/starter.adoc[Starter]
+***** xref:main:contributing/repo-structure/boot.adoc[Boot]
+***** xref:main:contributing/repo-structure/openapi-test.adoc[OpenAPI test]
+**** xref:main:contributing/repo-structure/karate-test.adoc[Karate test]
+**** xref:main:contributing/repo-structure/docs.adoc[Docs]

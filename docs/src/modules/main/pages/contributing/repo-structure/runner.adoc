@@ -1,3 +1,6 @@
+= Runner module
+:description: The karatetools-oss-runner module.
+
 The `karatetools-oss-runner` module includes the following packages:
 
 * 📦 `dev.inditex.karate.jwt`: *JWT generator* to create *JWT tokens* for *authentication* and *authorization* purposes in *Karate* tests.
@@ -20,5 +23,5 @@ It also includes the following karate resources:
 .Karate Tools Runner Overview
 [plantuml,development-guide-karatetools-oss-runner,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-runner.puml[]
+include::partial$puml/karatetools-oss-runner.puml[]
 ....

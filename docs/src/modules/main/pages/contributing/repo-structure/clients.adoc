@@ -1,3 +1,6 @@
+= Clients module
+:description: The karatetools-oss-clients module.
+
 The `karatetools-oss-clients` module includes the following *core* and *support* packages.
 
 The *core* packages are:
@@ -19,5 +22,5 @@ The *support* packages are:
 .Karate Tools Clients Overview
 [plantuml,development-guide-karatetools-oss-clients,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-clients.puml[]
+include::partial$puml/karatetools-oss-clients.puml[]
 ....

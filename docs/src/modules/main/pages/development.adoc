@@ -1,19 +1,57 @@
 = Development
 :description: Set up a development environment and work on Karate Tools.
 
-// TODO(#96 phase 3): migrate from docs/src/modules/contributing/
-// {development-guide,karatetools-oss,step-by-step}.adoc — the old
-// karatetools-oss.adoc page used an 8-level anchor-xref hack (one
-// sub-anchor per package: archetype, clients, generators, runner, starter,
-// boot, openapi-test, karate-test, docs) that should become real subpages
-// under this one instead, per the issue's decision.
-
-This page explains how to set up a development environment for Karate Tools
-and the workflow to build, run, and test it locally. For the contribution
-process, see xref:contributing-overview.adoc[Contributing].
-
-== Environment setup
+This page explains the process of implementing new features or fixing bugs
+in the Karate Tools ecosystem, and points you at the
+xref:contributing/repo-structure/overview.adoc[repository structure] and the
+xref:contributing/step-by-step.adoc[step-by-step guide]. For the
+contribution process itself (issues, pull requests), see
+xref:contributing-overview.adoc[Contributing].
 
 == Development process
 
+The steps to follow are:
+
+* Implement the new feature or fix the bug.
+* Perform the necessary tests:
+** create or update the corresponding *unit tests*, execute them, and
+   verify that they pass and that the code coverage is over the established
+   threshold ({karatetools-unit-coverage-threshold});
+** execute the *mutation tests*, verify that they pass and that the
+   mutation coverage is over the established threshold
+   ({karatetools-mutation-coverage-threshold});
+** create or update the corresponding *integration tests*, execute them,
+   and verify that they pass and that the code coverage is over the
+   established threshold ({karatetools-integration-coverage-threshold});
+** create or update the corresponding *Karate tests*, execute them, and
+   verify that they pass and that the code coverage is over the
+   established threshold ({karatetools-karate-coverage-threshold}).
+* Update the relevant documentation.
+
+.Karate Tools Development Process
+[plantuml,development-guide-process,png,role="no-border, zoom-in",subs="+attributes"]
+....
+include::partial$puml/dev-process.puml[]
+....
+
+The xref:contributing/repo-structure/overview.adoc[repository structure]
+page describes the code structure, to help you find the location of the
+code to add or modify, how to execute and verify the tests, and how to
+update the documentation.
+
+== Environment setup
+
+See xref:prerequisites.adoc[Prerequisites] for the tools and versions
+required, and xref:contributing/repo-structure/docs.adoc[the docs module]
+for how to build this documentation site locally.
+
 == Testing
+
+See each xref:contributing/repo-structure/overview.adoc[repository module]'s
+own page for its testing instructions — unit and mutation tests for the
+`code` modules, integration tests in `karatetools-oss-boot`, and Karate
+tests in `karatetools-oss-karate-test`.
+
+Once you're ready, follow the
+xref:contributing/step-by-step.adoc[step-by-step guide] to submit your
+contribution.

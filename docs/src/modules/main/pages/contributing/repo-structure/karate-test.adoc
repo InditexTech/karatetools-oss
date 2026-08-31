@@ -1,6 +1,9 @@
+= Karate test module
+:description: The karatetools-oss-karate-test module.
+
 This module `karatetools-oss-karate-test` is a *karate module* to *test* the *karate tools*.
 
-* This module has been generated using the xref:archetype:index.adoc[⚙️ Karate Tools - Archetype]
+* This module has been generated using the xref:guides/archetype/overview.adoc[⚙️ Karate Tools - Archetype]
 * Includes auto-generated tests and mocks for sample api (`karatetools-oss-openapi-test`)
 * uses the `karatetools-oss-starter` to test the karate clients and the sample application (`karatetools-oss-boot`) and containers.
 
@@ -11,48 +14,48 @@ The structure of the module is as follows:
 .Karate Tools Test Overview
 [plantuml,development-guide-karatetools-oss-karate-test,png,role="no-border, zoom-in"]
 ....
-include::puml:partial$karatetools-oss-karate-test.puml[]
+include::partial$puml/karatetools-oss-karate-test.puml[]
 ....
 
 * *src/test/java*: Java Code
 +
 [source,subs="attributes+"]
 ----
-include::example$e2e-karate-tree.txt[lines="1..14"]
+include::example$contributing/e2e-karate-tree.txt[lines="1..14"]
 ----
-include::example$e2e-karate-tree-callouts-java.txt[]
+include::example$contributing/e2e-karate-tree-callouts-java.txt[]
 
 * *src/test/resources*: Base and Config files
 +
 [source,subs="attributes+"]
 ----
-include::example$e2e-karate-tree.txt[lines="1..5,15,101..123"]
+include::example$contributing/e2e-karate-tree.txt[lines="1..5,15,101..123"]
 ----
-include::example$e2e-karate-tree-callouts-resources-config.txt[]
+include::example$contributing/e2e-karate-tree-callouts-resources-config.txt[]
 
 * *src/test/resources/dev/inditex/karate*: Tests related to Karate Tools features
 +
 [source,subs="attributes+"]
 ----
-include::example$e2e-karate-tree.txt[lines="1..5,15,45..65"]
+include::example$contributing/e2e-karate-tree.txt[lines="1..5,15,45..65"]
 ----
-include::example$e2e-karate-tree-callouts-resources-karate-tests.txt[]
+include::example$contributing/e2e-karate-tree-callouts-resources-karate-tests.txt[]
 
 * *src/test/resources/apis/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable*: Root folder for the *operation(s) feature* files and *validation schemas* for the test api *xxx-api-rest-stable*
 +
 [source,subs="attributes+"]
 ----
-include::example$e2e-karate-tree.txt[lines="1..5,15..44"]
+include::example$contributing/e2e-karate-tree.txt[lines="1..5,15..44"]
 ----
-include::example$e2e-karate-tree-callouts-resources-apis.txt[]
+include::example$contributing/e2e-karate-tree-callouts-resources-apis.txt[]
 
 * *src/test/resources/dev/inditex/karate/karatetools-openapi-test/xxx-api-rest-stable*: REST Api tests
 +
 [source,subs="attributes+"]
 ----
-include::example$e2e-karate-tree.txt[lines="1..5,15,45..47,66..100"]
+include::example$contributing/e2e-karate-tree.txt[lines="1..5,15,45..47,66..100"]
 ----
-include::example$e2e-karate-tree-callouts-resources-api-tests.txt[]
+include::example$contributing/e2e-karate-tree-callouts-resources-api-tests.txt[]
 
 The tests to be executed are:
 
