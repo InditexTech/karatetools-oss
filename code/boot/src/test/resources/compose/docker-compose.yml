@@ -204,7 +204,7 @@ services:
   schema-registry:
     container_name: kt-schema-registry
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:8.1.2
+    image: confluentinc/cp-schema-registry:8.3.1
     ports:
     - 38081:8081
     volumes:
@@ -235,7 +235,7 @@ services:
   schema-registry-basic-auth:
     container_name: kt-schema-registry-basic-auth
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:8.1.2
+    image: confluentinc/cp-schema-registry:8.3.1
     ports:
       - 38082:8082
     environment:
