@@ -69,7 +69,7 @@ jobs:
           persist-credentials: false
 
       - name: NPM / Setup Dependencies Cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Setup asdf Cache
         id: asdf-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         continue-on-error: true
         with:
           path: ~/.asdf/data
