@@ -162,7 +162,7 @@ jobs:
       - name: pitest-report-upload
         id: pitest-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-mutation-${{ github.run_number }}-pitest-report
           path: ${{ fromJSON(steps.config.outputs.config).mutation.report.folder }}
@@ -171,7 +171,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |

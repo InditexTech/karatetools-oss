@@ -184,7 +184,7 @@ jobs:
       - name: surefire-report-upload
         id: surefire-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-unit-${{ github.run_number }}-surefire-report
           path: ${{ fromJSON(steps.config.outputs.config).unit.report.folder }}
@@ -210,7 +210,7 @@ jobs:
       - name: jacoco-report-upload
         id: jacoco-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-unit-${{ github.run_number }}-jacoco-report
           path: ${{ fromJSON(steps.config.outputs.config).unit.jacoco.report.folder }}
@@ -219,7 +219,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |
