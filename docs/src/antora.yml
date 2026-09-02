@@ -104,7 +104,7 @@ footer:
           url: main:guides/clients/overview.adoc
         - text: Execution
           url: main:guides/execution/overview.adoc
-    - title: INDITEXTECH
-      links:
-        - text: OSO Portal
-          url: https://opensource.inditex.com
+    # - title: INDITEXTECH
+    #   links:
+    #     - text: OSO Portal
+    #       url: https://opensource.inditex.com
