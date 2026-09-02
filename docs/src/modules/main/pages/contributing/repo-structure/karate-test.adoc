@@ -169,7 +169,7 @@ a|
 
 `APP_HEALTH_CHECK_URL=http://localhost:$APP_PORT/$APP_HEALTH_PROBE`
 
-`curl -s -o /dev/null -w \"%{http_code}\" $APP_HEALTH_CHECK_URL`
+`curl -s -o /dev/null -w \"%\{http_code}\" $APP_HEALTH_CHECK_URL`
 |Status code 200
 
 |Check docker containers are up

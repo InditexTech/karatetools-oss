@@ -21,7 +21,7 @@ schema.registry.url: http://localhost:38082
 # Schema Registry Basic Auth Credentials Source: Specify how to pick the credentials for the Basic authentication header.
 # The supported values are URL, USER_INFO and SASL_INHERIT
 basic.auth.credentials.source: USER_INFO
-# Schema Registry User Info Config: Specify the user info for the Basic authentication in the form of {username}:{password}.
+# Schema Registry User Info Config: Specify the user info for the Basic authentication in the form of \{username}:\{password}.
 basic.auth.user.info: "schemaregistry:schemaregistry-pwd"
 
 #
