@@ -10,6 +10,13 @@ SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
+path = ".github/dependabot.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Dependabot configuration"
+
+[[annotations]]
 path = ".github/actions/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"
