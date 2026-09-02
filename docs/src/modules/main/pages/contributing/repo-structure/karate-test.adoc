@@ -137,9 +137,9 @@ a|
 
 `JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${jacoco.version}' --non-recursive exec:exec)`
 
-`curl -k -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar`
+`curl -k -s -S -L -o target/jacocoagent.jar \https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar`
 
-`curl -k -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar`
+`curl -k -s -S -L -o target/jacococli.jar \https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar`
 
 `ls -l target/jacoco*`
 |JaCoCo agent and client downloaded

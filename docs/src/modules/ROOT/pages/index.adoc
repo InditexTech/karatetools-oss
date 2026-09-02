@@ -12,7 +12,7 @@
 :page-hero-image-bordered:
 
 Karate Tools is a toolkit for teams testing REST APIs with
-https://karatelabs.github.io/karate/[Karate,window=_blank]. It scaffolds a
+https://docs.karatelabs.io[Karate,window=_blank]. It scaffolds a
 new Karate module from a Maven archetype, generates test scenarios, data
 sets and mocks straight from an Open API definition, and ships ready-to-use
 clients for the databases and messaging systems your tests need to talk to.

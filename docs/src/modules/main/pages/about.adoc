@@ -47,7 +47,7 @@ generation and execution of Karate tests.
 
 == What Karate Tools is not
 
-* Karate Tools does not replace https://karatelabs.github.io/karate/[Karate]
+* Karate Tools does not replace https://docs.karatelabs.io[Karate]
   itself — it is a set of conventions, generators and clients built on top of
   it.
 
