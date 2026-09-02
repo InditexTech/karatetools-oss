@@ -4,8 +4,13 @@ It provides features to *send and consume JMS Messages (TextMessage or ObjectMes
 
 [plantuml,jms,png,role="no-border, zoom-in"]
 ....
+@startuml karatetools-jms
+
 include::partial$puml/sprites.puml[]
+
 include::partial$puml/jms-client.puml[]
+
+@enduml
 ....
 
 * How to set it up:

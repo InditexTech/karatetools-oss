@@ -1,7 +1,3 @@
-@startuml karatetools-jdbc
-
-!include sprites.puml
-
 node "<$karate,scale=0.5>\n karate-module" as karateModule {
   file "<$cucumber-icon,scale=0.5> karate-tests" as test
 }
@@ -37,5 +33,3 @@ note bottom of link : SQL SELECT ID, NAME, VALUE FROM DATA ORDER BY ID
 
 jdbcClient ..> JSON
 JSON ..> test
-
-@enduml

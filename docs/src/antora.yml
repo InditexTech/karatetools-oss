@@ -82,9 +82,29 @@ not_found_module: main
 # column with no heading.
 footer:
   groups:
-    - title: Resources
+    - title: Get started
       links:
-        - text: Home
-          url: ROOT:index.adoc
-        - text: Getting started
-          url: main:prerequisites.adoc
+        - text: Quickstart
+          url: main:quickstart.adoc
+        - text: Guides
+          url: main:guides/overview.adoc
+        - text: Reference
+          url: main:reference/overview.adoc
+        - text: Contributing
+          url: main:contributing-overview.adoc
+        - text: Repository
+          url: https://github.com/InditexTech/karatetools-oss
+    - title: Guides
+      links:
+        - text: Archetype
+          url: main:guides/archetype/overview.adoc
+        - text: Open API generator
+          url: main:guides/open-api-generator/overview.adoc
+        - text: Clients
+          url: main:guides/clients/overview.adoc
+        - text: Execution
+          url: main:guides/execution/overview.adoc
+    - title: INDITEXTECH
+      links:
+        - text: OSO Portal
+          url: https://opensource.inditex.com

@@ -89,6 +89,13 @@ SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "https://github.com/googlefonts/noto-emoji"
 
 [[annotations]]
+path = "docs/src/modules/ROOT/images/home/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Original AI-generated artwork for the Karate Tools documentation home page"
+
+[[annotations]]
 path = "docs/supplemental-ui/js/vendor/highlight.min.js"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2006-2024 Josh Goebel <hello@joshgoebel.com> and other contributors"

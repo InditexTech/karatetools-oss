@@ -4,8 +4,13 @@ It provides features to execute operations such as *count*, *find*, *insert and 
 
 [plantuml,mongodb,png,role="no-border, zoom-in"]
 ....
+@startuml karatetools-mongodb
+
 include::partial$puml/sprites.puml[]
+
 include::partial$puml/mongodb-client.puml[]
+
+@enduml
 ....
 
 

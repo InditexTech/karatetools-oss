@@ -4,8 +4,13 @@ It provides features to *consume and produce Kafka Events* for one o multiple to
 
 [plantuml,kafka,png,role="no-border, zoom-in"]
 ....
+@startuml karatetools-kafka
+
 include::partial$puml/sprites.puml[]
+
 include::partial$puml/kafka-clients.puml[]
+
+@enduml
 ....
 
 * How to set it up:

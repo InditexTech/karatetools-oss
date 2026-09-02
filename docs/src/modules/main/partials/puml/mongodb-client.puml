@@ -1,7 +1,3 @@
-@startuml karatetools-mongodb
-
-!include sprites.puml
-
 node "<$karate,scale=0.5>\n karate-module" as karateModule {
   file "<$cucumber,scale=0.5,color=#126e37> karate-tests" as test
 }
@@ -35,5 +31,3 @@ note bottom of link : find('data', {'name'; { '$regex': '^karate-(.*)' }})
 
 mongodbClient ..> JSON
 JSON ..> test
-
-@enduml
