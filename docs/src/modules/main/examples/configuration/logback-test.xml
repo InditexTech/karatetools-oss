@@ -4,7 +4,7 @@
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <immediateFlush>false</immediateFlush>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger\{36} - %msg%n
       </pattern>
     </encoder>
   </appender>
@@ -13,7 +13,7 @@
     <file>target/karate.log</file>
     <append>true</append>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger\{36} - %msg%n
       </pattern>
     </encoder>
   </appender>

@@ -84,7 +84,7 @@ include::example$open-api-generator/open-api-generator-functional-select.txt[]
 ? Enter the location of the Open Api definition target\apis\xxx-api-rest-stable-jar\openapi-rest.yml
 ? Select which Operations you want to generate for
 > (*) all
-  ( ) GET    /items/{itemId}   showItemById
+  ( ) GET    /items/\{itemId}   showItemById
   ( ) POST   /items            createItems
   ( ) GET    /items            listItems
 ----
@@ -167,7 +167,7 @@ include::example$open-api-generator/open-api-generator-functional-select.txt[]
 ? Enter the responses to generate for
 GET    /items            listItems    200
 ? Enter the responses to generate for
-GET    /items/{itemId}   showItemById 200
+GET    /items/\{itemId}   showItemById 200
 ? Enter the responses to generate for
 POST   /items            createItems  201
 ? Select which artifactId you want to generate for com.mypackage.api:xxx-api-rest-stable
@@ -197,7 +197,7 @@ include::example$open-api-generator/open-api-generator-functional-select.txt[]
 ? Enter the responses to generate for
 GET    /items            listItems    200
 ? Enter the responses to generate for
-GET    /items/{itemId}   showItemById 200
+GET    /items/\{itemId}   showItemById 200
 ? Enter the responses to generate for
 POST   /items            createItems  201
 ? Select which artifactId you want to generate for com.mypackage.api:xxx-api-rest-stable
