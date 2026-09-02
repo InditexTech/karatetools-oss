@@ -103,31 +103,31 @@ SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "Original AI-generated artwork for the Karate Tools documentation home page"
 
 [[annotations]]
-path = "docs/supplemental-ui/js/vendor/highlight.min.js"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2006-2024 Josh Goebel <hello@joshgoebel.com> and other contributors"
-SPDX-License-Identifier = "BSD-3-Clause"
-SPDX-FileComment = "highlight.min.js"
-
-[[annotations]]
-path = "docs/supplemental-ui/js/vendor/jquery.min.js"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "OpenJS Foundation and other contributors"
-SPDX-License-Identifier = "MIT"
-SPDX-FileComment = "https://jquery.com/license/"
-
-[[annotations]]
-path = "docs/ui-bundle.zip"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Copyright © 2017-present OpenDevise Inc. and the Antora Project."
-SPDX-License-Identifier = "MPL-2.0"
-SPDX-FileComment = "https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable"
-
-[[annotations]]
 path = "e2e/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ".agents/skills/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Scaffolded via npx skills@latest add InditexTech/docouture"
+
+[[annotations]]
+path = "agent/skills/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Scaffolded via npx skills@latest add InditexTech/docouture"
+
+[[annotations]]
+path = "skills-lock.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Scaffolded via npx skills@latest add InditexTech/docouture"
 
 [[annotations]]
 path = "github_config.yml"
