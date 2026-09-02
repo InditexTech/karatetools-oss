@@ -1,11 +1,22 @@
-@startuml "sprites"
-
 ' The trademarks have been used in accordance with the trademark guidelines
 ' established by each of the brands.
 
 ' The trademarks are used for reference purposes and minimal use, without any
 ' association, affiliation, promotion or approval by the trademark holders
 ' with respect to the open source project.
+
+' This file is a PlantUML sprite-library include fragment, not a standalone
+' diagram on purpose: it must NOT open its own diagram block (no start/end
+' directives of its own — even inside a comment; PlantUML's diagram-boundary
+' scanner matches those tokens on any line, comment or not).
+' Kroki (the remote renderer this docs site uses to render PlantUML) has no
+' filesystem access, so a native PlantUML include of this file can never
+' resolve; every diagram that needs these sprites pulls this file in via an
+' AsciiDoc-level `include::partial$puml/sprites.puml[]` placed right after
+' its own diagram-open line, so the sprite declarations land inside that
+' diagram's own scope. Wrapping this fragment in its own diagram block would
+' turn it into a second, empty diagram once concatenated with the target
+' diagram's source instead.
 
 sprite $apache [51x102/16] {
 000000000000000000000000000000000000000000015550000
@@ -263,5 +274,3 @@ sprite swagger <svg height="256" preserveAspectRatio="xMidYMid" viewBox="0 0 256
 sprite xml <svg width="64" height="64"><path d="M7.208 31.416L.643 22.933H7.85l3.017 4.927 2.96-4.927h6.817l-6.398 8.533 7.124 9.6h-7.403l-3.408-5.41-3.52 5.41H0zm15.326-8.483h8.744l2.85 10.667h.056l2.85-10.667h8.744v18.134h-5.81V29.435h-.056l-3.464 11.632h-4.582L28.4 29.435h-.056v11.632h-5.81zm26.492 0h6.146V36.42H64v4.648H49.026z"/></svg>
 
 sprite yaml <svg width="64" height="64" viewBox="0 0 48 48" stroke="#000" stroke-width=".151"><path d="M5.56 24L.14 15.87h3.613l3.613 5.42 3.613-5.42h3.613L3.753 32.13H.14zm9.935 8.13h3.613V15.87h-3.613L4.657 32.13H8.27l7.225-10.83zM30.7 21.3v10.83h3.613V15.87h-4.516l-2.7 5.42-3.613-5.42H19.86v16.26h3.613V21.3l3.613 5.42zm8.127-5.43h-3.613v16.26H47.86l-2.4-3.613h-6.623z"/></svg>
-
-@enduml

@@ -4,8 +4,13 @@ It provides features to execute SQL *queries*, SQL *inserts, updates, deletes, .
 
 [plantuml,jdbc,png,role="no-border, zoom-in"]
 ....
+@startuml karatetools-jdbc
+
 include::partial$puml/sprites.puml[]
+
 include::partial$puml/jdbc-client.puml[]
+
+@enduml
 ....
 
 * How to set it up:

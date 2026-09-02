@@ -1,7 +1,3 @@
-@startuml karatetools-architecture
-
-!include sprites.puml
-
 node "<$java-icon,scale=0.15>\n karatetools-archetype" as karatetoolsArchetype {
   agent "archetype-generator" as archetypeGenerator
 }
@@ -77,5 +73,3 @@ jmsClient --> rabbitmq
 
 application --> karateMockServer : "<$swagger,scale=0.1>\nexternal service"
 karateRunner --> RESTApi : test
-
-@enduml

@@ -1,5 +1,5 @@
 = InditexTech Karate Tools
-:page-layout: home
+:page-layout: home-single
 :page-nav-module: main
 :description: A toolkit to initialize, configure, generate and run Karate REST test suites.
 :page-tags: testing, karate, rest, open-api, java
@@ -7,8 +7,9 @@
 :page-action-url: main:quickstart.adoc
 :page-action-secondary: About
 :page-action-secondary-url: main:about.adoc
-:page-hero-image: main:archetype/archetype-execution.png
-:page-hero-image-alt: Terminal output of generating a new Karate module from the Karate Tools archetype.
+:page-hero-image: ROOT:home/hero.jpg
+:page-hero-image-alt: OpenAPI and configuration inputs flowing through a Java build into test assets, service clients and a test report.
+:page-hero-image-bordered:
 
 Karate Tools is a toolkit for teams testing REST APIs with
 https://karatelabs.github.io/karate/[Karate,window=_blank]. It scaffolds a
@@ -29,7 +30,7 @@ clients for the databases and messaging systems your tests need to talk to.
 [card,subheader="Start here"]
 .xref:main:quickstart.adoc[Quickstart]
 --
-image::ROOT:tools.png[Gear icon]
+image::ROOT:home/get-started-quickstart.jpg[Command generating and validating a ready-to-run Karate test module]
 
 Scaffold a module and run your first test.
 --
@@ -37,7 +38,7 @@ Scaffold a module and run your first test.
 [card,subheader="Tasks"]
 .xref:main:guides/overview.adoc[Guides]
 --
-image::ROOT:training.png[Teacher icon]
+image::ROOT:home/get-started-guides.jpg[Four-step testing workflow from project setup to execution reports]
 
 Step-by-step guides for scaffolding, generation, clients and execution.
 --
@@ -45,7 +46,7 @@ Step-by-step guides for scaffolding, generation, clients and execution.
 [card,subheader="Look it up"]
 .xref:main:reference/overview.adoc[Reference]
 --
-image::ROOT:lab.png[Test tube icon]
+image::ROOT:home/get-started-reference.jpg[Configuration and package references connected through a structured lookup system]
 
 Configuration properties, exact and complete.
 --
@@ -53,7 +54,7 @@ Configuration properties, exact and complete.
 [card,subheader="Community"]
 .xref:main:contributing-overview.adoc[Contributing]
 --
-image::ROOT:dev.png[Woman technologist icon]
+image::ROOT:home/get-started-contributing.jpg[Code contribution passing through review and automated test gates]
 
 Report bugs, improve the docs, or contribute code.
 --
@@ -65,7 +66,7 @@ Report bugs, improve the docs, or contribute code.
 ====
 [feature,label="Scaffold a module in one command"]
 --
-image::main:archetype/archetype-execution.png[Terminal running the Karate Tools archetype]
+image::ROOT:home/capability-scaffold.jpg[Project inputs assembled into a complete and validated Karate module]
 
 Generate a fully-configured Karate module from a Maven archetype — Karate
 config, logging, authentication and mock-server wiring already in place.
@@ -76,7 +77,7 @@ xref:main:guides/archetype/overview.adoc[Learn more]
 
 [feature,label="Generate tests from Open API"]
 --
-image::main:open-api-generator/open-api-generator-cmd-operations.png[Terminal running the Open API generator]
+image::ROOT:home/capability-openapi.jpg[OpenAPI definition transformed into generated scenarios and test assets]
 
 Point the generator at an Open API definition and get Gherkin scenarios,
 test data and service mocks back — no scenario written by hand.
@@ -87,7 +88,7 @@ xref:main:guides/open-api-generator/overview.adoc[Learn more]
 
 [feature,label="Run and get reports that matter"]
 --
-image::main:execution/karate-reports-default-karate.png[Karate HTML test report]
+image::ROOT:home/capability-execution.jpg[Test execution across services and environments converging into a results report]
 
 Run against any environment, with a mock server for external services and
 HTML reports that show exactly what ran.
@@ -97,7 +98,7 @@ xref:main:guides/execution/overview.adoc[Learn more]
 --
 ====
 
-== Free & open source
+== Open source
 
 [cta]
 ====

@@ -1,7 +1,3 @@
-@startuml karatetools-jms
-
-!include sprites.puml
-
 node "<$karate,scale=0.5>\n karate-module" as karateModule {
   file "<$cucumber-icon,scale=0.5> karate-tests" as test
 }
@@ -33,5 +29,3 @@ note top of link : consume('queue')
 
 jmsClient ..> JSON
 JSON ..> test
-
-@enduml

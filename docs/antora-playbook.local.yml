@@ -45,6 +45,11 @@ site:
     product_logo: /_/product-logo.png
     product_logo_dark: /_/product-logo-dark.png
     favicon: /_/favicon.ico
+    # The landing's decorative background (home.css, head-styles.hbs) — a
+    # per-site image the UI bundle cannot ship itself, so it's read from
+    # here as `site.keys.homeBackground` and written into a CSS custom
+    # property. Without this key the landing renders on a plain surface.
+    home_background: /_/home-background.jpg
 
 content:
   sources:

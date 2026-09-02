@@ -11,26 +11,31 @@ diagram:
 
 [plantuml,architecture,png,role="no-border, zoom-in"]
 ....
+@startuml karatetools-architecture
+
 include::partial$puml/sprites.puml[]
+
 include::partial$puml/architecture.puml[]
+
+@enduml
 ....
 
 == Project structure
 
-[cols="40h,~"]
+[cols="40,~"]
 |===
 |Module |Description
 
-|⚙️ xref:guides/archetype/overview.adoc[Karate Tools Archetype]
+|xref:guides/archetype/overview.adoc[Karate Tools Archetype]
 |Archetype to initialize a Karate Maven project from scratch with all its
 dependencies.
 
-|⚙️ xref:guides/open-api-generator/overview.adoc[Karate Tools Open API Generator]
+|xref:guides/open-api-generator/overview.adoc[Karate Tools Open API Generator]
 |Automatic generation of tests in Gherkin, with their related data sets and
 schemas for response validation, as well as data to mock external services
 from Open API definitions.
 
-|⚙️ xref:guides/clients/overview.adoc[Karate Clients]
+|xref:guides/clients/overview.adoc[Karate Clients]
 |Clients to interact with relational databases (JDBC), a non-relational
 database (MongoDB), event messaging (Kafka consumer and producer) and JMS
 messaging.
