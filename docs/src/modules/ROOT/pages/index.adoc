@@ -1,0 +1,148 @@
+= InditexTech Karate Tools
+:page-layout: home-single
+:page-nav-module: main
+:description: A toolkit to initialize, configure, generate and run Karate REST test suites.
+:page-tags: testing, karate, rest, open-api, java
+:page-action: Quickstart
+:page-action-url: main:quickstart.adoc
+:page-action-secondary: About
+:page-action-secondary-url: main:about.adoc
+:page-hero-image: ROOT:home/hero.jpg
+:page-hero-image-alt: OpenAPI and configuration inputs flowing through a Java build into test assets, service clients and a test report.
+:page-hero-image-bordered:
+
+Karate Tools is a toolkit for teams testing REST APIs with
+https://docs.karatelabs.io[Karate,window=_blank]. It scaffolds a
+new Karate module from a Maven archetype, generates test scenarios, data
+sets and mocks straight from an Open API definition, and ships ready-to-use
+clients for the databases and messaging systems your tests need to talk to.
+
+- *One archetype, one command* — a working Karate project, configured and
+  ready to run.
+- *Tests you don't have to write* — Open API in, Gherkin scenarios and mocks
+  out.
+- *Clients included* — JDBC, MongoDB, Kafka and JMS, ready to use in tests.
+
+== Get started
+
+[cards,type=image-square,columns="1 s:2 m:4",width=container]
+====
+[card,subheader="Start here"]
+.xref:main:quickstart.adoc[Quickstart]
+--
+image::ROOT:home/get-started-quickstart.jpg[Command generating and validating a ready-to-run Karate test module]
+
+Scaffold a module and run your first test.
+--
+
+[card,subheader="Tasks"]
+.xref:main:guides/overview.adoc[Guides]
+--
+image::ROOT:home/get-started-guides.jpg[Four-step testing workflow from project setup to execution reports]
+
+Step-by-step guides for scaffolding, generation, clients and execution.
+--
+
+[card,subheader="Look it up"]
+.xref:main:reference/overview.adoc[Reference]
+--
+image::ROOT:home/get-started-reference.jpg[Configuration and package references connected through a structured lookup system]
+
+Configuration properties, exact and complete.
+--
+
+[card,subheader="Community"]
+.xref:main:contributing-overview.adoc[Contributing]
+--
+image::ROOT:home/get-started-contributing.jpg[Code contribution passing through review and automated test gates]
+
+Report bugs, improve the docs, or contribute code.
+--
+====
+
+== Key capabilities
+
+[feature-tabs]
+====
+[feature,label="Scaffold a module in one command"]
+--
+image::ROOT:home/capability-scaffold.jpg[Project inputs assembled into a complete and validated Karate module]
+
+Generate a fully-configured Karate module from a Maven archetype — Karate
+config, logging, authentication and mock-server wiring already in place.
+
+[.cta]
+xref:main:guides/archetype/overview.adoc[Learn more]
+--
+
+[feature,label="Generate tests from Open API"]
+--
+image::ROOT:home/capability-openapi.jpg[OpenAPI definition transformed into generated scenarios and test assets]
+
+Point the generator at an Open API definition and get Gherkin scenarios,
+test data and service mocks back — no scenario written by hand.
+
+[.cta]
+xref:main:guides/open-api-generator/overview.adoc[Learn more]
+--
+
+[feature,label="Run and get reports that matter"]
+--
+image::ROOT:home/capability-execution.jpg[Test execution across services and environments converging into a results report]
+
+Run against any environment, with a mock server for external services and
+HTML reports that show exactly what ran.
+
+[.cta]
+xref:main:guides/execution/overview.adoc[Learn more]
+--
+====
+
+== Open source
+
+[cta]
+====
+Karate Tools is developed in the open at InditexTech, and built for teams
+to actually use — bug reports, fixes and new features are all welcome.
+
+[.primary]
+https://github.com/InditexTech/karatetools-oss[Star the repository on GitHub,window=_blank]
+====
+
+== Frequently asked questions
+
+Have more questions? Open an issue — we'll respond as quickly as possible.
+
+[accordion,aria-label="Frequently asked questions"]
+--
+.Is Karate Tools free and open source?
+[%collapsible]
+====
+Yes. Karate Tools is distributed under the Apache 2.0 License: you can use,
+modify and distribute it, including in commercial applications.
+====
+
+.Do I need an Open API definition to use Karate Tools?
+[%collapsible]
+====
+No. The Open API generator is optional — the archetype gives you a working
+Karate project either way; the generator just saves you from writing
+scenarios, test data and mocks by hand when a definition exists. See
+xref:main:guides/open-api-generator/overview.adoc[Open API generator].
+====
+
+.Do I need to write Java to use Karate Tools?
+[%collapsible]
+====
+Mostly no — tests are plain Karate `.feature` files and YAML/JS
+configuration. Java is only involved if you extend the clients or
+generators themselves. See the xref:main:quickstart.adoc[quickstart].
+====
+
+.Can I use Karate Tools outside InditexTech?
+[%collapsible]
+====
+Yes — Karate Tools is public open-source software, usable by anyone under
+the Apache 2.0 License.
+====
+--

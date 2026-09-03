@@ -1,6 +1,110 @@
+# Component descriptor. Every directory Antora treats as documentation needs
+# one of these. See https://docs.antora.org/antora/latest/component-version/
+#
+# `name` is either this site's own name (a real URL path segment on
+# publish) or Antora's reserved `ROOT` (contributes no segment at all) —
+# decided by the `docouture new` wizard's "extra URL path segment" question (or
+# `--url-segment`), default off/ROOT. This site deliberately uses its own
+# name, `karatetools-oss`, instead of `ROOT` — matching the exact component
+# name every pre-docouture docs/v4.0.0-docs/v6.0.0 tag already carries, so
+# this migration extends that same version history instead of forking a
+# second, unrelated component with no shared version dropdown. See
+# antora-playbook.yml's own site.url comment for the full GitHub Pages URL
+# shape this produces.
 name: karatetools-oss
 title: InditexTech Karate Tools
+# This descriptor is identical for BOTH versioning modes — see the docouture
+# docs-site-package skill's reference/versioning-modes.md. `main` permanently
+# says `version: prerelease`, `prerelease: true`, regardless of whether this
+# site was scaffolded standalone or versioned (`docouture new --mode versioned`).
+# What differs between the two modes is only antora-playbook.yml's
+# content.sources[] tags (`stable` vs `v*`) and what a release tag's own copy
+# of this file ends up saying: standalone's `stable` tag says
+# `version: stable`, `prerelease: false`; a versioned release tag (v1.2.0,
+# ...) says `version: '1.2.0'`, `prerelease: false`. Until the first release
+# this site has just the one (prerelease) version — that is expected.
+version: prerelease
 prerelease: true
-start_page: HOME:index.adoc
+# The site's landing page: modules/ROOT/pages/index.adoc, rendered through
+# the UI bundle's `home` layout. Naming it here (rather than relying on
+# Antora's own default) is what stops it fabricating a synthetic
+# component-root "previous" URL for the first nav entry — a page that
+# doesn't exist — which would otherwise break the pagination footer's
+# "previous" link on the very first page of the site.
+#
+# ROOT is deliberately absent from the `nav` list below: the landing is
+# reached from the header's product name and the side menu's brand block,
+# not as a row in the navigation tree, and it borrows `main`'s navigation
+# for its own side menu (`:page-nav-module: main` in that page's own header).
+start_page: ROOT:index.adoc
 nav:
-  - modules/HOME/nav.adoc
+  - modules/main/nav.adoc
+
+# Per-module navigation metadata, read by @inditextech/docouture-antora-extensions
+# (registered under `antora.extensions` in the playbook) and attached to the
+# navigation trees Antora builds from the `nav` list above. It is what lets
+# the UI show one module's navigation at a time, with a switcher between
+# modules once there is more than one — this scaffold starts with a single
+# placeholder module (`main`); add another entry here, alongside a second
+# `modules/<name>/nav.adoc` in the `nav` list above, to see the switcher
+# itself appear.
+#
+# A LIST, not a map keyed by module — deliberately, and it must stay one. See
+# @inditextech/docouture-antora-extensions's own docs for why: a map's keys get
+# silently camelCased by Antora's content aggregator, which breaks any module
+# slug containing a hyphen.
+#
+# `icon` is a bare icon name from the UI bundle's own vendored sprite
+# (packages/ui-bundle/src/img/icons.yml) — an icon name is not free-form.
+nav_modules:
+  - module: main
+    title: Documentation
+    description: Overview, guides, reference and everything else about Karate Tools.
+    icon: grid-3x3
+
+# Which module's navigation the generated 404 page's side menu shows, read
+# by @inditextech/docouture-antora-extensions. With a single module there is
+# only one sensible value; update this alongside nav_modules above if a
+# second module is added and the 404 page should point somewhere else.
+not_found_module: main
+
+# Site footer link groups (read by @inditextech/docouture-antora-extensions and
+# attached to this component version as `footer`). Authored here rather than
+# in the playbook because `site.keys` is a flat primitive map and cannot
+# carry a list.
+#
+# A footer.groups list is positional (index 0 → column 2, 1 → column 3's
+# fallback — used only when this component has fewer than two switchable
+# modules, which is the case here with just `main` above — 2 → column 4), not
+# keyed. `url` is either a page ID — the same string xref:...[] accepts — or
+# a literal URL; one that resolves to no page is dropped with a warning
+# rather than rendered dead. `title` is optional per group; omit it for a
+# column with no heading.
+footer:
+  groups:
+    - title: Get started
+      links:
+        - text: Quickstart
+          url: main:quickstart.adoc
+        - text: Guides
+          url: main:guides/overview.adoc
+        - text: Reference
+          url: main:reference/overview.adoc
+        - text: Contributing
+          url: main:contributing-overview.adoc
+        - text: Repository
+          url: https://github.com/InditexTech/karatetools-oss
+    - title: Guides
+      links:
+        - text: Archetype
+          url: main:guides/archetype/overview.adoc
+        - text: Open API generator
+          url: main:guides/open-api-generator/overview.adoc
+        - text: Clients
+          url: main:guides/clients/overview.adoc
+        - text: Execution
+          url: main:guides/execution/overview.adoc
+    # - title: INDITEXTECH
+    #   links:
+    #     - text: OSO Portal
+    #       url: https://opensource.inditex.com

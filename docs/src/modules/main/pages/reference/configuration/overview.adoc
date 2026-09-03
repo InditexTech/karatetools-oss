@@ -1,0 +1,3 @@
+= Configuration
+
+include::partial$configuration/summary.adoc[]

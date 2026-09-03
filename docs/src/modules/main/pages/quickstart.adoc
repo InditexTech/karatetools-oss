@@ -1,0 +1,71 @@
+= Quickstart
+:description: Scaffold and run your first Karate module in minutes.
+
+In this quickstart, you scaffold a new Karate module from the archetype and
+run its first test. Before you begin, make sure you meet the
+xref:prerequisites.adoc[prerequisites].
+
+== Step by step
+
+To set up a Karate project for testing a REST artifact, follow these steps:
+
+. Ensure the xref:prerequisites.adoc[prerequisites] are met.
+. Run the xref:guides/archetype/overview.adoc[archetype] to set up the
+  initial Karate project.
+. Follow the xref:reference/configuration/overview.adoc[configuration] steps.
+. Generate tests, data sets and mocks from Open API definitions with the
+  xref:guides/open-api-generator/overview.adoc[Open API generator].
+. Integrate xref:guides/clients/overview.adoc[Karate clients] in the tests
+  for test data preparation and test validation.
+. Follow the xref:guides/execution/overview.adoc[execution] instructions:
+  running, reporting, starting a local application and other utilities
+  (KarateCache, ...).
+
+== Examples in this repository
+
+The Karate Tools repository includes working examples for each of the areas
+above, under `e2e/karate/src/test/resources`:
+
+[source,plaintext,subs="+attributes"]
+----
+e2e/karate/src/test/resources
+└── com
+    └── inditextech
+        └── karate
+            ├── auth
+            ├── base
+            ├── clients
+            │   ├── db
+            │   │   ├── JDBCClient-MariaDB.feature
+            │   │   ├── JDBCClient-PostgreSQL.feature
+            │   ├── jms
+            │   │   └── JMSClient-ActiveMQ.feature
+            │   ├── kafka
+            │   │   └── KafkaClients.feature
+            │   └── mongodb
+            │       └── MongoDBClient.feature
+            └── karatetools-openapi-test
+                └── xxx-api-rest-stable
+                    ├── functional
+                    │   └── e2e
+                    │       ├── e2e.feature
+                    │       └── test-data
+                    └── smoke
+                        └── BasicApi
+                            ├── createItems
+                            │   ├── createItems.feature
+                            │   └── test-data
+                            ├── listItems
+                            │   ├── listItems.feature
+                            │   └── test-data
+                            └── showItemById
+                                ├── showItemById.feature
+                                └── test-data
+----
+
+== Next steps
+
+* xref:guides/overview.adoc[Guides] — Open API generation, clients and
+  execution in depth.
+* xref:reference/overview.adoc[Reference] — configuration properties, exact
+  and complete.

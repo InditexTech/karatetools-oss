@@ -1,0 +1,24 @@
+= Prerequisites
+:description: What you need before you start using Karate Tools.
+
+This page lists what you need before using Karate Tools. After meeting these
+requirements, follow the xref:quickstart.adoc[quickstart].
+
+== Tool requirements
+
+. https://git-scm.com/about[Git,window=_blank]
+. https://asdf-vm.com/guide/getting-started.html[asdf,window=_blank] (version management)
+
+The required asdf plugins and versions are defined in the repository's own
+`.tool-versions` file. The current required versions are:
+
+* `maven 3.9.14`
+* `java temurin-25.0.3+9.0.LTS`
+
+== Minimum checklist before starting
+
+* Tool requirements above are met.
+* The target project to be tested with Karate Tools exists, and at least
+  runs locally.
+* You know in which artifact the project's REST Open API is defined — and
+  the Open API of any external services you want to mock.

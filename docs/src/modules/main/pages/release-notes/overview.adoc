@@ -1,0 +1,89 @@
+= Release notes
+:description: Highlights of every Karate Tools release.
+
+For upgrade instructions between major versions, see the
+xref:release-notes/migration-guide.adoc[migration guide].
+
+[cols="1,1,6"]
+|===
+| Version | Date | Description
+
+| 6.0.0
+| 2026-06-26
+|
+
+✔️ Karate Tools - *Java 25 Update* (21.0.4 -> 25.0.3)
+
+✔️ Karate Tools - *Maven Update* (3.9.4 -> 3.9.14)
+
+✔️ Karate Tools - *Archetype Update* (generated projects now target Java 25, Maven 3.9.14, and include all plugin updates)
+
+✔️ Karate Tools - *Dependencies Update* (artemis-jms-client 2.42.0 -> 2.54.0, assertj-core 3.27.6 -> 3.27.7, checkstyle 11.0.1 -> 11.1.0, commons-io 2.20.0 -> 2.22.0, gson 2.13.2 -> 2.14.0, jackson 2.20.0 -> 2.22.0, junit 5.13.4 -> 5.14.4, kafka-avro-serializer 7.6.2 -> 7.8.5, kafka-clients 3.9.1 -> 3.9.2, karate 1.5.1 -> 1.5.2, logback 1.5.18 -> 1.5.35, lombok 1.18.42 -> 1.18.46, mariadb-java-client 3.5.6 -> 3.5.9, maven-model 3.9.11 -> 3.9.16, mockito 5.20.0 -> 5.23.0, mongodb-driver-sync 5.6.0 -> 5.8.0, postgresql 42.7.8 -> 42.7.11, rabbitmq-jms 2.12.0 -> 2.13.0, com.github.spotbugs 4.9.6 -> 4.10.2, spring-boot 3.5.6 -> 3.5.14, spring-core 6.2.11 -> 6.2.18, swagger-inflector 2.0.14 -> 2.0.17, swagger-parser 2.1.34 -> 2.1.45)
+
+✔️ Karate Tools - *Plugins Update* (central-publishing-maven-plugin 0.9.0 -> 0.11.0, exec-maven-plugin 3.1.0 -> 3.6.3, jacoco-maven-plugin 0.8.13 -> 0.8.15, maven-archetype-plugin 3.4.0 -> 3.4.1, maven-compiler-plugin 3.11.0 -> 3.15.0, maven-dependency-plugin 3.8.1 -> 3.11.0, maven-enforcer-plugin 3.6.1 -> 3.6.3, maven-failsafe-plugin 3.5.3 -> 3.5.6, maven-jar-plugin 3.4.2 -> 3.5.0, maven-release-plugin 3.1.1 -> 3.3.1, maven-resources-plugin 3.3.1 -> 3.5.0, maven-source-plugin 3.3.1 -> 3.4.0, maven-surefire-plugin 3.5.3 -> 3.5.6, maven-surefire-report-plugin 3.5.3 -> 3.5.6, pitest 1.20.3 -> 1.25.5, spotbugs-maven-plugin 4.9.6.0 -> 4.10.2.0, spring-boot-maven-plugin 3.5.6 -> 3.5.14)
+
+✔️ Karate Tools - *Containers Update* (postgres 16.8 -> 18.2, mongodb 7.0.12 -> 7.0.34, apache/kafka 3.8.1 -> 4.1.2, schema-registry 7.8.2 -> 8.1.2)
+
+| 5.4.0
+| 2026-05-21
+|
+
+✔️ Karate Tools - *Bump Node related actions to Node 24* (GitHub Actions updated to use Node 24 runtime)
+
+✔️ Karate Tools - *Add exclusions and update dependencies in pom.xml* (excluded transitive dependencies: mailapi, checker-compat-qual, jaxb-api from rabbitmq-jms and swagger-inflector)
+
+✔️ Karate Tools - *Updated features background description*
+
+| 5.3.0
+| 2026-04-14
+|
+
+✔️ Karate Tools - Added *RabbitMQ - AMQP Support*
+
+✔️ Karate Tools - *Containers Update* (confluentinc/cp-kafka:7.6.2 -> apache/kafka:3.8.1, kafka zookeeper deprecated and removed)
+
+| 5.2.0
+| 2026-03-03
+|
+
+✔️ Karate Tools - Fixed Open Api Generation - Operation ID Sanitize
+
+👉 Added configurable `open-api-operation-id-sanitize.mode` Maven property (default: `alphanumeric`). See xref:guides/open-api-generator/overview.adoc#operation-id-sanitize-mode[Open API Generator - Configuration - Operation ID Sanitize Mode].
+
+👉 Supported modes: `alphanumeric` (removes non-word characters, preserves digits and underscores) and `letters-only` (keeps only `[a-zA-Z]` characters).
+
+👉 The property is forwarded as a JVM system property via `exec-maven-plugin` and can be overridden at the command line with `-Dopen-api-operation-id-sanitize.mode=<mode>`. See xref:guides/open-api-generator/overview.adoc#execution[Open API Generator - Execution].
+
+
+| 5.1.0
+| 2025-10-09
+|
+
+✔️ Karate Tools - Added *HttpLogMasking* capability to mask sensitive information in HTTP logs.
+
+✔️ Karate Tools - Added *JMS Rabbit MQ Client* (send and receive messages from Rabbit MQ queues).
+
+✔️ Karate Tools - *Dependencies Update* (artemis-jms-client 2.39.0 -> 2.42.0, assertj-core 3.27.2 -> 3.27.6, checkstyle 10.21.1 -> 11.0.1, com.github.spotbugs 4.8.6 -> 4.9.6, commons-io 2.18.0 -> 2.20.0, gson 2.11.0 -> 2.13.2, jackson 2.18.2 -> 2.20.0, jakarta.validation-api 3.1.0 -> 3.1.1, jsonwebtoken 0.12.6 -> 0.13.0, junit 5.11.4 -> 5.13.4, kafka-clients 3.9.0 -> 3.9.1, logback 1.5.16 -> 1.5.18, lombok 1.18.36 -> 1.18.42, mariadb-java-client 3.5.1 -> 3.5.6, maven-model 3.9.9 -> 3.9.11, mockito 5.15.2 -> 5.20.0, mongodb-driver-sync 5.3.0 -> 5.6.0, postgresql 42.7.4 -> 42.7.8, slf4j-api 2.0.16 -> 2.0.17, spring-boot 3.3.6 -> 3.5.6, spring-core 6.1.15 -> 6.2.11, swagger-inflector 2.0.12 -> 2.0.14, swagger-parser 2.1.24 -> 2.1.34)
+
+✔️ Karate Tools - *Plugins Update* (central-publishing-maven-plugin 0.6.0 -> 0.9.0, jacoco-maven-plugin 0.8.12 -> 0.8.13, maven-archetype-plugin 3.3.1 -> 3.4.0, maven-enforcer-plugin 3.5.0 -> 3.6.1, maven-failsafe-plugin 3.5.2 -> 3.5.3, maven-gpg-plugin 3.2.7 -> 3.2.8, maven-javadoc-plugin 3.11.2 -> 3.12.0, maven-scm-plugin 2.1.0 -> 2.2.1, maven-surefire-plugin 3.5.2 -> 3.5.3, maven-surefire-report-plugin 3.5.2 -> 3.5.3, openapi-generator-maven-plugin 7.10.0 -> 7.12.0, pitest 1.17.3 -> 1.20.3, pitest-junit5-plugin 1.2.1 -> 1.2.3, spotbugs-maven-plugin 4.8.6.6 -> 4.9.6.0, spring-boot-maven-plugin 3.3.6 -> 3.5.6)
+
+✔️ Karate Tools - *Containers Update* (mariadb 10.5.21 -> 10.11.11, postgres 15.7 -> 16.8)
+
+
+| 5.0.1
+| 2025-01-17
+|
+
+✔️ Karate Tools - *exec-maven-plugin Downgrade* (3.5.0 -> 3.1.0) due to console issues with MacOS. The observed issue is `Could not load library` ... `no jansi in java.library.path`
+
+| 5.0.0
+| 2025-01-14
+|
+
+✔️ Karate Tools - *Update to JDK 21*
+
+✔️ Karate Tools - *Dependencies Update* (artemis-jms-client 2.38.0 -> 2.39.0, assertj 3.25.3 -> 3.27.2, jackson 2.18.1 -> 2.18.2, junit 5.11.3 -> 5.11.4, karate 1.4.0 -> 1.5.1, logback 1.5.12 -> 1.5.16, mariadb-java-client 3.5.0 -> 3.5.1, mockito 5.14.2 -> 5.15.2, mongodb-driver-sync 5.2.1 -> 5.3.0, slf4j 2.0.13 -> 2.0.16, spring-boot 3.3.3 -> 3.3.6, spring-core 6.1.13 -> 6.1.15)
+
+✔️ Karate Tools - *Plugins Update* (maven-archetype-plugin 3.2.1 -> 3.3.1, maven-archetype-packaging 3.1.1 -> 3.3.1, maven-checkstyle-plugin 3.4.0 -> 3.6.0, maven-dependency-plugin 3.7.1 -> 3.8.1, maven-enforcer-plugin 3.2.1 -> 3.5.0, maven-failsafe-plugin 3.3.1 -> 3.5.2, maven-gpg-plugin 3.2.5 -> 3.2.7, maven-javadoc-plugin 3.11.1 -> 3.11.2, maven-resources-plugin 3.2.0 -> 3.3.1, maven-surefire-plugin 3.3.1 -> 3.5.2, maven-surefire-report-plugin 3.3.1 -> 3.5.2, pitest 1.16.1 -> 1.17.3, com.puppycrawl.tools.checkstyle 10.20.1 -> 10.21.1, spotbugs-maven-plugin 4.8.6.2 -> 4.8.6.6)
+
+|===

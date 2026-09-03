@@ -1,0 +1,21 @@
+Java Client to interact with DataBases using *JDBC from karate*.
+
+It provides features to execute SQL *queries*, SQL *inserts, updates, deletes, ...* and SQL *scripts from file*.
+
+[plantuml,jdbc,png,role="no-border, zoom-in"]
+....
+@startuml karatetools-jdbc
+
+include::partial$puml/sprites.puml[]
+
+include::partial$puml/jdbc-client.puml[]
+
+@enduml
+....
+
+* How to set it up:
+** Define (if applicable) the JDBC client dependencies in the project *xref:#pom-configuration[POM]*
+** Define the JDBC client configuration in the file *xref:#client-configuration[src/test/resources/config/db/<db-driver>-<env>-config.yml]*
+
+* How to use it in the karate files:
+** *xref:#client-features-and-usage[JDBC Client Features and Usage]*
