@@ -15,11 +15,11 @@
     "check-links": "node scripts/check-links.mjs"
   },
   "devDependencies": {
-    "@inditextech/docouture-cli": "1.0.0",
-    "@inditextech/docouture-ui-bundle": "1.0.0",
-    "@inditextech/docouture-asciidoc-extensions": "1.0.0",
-    "@inditextech/docouture-antora-extensions": "1.0.0",
-    "@inditextech/docouture-publish-gh-pages": "1.0.0",
+    "@inditextech/docouture-cli": "1.1.1",
+    "@inditextech/docouture-ui-bundle": "1.1.1",
+    "@inditextech/docouture-asciidoc-extensions": "1.1.1",
+    "@inditextech/docouture-antora-extensions": "1.1.1",
+    "@inditextech/docouture-publish-gh-pages": "1.1.1",
     "antora": "3.2.0",
     "linkinator": "8.0.4"
   },
