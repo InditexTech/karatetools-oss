@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
+
+# One normalized relative path per line. Lines in this file are not reconciled by InditexTech CI governance.
+.github/PULL_REQUEST_TEMPLATE.md
+.github/workflows/code-maven_java-PR_verify.yml
+.github/workflows/code-maven_java-release.yml
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+.github/workflows/code-release_preview.yml
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md
+code/.tool-versions
