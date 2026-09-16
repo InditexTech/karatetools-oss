@@ -3,6 +3,7 @@ package dev.inditex.karate.openapi.data;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,6 +84,12 @@ public class OpenApiSchemaParser {
   /** The object definitions. */
   Map<String, Object> objectDefinitions = new HashMap<>();
 
+  /** Titles of required/non-nullable object schemas being built, used to detect circular/cross references. */
+  Map<String, Map<String, Object>> circularReferenceGuard = new HashMap<>();
+
+  /** Schemas currently being materialized as definitions, keyed by object identity. */
+  Map<Schema, String> schemasBeingBuilt = new IdentityHashMap<>();
+
   /** The root. */
   Object root = new Object();
 
@@ -101,6 +108,8 @@ public class OpenApiSchemaParser {
    */
   protected void init() {
     objectDefinitions = new HashMap<>();
+    circularReferenceGuard = new HashMap<>();
+    schemasBeingBuilt = new IdentityHashMap<>();
     root = new Object();
     linkId = UUID.randomUUID().toString();
   }
@@ -190,13 +199,29 @@ public class OpenApiSchemaParser {
       return prefix + KARATE_SCHEMA_TYPE_OBJECT;
     }
     if (required && !nullable) {
-      if (objectSchema.getTitle() != null && objectDefinitions.containsKey(objectSchema.getTitle())) {
-        return prefix + "(" + linkSchema(objectSchema.getTitle()) + ")";
+      final String title = objectSchema.getTitle();
+      if (title != null && objectDefinitions.containsKey(title)) {
+        return prefix + "(" + linkSchema(title) + ")";
+      }
+      // finding the title still in the guard means we looped back into it: it's a circular/cross reference, not a plain nested object
+      if (title != null && circularReferenceGuard.containsKey(title)) {
+        objectDefinitions.putIfAbsent(title, circularReferenceGuard.get(title));
+        return prefix + "(" + linkSchema(title) + ")";
       }
       final Set<String> requiredSet =
           new HashSet<>(Objects.requireNonNullElse((List<String>) objectSchema.getRequired(), Collections.emptyList()));
       final Map<String, Object> result = new HashMap<>();
+      if (title != null) {
+        circularReferenceGuard.put(title, result);
+      }
       ((Map<String, Schema>) objectSchema.getProperties()).forEach((k, v) -> result.put(k, build(v, requiredSet.contains(k), k)));
+      if (title != null) {
+        circularReferenceGuard.remove(title);
+        // a circular reference detected deeper in the recursion may have promoted this schema to a definition while it was building
+        if (objectDefinitions.containsKey(title)) {
+          return prefix + "(" + linkSchema(title) + ")";
+        }
+      }
       return result;
     }
     final String schemaName = addSchema(objectSchema, objectSchema.getTitle() == null ? key : objectSchema.getTitle());
@@ -275,8 +300,34 @@ public class OpenApiSchemaParser {
    */
   @SuppressWarnings("rawtypes")
   protected String addSchema(final Schema objectSchema, final String key) {
+    if (objectDefinitions.containsKey(key)) {
+      return key;
+    }
+    final String activeSchemaName = schemasBeingBuilt.get(objectSchema);
+    if (activeSchemaName != null) {
+      return activeSchemaName;
+    }
+    if (objectSchema.getProperties() != null) {
+      final Map<String, Object> value = new HashMap<>();
+      objectDefinitions.put(key, value);
+      schemasBeingBuilt.put(objectSchema, key);
+      try {
+        buildObjectProperties(objectSchema, value);
+      } finally {
+        schemasBeingBuilt.remove(objectSchema);
+      }
+      return key;
+    }
     final Object value = build(objectSchema, true, key);
     objectDefinitions.putIfAbsent(key, value);
     return key;
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private void buildObjectProperties(final Schema objectSchema, final Map<String, Object> result) {
+    final Set<String> requiredSet =
+        new HashSet<>(Objects.requireNonNullElse((List<String>) objectSchema.getRequired(), Collections.emptyList()));
+    ((Map<String, Schema>) objectSchema.getProperties())
+        .forEach((property, schema) -> result.put(property, build(schema, requiredSet.contains(property), property)));
   }
 }
