@@ -307,6 +307,12 @@ public class OpenApiSchemaParser {
     if (activeSchemaName != null) {
       return activeSchemaName;
     }
+    // Reuse a definition already materialized for the same titled schema.
+    final String title = objectSchema.getTitle();
+    if (title != null && objectDefinitions.containsKey(title)) {
+      objectDefinitions.putIfAbsent(key, "#(" + linkSchema(title) + ")");
+      return key;
+    }
     if (objectSchema.getProperties() != null) {
       final Map<String, Object> value = new HashMap<>();
       objectDefinitions.put(key, value);
