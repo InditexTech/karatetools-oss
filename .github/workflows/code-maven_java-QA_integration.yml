@@ -184,7 +184,7 @@ jobs:
       - name: failsafe-report-upload
         id: failsafe-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-integration-${{ github.run_number }}-failsafe-report
           path: ${{ fromJSON(steps.config.outputs.config).integration.report.folder }}
@@ -210,7 +210,7 @@ jobs:
       - name: jacoco-report-upload
         id: jacoco-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-integration-${{ github.run_number }}-jacoco-report
           path: ${{ fromJSON(steps.config.outputs.config).integration.jacoco.report.folder }}
@@ -219,7 +219,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |
