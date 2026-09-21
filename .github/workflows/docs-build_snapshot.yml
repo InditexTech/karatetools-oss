@@ -58,7 +58,7 @@ jobs:
       && needs.check-triggered-release.outputs.skip == 'false' }}
     steps:
       - name: Checkout / Branch Head
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
