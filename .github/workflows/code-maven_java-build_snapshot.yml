@@ -1,0 +1,278 @@
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
+
+name: code-maven-java-build-snapshot
+run-name: Build Java snapshot from ${{ github.event_name }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, main-*, develop, develop-*]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, main-*, develop, develop-*]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-maven-java-build-snapshot-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  WORKING_DIRECTORY: ${{ vars.WORKING_DIRECTORY }}
+  ASDF_BRANCH_VERSION: '0.18.0'
+
+jobs:
+  build-snapshot:
+    name: Build Snapshot
+    if: >-
+      (
+        vars.DEVELOPMENT_FLOW == 'trunk-based-development' &&
+        (
+          (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-'))) ||
+          (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'main-'))) ||
+          (github.event_name == 'push' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
+        )
+      ) ||
+      (
+        vars.DEVELOPMENT_FLOW == 'git-flow' &&
+        (
+          (github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))) ||
+          (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'develop-'))) ||
+          (github.event_name == 'push' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-')))
+        )
+      )
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      publish_snapshot: ${{ steps.build.outputs.publish_snapshot }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
+      - name: Resolve governed project type
+        shell: bash
+        run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          if [[ ! -f "$descriptor" ]]; then
+            echo "::error title=Missing descriptor::.github/inditextech-ci-java.json not found."
+            exit 1
+          fi
+          project_type="$(jq -r '.project_type // empty' "$descriptor")"
+          case "$project_type" in
+            single|monorepo) ;;
+            *)
+              echo "::error title=Invalid project type::Descriptor .project_type must be single or monorepo."
+              exit 1
+              ;;
+          esac
+          case "${WORKING_DIRECTORY:-}" in
+            ""|/*|..|../*|*/..|*/../*)
+              echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
+            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+            exit 1
+          fi
+          echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
+
+      - name: Set up workflow Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '25.0.2+10.0.LTS'
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/**/pom.xml
+
+      - name: Read governed tool versions
+        id: tool-versions
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Evq '^[a-zA-Z0-9_-]+ [a-zA-Z0-9._+-]+$' .tool-versions; then
+            echo "::error title=Invalid tool-versions::${WORKING_DIRECTORY}/.tool-versions is malformed."
+            exit 1
+          fi
+          {
+            echo "tool_versions<<EOF"
+            cat .tool-versions
+            echo
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up asdf-managed Java
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        with:
+          tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
+          asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
+
+      - name: Resolve build JDK from .tool-versions
+        id: jdk
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
+
+      - name: Verify snapshot candidate
+        id: build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        run: |
+          set -euo pipefail
+
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          snapshot_optin="$(jq -r '.release.snapshot_publish // false' "$descriptor")"
+
+          publish_snapshot=false
+          if [[ "$snapshot_optin" == "true" && "$GITHUB_EVENT_NAME" == "push" ]]; then
+            committer_email="$(git -C "$GITHUB_WORKSPACE" show -s --format=%ae HEAD)"
+            if [[ "$committer_email" == *"[bot]@users.noreply.github.com" ]]; then
+              echo "::notice title=Snapshot skipped::Release-bot commit does not need a snapshot."
+            else
+              publish_snapshot=true
+            fi
+          fi
+          echo "publish_snapshot=$publish_snapshot" >> "$GITHUB_OUTPUT"
+
+          case "$PROJECT_TYPE" in
+            single|monorepo)
+              mvn -B --no-transfer-progress -f pom.xml clean verify
+              ;;
+            *)
+              echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
+              exit 1
+              ;;
+          esac
+
+  publish-snapshot:
+    name: Publish snapshot to Maven Central
+    needs: build-snapshot
+    if: github.event_name == 'push' && needs.build-snapshot.outputs.publish_snapshot != 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: maven-central
+    permissions:
+      contents: read
+    env:
+      MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      CI_GPG_SECRET_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+      CI_GPG_SECRET_KEY_PASSWORD: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+
+      - name: Resolve governed project type
+        shell: bash
+        run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          if [[ ! -f "$descriptor" ]]; then
+            echo "::error title=Missing descriptor::.github/inditextech-ci-java.json not found."
+            exit 1
+          fi
+          project_type="$(jq -r '.project_type // empty' "$descriptor")"
+          case "$project_type" in
+            single|monorepo) ;;
+            *)
+              echo "::error title=Invalid project type::Descriptor .project_type must be single or monorepo."
+              exit 1
+              ;;
+          esac
+          case "${WORKING_DIRECTORY:-}" in
+            ""|/*|..|../*|*/..|*/../*)
+              echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
+            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+            exit 1
+          fi
+          echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
+
+      - name: Set up workflow Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '25.0.2+10.0.LTS'
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/**/pom.xml
+
+      - name: Read governed tool versions
+        id: tool-versions
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Evq '^[a-zA-Z0-9_-]+ [a-zA-Z0-9._+-]+$' .tool-versions; then
+            echo "::error title=Invalid tool-versions::${WORKING_DIRECTORY}/.tool-versions is malformed."
+            exit 1
+          fi
+          {
+            echo "tool_versions<<EOF"
+            cat .tool-versions
+            echo
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up asdf-managed Java
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        with:
+          tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
+          asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
+
+      - name: Resolve build JDK from .tool-versions
+        id: jdk
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve publishable modules
+        id: modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$PROJECT_TYPE" != "monorepo" ]]; then
+            echo "packages=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          strategy="$(jq -er '.release.strategy' "$descriptor")"
+          if [[ "$strategy" == "locked-step" ]]; then
+            echo "packages=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "$strategy" != "independent" ]]; then
+            echo "::error title=Invalid release strategy::Monorepos must declare release.strategy as locked-step or independent."
+            exit 1
+          fi
+          echo "::error title=Unsupported independent snapshot::Independent Maven monorepo snapshots require InditexTech/gh-actions#10."
+          exit 1
+
+      - name: Deploy snapshot to Maven Central
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        uses: InditexTech/gh-actions/maven-central@1c2058d59528852dbbbd439ebf0274572aa33114 # v1.1.2
+        with:
+          working-directory: ${{ vars.WORKING_DIRECTORY }}
+          project-type: ${{ env.PROJECT_TYPE }}
+          packages: ${{ steps.modules.outputs.packages }}
+          auto-publish: 'false'

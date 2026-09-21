@@ -1,263 +1,244 @@
----
-name: code-maven-release
-run-name: "Release labeled ${{ inputs.RELEASE_TYPE || 'in PR' }}"
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
 
-concurrency: code-release-${{ github.ref }}
+name: code-maven-java-release
+run-name: Publish Java release to Maven Central and GitHub from ${{ github.event_name }}
 
 on:
   pull_request:
     types: [closed]
-    branches: ['main', 'main-*']
-    paths: ['code/**', '.github/workflows/code**']
   workflow_dispatch:
     inputs:
-      BASELINE:
-        description: 'Baseline branch'
+      release_type:
+        description: Release type to use
         required: true
-        default: 'main'
-      RELEASE_TYPE:
-        description: 'Release type to use'
-        required: true
-        default: 'release-type/minor'
+        default: release-type/minor
         type: choice
         options:
-          - 'release-type/hotfix'
-          - 'release-type/multi-hotfix'
-          - 'release-type/major'
-          - 'release-type/minor'
-          - 'release-type/patch'
+          - release-type/hotfix
+          - release-type/multi-hotfix
+          - release-type/major
+          - release-type/minor
+          - release-type/patch
 
-env:
-  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: code-maven-java-release-${{ github.repository }}-${{ github.event.pull_request.base.ref || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
-  release:
-    name: Release
-    if: github.event_name == 'workflow_dispatch'
-      || (github.event.pull_request.merged == true && !contains(join(github.event.pull_request.labels.*.name, ', '), 'skip-release')
-      && (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type')
-      || vars.DEVELOPMENT_FLOW == 'trunk-based-development' ))
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Get input parameters
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            RELEASE_LABELS="${{ github.event.inputs.RELEASE_TYPE }}"
-          else
-            RELEASE_LABELS="${{ join(github.event.pull_request.labels.*.name, ', ') }}"
-            if [[ $RELEASE_LABELS != *release-type/* ]]; then
-              RELEASE_LABELS="$RELEASE_LABELS, release-type/minor"
-            fi
-          fi
-          echo "RELEASE_LABELS=$RELEASE_LABELS" >> "$GITHUB_ENV"
-          BASELINE_BRANCH=${{ github.event.inputs.BASELINE || github.ref }}
-          echo "BASELINE_BRANCH=${BASELINE_BRANCH#refs/heads/}" >> "$GITHUB_ENV"
+  release-core:
+    name: Prepare and Build Release
+    uses: ./.github/workflows/code-maven_java-release-core.yml
+    with:
+      phase: prepare
+      release_type: ${{ inputs.release_type }}
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - uses: actions/create-github-app-token@v3
+  publish-maven-central:
+    name: Publish ${{ matrix.release.tag }} to Maven Central
+    needs: release-core
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: maven-central
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ${{ fromJSON(needs.release-core.outputs.releases) }}
+    env:
+      MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      CI_GPG_SECRET_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+      CI_GPG_SECRET_KEY_PASSWORD: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
+      WORKING_DIRECTORY: ${{ vars.WORKING_DIRECTORY }}
+      ASDF_BRANCH_VERSION: '0.18.0'
+    steps:
+      - name: Check out release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ needs.release-core.outputs.release_commit }}
+
+      - name: Resolve governed project type
+        shell: bash
+        run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          if [[ ! -f "$descriptor" ]]; then
+            echo "::error title=Missing descriptor::.github/inditextech-ci-java.json not found."
+            exit 1
+          fi
+          project_type="$(jq -r '.project_type // empty' "$descriptor")"
+          case "$project_type" in
+            single|monorepo) ;;
+            *)
+              echo "::error title=Invalid project type::Descriptor .project_type must be single or monorepo."
+              exit 1
+              ;;
+          esac
+          case "${WORKING_DIRECTORY:-}" in
+            ""|/*|..|../*|*/..|*/../*)
+              echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
+            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+            exit 1
+          fi
+          echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
+
+      - name: Resolve release lifecycle
+        id: lifecycle
+        shell: bash
+        run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          mode="$(jq -r '.release.lifecycle // "govern-inject"' "$descriptor")"
+          case "$mode" in
+            govern-inject|delegated) ;;
+            *)
+              echo "::error title=Invalid release lifecycle::release.lifecycle must be govern-inject or delegated."
+              exit 1
+              ;;
+          esac
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+
+      - name: Set up workflow Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '25.0.2+10.0.LTS'
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/**/pom.xml
+
+      - name: Read governed tool versions
+        id: tool-versions
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Evq '^[a-zA-Z0-9_-]+ [a-zA-Z0-9._+-]+$' .tool-versions; then
+            echo "::error title=Invalid tool-versions::${WORKING_DIRECTORY}/.tool-versions is malformed."
+            exit 1
+          fi
+          {
+            echo "tool_versions<<EOF"
+            cat .tool-versions
+            echo
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up asdf-managed Java
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        with:
+          tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
+          asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
+
+      - name: Resolve build JDK from .tool-versions
+        id: jdk
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy release to Maven Central
+        if: steps.lifecycle.outputs.mode != 'delegated'
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        uses: InditexTech/gh-actions/maven-central@1cc068f5c8abd2a1aa4cbfc45b42cbaa8aff35cd # v1.1.3
+        with:
+          working-directory: ${{ vars.WORKING_DIRECTORY }}
+          project-type: ${{ env.PROJECT_TYPE }}
+          packages: ${{ env.PROJECT_TYPE == 'monorepo' && join(matrix.release.packages, ',') || '' }}
+          auto-publish: 'true'
+
+      - name: Perform delegated release
+        if: steps.lifecycle.outputs.mode == 'delegated'
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        uses: InditexTech/gh-actions/maven-central@1cc068f5c8abd2a1aa4cbfc45b42cbaa8aff35cd # v1.1.3
+        with:
+          working-directory: ${{ vars.WORKING_DIRECTORY }}
+          project-type: ${{ env.PROJECT_TYPE }}
+          packages: ${{ env.PROJECT_TYPE == 'monorepo' && join(matrix.release.packages, ',') || '' }}
+          auto-publish: 'true'
+          extra-maven-arguments: |
+            -DskipEnforceSnapshots
+            -Dmaven.deploy.skip=false
+
+  finalize-release:
+    name: Finalize release (promote + next dev)
+    needs: [release-core, publish-maven-central]
+    if: always() && needs.release-core.result == 'success'
+    uses: ./.github/workflows/code-maven_java-release-core.yml
+    with:
+      phase: finalize
+      promote: ${{ needs.publish-maven-central.result == 'success' }}
+      release_commit: ${{ needs.release-core.outputs.release_commit }}
+      promote_commit: ${{ needs.release-core.outputs.promote_commit }}
+      releases: ${{ needs.release-core.outputs.releases }}
+      expected_ref: ${{ needs.release-core.outputs.expected_ref }}
+      staging_ref: ${{ needs.release-core.outputs.staging_ref }}
+      staged_tag_ref: ${{ needs.release-core.outputs.staged_tag_ref }}
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+
+  github-release:
+    name: Create GitHub Release ${{ matrix.release.tag }}
+    needs: [release-core, publish-maven-central, finalize-release]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ${{ fromJSON(needs.release-core.outputs.releases) }}
+    steps:
+      - name: Create GitHub App token
         id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-contents: write
 
-      - name: Checkout merge commit
-        uses: actions/checkout@v6
+      - name: Download release distributions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          ref: ${{ env.BASELINE_BRANCH }}
-          fetch-depth: 0
-          persist-credentials: false
+          name: java-distributions-${{ matrix.release.tag }}
+          path: dist
 
-      - name: Check if CHANGELOG.md has changes
+      - name: Create or update GitHub Release
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_TAG: ${{ matrix.release.tag }}
+          RELEASE_VERSION: ${{ matrix.release.version }}
+        shell: bash
         run: |
-          if git diff --quiet HEAD^ HEAD -- code/CHANGELOG.md; then
-            echo "::error title={No CHANGELOG.md changes}::{No CHANGELOG.md changes were found. Update the UNRELEASED section with the new changes.}"
-            gh pr comment ${{ github.event.number }} --body "
-          ### :x: No changes in the \`CHANGELOG.md\` file
-          No changes were found in the \`CHANGELOG.md\` file. Please, update the UNRELEASED section, listing the new changes that applies to this release."
+          set -euo pipefail
+          shopt -s nullglob
+          assets=(dist/*)
+          if [[ ${#assets[@]} -eq 0 ]]; then
+            echo "::error title=Missing distributions::The release artifact is empty."
             exit 1
           fi
 
-      - name: Setup Maven Cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Setup asdf Cache
-        id: asdf-cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.asdf/data
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Save tool-versions content
-        run: |
-          {
-            echo "TOOL_VERSIONS<<EOF"
-            cat code/.tool-versions
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-
-      - name: Setup asdf environment
-        uses: asdf-vm/actions/install@v4
-          # https://github.com/asdf-vm/actions/issues/356
-        if: steps.asdf-cache.outputs.cache-hit != 'true'
-        with:
-          tool_versions: ${{ env.TOOL_VERSIONS }}
-
-      - name: Setup Java environment vars
-        run: |
-          JAVA_HOME="$(asdf where java)"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
-      - name: Setup patch release type version
-        if: contains(env.RELEASE_LABELS, 'release-type/hotfix')
-          || contains(env.RELEASE_LABELS, 'release-type/multi-hotfix')
-          || contains(env.RELEASE_LABELS, 'release-type/patch')
-        run: echo "RELEASE_VERSION=patch" >> "$GITHUB_ENV"
-
-      - name: Setup minor release type version
-        if: contains(env.RELEASE_LABELS, 'release-type/minor')
-        run: echo "RELEASE_VERSION=minor" >> "$GITHUB_ENV"
-
-      - name: Setup minor release type version when no label set and TBD
-        if: ${{ !contains(env.RELEASE_LABELS, 'release-type') && vars.DEVELOPMENT_FLOW == 'trunk-based-development' }}
-        run: echo "RELEASE_VERSION=minor" >> "$GITHUB_ENV"
-
-      - name: Setup major release type version
-        if: contains(env.RELEASE_LABELS, 'release-type/major')
-        run: echo "RELEASE_VERSION=major" >> "$GITHUB_ENV"
-
-      - name: Prepare committer information
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          GPG_PRIVATE_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
-        run: |
-          git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
-
-          # GPG: non-interactive signing setup
-          mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
-          printf 'allow-loopback-pinentry\nallow-preset-passphrase\n' > ~/.gnupg/gpg-agent.conf
-          printf 'use-agent\npinentry-mode loopback\n' > ~/.gnupg/gpg.conf
-          gpgconf --kill gpg-agent || true
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          KEY_DATA=$(gpg --list-secret-keys --with-colons)
-          echo "$KEY_DATA" | awk -F: '/^grp:/ {print $10}' | while read -r GRIP; do
-            /usr/lib/gnupg/gpg-preset-passphrase --preset "$GRIP" <<< "$GPG_PASSPHRASE"
-          done
-
-          # Git: identity and signing
-          FPR=$(echo "$KEY_DATA" | awk -F: '/^fpr:/ {print $10; exit}')
-          git config user.name "srvcosoitxtech"
-          git config user.email "oso@inditex.com"
-          git config user.signingkey "$FPR"
-          git config commit.gpgsign true
-          git config tag.gpgsign true
-
-      - name: Update CHANGELOG.md
-        id: update-changelog
-        uses: release-flow/keep-a-changelog-action@07fee08b513add69e62b0ec90bdb736d7047ff5a #v3.0.1 - Unreleased
-        with:
-          command: bump
-          version: ${{ env.RELEASE_VERSION }}
-          changelog: code/CHANGELOG.md
-          fail-on-empty-release-notes: false
-          keep-unreleased-section: true
-          tag-prefix: ""
-
-      - name: Deploy released artifact
-        id: maven-release-deploy
-        env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
-        working-directory: code
-        run: |
-          mkdir -p ~/.m2
-          cat <<EOF > ~/.m2/settings.xml
-          <settings>
-            <servers>
-              <server>
-                <id>central</id>
-                <username>${{ secrets.MAVEN_CENTRAL_USERNAME }}</username>
-                <password>${{ secrets.MAVEN_CENTRAL_PASSWORD }}</password>
-              </server>
-              <server>
-                <id>gpg.passphrase</id>
-                <passphrase>${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}</passphrase>
-              </server>
-              <server>
-                <id>inditextech-scm-github</id>
-                <username>x-access-token</username>
-                <password>${{ steps.app-token.outputs.token }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-          git add CHANGELOG.md
-          git commit -S -m "chore: Update CHANGELOG with ${{ steps.update-changelog.outputs.version }} version Signed-off-by: srvcosoitxtech <oso@inditex.com>"
-          git push --no-verify -u origin HEAD
-          mvn -B release:prepare release:perform -DreleaseVersion=${{ steps.update-changelog.outputs.version }} -DdeveloperConnection="scm:git:https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git" -Dconnection="scm:git:https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
-          git push --follow-tags origin HEAD
-
-      - name: Next Development Iteration / Create Sync Branch PR into Develop
-        id: sync-branch-pr
-        continue-on-error: true
-        if: ${{ vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          DEVELOP=${BASELINE_BRANCH/main/develop}
-          echo "DEVELOP=$DEVELOP" >> "$GITHUB_OUTPUT"
-          # Avoid creating sync PR if the corresponding development branch does not exist
-          if [[ -z $(git ls-remote --heads origin "$DEVELOP") ]]; then
-            echo "The '$DEVELOP' branch does not exist in remote. Skipping the creation of sync PR"
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
           else
-            git checkout -b "automated/sync-release-${{ steps.update-changelog.outputs.version }}-to-$DEVELOP"
-            git push --no-verify -u origin HEAD
-            gh pr create --base "$DEVELOP" \
-              --title "Sync release ${{ steps.update-changelog.outputs.version }} to $DEVELOP" \
-              --body "**Automated Pull Request**"
+            gh release create "$RELEASE_TAG" "${assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$RELEASE_VERSION" \
+              --generate-notes
           fi
-
-      - name: Github Release / Create
-        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd
-        id: github-release
-        continue-on-error: true
-        with:
-          name: ${{ steps.update-changelog.outputs.version }}
-          tag: ${{ steps.update-changelog.outputs.version }}
-          token: ${{ steps.app-token.outputs.token }}
-          body: |
-            Check out the [changelog](code/CHANGELOG.md) for version ${{ steps.update-changelog.outputs.version }}
-
-      - name: Comment in PR / Sync PR creation failed
-        if: ${{ vars.DEVELOPMENT_FLOW != 'trunk-based-development' }}
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          DEVELOP=${BASELINE_BRANCH/main/develop}
-          git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
-          # shellcheck disable=SC2140
-          if ! git ls-remote --exit-code --heads origin automated/sync-release-"${{ steps.update-changelog.outputs.version }}"-to-"$DEVELOP"; then
-            gh pr comment "${{ github.event.number }}" --body "An error occurred creating the \`sync\` branch that synchronizes the \`$BASELINE_BRANCH\` and \`$DEVELOP\` branches.
-            Please create a branch from \`$BASELINE_BRANCH\` (e.g. \`internal/sync-$BASELINE_BRANCH-with-$DEVELOP\`) and then create a pull request against \`$DEVELOP\` to finish the release process."
-          fi
-
-      - name: Comment in PR / Release creation failed
-        if: ${{ steps.github-release.outcome == 'failure' }}
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: >
-          gh pr comment ${{ github.event.number }} --body "An error occurred creating the Github Release.
-          Don't panic! Your artifacts were successfully uploaded to the Distribution Platform and the new release tag was created.
-          You can manually complete the release by creating it in the [releases](https://github.com/${{ github.repository }}/releases)
-          page."

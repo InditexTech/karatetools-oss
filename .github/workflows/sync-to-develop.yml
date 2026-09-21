@@ -1,0 +1,248 @@
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
+
+name: Sync default branch to develop
+
+on:
+  # The workflow checks out only the merged base branch, never fork-provided code.
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  sync-to-develop:
+    name: Synchronize default branch to develop
+    if: >-
+      github.event.pull_request.merged &&
+      vars.DEVELOPMENT_FLOW == 'git-flow' &&
+      !contains(join(github.event.pull_request.labels.*.name, ','), 'release-type')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: sync-to-develop-${{ github.repository }}-${{ github.event.pull_request.base.ref }}
+      cancel-in-progress: false
+    env:
+      SYNC_BASE_REF: ${{ github.event.pull_request.base.ref }}
+    steps:
+      - name: Resolve sync context
+        id: context
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          DEVELOPMENT_BRANCH: ${{ vars.GIT_FLOW_DEVELOPMENT_BRANCH }}
+          RELEASE_BRANCH: ${{ vars.GIT_FLOW_RELEASE_BRANCH }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$RELEASE_BRANCH" || -z "$DEVELOPMENT_BRANCH" ]]; then
+            echo "::error title=Missing git-flow branch roles::GIT_FLOW_RELEASE_BRANCH and GIT_FLOW_DEVELOPMENT_BRANCH are required."
+            exit 1
+          fi
+
+          if [[ "$BASE_BRANCH" == "$RELEASE_BRANCH" ]]; then
+            develop_branch="$DEVELOPMENT_BRANCH"
+          elif [[ "$BASE_BRANCH" == "$RELEASE_BRANCH"-* ]]; then
+            suffix="${BASE_BRANCH#"$RELEASE_BRANCH"-}"
+            if [[ -z "$suffix" ]]; then
+              echo "::notice title=Sync skipped::$BASE_BRANCH has no release suffix."
+              echo "should_sync=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            develop_branch="$DEVELOPMENT_BRANCH-$suffix"
+          else
+            echo "::notice title=Sync skipped::$BASE_BRANCH is not a configured release branch."
+            echo "should_sync=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          {
+            echo "develop_branch=$develop_branch"
+            echo "should_sync=true"
+          } >> "$GITHUB_OUTPUT"
+
+      # The checkout runs *before* any App credential exists. This event carries
+      # the base repository's secrets, so ordering is the cheap half of the
+      # defence: content that lands in the workspace cannot reach a credential
+      # that has not been minted yet.
+      - name: Checkout the exact merged revision
+        if: steps.context.outputs.should_sync == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          # Deliberately the base branch, not the merge SHA. Central policy
+          # requires this ref, and the branch is trusted here: this event only
+          # fires for an already-merged pull request.
+          ref: ${{ env.SYNC_BASE_REF }}
+
+      - name: Create GitHub App token
+        if: steps.context.outputs.should_sync == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          # Required because the synchronization branch carries workflow files
+          # from the default branch into develop, and Git refuses that push
+          # without it.
+          permission-workflows: write
+
+      - name: Prepare sync branch
+        id: prepare
+        if: steps.context.outputs.should_sync == 'true'
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          DEVELOP_BRANCH: ${{ steps.context.outputs.develop_branch }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          # shellcheck disable=SC2153
+          develop_branch="$DEVELOP_BRANCH"
+
+          sync_branch="automated/sync-from-${BASE_BRANCH}-to-${develop_branch}"
+
+          gh auth setup-git
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
+
+          if ! git ls-remote --exit-code --heads origin "$develop_branch" > /dev/null; then
+            echo "::notice title=Sync skipped::The $develop_branch branch does not exist."
+            echo "should_sync=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch --no-tags origin "$BASE_BRANCH" "$develop_branch"
+
+          if git merge-base --is-ancestor "origin/$BASE_BRANCH" "origin/$develop_branch"; then
+            echo "::notice title=Sync skipped::$develop_branch already contains $BASE_BRANCH."
+            echo "should_sync=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --heads origin "$sync_branch" > /dev/null; then
+            git fetch --no-tags origin "$sync_branch"
+            git switch --force-create "$sync_branch" "origin/$sync_branch"
+            # Preserve merge commits created by conflict resolution on the sync pull request.
+            git rebase --rebase-merges "origin/$BASE_BRANCH"
+            git push \
+              --force-with-lease="refs/heads/$sync_branch:$(git rev-parse "origin/$sync_branch")" \
+              origin \
+              "HEAD:refs/heads/$sync_branch"
+          else
+            git switch --create "$sync_branch" "origin/$BASE_BRANCH"
+            git push --set-upstream origin "$sync_branch"
+          fi
+
+          {
+            echo "develop_branch=$develop_branch"
+            echo "should_sync=true"
+            echo "sync_branch=$sync_branch"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create or update sync pull request
+        if: steps.prepare.outputs.should_sync == 'true'
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          DEVELOP_BRANCH: ${{ steps.context.outputs.develop_branch }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SOURCE_PULL_REQUEST: ${{ github.event.pull_request.number }}
+          SYNC_BRANCH: ${{ steps.prepare.outputs.sync_branch }}
+        run: |
+          set -euo pipefail
+
+          body="$(printf '%s\n\n- #%s' \
+            '**Automated pull request** related to:' \
+            "$SOURCE_PULL_REQUEST")"
+          find_existing_pr() {
+            gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --head "$SYNC_BRANCH" \
+              --base "$DEVELOP_BRANCH" \
+              --state open \
+              --json isCrossRepository,number \
+              --jq '[.[] | select(.isCrossRepository == false)][0].number // empty'
+          }
+
+          existing_pr="$(find_existing_pr)"
+          has_internal_label="$(gh label list \
+            --repo "$GITHUB_REPOSITORY" \
+            --search kind/internal \
+            --json name \
+            --jq 'any(.[]; .name == "kind/internal")')"
+
+          if [[ -n "$existing_pr" ]]; then
+            gh pr edit \
+              "$existing_pr" \
+              --repo "$GITHUB_REPOSITORY" \
+              --body "$body"
+
+            if [[ "$has_internal_label" == "true" ]]; then
+              gh pr edit \
+                "$existing_pr" \
+                --repo "$GITHUB_REPOSITORY" \
+                --add-label kind/internal
+            else
+              echo "::warning title=Missing label::The kind/internal label is not available."
+            fi
+          else
+            create_args=(
+              pr create
+              --repo "$GITHUB_REPOSITORY"
+              --base "$DEVELOP_BRANCH"
+              --head "$SYNC_BRANCH"
+              --title "Sync from $BASE_BRANCH to $DEVELOP_BRANCH"
+              --body "$body"
+            )
+            if [[ "$has_internal_label" == "true" ]]; then
+              create_args+=(--label kind/internal)
+            else
+              echo "::warning title=Missing label::The kind/internal label is not available."
+            fi
+
+            for attempt in 1 2 3; do
+              if create_output="$(gh "${create_args[@]}" 2>&1)"; then
+                printf '%s\n' "$create_output"
+                break
+              else
+                create_status=$?
+              fi
+
+              # A 5xx can arrive after GitHub has committed the mutation. Read
+              # the exact head/base pair before retrying, never create blindly.
+              existing_pr="$(find_existing_pr)"
+              if [[ -n "$existing_pr" ]]; then
+                echo "::notice title=Sync pull request reconciled::PR #$existing_pr exists after a failed create request."
+                break
+              fi
+
+              if [[ "$attempt" -lt 3 ]] &&
+                [[ "$create_output" =~ HTTP\ (500|502|503|504): ]]; then
+                echo "::warning title=Transient PR creation failure::Attempt $attempt failed; retrying after reconciliation."
+                sleep "$((attempt * 5))"
+                continue
+              fi
+
+              printf '%s\n' "$create_output" >&2
+              exit "$create_status"
+            done
+          fi
+
+      - name: Comment on source pull request after failure
+        if: >-
+          failure() &&
+          !cancelled() &&
+          steps.app-token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SOURCE_PULL_REQUEST: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment \
+            "$SOURCE_PULL_REQUEST" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "The automatic synchronization to develop failed. See the [workflow log](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)."
