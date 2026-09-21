@@ -32,6 +32,9 @@ concurrency:
 jobs:
   release-core:
     name: Prepare and Build Release
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     uses: ./.github/workflows/code-maven_java-release-core.yml
     with:
       phase: prepare
