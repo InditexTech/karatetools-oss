@@ -1,0 +1,104 @@
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main, main-*, develop, develop-*]
+  pull_request:
+    branches: [main, main-*, develop, develop-*]
+  merge_group:
+    types: [checks_requested]
+  schedule:
+    - cron: '17 4 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scanning-availability:
+    name: Resolve code scanning availability
+    if: >-
+      github.event_name == 'schedule' ||
+      (
+        vars.DEVELOPMENT_FLOW == 'trunk-based-development' &&
+        (
+          (github.event_name == 'push' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-'))) ||
+          (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'main-'))) ||
+          (github.event_name == 'merge_group' && (github.event.merge_group.base_ref == 'main' || startsWith(github.event.merge_group.base_ref, 'main-')))
+        )
+      ) ||
+      (
+        vars.DEVELOPMENT_FLOW == 'git-flow' &&
+        (
+          (github.event_name == 'push' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))) ||
+          (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'develop-'))) ||
+          (github.event_name == 'merge_group' && (github.event.merge_group.base_ref == 'develop' || startsWith(github.event.merge_group.base_ref, 'develop-')))
+        )
+      )
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      enabled: ${{ steps.resolve.outputs.enabled }}
+    steps:
+      - name: Resolve availability
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE_ENABLED: ${{ vars.CODE_SCANNING_ENABLED }}
+        run: |
+          set -euo pipefail
+          visibility="$(gh api "/repos/${GITHUB_REPOSITORY}" --jq '.visibility' 2>/dev/null || echo unknown)"
+          seat="$(gh api "/repos/${GITHUB_REPOSITORY}" \
+            --jq '.security_and_analysis.advanced_security.status // "unknown"' 2>/dev/null || echo unknown)"
+          enabled=false
+          if [ "${visibility}" = "public" ]; then
+            enabled=true
+          elif [ "${seat}" = "enabled" ]; then
+            enabled=true
+          elif [ "${FORCE_ENABLED:-}" = "true" ]; then
+            enabled=true
+          fi
+          echo "Code scanning availability: visibility=${visibility} seat=${seat} enabled=${enabled}"
+          echo "enabled=${enabled}" >> "${GITHUB_OUTPUT}"
+
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    needs: scanning-availability
+    if: needs.scanning-availability.outputs.enabled == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: java
+            build-mode: none
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
+        with:
+          build-mode: ${{ matrix.build-mode }}
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
+        with:
+          category: /language:${{ matrix.language }}
