@@ -29,7 +29,7 @@
   "creation_year": 2026,
   "integrity": {
     "algorithm": "hmac-sha256",
-    "signature": "abf600811729bdd7475d54ff2e6d0ffe4be24181c8894852a3fdb5aebe6aec5b"
+    "signature": "5d8062d4548d179e017a4cfa36eb84571e44b8dbae5731816d18f3135a7c7550"
   },
   "managed_by": "InditexTech CI governance",
   "managed_paths": {
@@ -40,9 +40,9 @@
     ".github/PULL_REQUEST_TEMPLATE.md": "23a0b0ac79a9020ccac9c013582a01f86e2df2ae7f914673583b9a3368313041",
     ".github/inditextech-ci-java.json": "776afda68f8d2ad8d17e236d2b824a5043d26fe0e00158d57156bf088ad61e26",
     ".github/workflows/code-maven_java-PR_verify.yml": "9d763ae0ab0b6dbcc564b426fda3853da879c6e6c1766267107f0dc296fa9809",
-    ".github/workflows/code-maven_java-build_snapshot.yml": "a0e2352e2829064fac119de13c11e69ba0339dd18b3ada350b4ffd6c1b92321e",
+    ".github/workflows/code-maven_java-build_snapshot.yml": "f1e52821178fa7fcbb4e6cea47efb48169e7bcf53cfaca0037c35a9601992729",
     ".github/workflows/code-maven_java-release-core.yml": "b8e72af47dd1496b9991e3144dd3f46ec749008d339e5afa0641749753a7f97c",
-    ".github/workflows/code-maven_java-release.yml": "43a0cfbd45de31a2578c9fd8eeebabd583651c3d69103b486affaa0c0cc526d7",
+    ".github/workflows/code-maven_java-release.yml": "9b5d0137d7bab43d7e08a6277993dfc094bdac0b0cba94ec71693a5dc46b1076",
     ".github/workflows/code-maven_java-sonarcloud-analysis.yml": "023af151ca9dfadb39daa8d07fdd631e5d56b1f2a800e10c8031972df3e938e8",
     ".github/workflows/code-release_preview.yml": "73d3b09e770a741a9de6cc250c5e45a29ca0d86f35b6161a946edb075593dc8f",
     ".github/workflows/codeql.yml": "b4ef9dfddd7b28387b669d48a4228225dc1d6dc76f98d21b65dd4a324d228ad5",
@@ -70,6 +70,6 @@
   "schema_version": 2,
   "source_digests": {
     "base": "88651da993b35dfef49af62c1ad4bb2422f1b00d7a524fffcbf56d5d8f63a1ab",
-    "java": "5ff1d07184f5f08cee8736fdd425958382b168d53fcc2edf6f6e62ce79b4859a"
+    "java": "65927ebbcc56d5cb710177042c97efdb359c9e4f29e1c5f2733fa96d71da2c65"
   }
 }
