@@ -1,151 +1,235 @@
----
-name: code-maven-sonarcloud-analysis
-run-name: Sonarcloud analysis on ${{ github.base_ref || github.ref_name }} branch
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
 
-concurrency:
-  group: sonarcloud-${{ github.ref }}
-  cancel-in-progress: true
+name: code-maven-java-sonarcloud-analysis
+run-name: SonarCloud analysis on ${{ github.head_ref || github.ref_name }}
 
 on:
   workflow_dispatch:
   pull_request:
-    types: [closed]
-    branches: ['develop', 'develop-*', 'main', 'main-*']
-    paths: ['code/**', '.github/workflows/code-*-sonarcloud-analysis.yml']
-  release:
-    types:
-      - published
+    types: [opened, synchronize, reopened]
+    branches: [main, main-*, develop, develop-*]
+  push:
+    branches: [main, main-*, develop, develop-*]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-maven-java-sonarcloud-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
-  # Sonar Maven Plugin version
-  SONAR_MAVEN_PLUGIN_VERSION: 5.5.0.6356
+  WORKING_DIRECTORY: ${{ vars.WORKING_DIRECTORY }}
+  ASDF_BRANCH_VERSION: '0.18.0'
 
 jobs:
-  unit-tests:
-    name: SonarCloud / Unit Tests
-    timeout-minutes: 30
-    if: ${{ ((github.event.pull_request.merged == true && (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.base_ref == 'develop' || startsWith(github.base_ref, 'develop-'))) ||
-        (vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.base_ref == 'main' || startsWith(github.base_ref, 'main-')))) ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'release')
-        && vars.IS_INDITEXTECH_REPO == 'true' }}
+  analyze:
+    name: SonarCloud / Analyze
+    if: >-
+      vars.SONARCLOUD_ENABLED == 'true' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      (
+        (
+          vars.DEVELOPMENT_FLOW == 'trunk-based-development' &&
+          (
+            (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-'))) ||
+            (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'main-'))) ||
+            (github.event_name == 'push' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
+          )
+        ) ||
+        (
+          vars.DEVELOPMENT_FLOW == 'git-flow' &&
+          (
+            (github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))) ||
+            (github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'develop-'))) ||
+            (github.event_name == 'push' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-')))
+          )
+        )
+      )
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Maven Cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Setup asdf Cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.asdf/data
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Save tool-versions content
+      - name: Resolve governed project type
+        shell: bash
         run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          if [[ ! -f "$descriptor" ]]; then
+            echo "::error title=Missing descriptor::.github/inditextech-ci-java.json not found."
+            exit 1
+          fi
+          project_type="$(jq -r '.project_type // empty' "$descriptor")"
+          case "$project_type" in
+            single|monorepo) ;;
+            *)
+              echo "::error title=Invalid project type::Descriptor .project_type must be single or monorepo."
+              exit 1
+              ;;
+          esac
+          case "${WORKING_DIRECTORY:-}" in
+            ""|/*|..|../*|*/..|*/../*)
+              echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
+            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+            exit 1
+          fi
+          echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
+
+      - name: Set up workflow Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '25.0.2+10.0.LTS'
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/**/pom.xml
+
+      - name: Read governed tool versions
+        id: tool-versions
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Evq '^[a-zA-Z0-9_-]+ [a-zA-Z0-9._+-]+$' .tool-versions; then
+            echo "::error title=Invalid tool-versions::${WORKING_DIRECTORY}/.tool-versions is malformed."
+            exit 1
+          fi
           {
-            echo "TOOL_VERSIONS<<EOF"
-            cat code/.tool-versions
+            echo "tool_versions<<EOF"
+            cat .tool-versions
+            echo
             echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up asdf-managed Java
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        with:
+          tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
+          asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
+
+      - name: Resolve build JDK from .tool-versions
+        id: jdk
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
+
+      - name: Run tests with coverage
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        run: |
+          set -euo pipefail
+          case "$PROJECT_TYPE" in
+            single|monorepo)
+              mvn -B --no-transfer-progress -f pom.xml clean verify
+              ;;
+            *)
+              echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
+              exit 1
+              ;;
+          esac
+
+      - name: Resolve SonarCloud analysis scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          join_lines() {
+            local joined="" line
+            while IFS= read -r line; do
+              [[ -n "$line" ]] || continue
+              joined="${joined:+${joined},}${line}"
+            done
+            printf '%s' "$joined"
+          }
+          case "$PROJECT_TYPE" in
+            single)
+              sonar_sources="${WORKING_DIRECTORY}/src/main/java"
+              sonar_tests="${WORKING_DIRECTORY}/src/test/java"
+              sonar_binaries="${WORKING_DIRECTORY}/target/classes"
+              sonar_test_binaries="${WORKING_DIRECTORY}/target/test-classes"
+              sonar_coverage="${WORKING_DIRECTORY}/target/site/jacoco/jacoco.xml"
+              ;;
+            monorepo)
+              sonar_sources=""
+              sonar_tests=""
+              sonar_binaries=""
+              sonar_test_binaries=""
+              members_with_sources=0
+              # Find Maven modules at arbitrary reactor depth.
+              while IFS= read -r module_pom; do
+                [[ -n "$module_pom" ]] || continue
+                module_dir="$(dirname "$module_pom")"
+                if [[ "$(basename "$module_dir")" == "jacoco-report-aggregate" ]]; then
+                  continue
+                fi
+                if [[ -d "${module_dir}/src/main/java" ]]; then
+                  members_with_sources=$((members_with_sources + 1))
+                fi
+                if [[ -d "${module_dir}/src/main/java" && -d "${module_dir}/target/classes" ]]; then
+                  sonar_sources="${sonar_sources:+${sonar_sources},}${module_dir}/src/main/java"
+                  sonar_binaries="${sonar_binaries:+${sonar_binaries},}${module_dir}/target/classes"
+                fi
+                if [[ -d "${module_dir}/src/test/java" && -d "${module_dir}/target/test-classes" ]]; then
+                  sonar_tests="${sonar_tests:+${sonar_tests},}${module_dir}/src/test/java"
+                  sonar_test_binaries="${sonar_test_binaries:+${sonar_test_binaries},}${module_dir}/target/test-classes"
+                fi
+              done < <(find "$WORKING_DIRECTORY" \( -name target -o -name src \) -prune -o -name pom.xml -print | sort)
+              if [[ "$members_with_sources" -eq 0 ]]; then
+                echo "::error title=No monorepo members::No pom.xml module under ${WORKING_DIRECTORY} declares src/main/java." >&2
+                exit 1
+              fi
+              if [[ -z "$sonar_binaries" ]]; then
+                echo "::error title=No compiled bytecode::No module under ${WORKING_DIRECTORY} has target/classes; run the build first." >&2
+                exit 1
+              fi
+              sonar_coverage="$(find "$WORKING_DIRECTORY" -path '*/target/site/jacoco-aggregate/jacoco.xml' -print | sort | join_lines)"
+              if [[ -z "$sonar_coverage" ]]; then
+                sonar_coverage="${WORKING_DIRECTORY}/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+              fi
+              ;;
+            *)
+              echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo." >&2
+              exit 1
+              ;;
+          esac
+          for governed_value in "$sonar_sources" "$sonar_tests" "$sonar_binaries" "$sonar_test_binaries" "$sonar_coverage"; do
+            if [[ "$governed_value" == *$'\n'* ]]; then
+              echo "::error title=Invalid Sonar scope::Resolved analysis paths must not contain newlines." >&2
+              exit 1
+            fi
+          done
+          {
+            echo "SONAR_SOURCES=${sonar_sources}"
+            echo "SONAR_TESTS=${sonar_tests}"
+            echo "SONAR_JAVA_BINARIES=${sonar_binaries}"
+            echo "SONAR_JAVA_TEST_BINARIES=${sonar_test_binaries}"
+            echo "SONAR_COVERAGE_PATHS=${sonar_coverage}"
           } >> "$GITHUB_ENV"
 
-      - name: Maven / Setup asdf tools
-        uses: asdf-vm/actions/install@v4
+      - name: Run SonarCloud analysis
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
+        env:
+          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          tool_versions: ${{ env.TOOL_VERSIONS }}
-
-      - name: Setup Java environment vars
-        working-directory: code
-        run: |
-          JAVA_HOME="$(asdf where java)"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
-      - name: Maven / Run unit tests with release event
-        if: github.event_name == 'release'
-        working-directory: code
-        run: |
-          mvn -B clean verify -Djacoco.skip=false -DskipEnforceSnapshots -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
-
-      - name: Maven / Run unit tests
-        if: github.event_name != 'release'
-        working-directory: code
-        run: |
-          mvn -B clean verify -Djacoco.skip=false -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
-
-      - name: Store project information
-        id: version
-        run: |
-          echo "app-version=$(yq -oy '.project.version' code/pom.xml)" >> "$GITHUB_OUTPUT"
-          echo "app-name=$(yq -oy '.project.artifactId' code/pom.xml)" >> "$GITHUB_OUTPUT"
-          echo "github-repository=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> "$GITHUB_OUTPUT"
-
-#      - name: SonarCloud / Setup asdf tools
-#        uses: asdf-vm/actions/install@v4
-#        with:
-#          tool_versions: |
-#            java temurin-21.0.4+7.0.LTS
-#            nodejs 20.10.0
-#            maven 3.9.4
-#
-#      - name: SonarCloud / Set asdf versions
-#        working-directory: code
-#        run: |
-#          asdf local java temurin-21.0.4+7.0.LTS
-#          asdf local nodejs 20.10.0
-#          asdf local maven 3.9.4
-#
-#      - name: Setup Java environment vars
-#        working-directory: code
-#        run: |
-#          JAVA_HOME="$(asdf where java)"
-#          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
-      - name: SonarCloud / Run Maven Sonar goal with release event
-        env:
-          LOGIN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_SCANNER_OPTS: ''
-        if: ${{ github.event_name == 'release' }}
-        working-directory: code
-        run: |
-          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
-          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${{ env.SONAR_MAVEN_PLUGIN_VERSION }}:sonar \
-            -Dsonar.projectKey="InditexTech_${{ steps.version.outputs.github-repository }}" \
-            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
-            -Dsonar.projectVersion="${{ github.event.release.tag_name }}" \
-            -Dsonar.branch.name="release-${{ github.event.release.tag_name }}" \
-            -Dsonar.host.url="https://sonarcloud.io/" \
-            -Dsonar.organization=inditextech \
-            -Dsonar.token="${LOGIN}" \
-            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
-
-      - name: SonarCloud / Run Maven Sonar goal
-        env:
-          LOGIN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_SCANNER_OPTS: ''
-        if: ${{ github.event_name != 'release' }}
-        working-directory: code
-        run: |
-          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
-          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${{ env.SONAR_MAVEN_PLUGIN_VERSION }}:sonar \
-            -Dsonar.projectKey="InditexTech_${{ steps.version.outputs.github-repository }}" \
-            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
-            -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
-            -Dsonar.branch.name="${{ github.base_ref || github.ref_name }}" \
-            -Dsonar.host.url="https://sonarcloud.io/" \
-            -Dsonar.organization=inditextech \
-            -Dsonar.token="${LOGIN}" \
-            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
+          args: >-
+            -Dsonar.organization=inditextech
+            -Dsonar.projectKey=InditexTech_${{ github.event.repository.name }}
+            -Dsonar.projectName=${{ github.event.repository.name }}
+            -Dsonar.sources=${{ env.SONAR_SOURCES }}
+            -Dsonar.tests=${{ env.SONAR_TESTS }}
+            -Dsonar.java.binaries=${{ env.SONAR_JAVA_BINARIES }}
+            -Dsonar.java.test.binaries=${{ env.SONAR_JAVA_TEST_BINARIES }}
+            -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.SONAR_COVERAGE_PATHS }}
