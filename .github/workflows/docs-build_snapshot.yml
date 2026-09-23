@@ -25,7 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LABELS=$(gh api -H "Accept: application/vnd.github.v3+json" "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" | jq -cr '.[0].labels[].name' | sed -z 's/\n/ /g;s/ $//')
+          LABELS=$(gh api -H "Accept: application/vnd.github.v3+json" "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" | jq -cr '[.[0].labels[].name]')
           echo "$LABELS"
           echo "LABELS=$LABELS" >> "$GITHUB_OUTPUT"
 
@@ -54,11 +54,11 @@ jobs:
       actions: write
     if: ${{ ((vars.DEVELOPMENT_FLOW == 'trunk-based-development' && (github.ref_name == 'main' || startsWith(github.ref_name, 'main-')))
       || (vars.DEVELOPMENT_FLOW != 'trunk-based-development' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'develop-'))))
-      && !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs')
+      && !contains(join(fromJSON(needs.check-triggered-release.outputs.labels), ', '), 'release-docs')
       && needs.check-triggered-release.outputs.skip == 'false' }}
     steps:
       - name: Checkout / Branch Head
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -130,7 +130,7 @@ jobs:
           npm run verify
 
       - name: Dispatch / Execute Publish Docs
-        if: ${{ !contains(join(needs.check-triggered-release.outputs.labels, ', '), 'release-docs/no-publish') }}
+        if: ${{ !contains(join(fromJSON(needs.check-triggered-release.outputs.labels), ', '), 'release-docs/no-publish') }}
         uses: benc-uk/workflow-dispatch@31e2b3319479a63f0ab15bf800eff9e913504e26
         with:
           workflow: docs-publish

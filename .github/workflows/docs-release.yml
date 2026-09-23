@@ -58,11 +58,11 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          client-id: ${{ vars.APP_CLIENT_ID }}
+          app-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Checkout merge commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.BASELINE_BRANCH }}
           fetch-depth: 0

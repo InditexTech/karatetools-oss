@@ -73,7 +73,7 @@ jobs:
       # checkout
       - name: checkout
         id: checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -114,7 +114,7 @@ jobs:
           echo "APP_PORT=$APP_PORT"
 
           # Project Version from pom.xml
-          PROJECT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+          PROJECT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\${project.version}" --non-recursive exec:exec)
           echo "PROJECT_VERSION=$PROJECT_VERSION"
 
           # App Path to Jar
@@ -134,7 +134,7 @@ jobs:
           echo "APP_HEALTH_CHECK_URL=$APP_HEALTH_CHECK_URL"
 
           # JaCoCo agent version from pom.xml
-          JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${jacoco.version}' --non-recursive exec:exec)
+          JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\${jacoco.version}" --non-recursive exec:exec)
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
           # JaCoCo report folder relative to the code folder
@@ -170,16 +170,17 @@ jobs:
           echo "JACOCO_CLI_REPORT_OPTIONS=$JACOCO_CLI_REPORT_OPTIONS"
 
           # Set Output
-          echo "project-version=$PROJECT_VERSION" >> "$GITHUB_OUTPUT"
-          echo "app-path-to-jar=$APP_PATH_TO_JAR" >> "$GITHUB_OUTPUT"
-          echo "app-options=$APP_OPTIONS" >> "$GITHUB_OUTPUT"
-          echo "app-health-check-url=$APP_HEALTH_CHECK_URL" >> "$GITHUB_OUTPUT"
-
-          echo "jacoco-version=$JACOCO_VERSION" >> "$GITHUB_OUTPUT"
-          echo "jacoco-relative-folder=$JACOCO_RELATIVE_FOLDER" >> "$GITHUB_OUTPUT"
-          echo "jacoco-dest-file=$JACOCO_DEST_FILE" >> "$GITHUB_OUTPUT"
-          echo "jacoco-agent-options=$JACOCO_AGENT_OPTIONS" >> "$GITHUB_OUTPUT"
-          echo "jacoco-cli-report-options=$JACOCO_CLI_REPORT_OPTIONS" >> "$GITHUB_OUTPUT"
+          {
+            echo "project-version=$PROJECT_VERSION"
+            echo "app-path-to-jar=$APP_PATH_TO_JAR"
+            echo "app-options=$APP_OPTIONS"
+            echo "app-health-check-url=$APP_HEALTH_CHECK_URL"
+            echo "jacoco-version=$JACOCO_VERSION"
+            echo "jacoco-relative-folder=$JACOCO_RELATIVE_FOLDER"
+            echo "jacoco-dest-file=$JACOCO_DEST_FILE"
+            echo "jacoco-agent-options=$JACOCO_AGENT_OPTIONS"
+            echo "jacoco-cli-report-options=$JACOCO_CLI_REPORT_OPTIONS"
+          } >> "$GITHUB_OUTPUT"
 
           echo "::endgroup::"
 
@@ -231,7 +232,7 @@ jobs:
           # Set JAVA_HOME
           JAVA_HOME="$(asdf where java)"
           echo "JAVA_HOME=$JAVA_HOME"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
 
           echo "::endgroup::"
 
@@ -247,11 +248,11 @@ jobs:
           echo "::group::+++ mvn-clean-install +++"
 
           # Maven Properties
-          MVN_PROPERTIES="-DskipTests -DskipITs -DskipUTs"
-          echo "MVN_PROPERTIES=$MVN_PROPERTIES"
+          MVN_PROPERTIES=(-DskipTests -DskipITs -DskipUTs)
+          echo "MVN_PROPERTIES=${MVN_PROPERTIES[*]}"
 
           # mvn clean install
-          mvn -B -ntp clean install $MVN_PROPERTIES
+          mvn -B -ntp clean install "${MVN_PROPERTIES[@]}"
 
           echo "::endgroup::"
 
@@ -279,9 +280,9 @@ jobs:
           JACOCO_VERSION="$OUT_JACOCO_VERSION"
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
-          curl -s -S -L -o target/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar
+          curl -s -S -L -o target/jacocoagent.jar "https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar"
 
-          echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
+          ls -l target/jacoco*.jar 2>/dev/null || true
 
           echo "::endgroup::"
 
@@ -290,15 +291,12 @@ jobs:
 
           APP_LOG_FILE="$CFG_APP_LOGFILE"
           APP_PATH_TO_JAR="$OUT_APP_PATH_TO_JAR"
-          APP_OPTIONS="$OUT_APP_OPTIONS"
-          JACOCO_AGENT_OPTIONS="$OUT_JACOCO_AGENT_OPTIONS"
-
-          START_APP_CMD="java $JACOCO_AGENT_OPTIONS -jar $APP_PATH_TO_JAR $APP_OPTIONS"
+          read -r -a JACOCO_AGENT_OPTIONS <<< "$OUT_JACOCO_AGENT_OPTIONS"
+          read -r -a APP_OPTIONS <<< "$OUT_APP_OPTIONS"
 
           echo ">> Starting app : $APP_PATH_TO_JAR"
-          echo ">> Executing command: $START_APP_CMD"
 
-          $START_APP_CMD 2>&1 > $APP_LOG_FILE &
+          java "${JACOCO_AGENT_OPTIONS[@]}" -jar "$APP_PATH_TO_JAR" "${APP_OPTIONS[@]}" > "$APP_LOG_FILE" 2>&1 &
 
           # Save the app-pid
           APP_PID=$!
@@ -306,7 +304,7 @@ jobs:
           echo "app-pid=$APP_PID" >> "$GITHUB_OUTPUT"
 
           # Tail the log file
-          tail -f $APP_LOG_FILE &
+          tail -f "$APP_LOG_FILE" &
 
           echo "::endgroup::"
 
@@ -326,15 +324,15 @@ jobs:
 
           # Wait for the health check to return 200
           sleep "$RETRY_WAIT"
-          while [ $RETRY_COUNT -lt $((RETRY_TIMES)) ]; do
-            RETRY_COUNT=$((RETRY_COUNT+1));
+          while (( RETRY_COUNT < RETRY_TIMES )); do
+            RETRY_COUNT=$((RETRY_COUNT + 1));
             echo ">> Executing healthcheck [$APP_HEALTH_CHECK_URL], try [$RETRY_COUNT of $RETRY_TIMES]";
             response=$(curl -s -o /dev/null -w "%{http_code}" "$APP_HEALTH_CHECK_URL");
             if [[ $response -eq 200 ]]; then
               echo ">> Started app with pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
               break;
             else
-              if [ ! $RETRY_COUNT -eq "$RETRY_TIMES" ]; then
+              if (( RETRY_COUNT != RETRY_TIMES )); then
                 echo ">> app not yet started, waiting for $RETRY_WAIT seconds to retry at $(date +%Y/%m/%d-%H:%M:%S.%3N)";
                 sleep "$RETRY_WAIT";
               else
@@ -402,10 +400,10 @@ jobs:
       # stop-java-app
       - name: stop-java-app
         id: stop-java-app
-        if: |
-          ${{ always() && !cancelled()
-          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
-          && steps.start-java-app.outcome == 'success' }}
+        if: >-
+          always() && !cancelled() &&
+          fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
+          steps.start-java-app.outcome == 'success'
         working-directory: code
         env:
           OUT_APP_PID: ${{ steps.start-java-app.outputs.app-pid }}
@@ -421,7 +419,7 @@ jobs:
           APP_PID="$OUT_APP_PID"
 
           echo ">> Killing app-pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
-          while kill -15 $APP_PID 2>/dev/null; do sleep 1; done
+          while kill -15 "$APP_PID" 2>/dev/null; do sleep 1; done
           echo ">> Killed  app-pid=$APP_PID at $(date +%Y/%m/%d-%H:%M:%S.%3N)"
 
           # Check JaCoCo agent Dump Files
@@ -433,10 +431,10 @@ jobs:
       # generate-jacoco-report
       - name: generate-jacoco-report
         id: generate-jacoco-report
-        if: |
-          ${{ always() && !cancelled()
-          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
-          && steps.start-java-app.outcome == 'success' }}
+        if: >-
+          always() && !cancelled() &&
+          fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
+          steps.start-java-app.outcome == 'success'
         working-directory: code
         env:
           OUT_JACOCO_VERSION: ${{ steps.app-config.outputs.jacoco-version }}
@@ -452,31 +450,31 @@ jobs:
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
           # Donwload the JaCoCo CLI
-          curl -s -S -L -o target/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar
+          curl -s -S -L -o target/jacococli.jar "https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/$JACOCO_VERSION/org.jacoco.cli-$JACOCO_VERSION-nodeps.jar"
 
-          echo "$(ls -l target/jacoco*.jar 2>/dev/null)"
+          ls -l target/jacoco*.jar 2>/dev/null || true
 
           echo "::endgroup::"
 
           echo "::group::+++ generate-jacoco-report +++"
 
           # JaCoCo CLI Report Options
-          JACOCO_CLI_REPORT_OPTIONS="$OUT_JACOCO_CLI_REPORT_OPTIONS"
+          read -r -a JACOCO_CLI_REPORT_OPTIONS <<< "$OUT_JACOCO_CLI_REPORT_OPTIONS"
 
           # Generate JaCoCo report
-          echo ">> Generating JaCoCo report with options: $JACOCO_CLI_REPORT_OPTIONS"
+          echo ">> Generating JaCoCo report with options: ${JACOCO_CLI_REPORT_OPTIONS[*]}"
 
-          java -jar target/jacococli.jar report $JACOCO_CLI_REPORT_OPTIONS
+          java -jar target/jacococli.jar report "${JACOCO_CLI_REPORT_OPTIONS[@]}"
 
           echo "::endgroup::"
 
       # jacoco-results-verification
       - name: jacoco-results-verification
         id: jacoco-results-verification
-        if: |
-          ${{ always() && !cancelled()
-          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
-          && steps.start-java-app.outcome == 'success' }}
+        if: >-
+          always() && !cancelled() &&
+          fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
+          steps.start-java-app.outcome == 'success'
         uses: ./.github/actions/test-results-verification
         with:
           # type: The type of results. Supported types: 'surefire', 'failsafe', 'jacoco', 'karate' and 'pitest'.
@@ -493,10 +491,10 @@ jobs:
       # jacoco-report-upload
       - name: jacoco-report-upload
         id: jacoco-report-upload
-        if: |
-          ${{ always() && !cancelled()
-          && fromJSON(steps.config.outputs.config).karate.app.enabled == true
-          && steps.start-java-app.outcome == 'success' }}
+        if: >-
+          always() && !cancelled() &&
+          fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
+          steps.start-java-app.outcome == 'success'
         uses: actions/upload-artifact@v6
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-jacoco-report
