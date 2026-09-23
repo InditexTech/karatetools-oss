@@ -1,0 +1,19 @@
+.github/workflows/code-maven_java-QA_e2e_karate.yml
+  s_07508c577e35a6::t_97bcad2ce653d8 117,137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "82508cd469f14855c011475337c0593ca25a189b",
+  "prompts": {},
+  "sessions": {
+    "s_07508c577e35a6": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "67de6347-ddef-4ca3-a853-379ba9080a30",
+        "model": "unknown"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
