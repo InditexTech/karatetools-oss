@@ -118,7 +118,7 @@ jobs:
           # Set JAVA_HOME
           JAVA_HOME="$(asdf where java)"
           echo "JAVA_HOME=$JAVA_HOME"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
 
           echo "::endgroup::"
 
@@ -133,11 +133,11 @@ jobs:
           echo "::group::+++ mvn-clean-verify +++"
 
           # Maven Properties
-          MVN_PROPERTIES="pitest:mutationCoverage pitest:report-aggregate-module -DskipITs"
-          echo "MVN_PROPERTIES=${MVN_PROPERTIES}"
+          MVN_PROPERTIES=(pitest:mutationCoverage pitest:report-aggregate-module -DskipITs)
+          echo "MVN_PROPERTIES=${MVN_PROPERTIES[*]}"
 
           # mvn clean verify
-          mvn -B -ntp clean verify $MVN_PROPERTIES
+          mvn -B -ntp clean verify "${MVN_PROPERTIES[@]}"
 
           echo "::endgroup::"
 
