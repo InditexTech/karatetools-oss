@@ -114,8 +114,7 @@ jobs:
           echo "APP_PORT=$APP_PORT"
 
           # Project Version from pom.xml
-          # shellcheck disable=SC2016
-          PROJECT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+          PROJECT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\${project.version}" --non-recursive exec:exec)
           echo "PROJECT_VERSION=$PROJECT_VERSION"
 
           # App Path to Jar
@@ -135,8 +134,7 @@ jobs:
           echo "APP_HEALTH_CHECK_URL=$APP_HEALTH_CHECK_URL"
 
           # JaCoCo agent version from pom.xml
-          # shellcheck disable=SC2016
-          JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${jacoco.version}' --non-recursive exec:exec)
+          JACOCO_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\${jacoco.version}" --non-recursive exec:exec)
           echo "JACOCO_VERSION=$JACOCO_VERSION"
 
           # JaCoCo report folder relative to the code folder
