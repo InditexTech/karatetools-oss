@@ -37,6 +37,12 @@ SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
+path = ".github/inditextech-ci-*.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
 path = ".github/workflows/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"
@@ -152,6 +158,19 @@ path = "repolinter_rules.json"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "repolinter.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "REUSE.toml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Free Software Foundation Europe e.V. <https://fsfe.org>"
+SPDX-License-Identifier = "CC0-1.0"
+SPDX-FileComment = "https://github.com/fsfe/reuse-action"
 
 [[annotations]]
 path = "SECURITY.md"
