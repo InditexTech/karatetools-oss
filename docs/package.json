@@ -12,7 +12,8 @@
     "build": "antora --fetch antora-playbook.yml",
     "dev": "docouture dev",
     "clean": "node -e \"require('fs').rmSync('build', { recursive: true, force: true })\"",
-    "check-links": "node scripts/check-links.mjs"
+    "check-links": "node scripts/check-links.mjs",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@inditextech/docouture-cli": "1.1.1",
@@ -21,7 +22,8 @@
     "@inditextech/docouture-antora-extensions": "1.1.1",
     "@inditextech/docouture-publish-gh-pages": "1.1.1",
     "antora": "3.2.0",
-    "linkinator": "8.0.4"
+    "linkinator": "8.0.4",
+    "patch-package": "^8.0.1"
   },
   "docouture": {
     "branching": "git-flow",
