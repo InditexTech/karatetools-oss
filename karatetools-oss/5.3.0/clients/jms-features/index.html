@@ -1,0 +1,1290 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>
+      /*
+       * Theme bootstrap. Runs before first paint so the page never flashes the
+       * wrong theme. Keep it inline, keep it tiny, and keep it in sync with
+       * src/js/08-theme.ts, which owns the same storage key and class names.
+       *
+       * IDS switches theme with a class on <html>, not a data attribute, so an
+       * attribute here would style nothing.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('dt-theme') } catch (e) {}
+        var theme = stored === 'light' || stored === 'dark'
+          ? stored
+          : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        var root = document.documentElement
+        root.classList.add('dt-theme-' + theme, 'dt-scale-medium')
+        root.style.colorScheme = theme
+      })()
+    </script>
+    <script>
+      /*
+       * Side-menu collapse bootstrap (GH-8). Runs before first paint so the
+       * 320px column never flashes in and reflows the article on navigation.
+       * Keep it inline, keep it tiny, and keep it in sync with
+       * src/js/01-nav.ts, which owns the same storage key and class name.
+       *
+       * A stored choice always wins; absent one, the menu starts collapsed
+       * on the home/landing page (matching Figma's "State=Home" toolbar
+       * variant, which is the only one that shows the toggle) and open
+       * everywhere else. With JavaScript disabled this script never runs, so
+       * the class is never added and the menu stays open unconditionally —
+       * the toggle that would reopen it is also never unhidden.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('docouture-side-menu') } catch (e) {}
+        var collapsed = stored === 'collapsed' || stored === 'open'
+          ? stored === 'collapsed'
+          : document.documentElement.hasAttribute('data-page-home')
+        if (collapsed) document.documentElement.classList.add('is-side-menu-collapsed')
+      })()
+    </script>
+    <script>
+      /*
+       * ToC collapse bootstrap (GH-10). Runs before first paint so a closed
+       * choice never flashes open for an instant. Keep it in sync with
+       * src/js/02-on-this-page.ts, which owns the same storage key and class
+       * name.
+       *
+       * Deliberately does NOT add `has-toc` — only 02-on-this-page.ts knows
+       * whether this page actually has a usable ToC (headings found, page
+       * not `-toc`), and every effect of the class added here is itself
+       * gated behind `has-toc` in toc.css, so there is nothing to flash
+       * either way before that script runs. This one exists only so a
+       * *closed* choice is already in place the moment it does.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('docouture-toc') } catch (e) {}
+        if (stored === 'closed') document.documentElement.classList.add('is-toc-closed')
+      })()
+    </script>
+
+<title>Untitled | InditexTech Karate Tools</title>
+
+    <link rel="canonical" href="https://inditextech.github.io/karatetools-oss/karatetools-oss/5.4.0/clients/jms-features/">
+    <meta name="generator" content="Antora 3.2.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Mono:wght@100..900&display=swap">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <style>:root { --home-background-image: url("/karatetools-oss/_/home-background.jpg") }</style>
+
+
+
+    <link rel="icon" href="../../../../_/favicon.ico">
+  </head>
+  <body class="article">
+
+
+
+<header class="header-toolbar">
+  <div class="dt-grid-layout dt-grid-layout--with-margin header-toolbar__grid">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-6 dt-grid-layout__item--span-xs-3 header-toolbar__left">
+      <button class="dt-button dt-button--ghost dt-button--icon-only side-menu-toggle" type="button" aria-controls="side-menu" hidden>
+        <span class="dt-button__content">
+          <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-menu"></use></svg></span>
+        </span>
+      </button>
+      <a class="header-toolbar__brand" href="../../../6.0.0/">
+        <img class="header-toolbar__logo header-toolbar__logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+        <img class="header-toolbar__logo header-toolbar__logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+        <span class="header-toolbar__product-name dt-text dt-text--label-l-high">InditexTech Karate Tools</span>
+      </a>
+    </div>
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-6 dt-grid-layout__item--span-xs-3 header-toolbar__actions">
+      <button type="button" class="dt-button dt-button--ghost header-toolbar__search-trigger">
+        <span class="dt-button__content">
+          <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+          <span class="dt-text dt-text--label-l header-toolbar__search-label">Search</span>
+          <kbd class="header-toolbar__search-shortcut" aria-hidden="true">⌘K</kbd>
+        </span>
+      </button>
+
+<div class="page-versions">
+  <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--older version-menu-toggle" title="Show other versions of page" aria-expanded="false">
+    <span class="dt-tag__label">5.3.0</span>
+    <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
+  </button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../prerelease/">
+      <span class="version__label">prerelease</span>
+      <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
+    </a>
+    <a class="version is-missing" href="../../../6.0.0/">
+      <span class="version__label">6.0.0</span>
+      <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
+          </a>
+    <a class="version" href="../../../5.4.0/clients/jms-features/">
+      <span class="version__label">5.4.0</span>
+    </a>
+    <span class="version is-current" aria-current="page">
+      <span class="version__label">5.3.0</span>
+    </span>
+    <a class="version" href="../../../5.2.0/clients/jms-features/">
+      <span class="version__label">5.2.0</span>
+    </a>
+    <a class="version" href="../../../5.1.0/clients/jms-features/">
+      <span class="version__label">5.1.0</span>
+    </a>
+    <a class="version" href="../../../5.0.1/clients/jms-features/">
+      <span class="version__label">5.0.1</span>
+    </a>
+    <a class="version" href="../../../5.0.0/clients/jms-features/">
+      <span class="version__label">5.0.0</span>
+    </a>
+    <a class="version" href="../../../4.0.0/clients/jms-features/">
+      <span class="version__label">4.0.0</span>
+    </a>
+  </div>
+</div>
+
+<a class="dt-button dt-button--ghost dt-button--icon-only header-toolbar__repo" href="https://github.com/InditexTech/karatetools-oss" target="_blank" rel="noopener" aria-label="Repository">
+  <span class="dt-button__content">
+    <span class="dt-button__icon dt-button__icon-icon header-toolbar__repo-icon" aria-hidden="true"></span>
+  </span>
+</a>
+
+<button class="dt-button dt-button--ghost dt-button--icon-only theme-toggle" type="button" hidden>
+  <span class="dt-button__content">
+    <span class="dt-button__icon dt-button__icon-icon theme-toggle-icon theme-toggle-icon--light" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-sun"></use></svg></span>
+    <span class="dt-button__icon dt-button__icon-icon theme-toggle-icon theme-toggle-icon--dark" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-moon"></use></svg></span>
+  </span>
+</button>
+    </div>
+  </div>
+</header>
+
+<dialog id="search-dialog" class="search-dialog" aria-label="Search" data-search-index="karatetools-oss-5.3.0.json">
+  <div class="dt-overlay dt-overlay--visible search-dialog__overlay">
+    <div class="dt-overlay__content"></div>
+    <div class="dt-modal dt-modal--small search-dialog__panel">
+      <div class="dt-modal__container search-dialog__container">
+        <div class="dt-search-field-minimal dt-search-field-minimal--full-width search-dialog__field">
+          <span class="dt-search-field-minimal__icon-start" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+          <div class="dt-search-field-minimal__input-wrapper">
+            <div class="dt-search-field-minimal__input-container">
+              <input type="search" class="dt-search-field-minimal__input" placeholder="Search the docs" aria-label="Search the docs"
+                role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list"
+                aria-controls="search-dialog-listbox" disabled>
+            </div>
+          </div>
+          <button type="button" class="dt-button dt-button--ghost dt-button--icon-only search-dialog__close" aria-label="Close search" disabled>
+            <span class="dt-button__content">
+              <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></span>
+            </span>
+          </button>
+        </div>
+        <div id="search-dialog-listbox" class="dt-modal__content dt-modal__content--scrollable search-dialog__results" role="listbox" aria-label="Search results"></div>
+        <div class="search-dialog__status" aria-live="polite"></div>
+        <div class="dt-modal__footer dt-modal__footer--horizontal search-dialog__footer">
+          <span class="dt-modal__footer-left dt-text dt-text--detail-m search-dialog__hints">
+            <kbd>&uarr;&darr;</kbd> navigate &middot; <kbd>&crarr;</kbd> select &middot; <kbd>esc</kbd> close
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+<div class="dt-floating-button-wrapper dt-floating-button-wrapper--viewport dt-floating-button-wrapper--end search-fab">
+  <button type="button" class="dt-button dt-button--ghost dt-button--icon-only dt-floating-button search-fab__trigger" aria-label="Search" aria-haspopup="dialog" aria-controls="search-dialog">
+    <span class="dt-button__content">
+      <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+    </span>
+  </button>
+</div>
+
+<dialog id="image-zoom-dialog" class="image-zoom-dialog" aria-label="Zoomed image">
+  <div class="dt-overlay dt-overlay--visible image-zoom-dialog__overlay">
+    <div class="dt-overlay__content"></div>
+    <div class="dt-modal dt-modal--fullscreen image-zoom-dialog__panel">
+      <div class="dt-modal__container image-zoom-dialog__container">
+        <button type="button" class="dt-button dt-button--ghost dt-button--icon-only image-zoom-dialog__close" aria-label="Close zoomed image">
+          <span class="dt-button__content">
+            <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></span>
+          </span>
+        </button>
+        <div class="image-zoom-dialog__content"></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="body">
+
+<div id="side-menu" class="side-menu" data-component="karatetools-oss" data-version="5.3.0" data-module="clients">
+  <div class="side-menu__header">
+    <div class="side-menu__header-start">
+      <img class="side-menu__header-logo side-menu__header-logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+      <img class="side-menu__header-logo side-menu__header-logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+      <span class="side-menu__header-title dt-text dt-text--title-s">InditexTech Karate Tools</span>
+    </div>
+    <button class="side-menu__close" type="button" aria-label="Close navigation"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></button>
+  </div>
+
+<div class="side-menu__brand">
+  <a class="side-menu__brand-link" href="../../../6.0.0/">
+    <img class="side-menu__brand-logo side-menu__brand-logo--light" src="../../../../_/product-logo.png" width="40" height="40" alt="">
+    <img class="side-menu__brand-logo side-menu__brand-logo--dark" src="../../../../_/product-logo-dark.png" width="40" height="40" alt="">
+    <span class="side-menu__brand-title dt-text dt-text--title-m">InditexTech Karate Tools</span>
+  </a>
+</div>
+
+  <nav class="side-menu__nav" aria-label="Site navigation">
+
+
+<ul class="dt-list side-menu__list" data-depth="0">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../overview/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Overview</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../prerequisites/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Prerequisites</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../archetype/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Archetype</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../configuration/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Configuration</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Configuration">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/karate-config/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Config</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/logging/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Logging</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/urls/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Environment URLs</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/auth/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Authentication</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Authentication">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/auth-basic/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Basic Authentication</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/auth-jwt/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JWT Authentication</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/local-machine-secrets/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Local Machine Secrets Management</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../open-api-generator/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Open API Generator">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-operations/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Operations</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-smoke/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Smoke Tests</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-functional/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Functional Tests</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-mock/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Mock Data</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Clients</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Karate Clients">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../jdbc/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JDBC Client</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../mongodb/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">MongoDB Client</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../kafka/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Kafka Clients</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../jms/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JMS Client</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../execution/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Execution">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/arguments/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Arguments</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/logging/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Logging</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/mock-server/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Mock Server</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/reports/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Reports</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--group">
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../execution/karate-cache/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Cache</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../release/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Release Notes</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../contributing/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Contributing</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Contributing">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../contributing/development-guide/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Development Guide</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Development Guide">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../contributing/karatetools-oss/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle karatetools-oss">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="3">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-code">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-code</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle karatetools-oss-code">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="4">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-archetype">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-archetype</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-clients">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-clients</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-generators">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-generators</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-runner">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-runner</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-starter">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-starter</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-boot">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-boot</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-openapi-test">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-openapi-test</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-karate-test">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-karate-test</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-docs">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-docs</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../contributing/step-by-step/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Step by Step</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+  <div class="side-menu__version">
+
+<div class="page-versions">
+  <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--older version-menu-toggle" title="Show other versions of page" aria-expanded="false">
+    <span class="dt-tag__label">5.3.0</span>
+    <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
+  </button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../prerelease/">
+      <span class="version__label">prerelease</span>
+      <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
+    </a>
+    <a class="version is-missing" href="../../../6.0.0/">
+      <span class="version__label">6.0.0</span>
+      <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
+          </a>
+    <a class="version" href="../../../5.4.0/clients/jms-features/">
+      <span class="version__label">5.4.0</span>
+    </a>
+    <span class="version is-current" aria-current="page">
+      <span class="version__label">5.3.0</span>
+    </span>
+    <a class="version" href="../../../5.2.0/clients/jms-features/">
+      <span class="version__label">5.2.0</span>
+    </a>
+    <a class="version" href="../../../5.1.0/clients/jms-features/">
+      <span class="version__label">5.1.0</span>
+    </a>
+    <a class="version" href="../../../5.0.1/clients/jms-features/">
+      <span class="version__label">5.0.1</span>
+    </a>
+    <a class="version" href="../../../5.0.0/clients/jms-features/">
+      <span class="version__label">5.0.0</span>
+    </a>
+    <a class="version" href="../../../4.0.0/clients/jms-features/">
+      <span class="version__label">4.0.0</span>
+    </a>
+  </div>
+</div>
+  </div>
+</div>
+<div class="side-menu-scrim"></div>
+
+<main class="article">
+
+<div class="hero">
+  <div class="dt-grid-layout dt-grid-layout--with-margin hero__grid">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-full hero__row">
+      <div class="hero__main">
+
+<nav class="dt-breadcrumbs" aria-label="Breadcrumb">
+</nav>
+        <h1 class="hero__title dt-text dt-text--title-xl"></h1>
+      </div>
+      <div class="hero__aside">
+        <button class="dt-button dt-button--ghost dt-button--icon-only toc-toggle" type="button" aria-controls="on-this-page" aria-expanded="true" hidden>
+          <span class="dt-button__content">
+            <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-panel-left"></use></svg></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="content dt-grid-layout dt-grid-layout--with-margin">
+
+<aside id="on-this-page" class="toc" data-title="On this page" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+
+<article class="doc">
+<div class="sect2">
+<h3 id="instantiate-jmsclient"><a class="anchor" href="#instantiate-jmsclient"></a>Instantiate JMSClient</h3>
+<div class="paragraph">
+<p><strong>New instance of the JMSClient</strong> providing the configuration as a map loaded from a yaml file.</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> JMSClient</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;Object, Object> configMap)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># public JMSClient(final Map&#x3C;Object, Object> configMap)</span></span>
+<span class="line"><span># Instantiate JMSClient</span></span>
+<span class="line"><span>Given def config = read('classpath:config/jms/jms-config-' + karate.env + '.yml')</span></span>
+<span class="line"><span>Given def JMSClient = Java.type('dev.inditex.karate.jms.JMSClient')</span></span>
+<span class="line"><span>Given def jmsClient = new JMSClient(config)</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="check-if-jms-is-available"><a class="anchor" href="#check-if-jms-is-available"></a>Check if JMS is available</h3>
+<div class="paragraph">
+<p>Checks if the <strong>JMS connection can be established</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns true is <strong>connection is available</strong>, false otherwise</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Boolean</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> available</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">()</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># public Boolean available()</span></span>
+<span class="line"><span>When def available = jmsClient.available()</span></span>
+<span class="line"><span>Then if (!available) karate.fail('JMS Client not available')</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rabbitmq-amqp-mode"><a class="anchor" href="#rabbitmq-amqp-mode"></a>RabbitMQ AMQP mode</h3>
+<div class="paragraph">
+<p>The RabbitMQ JMS client operates in two modes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>JMS mode</strong> (<code>amqp: false</code>, default): Messages are routed through JMS-managed destinations (e.g., <code>jms.durable.queues</code> exchange). ObjectMessage payloads are serialized using Java serialization. This mode is compatible with other JMS clients consuming from the same queues.</p>
+</li>
+<li>
+<p><strong>AMQP mode</strong> (<code>amqp: true</code>): Messages are sent as raw AMQP using the default exchange, which routes directly to queues by name. No JMS serialization layer is involved. Only TextMessage and BytesMessage are supported (ObjectMessage will throw a <code>JMSRuntimeException</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Use <strong>AMQP mode</strong> when the application under test uses <strong>native AMQP</strong> rather than JMS to interact with RabbitMQ. Common cases include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Spring Cloud Stream</strong> applications bound to RabbitMQ - these publish and consume raw AMQP messages, not JMS-serialized ones.</p>
+</li>
+<li>
+<p>Applications using the <strong>native RabbitMQ client</strong> (<code>com.rabbitmq:amqp-client</code>) directly.</p>
+</li>
+<li>
+<p>Any framework that interacts with RabbitMQ via the AMQP 0-9-1 protocol without a JMS layer.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the application under test uses the <strong>RabbitMQ JMS client</strong> (<code>com.rabbitmq.jms:rabbitmq-jms</code>) to produce and consume messages, use <strong>JMS mode</strong> (the default).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When targeting a Spring Cloud Stream consumer, you must also set the <code>contentType</code> JMS property (e.g., <code>{'contentType': 'application/json'}</code>) so that Spring can deserialize the message payload correctly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="send-a-message-to-a-queue"><a class="anchor" href="#send-a-message-to-a-queue"></a>Send a message to a queue</h3>
+<div class="paragraph">
+<p><strong>Send a message to a queue</strong></p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - JSON</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - Plain Text</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def jmsMessagePlainText = 'Plain Text Message'</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - XML</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given text jmsMessageXML =</span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>&#x3C;?xml version="1.0"?></span></span>
+<span class="line"><span>&#x3C;karate id="1"></span></span>
+<span class="line"><span>  &#x3C;name>karate-01&#x3C;/name></span></span>
+<span class="line"><span>  &#x3C;value>1&#x3C;/value></span></span>
+<span class="line"><span>&#x3C;/karate></span></span>
+<span class="line"><span>"""</span></span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In order for an XML to be sent as JMS Text Message you need to use <code>text</code> (with enclosed content <code>"""</code>) instead of <code>def</code> (<code>def</code> converts to Map anything that looks like JSON/XML).
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">JMS Object Message</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')</span></span>
+<span class="line"><span>Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)</span></span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When using RabbitMQ in AMQP mode (<code>amqp: true</code> in config), <strong>ObjectMessage is not supported</strong>. Use JSON Map, Plain Text, or XML payloads instead. Attempting to send an ObjectMessage in AMQP mode will throw a <code>JMSRuntimeException</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> void</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> send</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> queue, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Object</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> value)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - JSON</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value)</span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageJSON)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - Plain Text</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value)</span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>Given def jmsMessagePlainText = 'Plain Text Message'</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessagePlainText)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - XML</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value)</span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>Given text jmsMessageXML =</span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>&#x3C;?xml version="1.0"?></span></span>
+<span class="line"><span>&#x3C;karate id="1"></span></span>
+<span class="line"><span>  &#x3C;name>karate-01&#x3C;/name></span></span>
+<span class="line"><span>  &#x3C;value>1&#x3C;/value></span></span>
+<span class="line"><span>&#x3C;/karate></span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageXML)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Object Message</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value)</span></span>
+<span class="line"><span>Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')</span></span>
+<span class="line"><span>Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageObject)</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="send-a-message-to-a-queue-with-optional-properties"><a class="anchor" href="#send-a-message-to-a-queue-with-optional-properties"></a>Send a message to a queue with optional properties</h3>
+<div class="paragraph">
+<p><strong>Send a message to a queue</strong> with defined properties (optional)</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - JSON</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - Plain Text</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def jmsMessagePlainText = 'Plain Text Message'</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JMS Text Message - XML</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given text jmsMessageXML =</span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>&#x3C;?xml version="1.0"?></span></span>
+<span class="line"><span>&#x3C;karate id="1"></span></span>
+<span class="line"><span>  &#x3C;name>karate-01&#x3C;/name></span></span>
+<span class="line"><span>  &#x3C;value>1&#x3C;/value></span></span>
+<span class="line"><span>&#x3C;/karate></span></span>
+<span class="line"><span>"""</span></span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In order for an XML to be sent as JMS Text Message you need to use <code>text</code> (with enclosed content <code>"""</code>) instead of <code>def</code> (<code>def</code> converts to Map anything that looks like JSON/XML).
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">JMS Object Message</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')</span></span>
+<span class="line"><span>Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)</span></span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When using RabbitMQ in AMQP mode (<code>amqp: true</code> in config), <strong>ObjectMessage is not supported</strong>. Use JSON Map, Plain Text, or XML payloads instead. Attempting to send an ObjectMessage in AMQP mode will throw a <code>JMSRuntimeException</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When the target consumer is a <strong>Spring Cloud Stream</strong> application, you must include <code>contentType: 'application/json'</code> in the JMS properties so the message is deserialized correctly. Without it, Spring defaults to <code>application/octet-stream</code> and deserialization fails.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - RabbitMQ AMQP with Spring Cloud Stream consumer</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Instantiate JMSClient with AMQP config (amqp: true)</span></span>
+<span class="line"><span>Given def config = read('classpath:config/jms/rabbitmq-amqp-config-' + karate.env + '.yml')</span></span>
+<span class="line"><span>Given def JMSClient = Java.type('dev.inditex.karate.jms.JMSClient')</span></span>
+<span class="line"><span>Given def jmsClient = new JMSClient(config)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'my-app.my-input-queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Send JSON message with contentType for Spring Cloud Stream</span></span>
+<span class="line"><span>Given def jmsMessage = {'id': '1', 'name': 'karate-01', 'value': 1}</span></span>
+<span class="line"><span>Given def jmsProperties = {'contentType': 'application/json'}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessage, jmsProperties)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JMS Properties</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">{ </span><span style="--shiki-light:#F44747;--shiki-dark:#F44747">'PRINT_STATUS'</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#F44747;--shiki-dark:#F44747">'PRINTING'</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> }</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> void</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> send</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> queue, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Object</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> value, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object> properties)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - JSON</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value, final Map&#x3C;String, Object> properties)</span></span>
+<span class="line"><span># Send Message with properties</span></span>
+<span class="line"><span>Given def jmsMessageJSON = {'id': '1', 'name': 'karate-01', 'value': 1}</span></span>
+<span class="line"><span>Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageJSON, jmsProperties)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageJSON, null)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - Plain Text</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value, final Map&#x3C;String, Object> properties)</span></span>
+<span class="line"><span># Send Message with properties</span></span>
+<span class="line"><span>Given def jmsMessagePlainText = 'Plain Text Message'</span></span>
+<span class="line"><span>Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessagePlainText, jmsProperties)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessagePlainText, null)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - XML</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value, final Map&#x3C;String, Object> properties)</span></span>
+<span class="line"><span># Send Message with properties</span></span>
+<span class="line"><span>Given text jmsMessageXML =</span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>&#x3C;?xml version="1.0"?></span></span>
+<span class="line"><span>&#x3C;karate id="1"></span></span>
+<span class="line"><span>  &#x3C;name>karate-01&#x3C;/name></span></span>
+<span class="line"><span>  &#x3C;value>1&#x3C;/value></span></span>
+<span class="line"><span>&#x3C;/karate></span></span>
+<span class="line"><span>"""</span></span>
+<span class="line"><span>Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsProperties, null)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageXML, null)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Object Message</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void send(final String queue, final Object value, final Map&#x3C;String, Object> properties)</span></span>
+<span class="line"><span># Send Message with properties</span></span>
+<span class="line"><span>Given def JMSKarateObject = Java.type('dev.inditex.karate.jms.JMSKarateObject')</span></span>
+<span class="line"><span>Given def jmsMessageObject = new JMSKarateObject("2", "karate-02", 2)</span></span>
+<span class="line"><span>Given def jmsProperties = {'PRINT_STATUS':'PRINTING'}</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageObject, jmsProperties)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Send Message without properties</span></span>
+<span class="line"><span>When jmsClient.send(queue, jmsMessageObject, null)</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="consume-messages-from-a-queue"><a class="anchor" href="#consume-messages-from-a-queue"></a>Consume Messages from a queue</h3>
+<div class="paragraph">
+<p><strong>Receive the next messages in the queue</strong> within the default timeout interval (5000ms) or custom timeout interval.</p>
+</div>
+<div class="paragraph">
+<p>Returns a <strong>JSON Array</strong> representing the obtained messages, where each row is a map <strong>&lt;&lt; field name, message value &gt;&gt;</strong></p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">JSON or Object Messages</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">[</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">1</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-01"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">1</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> },</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-02"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> }</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">]</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Plain Text or XML Messages</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">[</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"textMessage"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"Plain Text Message"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> },</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"textMessage"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"&#x3C;?xml version=</span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\"</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">1.0</span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\"</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">?></span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\n</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">&#x3C;karate id=</span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\"</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">1</span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\"</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">></span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\n</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">  &#x3C;name>karate-01&#x3C;/name></span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\n</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">  &#x3C;value>1&#x3C;/value></span><span style="--shiki-light:#D7BA7D;--shiki-dark:#D7BA7D">\n</span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">&#x3C;/karate>"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> }</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">]</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> List</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0">Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object>> </span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA">consume</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> queue)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JSON or Object Messages</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public List&#x3C;Map&#x3C;String, Object>> consume(final String queue)</span></span>
+<span class="line"><span>When def messages = jmsClient.consume(queue)</span></span>
+<span class="line"><span>Then karate.log('messages=', messages)</span></span>
+<span class="line"><span>Then assert messages.length == 2</span></span>
+<span class="line"><span>Then def result = karate.sort(messages, x => x.id)</span></span>
+<span class="line"><span>Then match result[0].id == '1'</span></span>
+<span class="line"><span>Then match result[0].name == 'karate-01'</span></span>
+<span class="line"><span>Then match result[0].value == 1</span></span>
+<span class="line"><span>Then match result[1].id == '2'</span></span>
+<span class="line"><span>Then match result[1].name == 'karate-02'</span></span>
+<span class="line"><span>Then match result[1].value == 2</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - Plain Text</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public List&#x3C;Map&#x3C;String, Object>> consume(final String queue)</span></span>
+<span class="line"><span>When def messages = jmsClient.consume(queue)</span></span>
+<span class="line"><span>Then assert messages.length == 1</span></span>
+<span class="line"><span>Then match messages[0].textMessage == jmsMessagePlainText</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - JMS Text Message - XML</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public List&#x3C;Map&#x3C;String, Object>> consume(final String queue)</span></span>
+<span class="line"><span>When def messages = jmsClient.consume(queue)</span></span>
+<span class="line"><span>Then assert messages.length == 1</span></span>
+<span class="line"><span>Then match messages[0].textMessage == jmsMessageXML</span></span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Receive the next messages in the queue</strong> with custom timeout interval.</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> List</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0">Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object>> </span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA">consume</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> queue, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> long</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> timeout)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define Queue</span></span>
+<span class="line"><span>Given def queue = 'global.core.karate.public.queue'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public List&#x3C;Map&#x3C;String, Object>> consume(final String queue, final long timeout)</span></span>
+<span class="line"><span>When def messages = jmsClient.consume(queue, 10000)</span></span>
+<span class="line"><span>Then assert messages.length == 1</span></span>
+<span class="line"><span>Then match messages[0].textMessage == jmsMessagePlainText</span></span></span></code></pre>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+
+
+<footer class="page-footer">
+  <div class="page-footer__nav">
+
+  </div>
+  <div class="dt-grid-layout dt-grid-layout--with-margin page-footer__feedback">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-full page-footer__contribute">
+      <div class="page-footer__contribute-copy">
+        <p class="dt-text dt-text--title-s">Help us make these docs great!</p>
+        <p class="dt-text dt-text--body-m">See something that is wrong or unclear? Collaborate with us! Submit a pull request</p>
+      </div>
+      <div class="page-footer__contribute-buttons">
+
+<a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-action page-footer__propose-change" href="https://github.com/InditexTech/karatetools-oss/blob/docs/v5.3.0/docs/src/modules/clients/pages/jms-features.adoc">
+  <span class="dt-button__content">
+    Propose a change
+    <span class="dt-button__icon dt-button__icon-action"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-external-link"></use></svg></span>
+  </span>
+</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+
+<footer class="site-footer">
+  <div class="dt-grid-layout dt-grid-layout--with-margin site-footer__grid">
+    <div class="dt-grid-layout__item site-footer__col site-footer__brand">
+      <a class="site-footer__brand-link" href="../../../6.0.0/">
+        <img class="site-footer__logo site-footer__logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+        <img class="site-footer__logo site-footer__logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+        <span class="dt-text dt-text--label-l-high">InditexTech Karate Tools</span>
+      </a>
+      <span class="dt-text dt-text--detail-m site-footer__legal">&#169; 2026 InditexTech</span>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

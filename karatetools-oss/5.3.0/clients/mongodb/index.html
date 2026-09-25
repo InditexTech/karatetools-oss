@@ -1,0 +1,1336 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>
+      /*
+       * Theme bootstrap. Runs before first paint so the page never flashes the
+       * wrong theme. Keep it inline, keep it tiny, and keep it in sync with
+       * src/js/08-theme.ts, which owns the same storage key and class names.
+       *
+       * IDS switches theme with a class on <html>, not a data attribute, so an
+       * attribute here would style nothing.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('dt-theme') } catch (e) {}
+        var theme = stored === 'light' || stored === 'dark'
+          ? stored
+          : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        var root = document.documentElement
+        root.classList.add('dt-theme-' + theme, 'dt-scale-medium')
+        root.style.colorScheme = theme
+      })()
+    </script>
+    <script>
+      /*
+       * Side-menu collapse bootstrap (GH-8). Runs before first paint so the
+       * 320px column never flashes in and reflows the article on navigation.
+       * Keep it inline, keep it tiny, and keep it in sync with
+       * src/js/01-nav.ts, which owns the same storage key and class name.
+       *
+       * A stored choice always wins; absent one, the menu starts collapsed
+       * on the home/landing page (matching Figma's "State=Home" toolbar
+       * variant, which is the only one that shows the toggle) and open
+       * everywhere else. With JavaScript disabled this script never runs, so
+       * the class is never added and the menu stays open unconditionally —
+       * the toggle that would reopen it is also never unhidden.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('docouture-side-menu') } catch (e) {}
+        var collapsed = stored === 'collapsed' || stored === 'open'
+          ? stored === 'collapsed'
+          : document.documentElement.hasAttribute('data-page-home')
+        if (collapsed) document.documentElement.classList.add('is-side-menu-collapsed')
+      })()
+    </script>
+    <script>
+      /*
+       * ToC collapse bootstrap (GH-10). Runs before first paint so a closed
+       * choice never flashes open for an instant. Keep it in sync with
+       * src/js/02-on-this-page.ts, which owns the same storage key and class
+       * name.
+       *
+       * Deliberately does NOT add `has-toc` — only 02-on-this-page.ts knows
+       * whether this page actually has a usable ToC (headings found, page
+       * not `-toc`), and every effect of the class added here is itself
+       * gated behind `has-toc` in toc.css, so there is nothing to flash
+       * either way before that script runs. This one exists only so a
+       * *closed* choice is already in place the moment it does.
+       */
+      (function () {
+        var stored
+        try { stored = localStorage.getItem('docouture-toc') } catch (e) {}
+        if (stored === 'closed') document.documentElement.classList.add('is-toc-closed')
+      })()
+    </script>
+
+<title>Karate Clients - MongoDB | InditexTech Karate Tools</title>
+
+    <link rel="canonical" href="https://inditextech.github.io/karatetools-oss/karatetools-oss/5.4.0/clients/mongodb/">
+    <link rel="prev" href="../jdbc/">
+    <link rel="next" href="../kafka/">
+    <meta name="generator" content="Antora 3.2.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Mono:wght@100..900&display=swap">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <style>:root { --home-background-image: url("/karatetools-oss/_/home-background.jpg") }</style>
+
+
+
+    <link rel="icon" href="../../../../_/favicon.ico">
+  </head>
+  <body class="article">
+
+
+
+<header class="header-toolbar">
+  <div class="dt-grid-layout dt-grid-layout--with-margin header-toolbar__grid">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-6 dt-grid-layout__item--span-xs-3 header-toolbar__left">
+      <button class="dt-button dt-button--ghost dt-button--icon-only side-menu-toggle" type="button" aria-controls="side-menu" hidden>
+        <span class="dt-button__content">
+          <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-menu"></use></svg></span>
+        </span>
+      </button>
+      <a class="header-toolbar__brand" href="../../../6.0.0/">
+        <img class="header-toolbar__logo header-toolbar__logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+        <img class="header-toolbar__logo header-toolbar__logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+        <span class="header-toolbar__product-name dt-text dt-text--label-l-high">InditexTech Karate Tools</span>
+      </a>
+    </div>
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-6 dt-grid-layout__item--span-xs-3 header-toolbar__actions">
+      <button type="button" class="dt-button dt-button--ghost header-toolbar__search-trigger">
+        <span class="dt-button__content">
+          <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+          <span class="dt-text dt-text--label-l header-toolbar__search-label">Search</span>
+          <kbd class="header-toolbar__search-shortcut" aria-hidden="true">⌘K</kbd>
+        </span>
+      </button>
+
+<div class="page-versions">
+  <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--older version-menu-toggle" title="Show other versions of page" aria-expanded="false">
+    <span class="dt-tag__label">5.3.0</span>
+    <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
+  </button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../prerelease/">
+      <span class="version__label">prerelease</span>
+      <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
+    </a>
+    <a class="version is-missing" href="../../../6.0.0/">
+      <span class="version__label">6.0.0</span>
+      <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
+          </a>
+    <a class="version" href="../../../5.4.0/clients/mongodb/">
+      <span class="version__label">5.4.0</span>
+    </a>
+    <span class="version is-current" aria-current="page">
+      <span class="version__label">5.3.0</span>
+    </span>
+    <a class="version" href="../../../5.2.0/clients/mongodb/">
+      <span class="version__label">5.2.0</span>
+    </a>
+    <a class="version" href="../../../5.1.0/clients/mongodb/">
+      <span class="version__label">5.1.0</span>
+    </a>
+    <a class="version" href="../../../5.0.1/clients/mongodb/">
+      <span class="version__label">5.0.1</span>
+    </a>
+    <a class="version" href="../../../5.0.0/clients/mongodb/">
+      <span class="version__label">5.0.0</span>
+    </a>
+    <a class="version" href="../../../4.0.0/clients/mongodb/">
+      <span class="version__label">4.0.0</span>
+    </a>
+  </div>
+</div>
+
+<a class="dt-button dt-button--ghost dt-button--icon-only header-toolbar__repo" href="https://github.com/InditexTech/karatetools-oss" target="_blank" rel="noopener" aria-label="Repository">
+  <span class="dt-button__content">
+    <span class="dt-button__icon dt-button__icon-icon header-toolbar__repo-icon" aria-hidden="true"></span>
+  </span>
+</a>
+
+<button class="dt-button dt-button--ghost dt-button--icon-only theme-toggle" type="button" hidden>
+  <span class="dt-button__content">
+    <span class="dt-button__icon dt-button__icon-icon theme-toggle-icon theme-toggle-icon--light" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-sun"></use></svg></span>
+    <span class="dt-button__icon dt-button__icon-icon theme-toggle-icon theme-toggle-icon--dark" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-moon"></use></svg></span>
+  </span>
+</button>
+    </div>
+  </div>
+</header>
+
+<dialog id="search-dialog" class="search-dialog" aria-label="Search" data-search-index="karatetools-oss-5.3.0.json">
+  <div class="dt-overlay dt-overlay--visible search-dialog__overlay">
+    <div class="dt-overlay__content"></div>
+    <div class="dt-modal dt-modal--small search-dialog__panel">
+      <div class="dt-modal__container search-dialog__container">
+        <div class="dt-search-field-minimal dt-search-field-minimal--full-width search-dialog__field">
+          <span class="dt-search-field-minimal__icon-start" aria-hidden="true"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+          <div class="dt-search-field-minimal__input-wrapper">
+            <div class="dt-search-field-minimal__input-container">
+              <input type="search" class="dt-search-field-minimal__input" placeholder="Search the docs" aria-label="Search the docs"
+                role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list"
+                aria-controls="search-dialog-listbox" disabled>
+            </div>
+          </div>
+          <button type="button" class="dt-button dt-button--ghost dt-button--icon-only search-dialog__close" aria-label="Close search" disabled>
+            <span class="dt-button__content">
+              <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></span>
+            </span>
+          </button>
+        </div>
+        <div id="search-dialog-listbox" class="dt-modal__content dt-modal__content--scrollable search-dialog__results" role="listbox" aria-label="Search results"></div>
+        <div class="search-dialog__status" aria-live="polite"></div>
+        <div class="dt-modal__footer dt-modal__footer--horizontal search-dialog__footer">
+          <span class="dt-modal__footer-left dt-text dt-text--detail-m search-dialog__hints">
+            <kbd>&uarr;&darr;</kbd> navigate &middot; <kbd>&crarr;</kbd> select &middot; <kbd>esc</kbd> close
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+<div class="dt-floating-button-wrapper dt-floating-button-wrapper--viewport dt-floating-button-wrapper--end search-fab">
+  <button type="button" class="dt-button dt-button--ghost dt-button--icon-only dt-floating-button search-fab__trigger" aria-label="Search" aria-haspopup="dialog" aria-controls="search-dialog">
+    <span class="dt-button__content">
+      <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-search"></use></svg></span>
+    </span>
+  </button>
+</div>
+
+<dialog id="image-zoom-dialog" class="image-zoom-dialog" aria-label="Zoomed image">
+  <div class="dt-overlay dt-overlay--visible image-zoom-dialog__overlay">
+    <div class="dt-overlay__content"></div>
+    <div class="dt-modal dt-modal--fullscreen image-zoom-dialog__panel">
+      <div class="dt-modal__container image-zoom-dialog__container">
+        <button type="button" class="dt-button dt-button--ghost dt-button--icon-only image-zoom-dialog__close" aria-label="Close zoomed image">
+          <span class="dt-button__content">
+            <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></span>
+          </span>
+        </button>
+        <div class="image-zoom-dialog__content"></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="body">
+
+<div id="side-menu" class="side-menu" data-component="karatetools-oss" data-version="5.3.0" data-module="clients">
+  <div class="side-menu__header">
+    <div class="side-menu__header-start">
+      <img class="side-menu__header-logo side-menu__header-logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+      <img class="side-menu__header-logo side-menu__header-logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+      <span class="side-menu__header-title dt-text dt-text--title-s">InditexTech Karate Tools</span>
+    </div>
+    <button class="side-menu__close" type="button" aria-label="Close navigation"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-x"></use></svg></button>
+  </div>
+
+<div class="side-menu__brand">
+  <a class="side-menu__brand-link" href="../../../6.0.0/">
+    <img class="side-menu__brand-logo side-menu__brand-logo--light" src="../../../../_/product-logo.png" width="40" height="40" alt="">
+    <img class="side-menu__brand-logo side-menu__brand-logo--dark" src="../../../../_/product-logo-dark.png" width="40" height="40" alt="">
+    <span class="side-menu__brand-title dt-text dt-text--title-m">InditexTech Karate Tools</span>
+  </a>
+</div>
+
+  <nav class="side-menu__nav" aria-label="Site navigation">
+
+
+<ul class="dt-list side-menu__list" data-depth="0">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../overview/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Overview</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../prerequisites/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Prerequisites</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../archetype/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Archetype</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../configuration/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Configuration</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Configuration">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/karate-config/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Config</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/logging/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Logging</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/urls/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Environment URLs</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../configuration/auth/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Authentication</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Authentication">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/auth-basic/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Basic Authentication</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/auth-jwt/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JWT Authentication</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../configuration/local-machine-secrets/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Local Machine Secrets Management</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../open-api-generator/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Open API Generator">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-operations/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Operations</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-smoke/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Smoke Tests</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-functional/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Functional Tests</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../open-api-generator/open-api-generator-mock/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Open API Generator - Mock Data</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Clients</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Karate Clients">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../jdbc/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JDBC Client</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="./" aria-current="page">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">MongoDB Client</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../kafka/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Kafka Clients</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../jms/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">JMS Client</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../execution/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Execution">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/arguments/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Arguments</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/logging/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Logging</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/mock-server/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Mock Server</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../execution/reports/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Execution - Reports</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--group">
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../execution/karate-cache/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Karate Cache</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../release/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Release Notes</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-0"
+        href="../../contributing/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Contributing</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Contributing">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="1">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../contributing/development-guide/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Development Guide</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle Development Guide">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="2">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-2"
+        href="../../contributing/karatetools-oss/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle karatetools-oss">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="3">
+  <li class="side-menu__item side-menu__item--branch">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-code">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-code</span></span>
+      </a>
+      <button class="side-menu__toggle" type="button" aria-expanded="true" aria-label="Toggle karatetools-oss-code">
+        <svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg>
+      </button>
+    </div>
+
+<ul class="dt-list side-menu__list" data-depth="4">
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-archetype">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-archetype</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-clients">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-clients</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-generators">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-generators</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-runner">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-runner</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-starter">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-starter</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-boot">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-boot</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-4"
+        href="../../contributing/karatetools-oss/#karatetools-oss-openapi-test">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-openapi-test</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-karate-test">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-karate-test</span></span>
+      </a>
+    </div>
+
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-3"
+        href="../../contributing/karatetools-oss/#karatetools-oss-docs">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">karatetools-oss-docs</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="side-menu__item">
+    <div class="side-menu__row">
+      <a class="dt-list-item side-menu__link dt-list-item--tree--level-1"
+        href="../../contributing/step-by-step/">
+        <span class="dt-list-item__text"><span class="dt-list-item__label">Step by Step</span></span>
+      </a>
+    </div>
+
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+  <div class="side-menu__version">
+
+<div class="page-versions">
+  <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--older version-menu-toggle" title="Show other versions of page" aria-expanded="false">
+    <span class="dt-tag__label">5.3.0</span>
+    <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
+  </button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../prerelease/">
+      <span class="version__label">prerelease</span>
+      <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
+    </a>
+    <a class="version is-missing" href="../../../6.0.0/">
+      <span class="version__label">6.0.0</span>
+      <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
+          </a>
+    <a class="version" href="../../../5.4.0/clients/mongodb/">
+      <span class="version__label">5.4.0</span>
+    </a>
+    <span class="version is-current" aria-current="page">
+      <span class="version__label">5.3.0</span>
+    </span>
+    <a class="version" href="../../../5.2.0/clients/mongodb/">
+      <span class="version__label">5.2.0</span>
+    </a>
+    <a class="version" href="../../../5.1.0/clients/mongodb/">
+      <span class="version__label">5.1.0</span>
+    </a>
+    <a class="version" href="../../../5.0.1/clients/mongodb/">
+      <span class="version__label">5.0.1</span>
+    </a>
+    <a class="version" href="../../../5.0.0/clients/mongodb/">
+      <span class="version__label">5.0.0</span>
+    </a>
+    <a class="version" href="../../../4.0.0/clients/mongodb/">
+      <span class="version__label">4.0.0</span>
+    </a>
+  </div>
+</div>
+  </div>
+</div>
+<div class="side-menu-scrim"></div>
+
+<main class="article">
+
+<div class="hero">
+  <div class="dt-grid-layout dt-grid-layout--with-margin hero__grid">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-full hero__row">
+      <div class="hero__main">
+
+<nav class="dt-breadcrumbs" aria-label="Breadcrumb">
+  <a class="dt-breadcrumb-item dt-breadcrumb-item--link" href="../../HOME/"><span class="dt-breadcrumb-item__content">InditexTech Karate Tools</span></a>
+  <a class="dt-breadcrumb-item dt-breadcrumb-item--link" href="../"><span class="dt-breadcrumb-item__content">Karate Clients</span></a>
+  <div class="dt-breadcrumb-item dt-breadcrumb-item--active" aria-current="page"><span class="dt-breadcrumb-item__content">MongoDB Client</span></div>
+</nav>
+        <h1 class="hero__title dt-text dt-text--title-xl">Karate Clients - MongoDB</h1>
+      </div>
+      <div class="hero__aside">
+        <button class="dt-button dt-button--ghost dt-button--icon-only toc-toggle" type="button" aria-controls="on-this-page" aria-expanded="true" hidden>
+          <span class="dt-button__content">
+            <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-panel-left"></use></svg></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="content dt-grid-layout dt-grid-layout--with-margin">
+
+<aside id="on-this-page" class="toc" data-title="On this page" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+
+<article class="doc">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Java Client to interact with <strong>MongoDB from karate</strong>.</p>
+</div>
+<div class="paragraph">
+<p>It provides features to execute operations such as <strong>count</strong>, <strong>find</strong>, <strong>insert and insertMany</strong>, <strong>replace</strong>, <strong>delete and deleteMany</strong> over MongoDB collections.</p>
+</div>
+<div class="docouture-diagram no-border zoom-in" data-diagram-type="plantuml"><div class="docouture-diagram__content"><img src="data:image/png;base64,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" alt=""></div></div>
+<div class="ulist">
+<ul>
+<li>
+<p>How to set it up:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Define (if applicable) the MongoDB client dependencies in the project <strong><a href="#pom-configuration">POM</a></strong></p>
+</li>
+<li>
+<p>Define the MongoDB client configuration in the file <strong><a href="#client-configuration">src/test/resources/config/db/mongodb-&lt;env&gt;-config.yml</a></strong></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>How to use it in the karate files:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><a href="#client-features-and-usage">MongoDB Client Features and Usage</a></strong></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pom-configuration"><a class="anchor" href="#pom-configuration"></a>POM Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="pom-karate-tools"><a class="anchor" href="#pom-karate-tools"></a>POM Karate Tools</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the project has been generated using the <a href="../../archetype/" class="xref page">Karate Tools Archetype</a> the pom will already contain the corresponding configuration.
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Add the karatetools dependency in the karate pom:</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="xml"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">properties</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  ...</span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">  &#x3C;!-- Karate Tools --></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">karatetools.version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">X.X.X</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">karatetools.version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">properties</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependencies</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  ...</span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">  &#x3C;!-- Karate Tools --></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependency</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">groupId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">dev.inditex.karate</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">groupId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">artifactId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">karatetools-starter</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">artifactId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">${karatetools.version}</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">scope</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">test</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">scope</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependency</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependencies</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span></span></code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="pom-driver"><a class="anchor" href="#pom-driver"></a>POM Driver</h3>
+<div class="paragraph">
+<p><strong>karatetools-starter</strong> already includes the corresponding MongoDB dependency.</p>
+</div>
+<details>
+<summary class="title"><strong>If you need to change the dependency version</strong>, you can include it in the pom as follows:</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="xml"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">properties</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">    ...</span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">    &#x3C;!-- Karate Clients --></span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">    &#x3C;!-- Karate Clients - MongoDB --></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">mongodb-driver-sync.version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">X.X.X</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">mongodb-driver-sync.version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">properties</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependencies</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">    ...</span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">    &#x3C;!-- Karate Clients --></span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955">    &#x3C;!-- Karate Clients - MongoDB --></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependency</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">      &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">groupId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">org.mongodb</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">groupId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">      &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">artifactId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">mongodb-driver-sync</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">artifactId</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">      &#x3C;</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">${mongodb-driver-sync.version}</span><span style="--shiki-light:#808080;--shiki-dark:#808080">&#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">version</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">    &#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependency</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span>
+<span class="line"><span style="--shiki-light:#808080;--shiki-dark:#808080">  &#x3C;/</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">dependencies</span><span style="--shiki-light:#808080;--shiki-dark:#808080">></span></span></span></code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-configuration"><a class="anchor" href="#client-configuration"></a>Client Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuration parameters for the MongoDB clients. These values can be overwritten by the corresponding (DB specific) system properties. System properties can be injected by CI/CD.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the project has been generated using the <a href="../../archetype/" class="xref page">Karate Tools Archetype</a> the archetype would have prompted for the creation of the configuration files.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This client can be configured for multi-environment execution with a <strong>config file per environment</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="plaintext"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span>\---src</span></span>
+<span class="line"><span>    \---test</span></span>
+<span class="line"><span>        \---resources</span></span>
+<span class="line"><span>            \---config</span></span>
+<span class="line"><span>                \---db</span></span>
+<span class="line"><span>                    mongodb-config-local.yml</span></span>
+<span class="line"><span>                    ...</span></span>
+<span class="line"><span>                    mongodb-config-pre.yml</span></span></span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mongodb-client-configuration-properties"><a class="anchor" href="#mongodb-client-configuration-properties"></a>MongoDB Client Configuration Properties</h3>
+<div class="paragraph">
+<p>⚙️ <strong><code>hosts</code></strong>: comma separated host names</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>port</code></strong>: mongodb port</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>db-name</code></strong>: database name</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>user</code></strong>: user name to connect</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>password</code></strong>: password to connect</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>connect-timeout</code></strong>: number of milliseconds the driver will wait before a new connection attempt is aborted</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>server-selection-timeout</code></strong>: number of milliseconds the mongo driver will wait to select a server for an operation before giving up and raising an error</p>
+</div>
+<div class="paragraph">
+<p>⚙️ <strong><code>socket-timeout</code></strong>: number of milliseconds a send or receive on a socket can take before timeout</p>
+</div>
+<div class="listingblock">
+<div class="title">Example</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="yaml"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955"># docker-compose environment variables:  &#x3C;MONGO_INITDB_ROOT_USERNAME> &#x3C;MONGO_INITDB_ROOT_PASSWORD></span></span>
+<span class="line"><span style="--shiki-light:#6A9955;--shiki-dark:#6A9955"># docker-compose folder structure:       mongo/&#x3C;DB_NAME>/data</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">hosts</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">localhost</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">port</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">27017</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">db-name</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">KARATE</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">user</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">karate</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">password</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">karate-pwd</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">connect-timeout</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">10000</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">server-selection-timeout</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">10000</span></span>
+<span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">socket-timeout</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">10000</span></span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-features-and-usage"><a class="anchor" href="#client-features-and-usage"></a>Client Features and Usage</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="instantiate-mongodbclient"><a class="anchor" href="#instantiate-mongodbclient"></a>Instantiate MongoDBClient</h3>
+<div class="paragraph">
+<p><strong>New instance of the MongoDBClient</strong> providing the configuration as a map loaded from a yaml file.</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> MongoDBClient</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;Object, Object> configMap)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># public MongoDBClient(final Map&#x3C;Object, Object> configMap)</span></span>
+<span class="line"><span># Instantiate MongoDBClient</span></span>
+<span class="line"><span>Given def config = read('classpath:config/db/mongodb-config-' + karate.env + '.yml')</span></span>
+<span class="line"><span>Given def MongoDBClient = Java.type('dev.inditex.karate.mongodb.MongoDBClient')</span></span>
+<span class="line"><span>Given def mongoDBClient = new MongoDBClient(config)</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="check-if-mongobd-is-available"><a class="anchor" href="#check-if-mongobd-is-available"></a>Check if MongoBD is available</h3>
+<div class="paragraph">
+<p>Checks if the <strong>MongoBD connection can be established</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns true is <strong>connection is available</strong>, false otherwise</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Boolean</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> available</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">()</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># public Boolean available()</span></span>
+<span class="line"><span>When def available = mongoDBClient.available()</span></span>
+<span class="line"><span>Then if (!available) karate.fail('MongoDB Client not available')</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="count-documents-in-a-collection"><a class="anchor" href="#count-documents-in-a-collection"></a>Count documents in a collection</h3>
+<div class="paragraph">
+<p><strong>Counts</strong> the number of documents in the collection</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Long</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> count</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public Long count(final String collectionName)</span></span>
+<span class="line"><span>When def count = mongoDBClient.count(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.count(',collection,')=', count)</span></span>
+<span class="line"><span>Then assert count >= 0</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="delete-one-document-in-a-collection-matching-a-filter"><a class="anchor" href="#delete-one-document-in-a-collection-matching-a-filter"></a>Delete One document in a collection matching a filter</h3>
+<div class="paragraph">
+<p><strong>Removes one document</strong> from the collection that <strong>matches the given filter</strong>. If no documents match, the collection is not modified.</p>
+</div>
+<div class="paragraph">
+<p>Deletes the <strong>first document that matches the filter</strong>. Use a field that is part of a unique index such as _id for precise deletions.</p>
+</div>
+<div class="paragraph">
+<p>Returns the <strong>number of documents deleted</strong> (1 or 0)</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> long</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> delete</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object> value)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Filters</span></span>
+<span class="line"><span>Given def oneFilter = { "_id": "1" }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When def deleteOne = mongoDBClient.delete(collection, oneFilter)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.delete(',collection,', ', oneFilter, ')=', deleteOne)</span></span>
+<span class="line"><span>Then assert deleteOne == 1</span></span>
+<span class="line"><span>Then def countAfterDeleteOne = mongoDBClient.count(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.count(',collection,')=', countAfterDeleteOne)</span></span>
+<span class="line"><span>Then assert countAfterDeleteOne == 2</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="delete-many-documents-in-a-collection-matching-a-filter"><a class="anchor" href="#delete-many-documents-in-a-collection-matching-a-filter"></a>Delete Many documents in a collection matching a filter</h3>
+<div class="paragraph">
+<p><strong>Removes all documents</strong> from the collection that <strong>match the given query filter</strong>. If no documents match, the collection is not modified.</p>
+</div>
+<div class="paragraph">
+<p>Returns the <strong>number of documents deleted</strong></p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> long</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> deleteMany</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object> filter)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Filters</span></span>
+<span class="line"><span>Given def manyFilter = { "name": { "$regex": "^karate-(.*)" } }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When def deletedMany = mongoDBClient.deleteMany(collection, manyFilter)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.delete(',collection,', ', manyFilter, ')=', deletedMany)</span></span>
+<span class="line"><span>Then assert deletedMany >= 0</span></span>
+<span class="line"><span>When def countAfterDeleteMany = mongoDBClient.count(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.count(',collection,')=', countAfterDeleteMany)</span></span>
+<span class="line"><span>Then assert countAfterDeleteMany == 0</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="find-all-documents-in-a-collection"><a class="anchor" href="#find-all-documents-in-a-collection"></a>Find all documents in a collection</h3>
+<div class="paragraph">
+<p><strong>Finds all documents</strong> in the collection.</p>
+</div>
+<div class="paragraph">
+<p>Returns a <strong>JSON Array</strong> representing the obtained find result, where each row is a map <strong>&lt;&lt; field name, Result value &gt;&gt;</strong></p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">[</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"_id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">1</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-01"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">1</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> },</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"_id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-02"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> },</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"_id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">3</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-03"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">3</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> }</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">]</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> List</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0">Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object>> </span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA">find</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When def findAll = mongoDBClient.find(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.find(',collection,')=', findAll.length )</span></span>
+<span class="line"><span>Then assert findAll.length == 3</span></span>
+<span class="line"><span>Then def result = karate.sort(findAll, x => x._id)</span></span>
+<span class="line"><span>Then match result[0]._id == '1'</span></span>
+<span class="line"><span>Then match result[0].name == 'karate-01'</span></span>
+<span class="line"><span>Then match result[0].value == 1</span></span>
+<span class="line"><span>Then match result[1]._id == '2'</span></span>
+<span class="line"><span>Then match result[1].name == 'karate-02'</span></span>
+<span class="line"><span>Then match result[1].value == 2</span></span>
+<span class="line"><span>Then match result[2]._id == '3'</span></span>
+<span class="line"><span>Then match result[2].name == 'karate-03'</span></span>
+<span class="line"><span>Then match result[2].value == 3</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="find-documents-in-a-collection-matching-a-filter"><a class="anchor" href="#find-documents-in-a-collection-matching-a-filter"></a>Find documents in a collection matching a filter</h3>
+<div class="paragraph">
+<p><strong>Finds all documents</strong> in the collection <strong>matching the query filter</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns a <strong>JSON Array</strong> representing the obtained find result, where each row is a map <strong>&lt;&lt; field name, Result value &gt;&gt;</strong></p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="paragraph">
+<p>With a filter where id &gt; 1:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">{ </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: { </span><span style="--shiki-light:#F44747;--shiki-dark:#F44747">$gt</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">1</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> } }</span></span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will return:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="shiki highlight"><code data-lang="json"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">[</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"_id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-02"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">2</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> },</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">  { </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"_id"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">3</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"name"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#CE9178;--shiki-dark:#CE9178">"karate-03"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">, </span><span style="--shiki-light:#9CDCFE;--shiki-dark:#9CDCFE">"value"</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">: </span><span style="--shiki-light:#B5CEA8;--shiki-dark:#B5CEA8">3</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> }</span></span>
+<span class="line"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">]</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> List</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0">Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object>> </span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA">find</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object> filter)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - Find One</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Filters</span></span>
+<span class="line"><span>Given def oneFilter = { "_id": "1" }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public List&#x3C;Map&#x3C;String, Object>> find(final String collectionName, final Map&#x3C;String, Object> filter)</span></span>
+<span class="line"><span>When def findOne = mongoDBClient.find(collection, oneFilter)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.find(',collection,',', oneFilter, ')=', findOne.length )</span></span>
+<span class="line"><span>Then assert findOne.length == 1</span></span>
+<span class="line"><span>Then match findOne[0]._id == '1'</span></span>
+<span class="line"><span>Then match findOne[0].name == 'karate-01'</span></span>
+<span class="line"><span>Then match findOne[0].value == 1</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage - Find Some</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Filters</span></span>
+<span class="line"><span>Given def someFilter = { "value": { $gt: 1 } }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When def findSome = mongoDBClient.find(collection, someFilter)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.find(',collection,',', someFilter, ')=', findSome.length )</span></span>
+<span class="line"><span>Then assert findSome.length == 2</span></span>
+<span class="line"><span>Then def result = karate.sort(findSome, x => x._id)</span></span>
+<span class="line"><span>Then match result[0]._id == '2'</span></span>
+<span class="line"><span>Then match result[0].name == 'karate-02'</span></span>
+<span class="line"><span>Then match result[0].value == 2</span></span>
+<span class="line"><span>Then match result[1]._id == '3'</span></span>
+<span class="line"><span>Then match result[1].name == 'karate-03'</span></span>
+<span class="line"><span>Then match result[1].value == 3</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="insert-one-document-in-a-collection"><a class="anchor" href="#insert-one-document-in-a-collection"></a>Insert One Document in a collection</h3>
+<div class="paragraph">
+<p><strong>Inserts the provided document</strong> in the collection.</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> void</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> insert</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object> value)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Data</span></span>
+<span class="line"><span>Given def oneDocument = { "_id": "1", "name": "karate-01", "value": 1 }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># public void insert(final String collectionName, final Map&#x3C;String, Object> value)</span></span>
+<span class="line"><span># insert(String, Map&#x3C;String, Object>) : void</span></span>
+<span class="line"><span>When mongoDBClient.insert(collection, oneDocument)</span></span>
+<span class="line"><span>When def countAfterInsertOne = mongoDBClient.count(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.count(',collection,')=', countAfterInsertOne)</span></span>
+<span class="line"><span>Then assert countAfterInsertOne == 1</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="insert-many-documents-in-a-collection"><a class="anchor" href="#insert-many-documents-in-a-collection"></a>Insert Many Documents in a collection</h3>
+<div class="paragraph">
+<p><strong>Inserts one or more documents</strong> in the collection.</p>
+</div>
+<div class="listingblock">
+<div class="title">Java Signature</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="java"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">public</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> void</span><span style="--shiki-light:#DCDCAA;--shiki-dark:#DCDCAA"> insertMany</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">(</span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> String</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4"> collectionName, </span><span style="--shiki-light:#569CD6;--shiki-dark:#569CD6">final</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0"> List</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;</span><span style="--shiki-light:#4EC9B0;--shiki-dark:#4EC9B0">Map</span><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4">&#x3C;String, Object>> values)</span></span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Gherkin Usage</div>
+<div class="content">
+<pre class="shiki highlight"><code data-lang="gherkin"><span style="--shiki-light:#D4D4D4;--shiki-dark:#D4D4D4;--shiki-light-bg:#1E1E1E;--shiki-dark-bg:#1E1E1E"><span class="line"><span># Define collection</span></span>
+<span class="line"><span>Given def collection = "data"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Define Data</span></span>
+<span class="line"><span>Given def manyDocuments = [ { "_id": "2", "name": "karate-02", "value": 2 }, { "_id": "3", "name": "karate-03", "value": 3 } ]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When mongoDBClient.insertMany(collection, manyDocuments)</span></span>
+<span class="line"><span>When def countAfterInsertMany = mongoDBClient.count(collection)</span></span>
+<span class="line"><span>Then karate.log('mongoDBClient.count(',collection,')=', countAfterInsertMany)</span></span>
+<span class="line"><span>Then assert countAfterInsertMany == 3</span></span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="replace-a-document-in-the-collection"><a class="anchor" href="#replace-a-document-in-the-collection"></a>Replace a document in the collection</h3>
+
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+
+
+<footer class="page-footer">
+  <div class="page-footer__nav">
+
+<div class="dt-grid-layout dt-grid-layout--with-margin pagination">
+  <div class="dt-grid-layout__item dt-grid-layout__item--span-full pagination__row">
+    <div class="pagination__buttons">
+    <a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-icon pagination__prev" href="../jdbc/">
+      <span class="dt-button__content">
+        <span class="dt-button__icon dt-button__icon-icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-arrow-left"></use></svg></span>
+        <span class="pagination__label-full">JDBC Client</span>
+        <span class="pagination__label-short">Prev</span>
+      </span>
+    </a>
+    <a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-action pagination__next" href="../kafka/">
+      <span class="dt-button__content">
+        <span class="pagination__label-full">Kafka Clients</span>
+        <span class="pagination__label-short">Next</span>
+        <span class="dt-button__icon dt-button__icon-action"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-arrow-right"></use></svg></span>
+      </span>
+    </a>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class="dt-grid-layout dt-grid-layout--with-margin page-footer__feedback">
+    <div class="dt-grid-layout__item dt-grid-layout__item--span-full page-footer__contribute">
+      <div class="page-footer__contribute-copy">
+        <p class="dt-text dt-text--title-s">Help us make these docs great!</p>
+        <p class="dt-text dt-text--body-m">See something that is wrong or unclear? Collaborate with us! Submit a pull request</p>
+      </div>
+      <div class="page-footer__contribute-buttons">
+
+<a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-action page-footer__propose-change" href="https://github.com/InditexTech/karatetools-oss/blob/docs/v5.3.0/docs/src/modules/clients/pages/mongodb.adoc">
+  <span class="dt-button__content">
+    Propose a change
+    <span class="dt-button__icon dt-button__icon-action"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-external-link"></use></svg></span>
+  </span>
+</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+
+<footer class="site-footer">
+  <div class="dt-grid-layout dt-grid-layout--with-margin site-footer__grid">
+    <div class="dt-grid-layout__item site-footer__col site-footer__brand">
+      <a class="site-footer__brand-link" href="../../../6.0.0/">
+        <img class="site-footer__logo site-footer__logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
+        <img class="site-footer__logo site-footer__logo--dark" src="../../../../_/product-logo-dark.png" width="24" height="24" alt="">
+        <span class="dt-text dt-text--label-l-high">InditexTech Karate Tools</span>
+      </a>
+      <span class="dt-text dt-text--detail-m site-footer__legal">&#169; 2026 InditexTech</span>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>
