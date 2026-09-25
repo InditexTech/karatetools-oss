@@ -1,118 +1,389 @@
+#
+# Antora playbook — the entry point for building this site.
+# Reference: https://docs.antora.org/antora/latest/playbook/
+#
+# Build with:  npx antora --fetch antora-playbook.yml
+# Output:      build/site
+#
+# Versioned (Full History) versioning — see the docouture docs-site-package
+# skill's reference/versioning-modes.md for the full mechanism this playbook
+# and docs/antora.yml together implement.
+#
+
 site:
   title: InditexTech Karate Tools
-  start_page: karatetools-oss:HOME:index.adoc
-urls:
-  latest_version_segment: latest
+  # Set this to the public URL of the deployed site. It is required for the
+  # sitemap and for canonical links; leave it out while developing locally.
+  #
+  # Publishing to GitHub Pages as a project page always publishes under
+  # https://<org>.github.io/<repo>/ — the repo name has to be baked into
+  # this as a path segment; Antora uses it to generate correct absolute
+  # asset URLs — e.g.:
+  #
+  # url: https://<org>.github.io/<repo>
+  # url: https://docs.example.com
+  #
+  # A second /<component-name>/ segment only appears below (in
+  # site.start_page) if this site's component isn't Antora's reserved `ROOT`
+  # (docouture new's "extra URL path segment" question, or `--url-segment`,
+  # default off/ROOT). This site opted into one on purpose — `name:
+  # karatetools-oss` in docs/src/antora.yml, not `ROOT` — to keep continuity
+  # with the pre-docouture site's own published URL shape
+  # (github.io/karatetools-oss/<version>/HOME/...), which every one of the
+  # docs/v4.0.0-docs/v6.0.0 legacy tags already used before this migration.
+  url: https://inditextech.github.io/karatetools-oss
+  start_page: karatetools-oss::index.adoc
+  # Side-menu brand mark (nav-brand.hbs) and browser tab icon (head-icons.hbs)
+  # — placeholder artwork under supplemental-ui/, wired via
+  # ui.supplemental_files below. Supplemental files land under the UI's own
+  # output dir (ui.output_dir, default `_`), not the site root, hence the
+  # `/_/` prefix. Swap these two files (and product-logo-dark.png, used
+  # automatically under the dark theme) for real artwork, or remove the keys
+  # entirely to fall back to a text-only brand block and no favicon.
+  keys:
+    product_logo: /_/product-logo.png
+    product_logo_dark: /_/product-logo-dark.png
+    favicon: /_/favicon.ico
+    # The landing's decorative background (home.css, head-styles.hbs) — a
+    # per-site image the UI bundle cannot ship itself, so it's read from
+    # here as `site.keys.homeBackground` and written into a CSS custom
+    # property. Without this key the landing renders on a plain surface.
+    home_background: /_/home-background.jpg
+
 content:
   sources:
-    - url: https://github.com/InditexTech/karatetools-oss.git
+    # Antora resolves a local `url` relative to THIS FILE's own directory, not
+    # the build's cwd — and requires the resolved path to be a git worktree
+    # root itself, not merely nested inside one. This playbook lives at
+    # <repo-root>/docs/antora-playbook.yml, one level below the repository
+    # root `docouture new` scaffolded into, so `url: ..` is what reaches it — see
+    # the standalone playbook's own comment on this, and the
+    # docs-site-package skill.
+    - url: ..
+      # Repository-root relative, hence `docs/src` — see the standalone
+      # playbook's comment: the starter template's own nested `src/` lands
+      # one level below this repository's `docs/`.
       start_path: docs/src
-      edit_url: "{web_url}/edit/develop/{path}"
-      tags:
-        - docs/v*
-      branches:
-        - develop
+      # Versioned (Full History): develop aggregates
+      # as the prerelease version — docs/antora.yml on this branch says
+      # `version: prerelease`, `prerelease: true`, the same as the
+      # standalone mode's shape (this descriptor is identical for both
+      # modes on this branch — see docs/antora.yml's own comment).
+      # `tags: ['docs/v*']` matches every release tag (docs/v1.2.0,
+      # docs/v2.0.0, ...) docouture-release.yml cuts, each an immutable version
+      # with its own copy of docs/antora.yml — the version dropdown grows by
+      # one every release and nothing here ever needs editing again.
+      branches: [develop]
+      tags: ['docs/v*']
+      # The 7 pre-docouture release tags (docs/v4.0.0-docs/v5.4.0) predate this
+      # site's antora.yml carrying a `version:` key at all, and will never
+      # gain one themselves (left untouched deliberately, not republished).
+      # Antora's own component descriptor loader hard-fails ("antora.yml is
+      # missing a version") if a source passes no version override at all —
+      # this map is that override, read only when `version` is absent from
+      # the descriptor itself (`'version' in data` always wins otherwise, so
+      # it's inert for every real docouture-cut tag). An explicit entry per
+      # legacy tag also keeps the label clean; without one, an unmatched
+      # `docs/v*` ref still wouldn't crash (the object form falls back to
+      # deriving a version from the ref name itself) but would show up as
+      # the uglier synthesized 'docs-vX.Y.Z' — see docs/v6.0.0 below: its own
+      # entry is redundant, not required, once Phase 8 republishes that tag
+      # with a real version key, but keeps this build's report clean before
+      # that happens too. See aggregate-content.js's loadComponentDescriptor.
       version:
-        develop: prerelease
-        docs/v(*): $1
+        docs/v4.0.0: '4.0.0'
+        docs/v5.0.0: '5.0.0'
+        docs/v5.0.1: '5.0.1'
+        docs/v5.1.0: '5.1.0'
+        docs/v5.2.0: '5.2.0'
+        docs/v5.3.0: '5.3.0'
+        docs/v5.4.0: '5.4.0'
+        docs/v6.0.0: '6.0.0'
+
+ui:
+  bundle:
+    # The docouture UI bundle, installed as a real npm dependency (see
+    # package.json) rather than fetched from a URL at build time — `npm
+    # install` puts it under node_modules, and Antora reads the zip straight
+    # out of there. Pinned to the exact same version as
+    # @inditextech/docouture-cli (both packages release in lockstep, one version
+    # per tag), so whatever generated this site is always what it builds
+    # with.
+    #
+    # `build/ui-bundle.zip` (no version in the name) is a stable alias the
+    # published package always carries alongside the versioned
+    # `build/ui-bundle-<version>.zip` — see ui-bundle's own alias.js — so this
+    # path never needs editing on a version bump.
+    #
+    # Swap in a different bundle instead by pointing `url` at its zip
+    # (a URL or another local path) and dropping the devDependency above.
+    url: ./node_modules/@inditextech/docouture-ui-bundle/build/ui-bundle.zip
+    snapshot: false
+  # Serves the placeholder logo and favicon under site.keys above from a
+  # root-relative URL — see the docs-site-package skill's reference/
+  # playbook.md for how this directory's contents land under the UI's own
+  # output dir at build time.
+  supplemental_files: ./supplemental-ui
+
+output:
+  # `docouture publish <target>` (see .github/workflows/docouture-publish.yml)
+  # publishes whatever is here, defaulting to this same value if the line
+  # is removed. Its own configuration — which target, and that driver's
+  # options — lives in this package's own package.json under a "docouture"
+  # key, not here: this file stays a plain, portable Antora playbook.
+  dir: build/site
+
+urls:
+  # Every page's own URL ends in a trailing slash (.../page/) resolving an
+  # index.html, rather than a bare .../page.html — a matter of taste, not a
+  # requirement; drop this line for Antora's plain default if the deployed
+  # site sits behind something that prefers literal .html routes.
+  html_extension_style: indexify
+
+runtime:
+  # Fail the build on broken xrefs and other content problems rather than
+  # publishing a site with silent gaps.
+  log:
+    failure_level: warn
+    # Antora's own default is 'warn' (@antora/playbook-builder's convict
+    # schema, not @antora/logger's own 'info' default, which never actually
+    # applies here) — below that, @inditextech/docouture-antora-extensions'
+    # diagnostic reports (docouture-version-report: which versions Antora
+    # resolved and which it picked as latest; docouture-search-index: how many
+    # pages/records were indexed) both log at 'info' and would otherwise be
+    # silently dropped, not merely hard to find in the build output.
+    level: info
+
 asciidoc:
   attributes:
-    experimental: ""
-    idprefix: ""
-    idseparator: "-"
-    page-pagination: ""
-    source-language: asciidoc@
-    # ############################################
-    # Kroki attributes
-    # ############################################
-    # kroki-default-format: Define the default format for the diagrams.
-    #   the @ allows the attribute value to be reset in documents
-    #   Default: By default, images are generated as SVG when possible.
-    kroki-default-format: png@
-    # kroki-default-options:
-    # Supported values are: ['inline', 'interactive', 'none']
-    #   By default, Asciidoctor Kroki generates a link, to a Kroki server or a local file
-    kroki-default-options: inline
-    # kroki-fetch-diagram: Define if we should download (and save on the disk) the images from the Kroki server.
-    kroki-fetch-diagram: true
-    # kroki-server-url: The URL of the Kroki server (see "Using Your Own Kroki")
-    #   Default: https://kroki.io
-    kroki-server-url: http://127.0.0.1:8000
-    # kroki-server-url: https://kroki.io
-    # kroki-data-uri: Embed images as data-uri elements in HTML elements so file is completely self-contained.
-    #   Default: false
-    # kroki-data-uri: false
-    # kroki-http-method: Define how we should get the image from the Kroki server. Possible values:
-    #   Supported values are:
-    #     get: always use GET equests
-    #     post: always use POST requests
-    #     adaptive: use a POST request if the URI length is longer than kroki-max-uri-length (default 4000) characters,
-    #       otherwise use a GET request
-    #   Default: adaptive
-    # kroki-http-method: adaptive
-    # kroki-max-uri-length: Define the max URI length before using a POST request when using adaptive HTTP method (kroki-http-method)
-    #   Default: 4000
-    # kroki-max-uri-length: 4000
-    # kroki-plantuml-include: A file that will be included at the top of all PlantUML diagrams as if !include file was used.
-    #   This can be useful when you want to define a common skin for all your diagrams.
-    #   The value can be a path or a URL.
-    # kroki-plantuml-include-paths: Search path(s) that will be used to resolve !include file additionally to current diagram directory,
-    #   similar to PlantUML property plantuml.include.path.
-    #   Please use directory delimiter ; (Windows) or : (Unix) for multiple paths, e.g.:
-    #     "c:/docu/styles;c:/docu/library" or "~/docu/styles:~/docu/library"
-    # ############################################
-    # Karate Tools attributes
-    # ############################################
+    # Enable kbd:[], btn:[] and menu:[] macros.
+    experimental: ''
+    # Render admonition icons as font glyphs rather than text labels.
+    icons: font
+    # Add clickable anchors to section titles.
+    sectanchors: ''
+    idprefix: ''
+    idseparator: '-'
+    # Static, build-time syntax highlighting via Shiki instead of Antora's own
+    # default (highlight.js, client-side) — see
+    # @inditextech/docouture-asciidoc-extensions's shiki-syntax-highlighter.js for
+    # the adapter this name resolves to, and
+    # @inditextech/docouture-antora-extensions's shiki-prewarm.js (wired below,
+    # under `antora.extensions`) for the async setup it depends on.
+    source-highlighter: shiki
+    # Turns on the ui-bundle's previous/next footer nav (pagination.hbs) for
+    # every page by default — it is opt-in per page otherwise. `@` makes it a
+    # soft default, so an individual page can still opt out with
+    # `:!page-pagination:` (e.g. a landing-style page).
+    page-pagination: '@'
+    # Same as the real antora-playbook.yml — see its own comment.
+    kroki-enabled: true
+    kroki-diagram-types: mermaid,plantuml,bpmn,excalidraw
+    # Karate Tools product constants, carried over from the pre-docouture
+    # antora-playbook.yml (see git history) - real facts referenced by
+    # dozens of migrated Guides pages (Maven coordinates, coverage gates),
+    # not styling. Update karatetools-version on an actual product release,
+    # independently of this docs site's own (unrelated) version/prerelease.
     karatetools-package: dev.inditex.karate
     karatetools-version: 6.0.0
     karatetools-unit-coverage-threshold: 90%
     karatetools-mutation-coverage-threshold: 90%
     karatetools-integration-coverage-threshold: 80%
     karatetools-karate-coverage-threshold: 80%
-    # TODO - Custom Repository Header Link
-    repository-url: https://github.com/InditexTech/karatetools-oss
   extensions:
-    - asciidoctor-kroki
+    # Authoring blocks with no plain AsciiDoc equivalent — [tabs], [cards],
+    # [feature-tabs], [cta], [accordion] grouping, plus the label:[]/mono:[]
+    # inline macros and a few table/video sizing attributes. See the
+    # writing-docs-pages skill's reference/docouture-blocks.md for the full
+    # syntax of each.
+    - '@inditextech/docouture-asciidoc-extensions'
+
 antora:
   extensions:
-  - require: '@antora/lunr-extension'
-    index_latest_only: true
-ui:
-  bundle:
-    url: ./ui-bundle.zip
-    snapshot: true
-  supplemental_files:
-    # Favicon
-    - path: favicon.ico
-      contents: ./supplemental-ui/img/favicon.ico
-    # Zoom-In
-    - path: css/image-zoom-in.css
-      contents: ./supplemental-ui/css/image-zoom-in.css
-    - path: js/image-zoom-in.js
-      contents: ./supplemental-ui/js/image-zoom-in.js
-    - path: js/vendor/jquery.min.js
-      contents: ./supplemental-ui/js/vendor/jquery.min.js
-    # Highlight JS with Gherkin Sintax
-    - path: js/vendor/highlight.min.js
-      contents: ./supplemental-ui/js/vendor/highlight.min.js
-    # Handlebars
-    - path: partials/footer-content.hbs
-      contents: ./supplemental-ui/partials/footer-content.hbs
-    - path: partials/footer-scripts.hbs
-      contents: ./supplemental-ui/partials/footer-scripts.hbs
-    - path: partials/head-scripts.hbs
-      contents: ./supplemental-ui/partials/head-scripts.hbs
-    - path: partials/head-styles.hbs
-      contents: ./supplemental-ui/partials/head-styles.hbs
-    - path: partials/header-content.hbs
-      contents: ./supplemental-ui/partials/header-content.hbs
-    # No Jekyll
-    - path: .nojekyll
-    # Static UI
-    - path: ui.yml
-      contents: |
-        static_files:
-        - .nojekyll
-        - favicon.ico
-runtime:
-  fetch: true
+    # Antora pipeline extensions (a different key/kind from asciidoc.extensions
+    # above — see the docs-internals skill's reference/antora-extensions.md):
+    # nav_modules-driven module switcher, an authored site footer, the search
+    # index the UI bundle's search dialog reads, and llms.txt/llms-full.txt
+    # generation for AI ingestion. `duplicateLatestVersion` (GH #137)
+    # additionally publishes whichever release tag Antora computes as
+    # latest a second time under `/latest/…` — a real, independent copy,
+    # not a redirect stub — once a first release tag exists.
+    - require: '@inditextech/docouture-antora-extensions'
+      duplicate_latest_version: true
+      # Static redirect stubs for URLs this migration moves — see
+      # redirects.js's own header comment for the {from, to} grammar
+      # (literal URL templates, not resource IDs; `to` is matched against
+      # every real page's own computed pub.url).
+      #
+      # Every entry below is a real, currently-live URL (verified against
+      # https://inditextech.github.io/karatetools-oss before this migration
+      # shipped) mapped to its confirmed new home (verified by tracing each
+      # old page's content — directly or via `include::` — into the new
+      # modules/main and modules/ROOT tree). Deliberately literal, not
+      # wildcarded: this custom extension emits at most ONE redirect per
+      # real target page (first matching rule wins, per real page, no
+      # fall-through for a second rule aimed at the same target — see its
+      # own precedence-loop comment) — a wildcard spanning many old pages
+      # that folded into one new page would silently drop every rule but
+      # the first for that shared target. Scoped to the ~36 pages that were
+      # actually in the OLD site's own nav.adoc (docs/v4.0.0-6.0.0's HOME
+      # module) — every one of those maps to a distinct new page, so this
+      # limitation never bites here. The many old sub-pages that folded
+      # into a wrapper page as an `include::`d partial (e.g. the nine
+      # `clients:jdbc-*.adoc` pages folding into one `guides/clients/jdbc`
+      # page) were never themselves in that nav — far less likely to be
+      # externally linked — and are accepted as out of scope.
+      #
+      # Two independently-versioned groups below:
+      #   prerelease — the `develop` branch: both the URL shape (component
+      #     segment collapse) AND the content itself moved (HOME + 10
+      #     topic modules → ROOT + main, Guides/Reference/Contributing).
+      #   latest (targets 6.0.0) — old bookmarks under /latest/... redirect
+      #     to the real docs/v6.0.0 tag's own pages, not to a `/latest/`
+      #     target: `duplicate_latest_version`'s /latest/ copy is a file
+      #     added straight to Antora's siteCatalog after this extension's
+      #     own navigationBuilt hook already queried contentCatalog for
+      #     real pages to redirect into — it can never be a valid redirect
+      #     target here. 6.0.0's own content is identical to /latest/'s
+      #     (that's the version /latest/ duplicates), so this is the same
+      #     destination in practice, just addressed by its permanent
+      #     version instead of the floating alias. Only the site-wide
+      #     html_extension_style flip (literal .html → indexify) changed
+      #     these URLs, so old and new share the same module/page names.
+      redirects:
+        # --- prerelease (develop): HOME+topic-modules → ROOT+main ---
+        - from: '/karatetools-oss/prerelease/HOME/index.html'
+          to: '/karatetools-oss/prerelease/'
+        - from: '/karatetools-oss/prerelease/overview/index.html'
+          to: '/karatetools-oss/prerelease/main/about/'
+        - from: '/karatetools-oss/prerelease/prerequisites/index.html'
+          to: '/karatetools-oss/prerelease/main/prerequisites/'
+        - from: '/karatetools-oss/prerelease/archetype/index.html'
+          to: '/karatetools-oss/prerelease/main/guides/archetype/overview/'
+        - from: '/karatetools-oss/prerelease/configuration/index.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/overview/'
+        - from: '/karatetools-oss/prerelease/configuration/karate-config.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/karate-config/'
+        - from: '/karatetools-oss/prerelease/configuration/logging.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/logging/'
+        - from: '/karatetools-oss/prerelease/configuration/urls.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/urls/'
+        - from: '/karatetools-oss/prerelease/configuration/auth.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/auth/'
+        - from: '/karatetools-oss/prerelease/configuration/auth-basic.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/auth-basic/'
+        - from: '/karatetools-oss/prerelease/configuration/auth-jwt.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/auth-jwt/'
+        - from: '/karatetools-oss/prerelease/configuration/local-machine-secrets.html'
+          to: '/karatetools-oss/prerelease/main/reference/configuration/local-machine-secrets/'
+        - from: '/karatetools-oss/prerelease/open-api-generator/index.html'
+          to: '/karatetools-oss/prerelease/main/guides/open-api-generator/overview/'
+        - from: '/karatetools-oss/prerelease/open-api-generator/open-api-generator-operations.html'
+          to: '/karatetools-oss/prerelease/main/guides/open-api-generator/open-api-generator-operations/'
+        - from: '/karatetools-oss/prerelease/open-api-generator/open-api-generator-smoke.html'
+          to: '/karatetools-oss/prerelease/main/guides/open-api-generator/open-api-generator-smoke/'
+        - from: '/karatetools-oss/prerelease/open-api-generator/open-api-generator-functional.html'
+          to: '/karatetools-oss/prerelease/main/guides/open-api-generator/open-api-generator-functional/'
+        - from: '/karatetools-oss/prerelease/open-api-generator/open-api-generator-mock.html'
+          to: '/karatetools-oss/prerelease/main/guides/open-api-generator/open-api-generator-mock/'
+        - from: '/karatetools-oss/prerelease/clients/index.html'
+          to: '/karatetools-oss/prerelease/main/guides/clients/overview/'
+        - from: '/karatetools-oss/prerelease/clients/jdbc.html'
+          to: '/karatetools-oss/prerelease/main/guides/clients/jdbc/'
+        - from: '/karatetools-oss/prerelease/clients/mongodb.html'
+          to: '/karatetools-oss/prerelease/main/guides/clients/mongodb/'
+        - from: '/karatetools-oss/prerelease/clients/kafka.html'
+          to: '/karatetools-oss/prerelease/main/guides/clients/kafka/'
+        - from: '/karatetools-oss/prerelease/clients/jms.html'
+          to: '/karatetools-oss/prerelease/main/guides/clients/jms/'
+        - from: '/karatetools-oss/prerelease/execution/index.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/overview/'
+        - from: '/karatetools-oss/prerelease/execution/arguments.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/arguments/'
+        - from: '/karatetools-oss/prerelease/execution/logging.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/logging/'
+        - from: '/karatetools-oss/prerelease/execution/mock-server.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/mock-server/'
+        - from: '/karatetools-oss/prerelease/execution/reports.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/reports/'
+        - from: '/karatetools-oss/prerelease/execution/karate-cache.html'
+          to: '/karatetools-oss/prerelease/main/guides/execution/karate-cache/'
+        - from: '/karatetools-oss/prerelease/release/index.html'
+          to: '/karatetools-oss/prerelease/main/release-notes/overview/'
+        - from: '/karatetools-oss/prerelease/release/migration-guide.html'
+          to: '/karatetools-oss/prerelease/main/release-notes/migration-guide/'
+        - from: '/karatetools-oss/prerelease/contributing/index.html'
+          to: '/karatetools-oss/prerelease/main/contributing-overview/'
+        - from: '/karatetools-oss/prerelease/contributing/development-guide.html'
+          to: '/karatetools-oss/prerelease/main/development/'
+        - from: '/karatetools-oss/prerelease/contributing/karatetools-oss.html'
+          to: '/karatetools-oss/prerelease/main/contributing/repo-structure/overview/'
+        - from: '/karatetools-oss/prerelease/contributing/karatetools-oss-karate-test.html'
+          to: '/karatetools-oss/prerelease/main/contributing/repo-structure/karate-test/'
+        - from: '/karatetools-oss/prerelease/contributing/karatetools-oss-docs.html'
+          to: '/karatetools-oss/prerelease/main/contributing/repo-structure/docs/'
+        - from: '/karatetools-oss/prerelease/contributing/step-by-step.html'
+          to: '/karatetools-oss/prerelease/main/contributing/step-by-step/'
+        # --- latest (targets docs/v6.0.0, frozen): extension-style flip only ---
+        # Each module's own bare `index.adoc` (HOME, overview, prerequisites,
+        # archetype, configuration, open-api-generator, clients, execution,
+        # release, contributing) is deliberately NOT listed here: a
+        # module-root index page computes to the identical `<module>/
+        # index.html` path under both the old default extension style and
+        # the new indexify one — nothing about that specific URL actually
+        # changed, so a rule for it collides with the real, unmoved file
+        # (EISDIR: buildUrlAndOutPath always appends another /index.html
+        # for indexify, which needs `<module>/index.html` to be a
+        # directory, but it's already a real file there).
+        - from: '/karatetools-oss/latest/configuration/karate-config.html'
+          to: '/karatetools-oss/6.0.0/configuration/karate-config/'
+        - from: '/karatetools-oss/latest/configuration/logging.html'
+          to: '/karatetools-oss/6.0.0/configuration/logging/'
+        - from: '/karatetools-oss/latest/configuration/urls.html'
+          to: '/karatetools-oss/6.0.0/configuration/urls/'
+        - from: '/karatetools-oss/latest/configuration/auth.html'
+          to: '/karatetools-oss/6.0.0/configuration/auth/'
+        - from: '/karatetools-oss/latest/configuration/auth-basic.html'
+          to: '/karatetools-oss/6.0.0/configuration/auth-basic/'
+        - from: '/karatetools-oss/latest/configuration/auth-jwt.html'
+          to: '/karatetools-oss/6.0.0/configuration/auth-jwt/'
+        - from: '/karatetools-oss/latest/configuration/local-machine-secrets.html'
+          to: '/karatetools-oss/6.0.0/configuration/local-machine-secrets/'
+        - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-operations.html'
+          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-operations/'
+        - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-smoke.html'
+          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-smoke/'
+        - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-functional.html'
+          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-functional/'
+        - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-mock.html'
+          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-mock/'
+        - from: '/karatetools-oss/latest/clients/jdbc.html'
+          to: '/karatetools-oss/6.0.0/clients/jdbc/'
+        - from: '/karatetools-oss/latest/clients/mongodb.html'
+          to: '/karatetools-oss/6.0.0/clients/mongodb/'
+        - from: '/karatetools-oss/latest/clients/kafka.html'
+          to: '/karatetools-oss/6.0.0/clients/kafka/'
+        - from: '/karatetools-oss/latest/clients/jms.html'
+          to: '/karatetools-oss/6.0.0/clients/jms/'
+        - from: '/karatetools-oss/latest/execution/arguments.html'
+          to: '/karatetools-oss/6.0.0/execution/arguments/'
+        - from: '/karatetools-oss/latest/execution/logging.html'
+          to: '/karatetools-oss/6.0.0/execution/logging/'
+        - from: '/karatetools-oss/latest/execution/mock-server.html'
+          to: '/karatetools-oss/6.0.0/execution/mock-server/'
+        - from: '/karatetools-oss/latest/execution/reports.html'
+          to: '/karatetools-oss/6.0.0/execution/reports/'
+        - from: '/karatetools-oss/latest/execution/karate-cache.html'
+          to: '/karatetools-oss/6.0.0/execution/karate-cache/'
+        - from: '/karatetools-oss/latest/release/migration-guide.html'
+          to: '/karatetools-oss/6.0.0/release/migration-guide/'
+        - from: '/karatetools-oss/latest/contributing/development-guide.html'
+          to: '/karatetools-oss/6.0.0/contributing/development-guide/'
+        - from: '/karatetools-oss/latest/contributing/karatetools-oss.html'
+          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss/'
+        - from: '/karatetools-oss/latest/contributing/karatetools-oss-karate-test.html'
+          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss-karate-test/'
+        - from: '/karatetools-oss/latest/contributing/karatetools-oss-docs.html'
+          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss-docs/'
+        - from: '/karatetools-oss/latest/contributing/step-by-step.html'
+          to: '/karatetools-oss/6.0.0/contributing/step-by-step/'

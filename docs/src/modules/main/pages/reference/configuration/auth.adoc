@@ -1,0 +1,17 @@
+= Authentication
+
+Karate Tools supports the following authentication mechanisms:
+
+include::partial$configuration/auth-types.adoc[]
+
+== Karate Auth - Default Settings
+
+include::partial$configuration/auth-defaults.adoc[]
+
+== Karate Auth - Overwrite at Request Level
+
+include::partial$configuration/auth-overwrite.adoc[]
+
+== Karate Auth - Error Management
+
+include::partial$configuration/auth-errors.adoc[]
