@@ -444,3 +444,39 @@ antora:
           to: '/6.0.0/main/contributing/repo-structure/docs/'
         - from: '/karatetools-oss/latest/contributing/step-by-step.html'
           to: '/6.0.0/main/contributing/step-by-step/'
+        # --- old release tags (docs/v4.0.0-docs/v5.4.0, plus 6.0.0 once its
+        # own component switches to ROOT): drops the doubled
+        # /karatetools-oss/karatetools-oss/ segment these versions are
+        # currently actually published under (verified live). A uniform,
+        # 1:1 rename per version — nothing folds, module/page names stay
+        # identical — so `**` is safe here (unlike the prerelease/latest
+        # groups above, whose content itself was restructured). Deliberately
+        # one rule per literal version number, not a shared /*/** pattern:
+        # the matcher only sees each page's own pub.url string, with no
+        # notion of "component", so a generic first-segment wildcard would
+        # also match docs/v6.0.0's still-`karatetools-oss` pages (until its
+        # own retag lands) and prerelease's real ROOT pages, producing
+        # bogus stubs neither this list nor a real bookmark ever needs.
+        #
+        # The 6.0.0 entry only resolves once docs/v6.0.0 is itself
+        # retagged onto the ROOT component (see docs/src/antora.yml's own
+        # comment, and branch feature/GH-150-remove-the-karatetool) — its
+        # `to` targets no real page before that lands, and (under
+        # runtime.log.failure_level) fails the build until it does. Land
+        # this entry only once that retag has merged, not before.
+        - from: '/karatetools-oss/karatetools-oss/4.0.0/**'
+          to: '/4.0.0/**'
+        - from: '/karatetools-oss/karatetools-oss/5.0.0/**'
+          to: '/5.0.0/**'
+        - from: '/karatetools-oss/karatetools-oss/5.0.1/**'
+          to: '/5.0.1/**'
+        - from: '/karatetools-oss/karatetools-oss/5.1.0/**'
+          to: '/5.1.0/**'
+        - from: '/karatetools-oss/karatetools-oss/5.2.0/**'
+          to: '/5.2.0/**'
+        - from: '/karatetools-oss/karatetools-oss/5.3.0/**'
+          to: '/5.3.0/**'
+        - from: '/karatetools-oss/karatetools-oss/5.4.0/**'
+          to: '/5.4.0/**'
+        - from: '/karatetools-oss/karatetools-oss/6.0.0/**'
+          to: '/6.0.0/**'
