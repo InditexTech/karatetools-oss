@@ -141,13 +141,26 @@ urls:
   html_extension_style: indexify
 
 runtime:
-  # Fail the build on broken xrefs and other content problems rather than
-  # publishing a site with silent gaps.
+  # Fail the build on broken xrefs/images and other real content problems
+  # rather than publishing a site with silent gaps — a genuinely unresolved
+  # xref or image target always logs at 'error' regardless of this setting
+  # (@antora/asciidoc-loader's html5 converter, logUnresolved()), so 'error'
+  # still catches those. Deliberately raised from Antora's own 'warn'
+  # default: this site rebuilds the frozen historical tags docs/v4.0.0
+  # through docs/v5.4.0 on every release (Versioned/Full History mode), and
+  # those tags permanently emit ~300+ asciidoctor 'warn'-level notices
+  # (stray section-level numbering, a handful of missing-attribute
+  # substitutions) baked into content that can never be edited without
+  # rewriting released tag history — see docs/antora-playbook.yml's git
+  # history (scaffold commit) for this being flagged as expected, temporary
+  # noise. Under 'warn' that noise permanently fails every future release
+  # build; under 'error' it's still visible in the log (see 'level' below)
+  # but no longer fatal, while a real broken xref/image still is.
   log:
-    failure_level: warn
-    # Antora's own default is 'warn' (@antora/playbook-builder's convict
-    # schema, not @antora/logger's own 'info' default, which never actually
-    # applies here) — below that, @inditextech/docouture-antora-extensions'
+    failure_level: error
+    # Antora's own 'level' default is 'warn' (@antora/playbook-builder's
+    # convict schema, not @antora/logger's own 'info' default, which never
+    # actually applies here) — below that, @inditextech/docouture-antora-extensions'
     # diagnostic reports (docouture-version-report: which versions Antora
     # resolved and which it picked as latest; docouture-search-index: how many
     # pages/records were indexed) both log at 'info' and would otherwise be
@@ -324,66 +337,86 @@ antora:
           to: '/karatetools-oss/prerelease/main/contributing/repo-structure/docs/'
         - from: '/karatetools-oss/prerelease/contributing/step-by-step.html'
           to: '/karatetools-oss/prerelease/main/contributing/step-by-step/'
-        # --- latest (targets docs/v6.0.0, frozen): extension-style flip only ---
-        # Each module's own bare `index.adoc` (HOME, overview, prerequisites,
-        # archetype, configuration, open-api-generator, clients, execution,
-        # release, contributing) is deliberately NOT listed here: a
-        # module-root index page computes to the identical `<module>/
-        # index.html` path under both the old default extension style and
-        # the new indexify one — nothing about that specific URL actually
-        # changed, so a rule for it collides with the real, unmoved file
-        # (EISDIR: buildUrlAndOutPath always appends another /index.html
-        # for indexify, which needs `<module>/index.html` to be a
-        # directory, but it's already a real file there).
+        # --- latest (targets docs/v6.0.0): same restructuring as prerelease ---
+        # docs/v6.0.0 got the full HOME+topic-modules → ROOT+main move too,
+        # not just the site-wide html_extension_style flip — confirmed
+        # against the actual republished tag (only modules/main/nav.adoc
+        # exists there now, no HOME/configuration/clients/etc.) — so this is
+        # a straight mirror of the prerelease block above, one rule per real
+        # page moved, `to` swapped from the floating /prerelease/ alias to
+        # this frozen version's own /6.0.0/ path (this version's content is
+        # what /latest/ itself duplicates, so it's the same destination
+        # either way — just addressed by its permanent version, per this
+        # block's own top comment).
+        - from: '/karatetools-oss/latest/HOME/index.html'
+          to: '/karatetools-oss/6.0.0/'
+        - from: '/karatetools-oss/latest/overview/index.html'
+          to: '/karatetools-oss/6.0.0/main/about/'
+        - from: '/karatetools-oss/latest/prerequisites/index.html'
+          to: '/karatetools-oss/6.0.0/main/prerequisites/'
+        - from: '/karatetools-oss/latest/archetype/index.html'
+          to: '/karatetools-oss/6.0.0/main/guides/archetype/overview/'
+        - from: '/karatetools-oss/latest/configuration/index.html'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/overview/'
         - from: '/karatetools-oss/latest/configuration/karate-config.html'
-          to: '/karatetools-oss/6.0.0/configuration/karate-config/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/karate-config/'
         - from: '/karatetools-oss/latest/configuration/logging.html'
-          to: '/karatetools-oss/6.0.0/configuration/logging/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/logging/'
         - from: '/karatetools-oss/latest/configuration/urls.html'
-          to: '/karatetools-oss/6.0.0/configuration/urls/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/urls/'
         - from: '/karatetools-oss/latest/configuration/auth.html'
-          to: '/karatetools-oss/6.0.0/configuration/auth/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/auth/'
         - from: '/karatetools-oss/latest/configuration/auth-basic.html'
-          to: '/karatetools-oss/6.0.0/configuration/auth-basic/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/auth-basic/'
         - from: '/karatetools-oss/latest/configuration/auth-jwt.html'
-          to: '/karatetools-oss/6.0.0/configuration/auth-jwt/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/auth-jwt/'
         - from: '/karatetools-oss/latest/configuration/local-machine-secrets.html'
-          to: '/karatetools-oss/6.0.0/configuration/local-machine-secrets/'
+          to: '/karatetools-oss/6.0.0/main/reference/configuration/local-machine-secrets/'
+        - from: '/karatetools-oss/latest/open-api-generator/index.html'
+          to: '/karatetools-oss/6.0.0/main/guides/open-api-generator/overview/'
         - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-operations.html'
-          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-operations/'
+          to: '/karatetools-oss/6.0.0/main/guides/open-api-generator/open-api-generator-operations/'
         - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-smoke.html'
-          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-smoke/'
+          to: '/karatetools-oss/6.0.0/main/guides/open-api-generator/open-api-generator-smoke/'
         - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-functional.html'
-          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-functional/'
+          to: '/karatetools-oss/6.0.0/main/guides/open-api-generator/open-api-generator-functional/'
         - from: '/karatetools-oss/latest/open-api-generator/open-api-generator-mock.html'
-          to: '/karatetools-oss/6.0.0/open-api-generator/open-api-generator-mock/'
+          to: '/karatetools-oss/6.0.0/main/guides/open-api-generator/open-api-generator-mock/'
+        - from: '/karatetools-oss/latest/clients/index.html'
+          to: '/karatetools-oss/6.0.0/main/guides/clients/overview/'
         - from: '/karatetools-oss/latest/clients/jdbc.html'
-          to: '/karatetools-oss/6.0.0/clients/jdbc/'
+          to: '/karatetools-oss/6.0.0/main/guides/clients/jdbc/'
         - from: '/karatetools-oss/latest/clients/mongodb.html'
-          to: '/karatetools-oss/6.0.0/clients/mongodb/'
+          to: '/karatetools-oss/6.0.0/main/guides/clients/mongodb/'
         - from: '/karatetools-oss/latest/clients/kafka.html'
-          to: '/karatetools-oss/6.0.0/clients/kafka/'
+          to: '/karatetools-oss/6.0.0/main/guides/clients/kafka/'
         - from: '/karatetools-oss/latest/clients/jms.html'
-          to: '/karatetools-oss/6.0.0/clients/jms/'
+          to: '/karatetools-oss/6.0.0/main/guides/clients/jms/'
+        - from: '/karatetools-oss/latest/execution/index.html'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/overview/'
         - from: '/karatetools-oss/latest/execution/arguments.html'
-          to: '/karatetools-oss/6.0.0/execution/arguments/'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/arguments/'
         - from: '/karatetools-oss/latest/execution/logging.html'
-          to: '/karatetools-oss/6.0.0/execution/logging/'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/logging/'
         - from: '/karatetools-oss/latest/execution/mock-server.html'
-          to: '/karatetools-oss/6.0.0/execution/mock-server/'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/mock-server/'
         - from: '/karatetools-oss/latest/execution/reports.html'
-          to: '/karatetools-oss/6.0.0/execution/reports/'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/reports/'
         - from: '/karatetools-oss/latest/execution/karate-cache.html'
-          to: '/karatetools-oss/6.0.0/execution/karate-cache/'
+          to: '/karatetools-oss/6.0.0/main/guides/execution/karate-cache/'
+        - from: '/karatetools-oss/latest/release/index.html'
+          to: '/karatetools-oss/6.0.0/main/release-notes/overview/'
         - from: '/karatetools-oss/latest/release/migration-guide.html'
-          to: '/karatetools-oss/6.0.0/release/migration-guide/'
+          to: '/karatetools-oss/6.0.0/main/release-notes/migration-guide/'
+        - from: '/karatetools-oss/latest/contributing/index.html'
+          to: '/karatetools-oss/6.0.0/main/contributing-overview/'
         - from: '/karatetools-oss/latest/contributing/development-guide.html'
-          to: '/karatetools-oss/6.0.0/contributing/development-guide/'
+          to: '/karatetools-oss/6.0.0/main/development/'
         - from: '/karatetools-oss/latest/contributing/karatetools-oss.html'
-          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss/'
+          to: '/karatetools-oss/6.0.0/main/contributing/repo-structure/overview/'
         - from: '/karatetools-oss/latest/contributing/karatetools-oss-karate-test.html'
-          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss-karate-test/'
+          to: '/karatetools-oss/6.0.0/main/contributing/repo-structure/karate-test/'
         - from: '/karatetools-oss/latest/contributing/karatetools-oss-docs.html'
-          to: '/karatetools-oss/6.0.0/contributing/karatetools-oss-docs/'
+          to: '/karatetools-oss/6.0.0/main/contributing/repo-structure/docs/'
         - from: '/karatetools-oss/latest/contributing/step-by-step.html'
-          to: '/karatetools-oss/6.0.0/contributing/step-by-step/'
+          to: '/karatetools-oss/6.0.0/main/contributing/step-by-step/'
