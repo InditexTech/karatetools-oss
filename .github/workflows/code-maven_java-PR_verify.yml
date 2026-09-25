@@ -1,142 +1,118 @@
----
-name: code-maven-PR-verify
+# SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
+# SPDX-License-Identifier: Apache-2.0
 
-concurrency:
-  group: code-PR-verify-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+name: code-maven-java-PR-verify
 
 on:
   pull_request:
-    paths:
-      - 'code/**'
-      - '.github/workflows/code*'
+    types: [opened, synchronize, ready_for_review, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-maven-java-pr-verify-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
-  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
-  # Sonar Maven Plugin version
-  SONAR_MAVEN_PLUGIN_VERSION: 5.5.0.6356
+  WORKING_DIRECTORY: ${{ vars.WORKING_DIRECTORY }}
+  ASDF_BRANCH_VERSION: '0.18.0'
 
 jobs:
-  unit-tests:
+  verify:
     name: Code / Verify
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
+    timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Check out pull request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Maven Cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Setup asdf Cache
-        uses: actions/cache@v5
-        continue-on-error: true
-        with:
-          path: ~/.asdf/data
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Save tool-versions content
+      - name: Resolve governed project type
+        shell: bash
         run: |
+          set -euo pipefail
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          if [[ ! -f "$descriptor" ]]; then
+            echo "::error title=Missing descriptor::.github/inditextech-ci-java.json not found."
+            exit 1
+          fi
+          project_type="$(jq -r '.project_type // empty' "$descriptor")"
+          case "$project_type" in
+            single|monorepo) ;;
+            *)
+              echo "::error title=Invalid project type::Descriptor .project_type must be single or monorepo."
+              exit 1
+              ;;
+          esac
+          case "${WORKING_DIRECTORY:-}" in
+            ""|/*|..|../*|*/..|*/../*)
+              echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
+            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+            exit 1
+          fi
+          echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
+
+      - name: Set up workflow Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '25.0.2+10.0.LTS'
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/**/pom.xml
+
+      - name: Read governed tool versions
+        id: tool-versions
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Evq '^[a-zA-Z0-9_-]+ [a-zA-Z0-9._+-]+$' .tool-versions; then
+            echo "::error title=Invalid tool-versions::${WORKING_DIRECTORY}/.tool-versions is malformed."
+            exit 1
+          fi
           {
-            echo "TOOL_VERSIONS<<EOF"
-            cat code/.tool-versions
+            echo "tool_versions<<EOF"
+            cat .tool-versions
+            echo
             echo "EOF"
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Maven / Setup asdf environment
-        uses: asdf-vm/actions/install@v4
+      - name: Set up asdf-managed Java
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
         with:
-          tool_versions: ${{ env.TOOL_VERSIONS }}
+          tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
+          asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
 
-      - name: Setup Java environment vars
-        working-directory: code
+      - name: Resolve build JDK from .tool-versions
+        id: jdk
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
         run: |
-          JAVA_HOME="$(asdf where java)"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          set -euo pipefail
+          echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
 
-      - name: Store project information
-        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
-        id: version
-        run: |
-          echo "app-version=$(yq -oy '.project.version' code/pom.xml)" >> "$GITHUB_OUTPUT"
-          echo "app-name=$(yq -oy '.project.artifactId' code/pom.xml)" >> "$GITHUB_OUTPUT"
-          echo "github-repository=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> "$GITHUB_OUTPUT"
-
-      - name: Maven / Verify artifact with coverage
-        if: ${{ !(contains(github.event.pull_request.labels.*.name, 'autopublish/snapshot-binaries')) }}
-        working-directory: code
-        run: |
-          mvn -B clean verify -Djacoco.skip=false -DskipITs -DfailIfNoTests=false -Dmaven.test.failure.ignore=false
-
-      - name: Maven / Process Surefire report and annotate PR
-        if: ${{ always() && !cancelled() }}
-        uses: scacap/action-surefire-report@fa13579fdd93ed8fc7e717a25eceedcfcbc39dda
-        with:
-          fail_if_no_tests: false
-          create_check: false
-          check_name: "Code / Verify"
-
-#      - name: SonarCloud / Setup asdf tools
-#        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
-#        uses: asdf-vm/actions/install@v4
-#        with:
-#          tool_versions: |
-#            java temurin-21.0.4+7.0.LTS
-#            nodejs 20.10.0
-#            maven 3.9.4
-#
-#      - name: SonarCloud / Set asdf versions
-#        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
-#        working-directory: code
-#        run: |
-#          asdf local java temurin-21.0.4+7.0.LTS
-#          asdf local nodejs 20.10.0
-#          asdf local maven 3.9.4
-#
-#      - name: Setup Java environment vars
-#        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
-#        working-directory: code
-#        run: |
-#          JAVA_HOME="$(asdf where java)"
-#          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
-      - name: SonarCloud / Run Maven Sonar goal
-        if: ${{ vars.IS_INDITEXTECH_REPO == 'true' }}
+      - name: Verify, test, and build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
         env:
-          PR_HEAD_REF: ${{ github.head_ref }}
-          LOGIN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_SCANNER_OPTS: ''
-        working-directory: code
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
         run: |
-          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
-          mvn -X org.sonarsource.scanner.maven:sonar-maven-plugin:${{ env.SONAR_MAVEN_PLUGIN_VERSION }}:sonar \
-            -Dsonar.projectKey="InditexTech_${{ steps.version.outputs.github-repository }}" \
-            -Dsonar.projectName="${{ steps.version.outputs.app-name }}" \
-            -Dsonar.projectVersion="${{ steps.version.outputs.app-version }}" \
-            -Dsonar.host.url="https://sonarcloud.io/" \
-            -Dsonar.organization=inditextech \
-            -Dsonar.token="${LOGIN}" \
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
-            -Dsonar.pullrequest.branch="$PR_HEAD_REF" \
-            -Dsonar.pullrequest.base=${{ github.base_ref }} \
-            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }} \
-            -Dsonar.qualitygate.wait=true \
-            -Dsonar.qualitygate.timeout=300 \
-            -Dsonar.pullrequest.provider=GitHub \
-            -Dsonar.pullrequest.github.repository="${{ github.repository }}" \
-            -Dsonar.pullrequest.github.summary_comment=true \
-            -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
+          set -euo pipefail
+          # Both project types build through the reactor root.
+          case "$PROJECT_TYPE" in
+            single|monorepo)
+              mvn -B --no-transfer-progress -f pom.xml clean verify
+              ;;
+            *)
+              echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
+              exit 1
+              ;;
+          esac

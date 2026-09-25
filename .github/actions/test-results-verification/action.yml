@@ -35,10 +35,10 @@ runs:
       shell: bash
       run: |
 
-        echo "::group::+++ test-results-summary [-t ${{ env.INPUT_TYPE }}][-r ${{ env.INPUT_RESULTS_FOLDER }}] +++"
+        echo "::group::+++ test-results-summary [-t ${INPUT_TYPE}][-r ${INPUT_RESULTS_FOLDER}] +++"
 
-        chmod +x ${{ github.action_path }}/test-results-summary.sh
-        ${{ github.action_path }}/test-results-summary.sh -t '${{ env.INPUT_TYPE }}' -r '${{ env.INPUT_RESULTS_FOLDER }}'
+        chmod +x "${{ github.action_path }}/test-results-summary.sh"
+        "${{ github.action_path }}/test-results-summary.sh" -t "$INPUT_TYPE" -r "$INPUT_RESULTS_FOLDER"
 
         echo "::endgroup::"
 
@@ -46,16 +46,23 @@ runs:
       id: test-results-verification
       if: ${{ ( inputs.threshold != null && steps.test-results-summary.outputs.result-value != null ) }}
       uses: actions/github-script@v9
+      env:
+        INPUT_TYPE: ${{ inputs.type }}
+        INPUT_RESULTS_FOLDER: ${{ inputs.results_folder }}
+        INPUT_THRESHOLD: ${{ inputs.threshold }}
+        RESULT_TYPE: ${{ steps.test-results-summary.outputs.result-type }}
+        RESULT_LABEL: ${{ steps.test-results-summary.outputs.result-label }}
+        RESULT_VALUE: ${{ steps.test-results-summary.outputs.result-value }}
       with:
         script: |
 
-          console.log(`::group::+++ test-results-verification [-t ${{ inputs.type }}][-p ${{ inputs.results_folder }}] +++`);
+          console.log(`::group::+++ test-results-verification [-t ${process.env.INPUT_TYPE}][-p ${process.env.INPUT_RESULTS_FOLDER}] +++`);
 
-          var threshold = parseFloat('${{ inputs.threshold }}');
+          var threshold = parseFloat(process.env.INPUT_THRESHOLD);
 
-          var type = '${{ steps.test-results-summary.outputs.result-type }}';
-          var label = '${{ steps.test-results-summary.outputs.result-label }}';
-          var result = parseFloat('${{ steps.test-results-summary.outputs.result-value }}');
+          var type = process.env.RESULT_TYPE;
+          var label = process.env.RESULT_LABEL;
+          var result = parseFloat(process.env.RESULT_VALUE);
 
           console.log(`${type} - ${label} [${result}] - threshold [${threshold}]`);
 

@@ -1,9 +1,0 @@
-= Step by Step
-
-== Introduction
-
-include::step-by-step-introduction.adoc[]
-
-== karatetools-oss
-
-include::step-by-step-karatetools-oss.adoc[]

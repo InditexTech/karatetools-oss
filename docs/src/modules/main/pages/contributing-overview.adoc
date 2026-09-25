@@ -1,0 +1,71 @@
+= Contributing
+:description: How to contribute to Karate Tools.
+
+Thank you for your interest in contributing to this project! We value and
+appreciate any contributions you can make.
+
+== Ways to contribute
+
+* *Report a bug* — open an issue in our
+  link:https://github.com/InditexTech/karatetools-oss/issues[issue tracker].
+* *Suggest a feature* — open an issue explaining your idea.
+* *Contribute code* — read the xref:development.adoc[development guide] and
+  follow xref:contributing/step-by-step.adoc[the step-by-step guide] below.
+
+== Before you start
+
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/CONTRIBUTING.md[Contribution guide]
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/CODE_OF_CONDUCT.md[Code of conduct]
+* link:https://github.com/InditexTech/karatetools-oss/blob/main/LICENSE[License]
+* Before starting to contribute to the code, you must first sign the
+  Contributor License Agreement (CLA) — see
+  https://github.com/InditexTech/foss/blob/main/CONTRIBUTING.md[the CLA instructions,window=_blank].
+
+== Contribution guidelines
+
+* All contributors are expected to follow the project's code of conduct.
+  Please be respectful and considerate towards other contributors.
+* Before starting work on a new feature or fix, check existing
+  https://github.com/InditexTech/karatetools-oss/issues[issues] and
+  https://github.com/InditexTech/karatetools-oss/pulls[pull requests] to
+  avoid duplication.
+* If you wish to work on an existing issue, comment on it to let other
+  contributors know you're on it.
+* Discuss and gather feedback from the community before making significant
+  changes to the project's structure or architecture.
+* Keep a clean, organized commit history — divide changes into logical,
+  descriptive commits.
+* Sign off your commits (`Signed-off-by`) to comply with the DCO:
+** use `git commit -s` (or `git commit --signoff`) on each commit, or
+** enable it repository-wide: `git config commit.signoff true`.
+* Document any new changes or features you add.
+* Link the corresponding issue in your pull request.
+* Add license and copyright information following the
+  https://reuse.software/spec/#copyright-and-licensing-information[REUSE specification,window=_blank]
+  — this repository uses
+  link:https://github.com/InditexTech/karatetools-oss/blob/main/REUSE.toml[REUSE.toml]
+  to manage it.
+
+== How to contribute
+
+. Open an issue to discuss and gather feedback on the feature or fix you
+  wish to address.
+. Fork the repository and clone it to your local machine — see
+  https://help.github.com/en/github/getting-started-with-github/fork-a-repo[GitHub Docs - Fork a repository,window=_blank].
+. Create a new branch to work on your contribution:
+  `git checkout -b your-branch-name`.
+. Make the necessary changes in your local branch:
+** implement the new feature or fix;
+** follow the established project style and formatting guidelines;
+** test your changes to ensure they don't introduce errors;
+** update documentation as needed — see the
+   xref:development.adoc[development guide].
+. Make clear, descriptive, signed-off commits that explain your changes.
+. Push your branch: `git push origin your-branch-name`.
+. Open a pull request describing your changes and linking the corresponding
+  issue. Automated verification checks run on every pull request — unit,
+  mutation, integration and Karate tests, each with its own coverage
+  threshold.
+. Await review comments and make any necessary changes.
+. Once approved, your contribution is merged into the `develop` branch and
+  included in the next release.

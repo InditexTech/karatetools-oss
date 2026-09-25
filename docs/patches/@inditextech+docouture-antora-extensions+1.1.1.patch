@@ -1,0 +1,28 @@
+diff --git a/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js b/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
+index af8df41..e14cec3 100644
+--- a/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
++++ b/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
+@@ -120,7 +120,22 @@ module.exports = function registerRedirects(context, rules) {
+             pubUrl
+           )
+         } else {
+-          aliasFiles.push({ out: { path: outPath }, pub: { url: pubUrl }, rel: { pub: { url: page.pub.url } } })
++          aliasFiles.push({
++            out: { path: outPath },
++            pub: { url: pubUrl },
++            rel: { pub: { url: page.pub.url } },
++            // @antora/redirect-producer's own aliasComparator (used to sort
++            // the alias list before writing static redirect stubs) reads
++            // src.component/version/module off every alias file — absent
++            // here in every version of this extension through 1.1.1,
++            // crashing that sort (`Cannot read properties of undefined
++            // (reading 'component')`) the moment any redirects rule
++            // actually matches a real page. Reusing the target page's own
++            // identity is both a real crash fix and semantically correct:
++            // this alias sorts alongside the version/module it redirects
++            // into.
++            src: { component: page.src.component, version: page.src.version, module: page.src.module },
++          })
+         }
+         break // this page is claimed (matched or collided) — no lower-priority rule gets to touch it
+       }
