@@ -34,7 +34,12 @@
       "ignore": [
         "*/edit/HEAD/*",
         "https://<org>.github.io/<repo>",
-        "docouture-new:no-origin-remote-configured"
+        "docouture-new:no-origin-remote-configured",
+        "https://inditextech.github.io/karatetools-oss/karatetools-oss/*",
+        "https://github.com/InditexTech/karatetools-oss/CODE_of_CONDUCT.md",
+        "https://github.com/InditexTech/karatetools-oss/REUSE.toml",
+        "https://github.com/InditexTech/foss/blob/main/documents/*",
+        "https://repo1.maven.org/maven2/org/jacoco/*"
       ]
     }
   }
