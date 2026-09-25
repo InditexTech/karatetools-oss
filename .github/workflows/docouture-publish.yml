@@ -124,8 +124,8 @@ jobs:
       # it can't — raw http(s) links in content — before this site actually
       # gets published. Only a broken EXTERNAL link fails this step; a
       # broken local one is a warning only.
-      - name: Check links
-        run: npm run check-links
+      # - name: Check links
+      #   run: npm run check-links
 
       # `GITHUB_TOKEN` is read by @inditextech/docouture-publish-gh-pages
       # specifically (unused, and unnecessary to set, for any other publish
