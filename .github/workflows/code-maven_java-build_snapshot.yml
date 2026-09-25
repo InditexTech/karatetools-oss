@@ -109,7 +109,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set up asdf-managed Java
-        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47 # v4.0.1
         with:
           tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
           asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
@@ -231,7 +231,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set up asdf-managed Java
-        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47 # v4.0.1
         with:
           tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
           asdf_version: ${{ env.ASDF_BRANCH_VERSION }}
@@ -270,7 +270,7 @@ jobs:
       - name: Deploy snapshot to Maven Central
         env:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
-        uses: InditexTech/gh-actions/maven-central@1c2058d59528852dbbbd439ebf0274572aa33114 # v1.1.2
+        uses: InditexTech/gh-actions/maven-central@8a719baa6e8d514ccdfe87cff2baae9007a8b168 # v1.1.5
         with:
           working-directory: ${{ vars.WORKING_DIRECTORY }}
           project-type: ${{ env.PROJECT_TYPE }}
