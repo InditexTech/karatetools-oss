@@ -32,8 +32,7 @@ title: InditexTech Karate Tools
 # `version: stable`, `prerelease: false`; a versioned release tag (v1.2.0,
 # ...) says `version: '1.2.0'`, `prerelease: false`. Until the first release
 # this site has just the one (prerelease) version — that is expected.
-version: prerelease
-prerelease: true
+version: 6.0.0
 # The site's landing page: modules/ROOT/pages/index.adoc, rendered through
 # the UI bundle's `home` layout. Naming it here (rather than relying on
 # Antora's own default) is what stops it fabricating a synthetic
