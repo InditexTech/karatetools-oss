@@ -82,9 +82,6 @@ on:
   release:
     types: [published]
 
-permissions:
-  contents: write
-
 concurrency:
   group: docouture-release
   cancel-in-progress: false
@@ -94,6 +91,8 @@ jobs:
     name: Cut release
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
     # `docouture new` scaffolds this site's package.json, antora-playbook.yml,
     # docs/antora.yml etc. under docs/ (not the repository root) — see the
     # docs-site-package skill's reference/versioning-modes.md. Every step
@@ -136,7 +135,7 @@ jobs:
           exit 1
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           # Standalone moves an existing `docs/stable` tag, which has to already
           # be reachable in history to be force-moved. Versioned only ever
@@ -153,7 +152,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@1e60f620b9541d8a0e9f3b7bfa7dd7d5b6c8d6e0 # v4.0.4
         with:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
@@ -187,7 +186,7 @@ jobs:
       - name: Kroki / Docker image cache
         id: kroki-cache
         if: steps.kroki-check.outputs.enabled == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: /tmp/kroki-images.tar
           key: ${{ runner.os }}-kroki-images-${{ hashFiles('**/kroki-compose.yml') }}
@@ -248,7 +247,7 @@ jobs:
       # level for whichever GitHub App is bypass-listed on this site's rules.
       - name: Git app token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}

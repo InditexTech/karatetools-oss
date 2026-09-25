@@ -39,10 +39,6 @@ on:
   push:
     branches: ['develop*']
 
-permissions:
-  contents: read
-  pull-requests: read
-
 concurrency:
   group: docouture-publish-prerelease
   cancel-in-progress: true
@@ -51,6 +47,8 @@ jobs:
   check-changes-in-paths:
     name: Check for changes in corresponding paths
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
     steps:
@@ -63,7 +61,7 @@ jobs:
       # commits than a shallow clone's history would contain, and `before`
       # must be reachable locally for the diff to succeed.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
@@ -84,6 +82,8 @@ jobs:
     needs: check-changes-in-paths
     if: needs.check-changes-in-paths.outputs.detected == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     outputs:
       skip: ${{ steps.check.outputs.skip }}
     env:

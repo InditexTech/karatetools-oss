@@ -49,16 +49,6 @@ on:
       - 'docs/**'
       - '.github/workflows/docouture-kroki-cache-warm.yml'
 
-# Least-privilege default: this job only checks out the release/prerelease
-# branch it happened to run against, warms the Docker/Kroki image cache and
-# writes it via actions/cache (a separate, token-independent cache API, not
-# repository contents) — it never uses GITHUB_TOKEN itself, so it never
-# needs more than read access. Declared explicitly rather than left to
-# inherit whatever the repository/organization's default token permissions
-# happen to be.
-permissions:
-  contents: read
-
 concurrency:
   group: docouture-kroki-cache-warm
   cancel-in-progress: true
@@ -68,6 +58,10 @@ jobs:
     name: Warm Kroki image cache
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # This job only checks out its triggering branch and writes via the
+    # token-independent cache API, so repository read access is sufficient.
+    permissions:
+      contents: read
     # `docouture new` scaffolds this site's package.json, antora-playbook.yml
     # etc. under docs/ (not the repository root) — see the docs-site-package
     # skill's reference/versioning-modes.md. Every step below runs from
@@ -78,10 +72,10 @@ jobs:
         working-directory: docs
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@1e60f620b9541d8a0e9f3b7bfa7dd7d5b6c8d6e0 # v4.0.4
         with:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
@@ -118,7 +112,7 @@ jobs:
       - name: Kroki / Docker image cache
         id: kroki-cache
         if: steps.kroki-check.outputs.enabled == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: /tmp/kroki-images.tar
           key: ${{ runner.os }}-kroki-images-${{ hashFiles('**/kroki-compose.yml') }}
