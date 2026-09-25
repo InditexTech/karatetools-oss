@@ -22,13 +22,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:git:https://github.com/InditexTech/karatetools-oss.git</connection>
-    <developerConnection>scm:git:https://github.com/InditexTech/karatetools-oss.git</developerConnection> 
-    <url>https://github.com/InditexTech/karatetools-oss</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <developers>
     <developer>
       <name>Inditex Open Source Office</name>
