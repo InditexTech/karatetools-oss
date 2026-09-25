@@ -75,9 +75,13 @@ urls:
 
 runtime:
   log:
-    failure_level: warn
-    # See antora-playbook.yml's own comment on this key: Antora's own
-    # default is 'warn', which would otherwise silently drop
+    # See antora-playbook.yml's own comment on this key: raised from
+    # Antora's 'warn' default to 'error' — a genuinely broken xref/image
+    # still fails the build regardless (always logged at 'error'), this
+    # just stops the frozen historical release tags' unfixable 'warn'-level
+    # noise from failing every build.
+    failure_level: error
+    # Antora's own default is 'warn', which would otherwise silently drop
     # @inditextech/docouture-antora-extensions' docouture-version-report and
     # docouture-search-index diagnostics — both logged at 'info'.
     level: info
