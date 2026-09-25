@@ -96,7 +96,7 @@
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
     <!-- Static code analysis - Spotbugs -->
-    <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.10.4.0</spotbugs-maven-plugin.version>
     <com.github.spotbugs.spotbugs.version>4.10.2</com.github.spotbugs.spotbugs.version>
     <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
     <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
