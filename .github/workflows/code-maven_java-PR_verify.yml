@@ -48,16 +48,18 @@ jobs:
               exit 1
               ;;
           esac
-          case "${WORKING_DIRECTORY:-}" in
+          workdir="${WORKING_DIRECTORY:-$(jq -r '.working_directory // empty' "$descriptor")}"
+          case "$workdir" in
             ""|/*|..|../*|*/..|*/../*)
               echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
               exit 1
               ;;
           esac
-          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
-            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+          if [[ ! -d "$workdir" ]]; then
+            echo "::error title=Missing working directory::'${workdir}' is not a directory in this checkout." >&2
             exit 1
           fi
+          echo "WORKING_DIRECTORY=${workdir}" >> "$GITHUB_ENV"
           echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
 
       - name: Set up workflow Java
