@@ -1,0 +1,12 @@
+= Reference
+:description: Reference material for Karate Tools: configuration properties and options.
+
+This section is the lookup material for Karate Tools: every configuration
+property, described exhaustively.
+
+[cards,columns="1 s:2 m:3"]
+====
+[card]
+.xref:reference/configuration/overview.adoc[Configuration]
+Karate config, logging, environment URLs and authentication.
+====

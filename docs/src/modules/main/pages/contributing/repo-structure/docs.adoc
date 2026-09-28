@@ -1,0 +1,25 @@
+= Docs module
+:description: The karatetools-oss-docs module.
+
+The documentation module `karatetools-oss-docs` follows standard structure for Antora documentation:
+
+[source,subs="+attributes"]
+----
+include::example$contributing/docs-tree.txt[]
+----
+include::example$contributing/docs-tree-callouts.txt[]
+
+[#docs-local-build]
+To locally build the documentation, you can use the following commands from
+the `docs` directory:
+
+[source,shell,subs="+attributes"]
+----
+npm install
+npm run dev
+----
+
+This starts `docouture dev`, which builds the site and serves it at
+`http://localhost:5000` with live reload — pass `--port` to use a different
+one. See xref:development.adoc[Development] for the full command set
+(`docouture build`, `docouture doctor`, releasing, publishing).
