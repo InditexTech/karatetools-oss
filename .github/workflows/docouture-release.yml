@@ -86,6 +86,9 @@ concurrency:
   group: docouture-release
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Cut release
