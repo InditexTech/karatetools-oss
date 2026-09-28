@@ -499,5 +499,7 @@ jobs:
     name: Publish
     needs: release
     if: needs.release.result == 'success'
+    permissions:
+      contents: write
     uses: ./.github/workflows/docouture-publish.yml
     secrets: inherit

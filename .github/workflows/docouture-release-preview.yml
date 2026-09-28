@@ -31,6 +31,9 @@ concurrency:
   group: docouture-release-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   check-changes-in-paths:
     name: Check for changes in corresponding paths
