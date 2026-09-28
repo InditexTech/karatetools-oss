@@ -38,6 +38,9 @@ concurrency:
   group: docouture-publish
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     name: Build and publish

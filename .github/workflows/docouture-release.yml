@@ -86,6 +86,9 @@ concurrency:
   group: docouture-release
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Cut release
@@ -499,5 +502,7 @@ jobs:
     name: Publish
     needs: release
     if: needs.release.result == 'success'
+    permissions:
+      contents: write
     uses: ./.github/workflows/docouture-publish.yml
     secrets: inherit
