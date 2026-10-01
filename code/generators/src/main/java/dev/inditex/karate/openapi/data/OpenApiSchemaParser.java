@@ -12,6 +12,7 @@ import java.util.UUID;
 import dev.inditex.karate.openapi.OpenApiGeneratorRuntimeException;
 
 import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BinarySchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.ByteArraySchema;
 import io.swagger.v3.oas.models.media.ComposedSchema;
@@ -74,6 +75,7 @@ public class OpenApiSchemaParser {
     map.put(DateSchema.class, KARATE_SCHEMA_TYPE_STRING);
     map.put(DateTimeSchema.class, KARATE_SCHEMA_TYPE_STRING);
     map.put(BooleanSchema.class, KARATE_SCHEMA_TYPE_BOOLEAN);
+    map.put(BinarySchema.class, KARATE_SCHEMA_TYPE_STRING);
     map.put(ByteArraySchema.class, KARATE_SCHEMA_TYPE_STRING);
     map.put(MapSchema.class, KARATE_SCHEMA_TYPE_OBJECT);
     map.put(ComposedSchema.class, KARATE_SCHEMA_TYPE_OBJECT);
