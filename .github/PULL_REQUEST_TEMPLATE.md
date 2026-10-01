@@ -1,32 +1,21 @@
-# PR Checklist
+<!--
+SPDX-FileCopyrightText: 2026 INDUSTRIA DE DISEÑO TEXTIL S.A. (INDITEX S.A.)
 
-Please check if your PR fulfills the following requirements:
+SPDX-License-Identifier: Apache-2.0
+-->
 
-- [ ] Tests for the changes have been added (for bug fixes / features)
-- [ ] Docs have been added / updated (for bug fixes / features)
+## Summary
 
-## PR Type
+Briefly describe the purpose of this PR and what changes it introduces.
 
-What kind of change does this PR introduce?
+## Checklist
 
-<!-- Please check the one that applies to this PR using "x". -->
+- [ ] Commits are **signed** (`git commit -S`)
+- [ ] Commit messages follow **Conventional Commits**
+- [ ] Documentation has been updated (if needed)
+- [ ] I have read and agree to the project’s [Code of Conduct](../CODE_OF_CONDUCT.md)
+- [ ] I have signed the [Contributor License Agreement (CLA)](../CONTRIBUTING.md)
 
-- [ ] Bugfix
-- [ ] Feature
-- [ ] Other... Please describe:
+## Additional context
 
-## What is the current behavior?
-<!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
-
-Issue Number: N/A
-
-## What is the new behavior?
-
-## Does this PR introduce a breaking change?
-
-- [ ] Yes
-- [ ] No
-
-<!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below. -->
-
-## Other information
+Add any screenshots, test output, or notes for reviewers here.
