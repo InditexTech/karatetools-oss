@@ -1,0 +1,27 @@
+= Karate Clients - MongoDB
+
+include::partial$clients/mongodb-summary.adoc[]
+
+== POM Configuration
+
+=== POM Karate Tools
+
+include::partial$clients/mongodb-pom.adoc[]
+
+=== POM Driver
+
+include::partial$clients/mongodb-pom-driver.adoc[]
+
+== Client Configuration
+
+include::partial$clients/mongodb-config.adoc[]
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$clients/mongodb-config-local.yml[]
+----
+
+== Client Features and Usage
+
+include::partial$clients/mongodb-features.adoc[]
