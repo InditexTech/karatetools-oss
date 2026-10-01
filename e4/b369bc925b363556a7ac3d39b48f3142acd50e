@@ -1,0 +1,27 @@
+.github/workflows/docouture-kroki-cache-warm.yml
+  s_fa2eb4c24f9217::t_c830a7181d3e81 118
+.github/workflows/docouture-pr-verify.yml
+  s_fa2eb4c24f9217::t_37aa4c5183cff5 103
+.github/workflows/docouture-publish.yml
+  s_fa2eb4c24f9217::t_ca784a4c56ed35 105
+.github/workflows/docouture-release.yml
+  s_fa2eb4c24f9217::t_a601a1b727bf74 192
+.github/workflows/code-maven_java-QA_e2e_karate.yml
+  s_fa2eb4c24f9217::t_a05edfb0ac0f03 189,199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e4b369bc925b363556a7ac3d39b48f3142acd50e",
+  "prompts": {},
+  "sessions": {
+    "s_fa2eb4c24f9217": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f35e500d-f8ec-49e3-8334-1fd4c840ba1b",
+        "model": "copilot/gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
