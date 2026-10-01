@@ -1,0 +1,19 @@
+.github/workflows/docouture-release.yml
+  s_769edd4fd1defc::t_ffdca36821facf 136-137,139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9826d823bbcfdfd6f6dc1c5ee868537e60850532",
+  "prompts": {},
+  "sessions": {
+    "s_769edd4fd1defc": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "s_769edd4fd1defc",
+        "model": "unknown"
+      },
+      "human_author": "Ivan Alvarez Sabin <ivanasabi@ext.inditex.com>"
+    }
+  }
+}
