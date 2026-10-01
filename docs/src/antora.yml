@@ -4,14 +4,23 @@
 # `name` is either this site's own name (a real URL path segment on
 # publish) or Antora's reserved `ROOT` (contributes no segment at all) —
 # decided by the `docouture new` wizard's "extra URL path segment" question (or
-# `--url-segment`), default off/ROOT. This site deliberately uses its own
-# name, `karatetools-oss`, instead of `ROOT` — matching the exact component
-# name every pre-docouture docs/v4.0.0-docs/v6.0.0 tag already carries, so
-# this migration extends that same version history instead of forking a
-# second, unrelated component with no shared version dropdown. See
-# antora-playbook.yml's own site.url comment for the full GitHub Pages URL
-# shape this produces.
-name: karatetools-oss
+# `--url-segment`), default off/ROOT.
+#
+# Deliberately split from the pre-docouture history here: every
+# docs/v4.0.0-docs/v5.4.0 tag (and the docs/v6.0.0 tag as first republished)
+# already carries `name: karatetools-oss` — permanent, frozen, since a
+# release tag's own antora.yml is never rewritten after the fact. Those stay
+# on that component and keep the /karatetools-oss/<version>/... shape (and,
+# for those specific already-published versions, the live site's own
+# doubled /karatetools-oss/karatetools-oss/... — see antora-playbook.yml's
+# site.url comment). From this commit forward, `develop` (and any version
+# cut from it from here on, including docs/v6.0.0's next republish) is on
+# `ROOT` instead: a clean /<version>/... with no repo-name segment at all,
+# a deliberate choice to stop carrying that legacy segment into new
+# versions, accepting that it forks the version dropdown — old
+# (`karatetools-oss`) and new (`ROOT`) versions no longer share one
+# continuous switcher, they're two separate Antora components from here on.
+name: ROOT
 title: InditexTech Karate Tools
 # This descriptor is identical for BOTH versioning modes — see the docouture
 # docs-site-package skill's reference/versioning-modes.md. `main` permanently

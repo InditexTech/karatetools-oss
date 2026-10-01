@@ -38,7 +38,12 @@ site:
   # plain-text fallback. Harmless here: this playbook is dev/PR-verify only,
   # never used for a real publish (see the file header above).
   url: http://localhost:5000
-  start_page: karatetools-oss::index.adoc
+  # See antora-playbook.yml's own comment on this key and on docs/src/antora.yml's
+  # `name` — component is `ROOT` (no path segment), matching whatever's
+  # currently checked out. The frozen `karatetools-oss` component only ever
+  # exists via the real playbook's tags: ['docs/v*'] source, absent here
+  # (branches: HEAD only), so `karatetools-oss::` would never resolve.
+  start_page: ROOT::index.adoc
   # Same placeholder logo/favicon as the real antora-playbook.yml — see its
   # own comment. Harmless here too: this playbook is dev/PR-verify only.
   keys:
