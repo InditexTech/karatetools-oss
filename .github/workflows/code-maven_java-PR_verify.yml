@@ -48,20 +48,22 @@ jobs:
               exit 1
               ;;
           esac
-          case "${WORKING_DIRECTORY:-}" in
+          workdir="${WORKING_DIRECTORY:-$(jq -r '.working_directory // empty' "$descriptor")}"
+          case "$workdir" in
             ""|/*|..|../*|*/..|*/../*)
               echo "::error title=Invalid working directory::WORKING_DIRECTORY must be a non-empty relative repository path." >&2
               exit 1
               ;;
           esac
-          if [[ ! -d "$WORKING_DIRECTORY" ]]; then
-            echo "::error title=Missing working directory::'${WORKING_DIRECTORY}' is not a directory in this checkout." >&2
+          if [[ ! -d "$workdir" ]]; then
+            echo "::error title=Missing working directory::'${workdir}' is not a directory in this checkout." >&2
             exit 1
           fi
+          echo "WORKING_DIRECTORY=${workdir}" >> "$GITHUB_ENV"
           echo "PROJECT_TYPE=$project_type" >> "$GITHUB_ENV"
 
       - name: Set up workflow Java
-        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: '25.0.2+10.0.LTS'
@@ -86,7 +88,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set up asdf-managed Java
-        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47 # v4.0.1
         with:
           tool_versions: ${{ steps.tool-versions.outputs.tool_versions }}
           asdf_version: ${{ env.ASDF_BRANCH_VERSION }}

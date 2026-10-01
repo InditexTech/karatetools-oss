@@ -1,0 +1,22 @@
+# actionlint configuration — see https://github.com/rhysd/actionlint/blob/main/docs/config.md
+#
+# actionlint's own bundled schema for actions/create-github-app-token@v3 is
+# stale: it still believes `app-id` is the only valid/required input and
+# flags `client-id` as unknown, the exact opposite of that action's real,
+# current action.yml (`client-id` is current; `app-id` carries its own
+# "Use 'client-id' instead" deprecation notice). Confirmed against
+# InditexTech/docouture's own CLI scaffolding template and its own live
+# workflows, which both use `client-id` — the field this repo's workflows
+# use is correct, not a bug to work around by reverting to the deprecated
+# one. actionlint 1.7.12 (the tool's own latest release, as of writing) still
+# ships the outdated data, so this is a real upstream lag, not something a
+# version bump here can fix yet.
+paths:
+  .github/workflows/docouture-publish.yml:
+    ignore:
+      - 'missing input "app-id" which is required by action "actions/create-github-app-token@v3".+'
+      - 'input "client-id" is not defined in action "actions/create-github-app-token@v3".+'
+  .github/workflows/docouture-release.yml:
+    ignore:
+      - 'missing input "app-id" which is required by action "actions/create-github-app-token@v3".+'
+      - 'input "client-id" is not defined in action "actions/create-github-app-token@v3".+'
