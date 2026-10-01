@@ -53,6 +53,9 @@ concurrency:
   group: docouture-kroki-cache-warm
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   warm:
     name: Warm Kroki image cache

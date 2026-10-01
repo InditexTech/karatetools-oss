@@ -43,6 +43,9 @@ concurrency:
   group: docouture-publish-prerelease
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   check-changes-in-paths:
     name: Check for changes in corresponding paths
