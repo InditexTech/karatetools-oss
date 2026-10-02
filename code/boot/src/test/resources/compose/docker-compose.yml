@@ -47,7 +47,7 @@ services:
   mongodb:
     container_name: kt-mongodb
     profiles: [ "it", "app" ]
-    image: mongo:7.0.34
+    image: mongo:8.3.8
     ports:
       - "27017:27017"
     environment:
