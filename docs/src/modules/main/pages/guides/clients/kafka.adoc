@@ -1,0 +1,35 @@
+= Karate Clients - Kafka
+
+include::partial$clients/kafka-summary.adoc[]
+
+== POM Configuration
+
+=== POM Karate Tools
+
+include::partial$clients/kafka-pom.adoc[]
+
+=== POM Client
+
+include::partial$clients/kafka-pom-client.adoc[]
+
+=== POM Kafka Events
+
+include::partial$clients/kafka-pom-events.adoc[]
+
+== Client Configuration
+
+include::partial$clients/kafka-config.adoc[]
+
+.Example
+[source,yaml,subs="+attributes"]
+----
+include::example$clients/kafka-config-local.yml[]
+----
+
+== Client Features and Usage - Producer
+
+include::partial$clients/kafka-producer-features.adoc[]
+
+== Client Features and Usage - Consumer
+
+include::partial$clients/kafka-consumer-features.adoc[]
