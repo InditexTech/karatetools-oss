@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#166](https://github.com/InditexTech/karatetools-oss/pull/166) \[Karate-Tools] Pass `github.ref` via `env` in docouture-release instead of interpolating it into `run`
+
 ## [6.0.0] - 2026-06-26
 
 - [#71](https://github.com/InditexTech/karatetools-oss/issues/71) \[Karate-Tools] JDK 25
