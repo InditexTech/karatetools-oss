@@ -36,7 +36,7 @@ services:
     volumes:
       - "./mariadb/data:/docker-entrypoint-initdb.d/"
     healthcheck:
-      test: "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD --silent"
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
       start_period: 10s
       interval: 10s
       retries: 10
