@@ -4,6 +4,12 @@ SPDX-PackageSupplier = "2024 INDITEX S.A"
 SPDX-PackageDownloadLocation = "https://github.com/InditexTech/karatetools-oss"
 
 [[annotations]]
+path = ".github/CODEOWNERS"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 INDITEX S.A"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
 path = ".gitattributes"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 INDITEX S.A"
