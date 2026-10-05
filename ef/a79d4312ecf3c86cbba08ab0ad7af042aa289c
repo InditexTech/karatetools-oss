@@ -1,0 +1,14 @@
+code/generators/src/test/java/dev/inditex/karate/openapi/data/OpenApiUtilsTest.java
+  h_5fac3ddbd3d5cb 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "efa79d4312ecf3c86cbba08ab0ad7af042aa289c",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
