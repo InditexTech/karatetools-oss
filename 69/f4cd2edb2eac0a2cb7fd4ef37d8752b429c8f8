@@ -1,0 +1,26 @@
+.github/workflows/docouture-kroki-cache-warm.yml
+  h_e3804906c674bd 24-28,41,50,55-62,70,84-86,89,117-118,136-137
+.github/workflows/docouture-pr-verify.yml
+  h_e3804906c674bd 33-39,47,61-63,66,123-124
+.github/workflows/docouture-publish-prerelease.yml
+  h_e3804906c674bd 38-42,45-47,56-57,63-67,69,72,74-77,80-94,100-101,103-104,118-121,123,137-139,141,143-144
+.github/workflows/docouture-publish.yml
+  h_e3804906c674bd 28-40,42-46,49-50,58-59,61,72,78,81,86-88,93-96,117-119,126-128,130-133
+.github/workflows/docouture-release-preview.yml
+  h_e3804906c674bd 5,21-24,30-31,33-34,41-42,45,52-62,68-69,71-72,83-85,133-137,141-142,144,147,152,160-162,169,183,200,206-207,209,212-215,217,225-226,228,231-234,236
+.github/workflows/docouture-release.yml
+  h_e3804906c674bd 17-18,68-79,97-98,106-107,109,122-123,134,151,155,172,177-180,234-236,486,488-489
+code/CHANGELOG.md
+  h_e3804906c674bd 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69f4cd2edb2eac0a2cb7fd4ef37d8752b429c8f8",
+  "prompts": {},
+  "humans": {
+    "h_e3804906c674bd": {
+      "author": "Ivan Alvarez Sabin <ivanasabi@ext.inditex.com>"
+    }
+  }
+}
