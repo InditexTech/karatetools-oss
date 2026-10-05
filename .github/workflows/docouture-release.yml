@@ -14,8 +14,8 @@ name: docouture-release
 #
 # Prerequisite, done once, not by this workflow: this site's own
 # antora-playbook.yml content.sources[] must already match
-# `branches: [develop]` + `tags: ['docs/v*']` (versioned) or
-# `branches: [develop]` + `tags: ['docs/stable']` (standalone) —
+# `branches: [main]` + `tags: ['docs/v*']` (versioned) or
+# `branches: [main]` + `tags: ['docs/stable']` (standalone) —
 # see the guides-branching-model guide for what the prerelease/release
 # branch roles mean (trunk-based: both the same branch; git-flow: two
 # independently-named branches, e.g. `develop`/`main`).
@@ -65,6 +65,18 @@ name: docouture-release
 # sane next target rather than going stale. A republish (the target tag
 # already existed) skips that bump, since `docs/.release-version` already
 # holds whatever was planned to come after it.
+#
+# Docouture hardening, on top of the docouture scaffold:
+#   - GITHUB_TOKEN is read-only. Every push (the release tag, the versioned
+#     descriptor bump) already authenticates with the App token configured in
+#     "Git app credentials", and that token is narrowed to this repository
+#     and to contents: write.
+#   - Every action is pinned to a full-length commit SHA.
+#   - No dependency or Kroki image cache is restored: this job cuts a release,
+#     and a cache another run wrote is a poisoning vector for anything that
+#     ships (zizmor's cache-poisoning audit). The build pulls Kroki cold.
+#   - The App private key reaches docouture-publish.yml as an explicit
+#     secret, never `secrets: inherit`.
 on:
   workflow_dispatch:
     inputs:
@@ -75,15 +87,14 @@ on:
           target is always the 'docs/stable' tag, this input is ignored there.
         required: true
         type: string
-        default: "stable"
+        default: 'stable'
   pull_request:
     types: [closed]
-    branches: ["main*"]
+    branches: ['main*']
   release:
     types: [published]
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
   group: docouture-release
@@ -92,8 +103,10 @@ concurrency:
 jobs:
   release:
     name: Cut release
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read # Check out the release branch; pushes use the App token.
     # `docouture new` scaffolds this site's package.json, antora-playbook.yml,
     # docs/antora.yml etc. under docs/ (not the repository root) — see the
     # docs-site-package skill's reference/versioning-modes.md. Every step
@@ -106,7 +119,8 @@ jobs:
       run:
         working-directory: docs
     # workflow_dispatch and a published Release both always proceed (already
-    # explicit, deliberate acts). The pull_request trigger fires on every
+    # explicit, deliberate acts), except a GitHub pre-release: publishing a
+    # preview must never move the stable docs tag. The pull_request trigger fires on every
     # close of a PR targeting the release branch — including ones that were
     # closed unmerged, or merged without the label — so it only proceeds
     # when merged, carrying `docs/release`, AND a same-merge code release is
@@ -117,7 +131,7 @@ jobs:
     # Anything else is a no-op run, not an error.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'release' ||
+      (github.event_name == 'release' && !github.event.release.prerelease) ||
       (github.event.pull_request.merged == true &&
         contains(github.event.pull_request.labels.*.name, 'docs/release') &&
         (contains(github.event.pull_request.labels.*.name, 'skip-release') ||
@@ -134,11 +148,11 @@ jobs:
         env:
           REF: ${{ github.ref }}
         run: |
-          echo "::error::docouture-release must run against main (got $REF)"
+          echo "::error::docouture-release must run against main (got ${REF})"
           exit 1
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Standalone moves an existing `docs/stable` tag, which has to already
           # be reachable in history to be force-moved. Versioned only ever
@@ -155,58 +169,18 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
           node-version-file: docs/package.json
-          cache: npm
-          # `defaults.run.working-directory: docs` above only applies to
-          # `run:` steps, not to this action's own inputs — without this,
-          # setup-node looks for a lockfile from the repo root and fails.
-          cache-dependency-path: docs/package-lock.json
+
+          # See the header: no caches in this workflow, and setup-node itself
+          # never manages the cache here.
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm ci
-
-      # See docouture-pr-verify.yml's own comment: this build reads
-      # antora-playbook.local.yml (Build docs below), not the real
-      # antora-playbook.yml — same reason as that step's own "Detect mode"
-      # doesn't apply here (the tag this run is about to cut doesn't exist
-      # yet, per Build docs' own comment), so the enabled check has to look
-      # at the same file Build docs actually builds.
-      - name: Kroki / Detect enabled
-        id: kroki-check
-        run: |
-          if grep -qE "^\s*kroki-enabled:\s*['\"]?true['\"]?\s*(#.*)?$" antora-playbook.local.yml; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      # See docouture-pr-verify.yml's own comment: primes the runner's Docker
-      # image store before the Build step's implicit Kroki startup.
-      - name: Kroki / Docker image cache
-        id: kroki-cache
-        if: steps.kroki-check.outputs.enabled == 'true'
-        uses: actions/cache@v4
-        with:
-          path: /tmp/kroki-images.tar
-          key: ${{ runner.os }}-kroki-images-${{ hashFiles('**/kroki-compose.yml') }}
-
-      - name: Kroki / Load cached images
-        if: steps.kroki-check.outputs.enabled == 'true' && steps.kroki-cache.outputs.cache-hit == 'true'
-        run: docker load -i /tmp/kroki-images.tar
-
-      - name: Kroki / Pull and save images
-        if: steps.kroki-check.outputs.enabled == 'true' && steps.kroki-cache.outputs.cache-hit != 'true'
-        run: |
-          compose_file="$(find . -name kroki-compose.yml 2>/dev/null | head -1)"
-          docker compose -f "$compose_file" pull
-          imgs="$(docker compose -f "$compose_file" config --images)"
-          # intentional unquoted expansion: each image ref must be its own argument to `docker save`
-          # shellcheck disable=SC2046
-          docker save -o /tmp/kroki-images.tar $imgs
 
       # Nothing before this point has actually built the docs — unlike
       # docouture-pr-verify.yml and docouture-publish.yml, this workflow previously
@@ -232,8 +206,8 @@ jobs:
       # fails this step — a broken local one is a warning only, since this
       # job also builds with antora-playbook.local.yml (see that comment for
       # why a local link can legitimately look broken here).
-      # - name: Check links
-      #   run: npm run check-links
+      - name: Check links
+        run: npm run check-links
 
       - name: git identity
         run: |
@@ -253,10 +227,13 @@ jobs:
       # level for whichever GitHub App is bypass-listed on this site's rules.
       - name: Git app token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
 
       - name: Git app credentials
         env:
@@ -505,5 +482,8 @@ jobs:
     name: Publish
     needs: release
     if: needs.release.result == 'success'
+    permissions:
+      contents: read # Grant docouture-publish.yml its checkout read access.
     uses: ./.github/workflows/docouture-publish.yml
-    secrets: inherit
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
