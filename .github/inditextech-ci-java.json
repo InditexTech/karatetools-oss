@@ -1,0 +1,17 @@
+{
+  "project_type": "monorepo",
+  "release": {
+    "lifecycle": "delegated",
+    "packages": [
+      "karatetools-clients",
+      "karatetools-generators",
+      "karatetools-runner",
+      "karatetools-starter",
+      "karatetools-boot",
+      "karatetools-archetype"
+    ],
+    "strategy": "locked-step"
+  },
+  "schema_version": 1,
+  "working_directory": "code"
+}

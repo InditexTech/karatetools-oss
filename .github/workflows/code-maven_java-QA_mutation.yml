@@ -55,7 +55,7 @@ jobs:
       # checkout
       - name: checkout
         id: checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -72,7 +72,7 @@ jobs:
 
       # setup-maven-cache
       - name: setup-maven-cache
-        uses: actions/cache@v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         continue-on-error: true
         with:
           path: ~/.m2/repository
@@ -82,7 +82,7 @@ jobs:
 
       # setup-asdf-cache
       - name: setup-asdf-cache
-        uses: actions/cache@v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         continue-on-error: true
         with:
           path: ~/.asdf/data
@@ -118,7 +118,7 @@ jobs:
           # Set JAVA_HOME
           JAVA_HOME="$(asdf where java)"
           echo "JAVA_HOME=$JAVA_HOME"
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
 
           echo "::endgroup::"
 
@@ -133,11 +133,11 @@ jobs:
           echo "::group::+++ mvn-clean-verify +++"
 
           # Maven Properties
-          MVN_PROPERTIES="pitest:mutationCoverage pitest:report-aggregate-module -DskipITs"
-          echo "MVN_PROPERTIES=${MVN_PROPERTIES}"
+          MVN_PROPERTIES=(pitest:mutationCoverage pitest:report-aggregate-module -DskipITs)
+          echo "MVN_PROPERTIES=${MVN_PROPERTIES[*]}"
 
           # mvn clean verify
-          mvn -B -ntp clean verify $MVN_PROPERTIES
+          mvn -B -ntp clean verify "${MVN_PROPERTIES[@]}"
 
           echo "::endgroup::"
 
@@ -162,7 +162,7 @@ jobs:
       - name: pitest-report-upload
         id: pitest-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ github.event.repository.name }}-mutation-${{ github.run_number }}-pitest-report
           path: ${{ fromJSON(steps.config.outputs.config).mutation.report.folder }}
@@ -171,7 +171,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |
