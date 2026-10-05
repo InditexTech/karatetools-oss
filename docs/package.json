@@ -21,7 +21,7 @@
     "@inditextech/docouture-asciidoc-extensions": "1.1.1",
     "@inditextech/docouture-antora-extensions": "1.1.1",
     "@inditextech/docouture-publish-gh-pages": "1.1.1",
-    "antora": "3.2.0",
+    "antora": "3.2.1",
     "linkinator": "8.1.0",
     "patch-package": "^8.0.1"
   },
