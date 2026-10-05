@@ -1,0 +1,19 @@
+.github/actions/config-resolver/package-lock.json
+  s_4c8b0ee4df42a0::t_f42a13971fbea8 1228,2255,3077,3538,3880,5025,5109,6200,6864,7374,7688,7946,8720,8780
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d89dfbd324fd2acb9de9409e95b5caf504a602ac",
+  "prompts": {},
+  "sessions": {
+    "s_4c8b0ee4df42a0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "s_4c8b0ee4df42a0",
+        "model": "unknown"
+      },
+      "human_author": "Ivan Alvarez Sabin <ivanasabi@ext.inditex.com>"
+    }
+  }
+}
