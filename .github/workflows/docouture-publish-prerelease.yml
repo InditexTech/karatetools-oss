@@ -35,62 +35,75 @@ name: docouture-publish-prerelease
 #      prerelease and release branches are the same one — under git-flow
 #      they're different branches, so a docs/release-labeled PR never
 #      targets the prerelease branch this workflow watches.)
+#
+# Docouture hardening: pinned actions, no persisted checkout credentials,
+# no third-party path filter (a plain `git diff` over the pushed range does
+# the same job), and the App key passed to docouture-publish.yml as an
+# explicit secret rather than `secrets: inherit`.
 on:
   push:
-    branches: ['develop*']
+    branches: ['main*']
+
+permissions: {}
 
 concurrency:
   group: docouture-publish-prerelease
   cancel-in-progress: true
 
-permissions:
-  contents: read
-
 jobs:
   check-changes-in-paths:
     name: Check for changes in corresponding paths
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     permissions:
       contents: read
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
     steps:
-      # dorny/paths-filter diffs github.event.before -> github.sha via local
-      # git history on a push trigger (unlike a pull_request trigger, where
-      # it can resolve the base from the GitHub API alone) — needs an actual
-      # checkout first, or there is no .git to diff against at all
-      # (`git` exits 128, "not a git repository"/"bad revision"). fetch-depth
-      # 0 rather than a shallow default: a batched push can carry more
-      # commits than a shallow clone's history would contain, and `before`
-      # must be reachable locally for the diff to succeed.
+      # The diff below runs over github.event.before -> github.sha in local
+      # git history, so it needs an actual checkout first. fetch-depth 0
+      # rather than a shallow default: a batched push can carry more commits
+      # than a shallow clone's history would contain, and `before` must be
+      # reachable locally for the diff to succeed.
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
+      # docs/.release-version is deliberately NOT listed — see this file's
+      # own header comment, point 1. A push whose `before` is missing (a new
+      # branch, or history rewritten by a force-push) counts as changed, so
+      # content is never silently left unpublished.
       - name: Check for changed files in specific paths
         id: changes
-        uses: dorny/paths-filter@ebc4d7e9ebcb0b1eb21480bb8f43113e996ac77a # v3.0.1
-        with:
-          filters: |
-            paths:
-              - 'docs/src/**'
-              - 'docs/antora-playbook*.yml'
-              - 'docs/supplemental-ui/**'
-              # docs/.release-version is deliberately NOT listed — see this
-              # file's own header comment, point 1.
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "paths=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed="$(git diff --name-only "$BEFORE" "$AFTER" -- \
+            'docs/src/' 'docs/antora-playbook*.yml' 'docs/supplemental-ui/')"
+          if [ -n "$changed" ]; then
+            echo "paths=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "paths=false" >> "$GITHUB_OUTPUT"
+          fi
 
   check-release-label:
     name: Check for docs/release label on the triggering pull request
     needs: check-changes-in-paths
     if: needs.check-changes-in-paths.outputs.detected == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     permissions:
-      pull-requests: read
+      contents: read
+      pull-requests: read # Read the labels of the pull request behind this push.
     outputs:
       skip: ${{ steps.check.outputs.skip }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       # Resolves the merged pull request (if any) that produced this push's
       # HEAD commit, regardless of merge strategy (merge commit, squash, or
@@ -102,8 +115,12 @@ jobs:
       # labels and is never skipped here.
       - name: Check for docs/release label
         id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          labels=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" \
+          labels=$(gh api "repos/${REPOSITORY}/commits/${COMMIT_SHA}/pulls" \
             --jq '.[0].labels[].name' 2>/dev/null || echo "")
 
           if echo "$labels" | grep -qx 'docs/release'; then
@@ -117,14 +134,11 @@ jobs:
     name: Publish
     needs: [check-changes-in-paths, check-release-label]
     if: needs.check-changes-in-paths.outputs.detected == 'true' && needs.check-release-label.outputs.skip != 'true'
-    # docouture-publish.yml's own `publish` job requests `contents: write` (only
-    # ever used by @inditextech/docouture-publish-gh-pages, pushing to the
-    # `gh-pages` branch) — a reusable workflow can never be granted more than
-    # its caller job holds, so without this the call is rejected outright as
-    # a permissions escalation rather than merely losing write access at
-    # runtime. The two gate jobs above stay read-only; only this job, which
-    # actually calls through, needs the elevated grant.
+    # A reusable workflow can never be granted more than its caller job
+    # holds. docouture-publish.yml only needs to read the repository: its
+    # gh-pages push authenticates with the App token it mints itself.
     permissions:
-      contents: write
+      contents: read # Grant docouture-publish.yml its checkout read access.
     uses: ./.github/workflows/docouture-publish.yml
-    secrets: inherit
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
