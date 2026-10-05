@@ -133,8 +133,10 @@ jobs:
         # branch before the job started, and by the time a `closed`+`merged`
         # event fires, that branch already reflects the merge.
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        env:
+          REF: ${{ github.ref }}
         run: |
-          echo "::error::docouture-release must run against main (got ${{ github.ref }})"
+          echo "::error::docouture-release must run against main (got $REF)"
           exit 1
 
       - name: Checkout
@@ -189,7 +191,7 @@ jobs:
       - name: Kroki / Docker image cache
         id: kroki-cache
         if: steps.kroki-check.outputs.enabled == 'true'
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: /tmp/kroki-images.tar
           key: ${{ runner.os }}-kroki-images-${{ hashFiles('**/kroki-compose.yml') }}
@@ -203,7 +205,10 @@ jobs:
         run: |
           compose_file="$(find . -name kroki-compose.yml 2>/dev/null | head -1)"
           docker compose -f "$compose_file" pull
-          docker save -o /tmp/kroki-images.tar $(docker compose -f "$compose_file" config --images)
+          imgs="$(docker compose -f "$compose_file" config --images)"
+          # intentional unquoted expansion: each image ref must be its own argument to `docker save`
+          # shellcheck disable=SC2046
+          docker save -o /tmp/kroki-images.tar $imgs
 
       # Nothing before this point has actually built the docs — unlike
       # docouture-pr-verify.yml and docouture-publish.yml, this workflow previously
