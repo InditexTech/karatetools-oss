@@ -111,6 +111,44 @@ function globToRegExp(glob) {
 //     time, rather than recomputed here on every run: if this repo's remote
 //     is later renamed or moved, this entry goes stale along with it, the
 //     same as any other config a site owner would need to update by hand.
+//   - `https://inditextech.github.io/karatetools-oss/karatetools-oss/*` —
+//     this site's own `<link rel="canonical">` (site.url + a page's own
+//     pub.url; the doubled `karatetools-oss/karatetools-oss` segment is
+//     correct, not a bug — this component deliberately keeps its own name
+//     as a URL segment instead of Antora's reserved ROOT, see
+//     antora-playbook.yml's own comment on `site.url`) plus Antora's
+//     cross-version canonical linking (an old version's page canonically
+//     points at the newest version that still has a page at the same
+//     resource ID). Both are Antora vouching for its own generated URL,
+//     not a third-party link an author wrote — but that URL only starts
+//     resolving once THIS SAME build is actually published, which happens
+//     after this check runs, not before. Unavoidable for any version's own
+//     canonical the very first time it (or whatever newer version its
+//     canonical now points at) is published under a new URL shape — hit at
+//     full scale by the one-time docouture migration (every version's
+//     canonical moved at once), but not only that: an ordinary future
+//     release adding even one brand-new page hits the same gap for that
+//     page alone. Structural, not content-specific, so an ignore glob
+//     rather than a fix at any particular page.
+//   - `https://github.com/InditexTech/karatetools-oss/CODE_of_CONDUCT.md`,
+//     `.../REUSE.toml`, `https://github.com/InditexTech/foss/blob/main/documents/*`
+//     — real, but frozen inside the immutable docs/v5.4.0 (and older)
+//     release tags' own `contributing/pages/index.adoc`: wrong case, and
+//     missing `/blob/main/`, authored before this migration and rebuilt
+//     unchanged on every release since (Versioned/Full History mode
+//     rebuilds every historical tag as-is) — the same permanently-frozen
+//     content the `docs/antora-playbook.yml` `runtime.log.failure_level`
+//     comment already documents for asciidoctor's own warnings. Fixing the
+//     link means rewriting a released tag's history, which this site's
+//     versioning mode deliberately never does.
+//   - `https://repo1.maven.org/maven2/org/jacoco/*` — same illustrative-
+//     example pattern as the `<org>.github.io/<repo>` entry above:
+//     `contributing/repo-structure/karate-test.adoc`'s JaCoCo download step
+//     shows a shell command containing the literal, unexpanded `$JACOCO_VERSION`
+//     shell variable (real usage evaluates it first), which Asciidoctor
+//     autolinks anyway because it's a bare `https://` URL even inside a
+//     monospace command example — guaranteed to never resolve as written,
+//     by design, not a broken reference to fix.
 async function ignorePatterns() {
   let pkg
   try {
