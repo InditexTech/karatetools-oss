@@ -47,7 +47,7 @@ services:
   mongodb:
     container_name: kt-mongodb
     profiles: [ "it", "app" ]
-    image: mongo:7.0.34
+    image: mongo:8.3.9
     ports:
       - "27017:27017"
     environment:
@@ -88,7 +88,7 @@ services:
   rabbitmq:
     container_name: kt-rabbitmq
     profiles: [ "it", "app" ]
-    image: rabbitmq:3.13.6-management-alpine
+    image: rabbitmq:4.3.5-management-alpine
     ports:
       - "15672:15672"  # Web Console
       - "25672:5672"   # AMQP

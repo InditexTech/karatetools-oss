@@ -27,23 +27,25 @@ name: docouture-pr-verify
 on:
   pull_request:
     paths:
-      - "docs/**"
-      - ".github/workflows/docouture-pr-verify.yml"
+      - 'docs/**'
+      - '.github/workflows/docouture-pr-verify.yml'
+
+# Least-privilege default: this job only checks out the PR's own HEAD,
+# builds it, and checks links — it never writes to the repository, comments
+# on the PR, or otherwise uses GITHUB_TOKEN, so it never needs more than
+# read access. The workflow grants nothing and the job asks for exactly that,
+# the same shape every docouture workflow uses.
+permissions: {}
 
 concurrency:
   group: docouture-pr-verify-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-
 jobs:
   verify:
     name: Verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
-    # This job only checks out and builds the PR head; it never writes to the
-    # repository or comments on the pull request.
     permissions:
       contents: read
     # `docouture new` scaffolds this site's package.json, antora-playbook.yml
@@ -56,10 +58,12 @@ jobs:
         working-directory: docs
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
@@ -116,7 +120,8 @@ jobs:
           # file's own header), else the bundled default under node_modules.
           compose_file="$(find . -name kroki-compose.yml 2>/dev/null | head -1)"
           docker compose -f "$compose_file" pull
-          docker save -o /tmp/kroki-images.tar $(docker compose -f "$compose_file" config --images)
+          mapfile -t images < <(docker compose -f "$compose_file" config --images)
+          docker save -o /tmp/kroki-images.tar "${images[@]}"
 
       - name: Build
         run: npx antora --fetch antora-playbook.local.yml
@@ -133,5 +138,5 @@ jobs:
       # content generated from config (the module switcher, the footer) can
       # legitimately point at another version/component this reduced build
       # doesn't have. See that script's own header comment.
-      # - name: Check links
-      #   run: npm run check-links
+      - name: Check links
+        run: npm run check-links
