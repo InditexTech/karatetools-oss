@@ -88,7 +88,7 @@ services:
   rabbitmq:
     container_name: kt-rabbitmq
     profiles: [ "it", "app" ]
-    image: rabbitmq:3.13.6-management-alpine
+    image: rabbitmq:4.3.5-management-alpine
     ports:
       - "15672:15672"  # Web Console
       - "25672:5672"   # AMQP
