@@ -1,0 +1,58 @@
+= About Karate Tools
+:description: What Karate Tools is, who it is for, and why it exists.
+
+Karate Tools is a toolkit to facilitate a Karate module's initialization,
+configuration, test generation and execution.
+
+⚙️ *Initialization* and *configuration* through a Maven archetype.
+
+🗂️ *Automated generation* of test scenarios, test data and external services
+mocks from Open API.
+
+🛠️ Usual operations such as *authentication*, *database interaction*, and
+*messaging (Kafka & JMS)*.
+
+⏩ *Execution* in different environments of Karate tests for a REST artifact.
+
+== Key features
+
+Using an archetype (`karatetools-archetype`), Karate Tools generates a Karate
+project from scratch with the necessary configurations and utilities for the
+generation and execution of Karate tests.
+
+* *Configuration files* (karate, auth, jdbc, kafka, ...).
+* *JavaScript and Karate utilities*, which include:
+** the management of files and payloads.
+** authentication (basic, JWT, ...), allowing you to change from one to
+   another via the test configuration.
+** initialization and management of Karate mock servers for external
+   services.
+* *Java dependencies* to the `karatetools-starter`, which include:
+** `open-api-generator`, a Java command-line interface for the automatic
+   generation of tests in Gherkin, with their related data sets and schemas
+   for response validation, as well as data to mock external services from
+   Open API definitions. See xref:guides/open-api-generator/overview.adoc[].
+** Java clients to interact with relational databases (JDBC), a
+   non-relational database (MongoDB), event messaging (Kafka consumer and
+   producer) and JMS messaging. See xref:guides/clients/overview.adoc[].
+** a Java `KarateCache` to share variables across tests. See
+   xref:guides/execution/karate-cache.adoc[].
+
+== Benefits
+
+* *Faster onboarding:* a new module starts from a working, opinionated
+  structure instead of a blank project.
+* *Less boilerplate:* Open API generation removes most of the manual work of
+  writing scenarios, test data and mocks by hand.
+
+== What Karate Tools is not
+
+* Karate Tools does not replace https://docs.karatelabs.io[Karate]
+  itself — it is a set of conventions, generators and clients built on top of
+  it.
+
+== Status and roadmap
+
+Karate Tools is actively maintained and used internally at InditexTech; this
+site tracks its current, stable feature set. See the
+xref:release-notes/overview.adoc[release notes] for what changed recently.

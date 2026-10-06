@@ -1,0 +1,60 @@
+* Overview
+* xref:main:about.adoc[About]
+* xref:main:architecture.adoc[Architecture]
+
+* Getting started
+* xref:main:prerequisites.adoc[Prerequisites]
+* xref:main:quickstart.adoc[Quickstart]
+
+* Guides
+* xref:main:guides/overview.adoc[Overview]
+* xref:main:guides/archetype/overview.adoc[Archetype]
+* xref:main:guides/open-api-generator/overview.adoc[Open API generator]
+** xref:main:guides/open-api-generator/open-api-generator-operations.adoc[Operations]
+** xref:main:guides/open-api-generator/open-api-generator-smoke.adoc[Smoke tests]
+** xref:main:guides/open-api-generator/open-api-generator-functional.adoc[Functional tests]
+** xref:main:guides/open-api-generator/open-api-generator-mock.adoc[Mock data]
+* xref:main:guides/clients/overview.adoc[Clients]
+** xref:main:guides/clients/jdbc.adoc[JDBC client]
+** xref:main:guides/clients/mongodb.adoc[MongoDB client]
+** xref:main:guides/clients/kafka.adoc[Kafka clients]
+** xref:main:guides/clients/jms.adoc[JMS client]
+* xref:main:guides/execution/overview.adoc[Execution]
+** xref:main:guides/execution/arguments.adoc[Arguments]
+** xref:main:guides/execution/logging.adoc[Logging]
+** xref:main:guides/execution/mock-server.adoc[Mock server]
+** xref:main:guides/execution/reports.adoc[Reports]
+** Utilities
+*** xref:main:guides/execution/karate-cache.adoc[Karate cache]
+
+* Reference
+* xref:main:reference/overview.adoc[Overview]
+* xref:main:reference/configuration/overview.adoc[Configuration]
+** xref:main:reference/configuration/karate-config.adoc[Karate config]
+** xref:main:reference/configuration/logging.adoc[Logging]
+** xref:main:reference/configuration/urls.adoc[Environment URLs]
+** xref:main:reference/configuration/auth.adoc[Authentication]
+*** xref:main:reference/configuration/auth-basic.adoc[Basic authentication]
+*** xref:main:reference/configuration/auth-jwt.adoc[JWT authentication]
+*** xref:main:reference/configuration/local-machine-secrets.adoc[Local machine secrets management]
+
+* Additional information
+* xref:main:additional-information-overview.adoc[Overview]
+* xref:main:release-notes/overview.adoc[Release notes]
+** xref:main:release-notes/migration-guide.adoc[Migration guide]
+
+* Contributing
+* xref:main:contributing-overview.adoc[Overview]
+* xref:main:development.adoc[Development]
+** xref:main:contributing/step-by-step.adoc[Step by step]
+** xref:main:contributing/repo-structure/overview.adoc[Repository structure]
+*** xref:main:contributing/repo-structure/code.adoc[Code]
+**** xref:main:contributing/repo-structure/archetype.adoc[Archetype]
+**** xref:main:contributing/repo-structure/clients.adoc[Clients]
+**** xref:main:contributing/repo-structure/generators.adoc[Generators]
+**** xref:main:contributing/repo-structure/runner.adoc[Runner]
+**** xref:main:contributing/repo-structure/starter.adoc[Starter]
+**** xref:main:contributing/repo-structure/boot.adoc[Boot]
+**** xref:main:contributing/repo-structure/openapi-test.adoc[OpenAPI test]
+*** xref:main:contributing/repo-structure/karate-test.adoc[Karate test]
+*** xref:main:contributing/repo-structure/docs.adoc[Docs]

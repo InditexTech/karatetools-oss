@@ -1,0 +1,7 @@
+= Environment URLs
+
+include::partial$configuration/urls-config.adoc[]
+
+== Example
+
+include::partial$configuration/urls-examples.adoc[]
