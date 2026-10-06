@@ -392,7 +392,7 @@ jobs:
       - name: karate-report-upload
         id: karate-report-upload
         if: ${{ always() && !cancelled() && steps.mvn-clean-verify.conclusion != 'skipped' }}
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-karate-report
           path: ${{ fromJSON(steps.config.outputs.config).karate.report.folder }}
@@ -495,7 +495,7 @@ jobs:
           always() && !cancelled() &&
           fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
           steps.start-java-app.outcome == 'success'
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-jacoco-report
           path: ${{ fromJSON(steps.config.outputs.config).karate.jacoco.report.folder }}
@@ -504,7 +504,7 @@ jobs:
       - name: execution-logs-upload
         id: execution-logs-upload
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ github.event.repository.name }}-karate-${{ github.run_number }}-logs
           path: |
