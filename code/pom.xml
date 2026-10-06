@@ -150,7 +150,7 @@
     <mongodb-driver-sync.version>5.8.0</mongodb-driver-sync.version>
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - ActiveMQ -->
-    <artemis-jms-client.version>2.54.0</artemis-jms-client.version>
+    <artemis-jms-client.version>2.57.0</artemis-jms-client.version>
     <!-- Karate Clients - JMS - RabbitMQ -->
     <!-- 2.X.X : Version for JMS 2.0 -->
     <rabbitmq-jms-client.version>2.13.0</rabbitmq-jms-client.version>
