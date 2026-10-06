@@ -274,7 +274,7 @@ jobs:
       - name: Deploy snapshot to Maven Central
         env:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
-        uses: InditexTech/gh-actions/maven-central@8a719baa6e8d514ccdfe87cff2baae9007a8b168 # v1.1.5
+        uses: InditexTech/gh-actions/maven-central@80ca79bcb04379e4fed8b91a55aa15dc6b8b638a # v1.1.6
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           project-type: ${{ env.PROJECT_TYPE }}
