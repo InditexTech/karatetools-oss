@@ -55,6 +55,10 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - kind/internal
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
 
   - package-ecosystem: docker-compose
     directory: /code/boot/src/test/resources/compose
