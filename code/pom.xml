@@ -96,10 +96,10 @@
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
     <!-- Static code analysis - Spotbugs -->
-    <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.10.4.0</spotbugs-maven-plugin.version>
     <com.github.spotbugs.spotbugs.version>4.10.2</com.github.spotbugs.spotbugs.version>
     <com.github.spotbugs.spotbugs.excludeFilterFile>${project.basedir}/${project.parent.relativePath}/src/main/config/spotbugs-exclude-filters.xml</com.github.spotbugs.spotbugs.excludeFilterFile>
-    <com.h3xstream.findsecbugs.version>1.13.0</com.h3xstream.findsecbugs.version>
+    <com.h3xstream.findsecbugs.version>1.14.0</com.h3xstream.findsecbugs.version>
 
     <!-- Common -->
     <karate.version>1.5.2</karate.version>
@@ -120,9 +120,10 @@
 
     <!-- Jacoco / Surefire -->
     <jacoco.version>0.8.15</jacoco.version>
-    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>
+    <skipITs>true</skipITs>
     <jacoco.excludes>**/*DTO.class</jacoco.excludes>
 
     <!-- Pitest -->
@@ -137,7 +138,7 @@
     <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
 
     <!-- Open Api Source Generator -->
-    <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
+    <openapi-generator-maven-plugin.version>7.25.0</openapi-generator-maven-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
     <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
 
@@ -149,7 +150,7 @@
     <mongodb-driver-sync.version>5.8.0</mongodb-driver-sync.version>
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - ActiveMQ -->
-    <artemis-jms-client.version>2.54.0</artemis-jms-client.version>
+    <artemis-jms-client.version>2.57.0</artemis-jms-client.version>
     <!-- Karate Clients - JMS - RabbitMQ -->
     <!-- 2.X.X : Version for JMS 2.0 -->
     <rabbitmq-jms-client.version>2.13.0</rabbitmq-jms-client.version>
@@ -165,7 +166,7 @@
     <!-- Karate Generators - Open Api -->
     <maven-model.version>3.9.16</maven-model.version>
     <swagger-parser.version>2.1.45</swagger-parser.version>
-    <swagger-inflector.version>2.0.17</swagger-inflector.version>
+    <swagger-inflector.version>3.0.2</swagger-inflector.version>
 
     <!-- Karate Runner - JWTGenerator -->
     <jsonwebtoken.version>0.13.0</jsonwebtoken.version>

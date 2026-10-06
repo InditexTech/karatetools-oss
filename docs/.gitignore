@@ -1,6 +1,4 @@
-/build
-/node_modules
-/public
+node_modules/
+build/
 .DS_Store
-antora-playbook.temp.yml
-antora-playbook-pr.yml
+.npmrc
