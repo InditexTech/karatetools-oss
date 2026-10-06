@@ -1,0 +1,14 @@
+.github/dependabot.yml
+  h_5fac3ddbd3d5cb 58-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ae37a2b56f12e15693a176cae9118ff4fd54267",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
