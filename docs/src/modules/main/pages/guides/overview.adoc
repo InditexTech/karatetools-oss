@@ -1,0 +1,25 @@
+= Guides
+:description: Step-by-step guides to accomplish specific tasks with Karate Tools.
+
+These guides show how to accomplish specific tasks with Karate Tools, grouped
+by area. New to Karate Tools? Start with the xref:quickstart.adoc[quickstart]
+instead — it walks the same areas in the recommended order.
+
+[cards,columns="1 s:2 m:3"]
+====
+[card]
+.xref:guides/archetype/overview.adoc[Archetype]
+Scaffold and initialize a new Karate module.
+
+[card]
+.xref:guides/open-api-generator/overview.adoc[Open API generator]
+Generate operations, smoke/functional tests and mock data from an Open API definition.
+
+[card]
+.xref:guides/clients/overview.adoc[Clients]
+JDBC, MongoDB, Kafka and JMS clients for use in tests.
+
+[card]
+.xref:guides/execution/overview.adoc[Execution]
+Arguments, logging, the mock server, reports and the Karate cache.
+====

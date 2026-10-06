@@ -24,3 +24,6 @@ log/
 
 # SpotBugs specific git ignore
 .fbExcludeFilterFile
+
+# Playwright MCP specific git ignore
+.playwright-mcp/
