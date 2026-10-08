@@ -132,7 +132,7 @@
     <pitest-skip>false</pitest-skip>
 
     <!-- Spring Boot  -->
-    <spring-boot.version>3.5.14</spring-boot.version>
+    <spring-boot.version>4.1.1</spring-boot.version>
 
     <!-- Kafka - Avro Generation for Testing purposes -->
     <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
@@ -160,7 +160,7 @@
 
     <!-- Karate Generators -->
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
-    <spring-core.version>6.2.19</spring-core.version>
+    <spring-core.version>7.0.9</spring-core.version>
     <!-- Karate Generators - Console -->
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
@@ -257,12 +257,17 @@
       <!-- Spring Boot  -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
+        <artifactId>spring-boot-starter-webmvc</artifactId>
         <version>${spring-boot.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-validation</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
         <version>${spring-boot.version}</version>
       </dependency>
       <dependency>
@@ -276,6 +281,12 @@
             <artifactId>android-json</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-webmvc-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
