@@ -1,0 +1,24 @@
+code/boot/pom.xml
+  h_7a1bb3dcd5e5dc 58,68-71,77-81
+code/boot/src/main/java/dev/inditex/karate/BasicApplication.java
+  h_7a1bb3dcd5e5dc 11
+code/boot/src/test/java/dev/inditex/karate/controller/BasicApiControllerIT.java
+  h_7a1bb3dcd5e5dc 14
+code/boot/src/test/java/dev/inditex/karate/controller/DockerHealthControllerIT.java
+  h_7a1bb3dcd5e5dc 20
+code/boot/src/test/java/dev/inditex/karate/docker/DockerComposeTestConfiguration.java
+  h_7a1bb3dcd5e5dc 5
+code/pom.xml
+  h_7a1bb3dcd5e5dc 163,260,268-272,285-290
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bb0a8b294ca0227245701590dbe0bb17c5f16c81",
+  "prompts": {},
+  "humans": {
+    "h_7a1bb3dcd5e5dc": {
+      "author": "Jose Maria Sanchidrian Martin <josemsmari@ext.inditex.com>"
+    }
+  }
+}
