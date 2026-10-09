@@ -344,6 +344,35 @@ jobs:
 
           echo "::endgroup::"
 
+      # docker-compose-failure-diagnostics
+      - name: docker-compose-failure-diagnostics
+        id: docker-compose-failure-diagnostics
+        if: >-
+          always() && !cancelled() &&
+          fromJSON(steps.config.outputs.config).karate.app.enabled == true &&
+          steps.start-java-app.outcome == 'failure'
+        working-directory: code
+        run: |
+
+          # docker-compose-failure-diagnostics
+
+          echo "::group::+++ docker-compose-failure-diagnostics +++"
+
+          COMPOSE_FILE="boot/src/test/resources/compose/docker-compose.yml"
+          DIAGNOSTICS_FILE="target/compose-diagnostics.log"
+
+          {
+            echo "+++ docker compose ps +++"
+              docker compose -f "$COMPOSE_FILE" --profile app ps --all
+            echo
+            echo "+++ docker compose logs: schema registries +++"
+            docker compose -f "$COMPOSE_FILE" --profile app logs --no-color schema-registry schema-registry-basic-auth
+          } > "$DIAGNOSTICS_FILE" 2>&1 || true
+
+          cat "$DIAGNOSTICS_FILE"
+
+          echo "::endgroup::"
+
       # mvn-clean-verify
       - name: mvn-clean-verify
         id: mvn-clean-verify
