@@ -204,7 +204,7 @@ services:
   schema-registry:
     container_name: kt-schema-registry
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:8.1.2
+    image: confluentinc/cp-schema-registry:8.3.2
     ports:
     - 38081:8081
     volumes:
@@ -221,7 +221,9 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_ZK_NAMESPACE: schema_registry
     healthcheck:
-      test: "curl -f http://localhost:8081/subjects || exit 1"
+      test: >-
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8081 && printf "GET /subjects HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n" >&3 &&
+        IFS= read -r status <&3 && [[ "$$status" =~ ^HTTP/[0-9.]+[[:space:]]200([[:space:]]|$) ]]'
       start_period: 10s
       interval: 10s
       retries: 10
@@ -235,7 +237,7 @@ services:
   schema-registry-basic-auth:
     container_name: kt-schema-registry-basic-auth
     profiles: [ "it", "app", "kafka" ]
-    image: confluentinc/cp-schema-registry:8.1.2
+    image: confluentinc/cp-schema-registry:8.3.2
     ports:
       - 38082:8082
     environment:
@@ -259,7 +261,10 @@ services:
       - "./schema_registry/schema_registry.jaas:/etc/schema_registry/schema_registry.jaas"
       - "./schema_registry/schema_registry.users:/etc/schema_registry/schema_registry.users"
     healthcheck:
-      test: "curl -f -u schemaregistry:schemaregistry-pwd http://localhost:8082/subjects || exit 1"
+      test: >-
+        bash -c 'auth=$$(cut -d, -f1 /etc/schema_registry/schema_registry.users | base64 | tr -d "\n") && exec 3<>/dev/tcp/127.0.0.1/8082 &&
+        printf "GET /subjects HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Basic %s\r\nConnection: close\r\n\r\n" "$$auth" >&3 &&
+        IFS= read -r status <&3 && [[ "$$status" =~ ^HTTP/[0-9.]+[[:space:]]200([[:space:]]|$) ]]'
       start_period: 10s
       interval: 10s
       retries: 10
