@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#194](https://github.com/InditexTech/karatetools-oss/issues/194) \[Karate-Tools] Insert system property values literally in SystemPropertiesParser
 - [#166](https://github.com/InditexTech/karatetools-oss/pull/166) \[Karate-Tools] Pass `github.ref` via `env` in docouture-release instead of interpolating it into `run`
 - [#177](https://github.com/InditexTech/karatetools-oss/pull/177) \[Karate-Tools] Harden the docouture workflows to least-privilege GITHUB_TOKENs
 
