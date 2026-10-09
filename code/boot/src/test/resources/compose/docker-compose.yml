@@ -262,7 +262,8 @@ services:
       - "./schema_registry/schema_registry.users:/etc/schema_registry/schema_registry.users"
     healthcheck:
       test: >-
-        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8082 && printf "GET /subjects HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Basic c2NoZW1hcmVnaXN0cnk6c2NoZW1hcmVnaXN0cnktcHdk\r\nConnection: close\r\n\r\n" >&3 &&
+        bash -c 'auth=$$(cut -d, -f1 /etc/schema_registry/schema_registry.users | base64 | tr -d "\n") && exec 3<>/dev/tcp/127.0.0.1/8082 &&
+        printf "GET /subjects HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Basic %s\r\nConnection: close\r\n\r\n" "$$auth" >&3 &&
         IFS= read -r status <&3 && [[ "$$status" =~ ^HTTP/[0-9.]+[[:space:]]200([[:space:]]|$) ]]'
       start_period: 10s
       interval: 10s
