@@ -142,6 +142,37 @@ class SystemPropertiesParserTest {
       );
     }
 
+    @ParameterizedTest
+    @MethodSource
+    void when_system_value_has_replacement_characters_expect_literal(final String systemValue) {
+      final Map<Object, Object> config = Map.of("key", "prefix-${system-var-literal}-suffix");
+      System.setProperty("system-var-literal", systemValue);
+      try {
+        final var result = SystemPropertiesParser.parseConfiguration(config);
+
+        assertThat(result).containsEntry("key", "prefix-" + systemValue + "-suffix");
+      } finally {
+        System.clearProperty("system-var-literal");
+      }
+    }
+
+    private static Stream<Arguments> when_system_value_has_replacement_characters_expect_literal() {
+      return Stream.of(
+          Arguments.of("pa$1word"),
+          Arguments.of("pa$$word"),
+          Arguments.of("C:\\certs\\key"),
+          Arguments.of("$"));
+    }
+
+    @Test
+    void when_default_value_has_replacement_characters_expect_literal() {
+      final Map<Object, Object> config = Map.of("key", "${system-var-undefined:pa$1word}");
+
+      final var result = SystemPropertiesParser.parseConfiguration(config);
+
+      assertThat(result).containsEntry("key", "pa$1word");
+    }
+
     private void setSystemProperties() {
       System.setProperty("system-var-3", "system-value-3");
       System.setProperty("system-var-5", "system-value-5");
