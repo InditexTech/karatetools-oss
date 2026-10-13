@@ -1,0 +1,14 @@
+code/boot/src/test/resources/compose/docker-compose.yml
+  h_5fac3ddbd3d5cb 265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a97a26d1b02563f65bb3d48a99b18b61a1aeb4a5",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
