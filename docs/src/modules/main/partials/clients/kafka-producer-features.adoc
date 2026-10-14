@@ -1,3 +1,4 @@
+// tag::clients-kafka-producer-features[]
 === Instantiate KafkaProducerClient
 
 **New instance of the KafkaProducerClient** providing the configuration as a map loaded from a yaml file.
@@ -104,3 +105,4 @@ Given def eventA2 = new KarateEvent("A2", "karate-A2", 12)
 # public void send(final String topic, final Object event, final Map<String, List<String>> headers)
 When kafkaProducerClient.send(topicA, eventA2, headersA)
 ----
+// end::clients-kafka-producer-features[]

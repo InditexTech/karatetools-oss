@@ -1,3 +1,4 @@
+// tag::clients-jms-config-activemq[]
 ⚙️ *`jmsFactory`* - JMS Factory to use: *`ActiveMQ`*
 
 ⚙️ *`brokerURL`* - URL of the Active MQ broker
@@ -7,3 +8,4 @@
 ⚙️ *`password`* - Password that the application uses to connect to ActiveMQ
 
 ⚙️ *`sendTimeout`* - Timeout in milliseconds for sending messages (default 5000)
+// end::clients-jms-config-activemq[]

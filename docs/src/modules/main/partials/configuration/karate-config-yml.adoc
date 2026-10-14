@@ -1,3 +1,4 @@
+// tag::configuration-karate-config-yml[]
 It is very important to *understand the working principle* of the `config.yml` and `config-<env>.yml` files since they work in a *cumulative fashion*.
 
 . *Generic configurations*: First, the `config.yml` is parsed for generic configuration settings, and specified configurations are set in Karate properties.
@@ -8,3 +9,4 @@ It is very important to *understand the working principle* of the `config.yml` a
 +
 When the test runs on `local` environment, the `defaultUsername` will be the default value `userA`.
 When the test runs on `pre` environment, the `defaultUsername` will be the defined `userB`.
+// end::configuration-karate-config-yml[]
