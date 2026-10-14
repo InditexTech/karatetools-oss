@@ -1,3 +1,4 @@
+// tag::archetype-configure-release[]
 CAUTION: These steps are to be performed at the *target artifact main pom level*, not at karate level.
 
 . Main artifact `pom.xml`
@@ -135,3 +136,4 @@ NOTE: The *workingDirectory* defined in the plugins pom, must point to the relat
     </plugins>
   </build>
 ----
+// end::archetype-configure-release[]

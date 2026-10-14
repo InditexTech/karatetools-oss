@@ -1,3 +1,4 @@
+// tag::archetype-review-output[]
 image::archetype/archetype-output.png[role="no-border, zoom-in"]
 
 ... Tools version manager file:
@@ -23,3 +24,4 @@ image::archetype/archetype-output.png[role="no-border, zoom-in"]
 * src/test/resources/config/kafka
 ... karate mocks folder to define standalone mock templates
 * src/test/resources/mocks/templates/standalone
+// end::archetype-review-output[]
