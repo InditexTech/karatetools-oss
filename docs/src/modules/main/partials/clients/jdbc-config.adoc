@@ -1,3 +1,4 @@
+// tag::clients-jdbc-config[]
 Configuration parameters for the JDBC Clients. These values can be overwritten by the corresponding (DB specific) system properties. System properties can be injected by CI/CD.
 
 NOTE: If the project has been generated using the xref:guides/archetype/overview.adoc[Karate Tools Archetype] the archetype would have prompted for the creation of the configuration files.
@@ -47,3 +48,4 @@ For example:
 ⚙️ *`password`* - password to connect
 
 ⚙️ *`health-query`* - SQL query to use to check if the DB is available.
+// end::clients-jdbc-config[]

@@ -1,3 +1,4 @@
+// tag::clients-mongodb-config[]
 
 Configuration parameters for the MongoDB clients. These values can be overwritten by the corresponding (DB specific) system properties. System properties can be injected by CI/CD.
 
@@ -34,3 +35,4 @@ This client can be configured for multi-environment execution with a *config fil
 ⚙️ *`server-selection-timeout`*: number of milliseconds the mongo driver will wait to select a server for an operation before giving up and raising an error
 
 ⚙️ *`socket-timeout`*: number of milliseconds a send or receive on a socket can take before timeout
+// end::clients-mongodb-config[]

@@ -1,3 +1,4 @@
+// tag::clients-jms-pom-objects[]
 The JMS Client is cappable of processing JMS TextMessage or ObjectMessage.
 
 In order to process JSM ObjectMessages you might need to add in the pom.xml the dependency to the module with the JMS Object classes.
@@ -29,3 +30,4 @@ In order to process JSM ObjectMessages you might need to add in the pom.xml the 
     ...
   </dependencies>
 ----
+// end::clients-jms-pom-objects[]

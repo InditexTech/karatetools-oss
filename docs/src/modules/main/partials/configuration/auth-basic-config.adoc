@@ -1,3 +1,4 @@
+// tag::configuration-auth-basic-config[]
 The default settings for Basic authentication are:
 
 * `defaultAuthMode`: `basic`
@@ -8,3 +9,4 @@ The default settings for Basic authentication are:
 
 * `credentials`: pairs of username: password.
 ** `auth.password` when used in a specific request.
+// end::configuration-auth-basic-config[]

@@ -1,3 +1,4 @@
+// tag::configuration-auth-jwt-config[]
 The default settings for JWT authentication are:
 
 * `defaultAuthMode`: `jwt`
@@ -5,3 +6,4 @@ The default settings for JWT authentication are:
 
 * `defaultUsername`: default username.
 ** `auth.username` when used in a specific request.
+// end::configuration-auth-jwt-config[]

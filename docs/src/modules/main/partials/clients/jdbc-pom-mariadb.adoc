@@ -1,3 +1,4 @@
+// tag::clients-jdbc-pom-mariadb[]
 *karatetools-starter* already includes the *Maria DB* JDBC dependencies.
 
 .*If you need to change the dependency version*, you can include it in the pom as follows:
@@ -24,3 +25,4 @@
   </dependencies>
 ----
 ====
+// end::clients-jdbc-pom-mariadb[]

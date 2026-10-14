@@ -1,3 +1,4 @@
+// tag::clients-jms-pom-rabbitmq[]
 *karatetools-starter* already includes the *Rabbit MQ* JMS dependencies.
 
 .*If you need to change the dependency version*, you can include it in the pom as follows:
@@ -26,3 +27,4 @@
   </dependencies>
 ----
 ====
+// end::clients-jms-pom-rabbitmq[]

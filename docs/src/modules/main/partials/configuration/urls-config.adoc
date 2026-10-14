@@ -1,3 +1,4 @@
+// tag::configuration-urls-config[]
 The environment URLs must be updated per environment in the `config-<env>.yml` files:
 
 * `urls`
@@ -10,3 +11,4 @@ Artifact Urls keys are added automatically when using the *open-api-generator* t
 * `"#('http://localhost:' + (karate.properties['APP_PORT'] || 8080) + '/TO_BE_COMPLETED')"`
 
 Note the marker *`#karate-utils-new-karate-url-marker`* is used by the generator to find the location of the new urls, *please do not remove*
+// end::configuration-urls-config[]

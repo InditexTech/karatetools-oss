@@ -1,3 +1,4 @@
+// tag::configuration-auth-errors[]
 When Karate Tools Authentication fails it can be identified through the karate logs and the karate reports.
 
 For example:
@@ -27,3 +28,4 @@ image::configuration/auth-error-example.png[role="no-border, zoom-in"]
 ----
 
 IMPORTANT: The specific error messages for each supported authentication type are defined in the corresponding section.
+// end::configuration-auth-errors[]

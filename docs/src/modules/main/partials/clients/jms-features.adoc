@@ -1,3 +1,4 @@
+// tag::clients-jms-features[]
 === Instantiate JMSClient
 
 *New instance of the JMSClient* providing the configuration as a map loaded from a yaml file.
@@ -398,3 +399,4 @@ When def messages = jmsClient.consume(queue, 10000)
 Then assert messages.length == 1
 Then match messages[0].textMessage == jmsMessagePlainText
 ----
+// end::clients-jms-features[]

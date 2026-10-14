@@ -1,3 +1,4 @@
+// tag::configuration-summary[]
 The following files are responsible for managing the test configuration. Custom configurations are specified in the respective files.
 
 * `config.yml`: Configuration file that contains the common test configurations.
@@ -25,3 +26,4 @@ Karate Tools include the following custom configurations:
 ** The supported authentication mechanisms are:
 *** *Basic*: See *xref:reference/configuration/auth-basic.adoc[Authentication - Basic]*
 *** *JWT*: See *xref:reference/configuration/auth-jwt.adoc[Authentication - JWT]*
+// end::configuration-summary[]

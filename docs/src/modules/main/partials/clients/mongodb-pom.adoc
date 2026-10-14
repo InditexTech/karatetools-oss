@@ -1,3 +1,4 @@
+// tag::clients-mongodb-pom[]
 NOTE: If the project has been generated using the xref:guides/archetype/overview.adoc[Karate Tools Archetype] the pom will already contain the corresponding configuration.
 
 .Add the karatetools dependency in the karate pom:
@@ -8,3 +9,4 @@ NOTE: If the project has been generated using the xref:guides/archetype/overview
 include::example$clients/karatetools-pom.xml[]
 ----
 ====
+// end::clients-mongodb-pom[]

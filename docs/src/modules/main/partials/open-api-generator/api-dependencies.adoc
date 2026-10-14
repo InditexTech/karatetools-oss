@@ -1,3 +1,4 @@
+// tag::open-api-generator-api-dependencies[]
 Include dependencies to project rest-api + Third Party APIs which need mocking in the karate `pom.xml`
 
 [source,xml,subs="+attributes"]
@@ -32,3 +33,4 @@ For example:
 ----
 
 NOTE: *open-api-generator* also supports *openapi-rest.yml* files directly placed in some karate folder.
+// end::open-api-generator-api-dependencies[]
