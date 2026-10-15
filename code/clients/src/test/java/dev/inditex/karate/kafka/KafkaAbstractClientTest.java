@@ -1,6 +1,7 @@
 package dev.inditex.karate.kafka;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -21,6 +22,7 @@ import dev.inditex.karate.AbstractClientTest;
 import ch.qos.logback.classic.Level;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import org.apache.avro.util.ClassSecurityValidator;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.DescribeClusterResult;
@@ -40,6 +42,13 @@ class KafkaAbstractClientTest extends AbstractClientTest {
 
   @Nested
   class Constructor {
+    @Test
+    void when_generated_avro_record_expect_package_trusted() {
+      new KafkaProducerClient(getDefaultConfig());
+
+      assertThatCode(() -> ClassSecurityValidator.validate(KarateEvent.class)).doesNotThrowAnyException();
+    }
+
     @Test
     void when_valid_config_expect_fields_informed() {
       final Map<Object, Object> config = getDefaultConfig();
