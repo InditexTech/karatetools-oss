@@ -1,0 +1,245 @@
+[[IgnoredVulns]]
+id = "GHSA-38f8-5428-x5cv"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-3qp7-7mw8-wx86"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-45q3-82m4-75jr"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-4mp9-239f-g9hg"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-558v-64gr-wgg4"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-563q-j3cm-6jxm"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-57rv-r2g8-2cj3"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-5mg8-w23w-74h3"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-5pvg-856g-cp85"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-5x3r-wrvg-rp6q"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-676x-f7gg-47vc"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-6cqp-g7gg-8hr5"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-6jqx-86gh-f27w"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-7g45-4rm6-3mm3"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-84h7-rjj3-6jx4"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-8c42-7qj2-3j46"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-93wv-jw9v-4972"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-c2gf-v879-257j"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-c4c3-7fpv-j4q5"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-c653-97m9-rcg9"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-c69g-56f8-xwqj"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-c9ph-gxww-7744"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-cc37-9q2j-3hfv"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-cm33-6792-r9fm"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-f6hv-jmp6-3vwv"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-fccg-mwvh-qqg4"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-g3pr-3p32-fp23"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-gcjf-9mgh-3p7g"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-h2qv-fj59-j46j"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-hvcg-qmg6-jm4c"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-jppx-w49h-x2qq"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-m4cv-j2px-7723"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-mfg7-5gfp-c4w3"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-mj4r-2hfc-f8p6"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-mvh2-crg5-v77c"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-pwqr-wmgm-9rr8"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-q4f6-jm68-57ww"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-q6cq-mhr2-jmr5"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-r4v4-5mwr-2fwr"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-rwm7-x88c-3g2p"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-v8h7-rr48-vmmv"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-w573-9ffj-6ff9"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-w737-wx49-qj23"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-w9fj-cfpg-grvv"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-wh89-7897-x99h"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-x4gw-5cx5-pgmh"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-xjw8-8c5c-9r79"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-xmv7-r254-6q78"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-xxqh-mfjm-7mv9"
+ignoreUntil = 2027-04-15
+reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
+
