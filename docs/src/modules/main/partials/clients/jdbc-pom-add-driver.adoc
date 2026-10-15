@@ -1,4 +1,3 @@
-// tag::clients-jdbc-pom-add-driver[]
 
 .*If you need to add a different JDBC Driver*, you can include it in the pom as follows:
 [%collapsible]
@@ -26,4 +25,3 @@
   </dependencies>
 ----
 ====
-// end::clients-jdbc-pom-add-driver[]

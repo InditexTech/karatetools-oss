@@ -1,4 +1,3 @@
-// tag::clients-jdbc-pom-postgresql[]
 *karatetools-starter* already includes the *PostgreSQL* JDBC dependencies.
 
 .*If you need to change the dependency version*, you can include it in the pom as follows:
@@ -25,4 +24,3 @@
   </dependencies>
 ----
 ====
-// end::clients-jdbc-pom-postgresql[]
