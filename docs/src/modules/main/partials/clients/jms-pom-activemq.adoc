@@ -1,4 +1,3 @@
-// tag::clients-jms-pom-activemq[]
 *karatetools-starter* already includes the *Active MQ* JMS dependencies.
 
 .*If you need to change the dependency version*, you can include it in the pom as follows:
@@ -26,4 +25,3 @@
   </dependencies>
 ----
 ====
-// end::clients-jms-pom-activemq[]

@@ -1,4 +1,3 @@
-// tag::clients-mongodb-features[]
 
 === Instantiate MongoDBClient
 
@@ -289,4 +288,3 @@ Then assert countAfterInsertMany == 3
 ----
 
 === Replace a document in the collection
-// end::clients-mongodb-features[]

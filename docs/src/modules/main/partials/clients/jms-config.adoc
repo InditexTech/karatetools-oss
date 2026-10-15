@@ -1,4 +1,3 @@
-// tag::clients-jms-config[]
 Configuration parameters for the JMS Clients. These values can be overwritten by the corresponding system properties. System properties can be injected by CI/CD.
 
 NOTE: If the project has been generated using the xref:guides/archetype/overview.adoc[Karate Tools Archetype] the archetype would have prompted for the creation of the configuration files.
@@ -30,4 +29,3 @@ For example:
                     ...
                     activemq-config-pre.yml
 ----
-// end::clients-jms-config[]

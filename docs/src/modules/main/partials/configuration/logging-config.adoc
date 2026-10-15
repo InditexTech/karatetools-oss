@@ -1,4 +1,3 @@
-// tag::configuration-logging-config[]
 Karate logging configuration file (`logback-test.xml`) is located in the `src/test/resources` folder. The default configuration is as follows:
 
 * The log output is to the console and to a file.
@@ -7,4 +6,3 @@ Karate logging configuration file (`logback-test.xml`) is located in the `src/te
 * The log level for the root logger is set to `INFO`.
 
 NOTE: If the log level for `com.intuit.karate` is changed to debug, Karate will show/log all the requests and responses. This setting must be used only for debugging purposes as it will generate a lot of output.
-// end::configuration-logging-config[]

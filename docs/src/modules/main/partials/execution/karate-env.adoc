@@ -1,4 +1,3 @@
-// tag::execution-karate-env[]
 NOTE: default `karate.env` = `local`
 
 * Execute all tests with default environment (`local`)
@@ -25,4 +24,3 @@ For example:
 
 * `@env=local,pre,pre_zero`: the scenario will be executed only when the value of karate.env is equal to `local` on `pre` or `pre_zero`.
 * `@envnot=local`: the scenario will be executed only when the value of karate.env is anything other than `local`.
-// end::execution-karate-env[]

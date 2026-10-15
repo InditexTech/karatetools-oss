@@ -1,4 +1,3 @@
-// tag::execution-karate-options-tags[]
 * Execute tests with specific *tags* using `karate.options` `-t` or `--tags`
 +
 [source,bash,subs="+attributes"]
@@ -61,4 +60,3 @@ mvn clean test -Dkarate.options="-t @smoke -t @op.showItemById,@op.listItems"
 ----
 mvn clean test -Dkarate.options="-t @functional -t @op.showItemById,@op.listItems"
 ----
-// end::execution-karate-options-tags[]

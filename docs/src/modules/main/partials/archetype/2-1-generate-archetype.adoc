@@ -1,4 +1,3 @@
-// tag::archetype-generate-project[]
 Go to the folder where you want to create the karate project, for example `e2e` and run the following command:
 
 [source,bash,subs="+attributes"]
@@ -22,4 +21,3 @@ For the generated karate project we *recommend to use*:
 * *artifact ID*: `karate`
 * Same *version* as the target artifact.
 * *package* with the same value as the target artifact with suffix `.karate`, for example: `com.mypackage.karate`
-// end::archetype-generate-project[]

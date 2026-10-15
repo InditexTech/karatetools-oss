@@ -1,4 +1,3 @@
-// tag::configuration-auth-defaults[]
 The environment *Authentication mode* and *default settings* must be defined per environment.
 
 * `defaultAuthMode`: basic ...
@@ -26,4 +25,3 @@ credentials:
 ----
 
 IMPORTANT: The default values for each supported authentication type are defined in the corresponding section.
-// end::configuration-auth-defaults[]

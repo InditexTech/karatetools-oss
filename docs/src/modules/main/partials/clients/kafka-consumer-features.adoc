@@ -1,4 +1,3 @@
-// tag::clients-kafka-consumer-features[]
 === Instantiate KafkaConsumerClient
 
 **New instance of the KafkaConsumerClient** providing the configuration as a map loaded from a yaml file.
@@ -566,4 +565,3 @@ Then match messagesTopicD[1] == karate.toJson(eventD2)
 Then match messagesTopicD[2] == karate.toJson(eventD3)
 Then match messagesTopicD[3] == karate.toJson(eventD4)
 ----
-// end::clients-kafka-consumer-features[]

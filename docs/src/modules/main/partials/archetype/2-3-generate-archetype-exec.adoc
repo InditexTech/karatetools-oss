@@ -1,4 +1,3 @@
-// tag::archetype-generate-execution[]
 This will automatically create the karate artifact folder structure, the test runner, the configuration and support files.
 
 image::archetype/archetype-execution.png[role="no-border, zoom-in"]
@@ -14,4 +13,3 @@ image::archetype/archetype-execution.png[role="no-border, zoom-in"]
 ----
 package com.mypackage.karate;
 ----
-// end::archetype-generate-execution[]

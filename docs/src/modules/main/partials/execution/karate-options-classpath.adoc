@@ -1,4 +1,3 @@
-// tag::execution-karate-options-classpath[]
 * Execute tests on a specified *classpath folder* using `karate.options` `classpath:`
 +
 [source,bash,subs="+attributes"]
@@ -18,4 +17,3 @@ mvn clean test -Dkarate.options="classpath:com/.../xxx-api-rest-stable/functiona
 The execution will include only the tests in the specified feature file
 
 CAUTION: The *classpath* filter should be at the end of the `karate.options`
-// end::execution-karate-options-classpath[]

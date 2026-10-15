@@ -1,5 +1,3 @@
-// tag::configuration-auth-types[]
 🔐 `basic`:: see xref:reference/configuration/auth-basic.adoc[Basic Authentication].
 
 🔐 `jwt`:: see xref:reference/configuration/auth-jwt.adoc[JWT Authentication].
-// end::configuration-auth-types[]
