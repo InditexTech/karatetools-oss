@@ -103,6 +103,11 @@
 
     <!-- Common -->
     <karate.version>1.5.2</karate.version>
+    <!-- Security overrides for Karate 1.x transitives. -->
+    <micrometer.version>1.16.7</micrometer.version>
+    <netty.version>4.2.17.Final</netty.version>
+    <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
+    <guava.version>32.0.1-jre</guava.version>
     <lombok.version>1.18.46</lombok.version>
     <jackson.version>2.22.3</jackson.version>
     <gson.version>2.14.0</gson.version>
@@ -175,6 +180,31 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Align Karate's Armeria transitives to patched compatible releases. -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-bom</artifactId>
+        <version>${micrometer.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.thymeleaf</groupId>
+        <artifactId>thymeleaf</artifactId>
+        <version>${thymeleaf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
       <!-- Common -->
       <dependency>
         <groupId>io.karatelabs</groupId>
