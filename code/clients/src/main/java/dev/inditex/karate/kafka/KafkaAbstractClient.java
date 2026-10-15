@@ -10,6 +10,7 @@ import dev.inditex.karate.parser.SystemPropertiesParser;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.avro.util.ClassSecurityValidator;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.common.KafkaException;
@@ -22,6 +23,14 @@ public abstract class KafkaAbstractClient {
 
   /** The Constant DEFAULT_TIMEOUT. */
   public static final long DEFAULT_TIMEOUT = 5000;
+
+  /** The generated Avro record package prefix. */
+  private static final String GENERATED_AVRO_PACKAGE_PREFIX = "dev.inditex.karate.kafka.";
+
+  static {
+    ClassSecurityValidator.setGlobal(ClassSecurityValidator.composite(
+        ClassSecurityValidator.getGlobal(), clazz -> clazz.getName().startsWith(GENERATED_AVRO_PACKAGE_PREFIX)));
+  }
 
   /** The configuration. */
   protected Properties configuration = new Properties();
