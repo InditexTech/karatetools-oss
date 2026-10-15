@@ -1,4 +1,3 @@
-// tag::clients-kafka-pom-client[]
 *karatetools-starter* already includes the corresponding Kafka dependencies.
 
 .*If you need to change the dependency version*, you can include it in the pom as follows:
@@ -38,4 +37,3 @@
   </dependencies>
 ----
 ====
-// end::clients-kafka-pom-client[]

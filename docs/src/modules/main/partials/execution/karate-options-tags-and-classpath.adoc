@@ -1,4 +1,3 @@
-// tag::execution-karate-options-tags-and-classpath[]
 Karate *tags* and *classpath* can be combined.
 
 For example:
@@ -11,4 +10,3 @@ mvn clean test -Dkarate.options="-t @op.showItemById classpath:com/mypackage/api
 ----
 +
 CAUTION: The *classpath* filter should be at the end of the `karate.options`
-// end::execution-karate-options-tags-and-classpath[]

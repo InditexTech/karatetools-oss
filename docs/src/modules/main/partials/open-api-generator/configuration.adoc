@@ -1,4 +1,3 @@
-// tag::open-api-generator-configuration[]
 NOTE: If the project has been generated using the xref:guides/archetype/overview.adoc[Karate Tools Archetype] the pom will already contain the corresponding configuration.
 
 .Add the karatetools dependency and execution plugin in the karate pom:
@@ -76,5 +75,3 @@ TIP: Override the default permanently in your `pom.xml` `<properties>`, or at th
 </build>
 ----
 ====
-
-// end::open-api-generator-configuration[]

@@ -1,4 +1,3 @@
-// tag::clients-kafka-summary[]
 Java Clients (Consumer and Producer) to interact with *Kafka from karate*.
 
 It provides features to *consume and produce Kafka Events* for one o multiple topics.
@@ -22,4 +21,3 @@ include::partial$puml/kafka-clients.puml[]
 ** Kafka Clients Features and Usage
 *** *xref:#client-features-and-usage-producer[Client Features and Usage - Producer]*
 *** *xref:#client-features-and-usage-consumer[Client Features and Usage - Consumer]*
-// end::clients-kafka-summary[]

@@ -1,4 +1,3 @@
-// tag::configuration-auth-overwrite[]
 Each of the auth default settings can be overwritten at request level using the corresponding `auth.xxx` field.
 
 * `auth.authMode`
@@ -25,4 +24,3 @@ auth:
 ----
 
 IMPORTANT: The specific values that can be overwritten (`auth.XXX`) for each supported authentication type are defined in the corresponding section.
-// end::configuration-auth-overwrite[]

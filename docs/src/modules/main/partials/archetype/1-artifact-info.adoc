@@ -1,4 +1,3 @@
-// tag::archetype-artifact-info[]
 In the *artifact's main `pom.xml`* file, you will find the artifact's *group ID* and *version* for which the Karate tests are to be created.
 
 [source,xml,subs="+attributes"]
@@ -13,4 +12,3 @@ In the *artifact's code*, you will find the artifact's main package.
 ----
 package com.mypackage;
 ----
-// end::archetype-artifact-info[]

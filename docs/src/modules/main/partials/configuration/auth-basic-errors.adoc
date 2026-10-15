@@ -1,4 +1,3 @@
-// tag::configuration-auth-basic-errors[]
 The errors applicable to Basic authentication are:
 
 * `invalid authMode`:
@@ -21,4 +20,3 @@ The errors applicable to Basic authentication are:
 ----
 >> auth >> Trying to authenticate with no password. auth.authMode:basic auth.username:username100 auth.password:undefined
 ----
-// end::configuration-auth-basic-errors[]

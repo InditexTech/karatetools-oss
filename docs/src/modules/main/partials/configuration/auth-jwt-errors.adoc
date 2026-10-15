@@ -1,4 +1,3 @@
-// tag::configuration-auth-jwt-errors[]
 The errors applicable to JWT authentication are:
 
 * `invalid authMode`:
@@ -21,4 +20,3 @@ The errors applicable to JWT authentication are:
 ----
 >> auth >> jwt >> failed to generate jwt
 ----
-// end::configuration-auth-jwt-errors[]

@@ -1,4 +1,3 @@
-// tag::clients-mongodb-summary[]
 Java Client to interact with *MongoDB from karate*.
 
 It provides features to execute operations such as *count*, *find*, *insert and insertMany*, *replace*, *delete and deleteMany* over MongoDB collections.
@@ -21,4 +20,3 @@ include::partial$puml/mongodb-client.puml[]
 
 * How to use it in the karate files:
 ** *xref:#client-features-and-usage[MongoDB Client Features and Usage]*
-// end::clients-mongodb-summary[]
