@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2027-04-15
+reason = "braces@3.0.3 is transitive documentation build tooling from Antora. Antora 3.2.1 still requires it and no patched braces version exists."
