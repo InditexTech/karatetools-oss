@@ -62,6 +62,34 @@ class ConsoleCLITest {
   }
 
   @Nested
+  class Platform {
+    @ParameterizedTest
+    @MethodSource("macOsArmPlatforms")
+    void when_platform_is_macos_arm_expect_true(final String osName, final String osArch) {
+      assertThat(ConsoleCLI.isMacOsArm(osName, osArch)).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("otherPlatforms")
+    void when_platform_is_not_macos_arm_expect_false(final String osName, final String osArch) {
+      assertThat(ConsoleCLI.isMacOsArm(osName, osArch)).isFalse();
+    }
+
+    static Stream<Arguments> macOsArmPlatforms() {
+      return Stream.of(
+          Arguments.of("Mac OS X", "aarch64"),
+          Arguments.of("macOS", "arm64"));
+    }
+
+    static Stream<Arguments> otherPlatforms() {
+      return Stream.of(
+          Arguments.of("Mac OS X", "x86_64"),
+          Arguments.of("Linux", "aarch64"),
+          Arguments.of("Windows 11", "amd64"));
+    }
+  }
+
+  @Nested
   class PromptInput {
     @Test
     void when_input_provided_expect_value() {
