@@ -1,0 +1,19 @@
+docs/src/modules/main/partials/open-api-generator/configuration.adoc
+  s_f8a93c77d2f28a::t_e7375d41d8137b 78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e71eef0461d4e0bc145bc60bf829ac2edb13b117",
+  "prompts": {},
+  "sessions": {
+    "s_f8a93c77d2f28a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ef4215024ffeGcaiistTTXlLy6",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
