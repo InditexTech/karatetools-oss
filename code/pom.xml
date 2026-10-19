@@ -153,7 +153,7 @@
     <artemis-jms-client.version>2.57.0</artemis-jms-client.version>
     <!-- Karate Clients - JMS - RabbitMQ -->
     <!-- 2.X.X : Version for JMS 2.0 -->
-    <rabbitmq-jms-client.version>2.13.0</rabbitmq-jms-client.version>
+    <rabbitmq-jms-client.version>3.9.0</rabbitmq-jms-client.version>
     <!-- Karate Clients - Kafka  -->
     <kafka-clients.version>3.9.2</kafka-clients.version>
     <kafka-avro-serializer.version>7.8.5</kafka-avro-serializer.version>
