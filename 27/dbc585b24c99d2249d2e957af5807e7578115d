@@ -1,0 +1,16 @@
+code/generators/src/main/java/dev/inditex/karate/console/ConsoleCLI.java
+  h_5fac3ddbd3d5cb 6,68-70,85-87,93-101
+code/generators/src/test/java/dev/inditex/karate/console/ConsoleCLITest.java
+  h_5fac3ddbd3d5cb 64-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "27dbc585b24c99d2249d2e957af5807e7578115d",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
