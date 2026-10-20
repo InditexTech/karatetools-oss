@@ -16,12 +16,17 @@ import de.codeshelf.consoleui.prompt.ExpandableChoiceResult;
 import de.codeshelf.consoleui.prompt.InputResult;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
+import jline.Terminal;
+import jline.TerminalFactory;
+import org.fusesource.jansi.AnsiConsole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 class ConsoleCLITest {
 
@@ -58,6 +63,68 @@ class ConsoleCLITest {
       final var result = ConsoleCLI.initializeConsole();
 
       assertThat(result).isNull();
+    }
+
+    @Test
+    void when_platform_is_not_macos_arm_expect_jansi_is_installed_and_uninstalled() throws Exception {
+      final String originalOsName = System.getProperty("os.name");
+      final String originalOsArch = System.getProperty("os.arch");
+      System.setProperty("os.name", "Linux");
+      System.setProperty("os.arch", "amd64");
+      ConsoleCLI.withRealTerminal();
+
+      final Terminal terminal = Mockito.mock(Terminal.class);
+      try (MockedStatic<AnsiConsole> ansiConsole = Mockito.mockStatic(AnsiConsole.class);
+          MockedStatic<TerminalFactory> terminalFactory = Mockito.mockStatic(TerminalFactory.class)) {
+        terminalFactory.when(TerminalFactory::get).thenReturn(terminal);
+
+        assertThat(ConsoleCLI.initializeConsole()).isNotNull();
+        ConsoleCLI.restoreConsole();
+
+        ansiConsole.verify(AnsiConsole::systemInstall);
+        ansiConsole.verify(AnsiConsole::systemUninstall);
+        Mockito.verify(terminal).restore();
+      } finally {
+        restoreSystemProperty("os.name", originalOsName);
+        restoreSystemProperty("os.arch", originalOsArch);
+      }
+    }
+  }
+
+  @Nested
+  class Platform {
+    @ParameterizedTest
+    @MethodSource("macOsArmPlatforms")
+    void when_platform_is_macos_arm_expect_true(final String osName, final String osArch) {
+      assertThat(ConsoleCLI.isMacOsArm(osName, osArch)).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("otherPlatforms")
+    void when_platform_is_not_macos_arm_expect_false(final String osName, final String osArch) {
+      assertThat(ConsoleCLI.isMacOsArm(osName, osArch)).isFalse();
+    }
+
+    static Stream<Arguments> macOsArmPlatforms() {
+      return Stream.of(
+          Arguments.of("Mac OS X", "aarch64"),
+          Arguments.of("macOS", "arm64"));
+    }
+
+    static Stream<Arguments> otherPlatforms() {
+      return Stream.of(
+          Arguments.of("Mac OS X", "x86_64"),
+          Arguments.of("Linux", "aarch64"),
+          Arguments.of("Linux", "arm64"),
+          Arguments.of("Windows 11", "amd64"));
+    }
+  }
+
+  private static void restoreSystemProperty(final String key, final String value) {
+    if (value == null) {
+      System.clearProperty(key);
+    } else {
+      System.setProperty(key, value);
     }
   }
 
