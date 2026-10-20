@@ -1,6 +1,7 @@
 = About Karate Tools
 :description: What Karate Tools is, who it is for, and why it exists.
 
+// tag::overview-about[]
 Karate Tools is a toolkit to facilitate a Karate module's initialization,
 configuration, test generation and execution.
 
@@ -13,7 +14,9 @@ mocks from Open API.
 *messaging (Kafka & JMS)*.
 
 ⏩ *Execution* in different environments of Karate tests for a REST artifact.
+// end::overview-about[]
 
+// tag::overview-features[]
 == Key features
 
 Using an archetype (`karatetools-archetype`), Karate Tools generates a Karate
@@ -37,6 +40,7 @@ generation and execution of Karate tests.
    producer) and JMS messaging. See xref:guides/clients/overview.adoc[].
 ** a Java `KarateCache` to share variables across tests. See
    xref:guides/execution/karate-cache.adoc[].
+// end::overview-features[]
 
 == Benefits
 
