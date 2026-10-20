@@ -1,6 +1,7 @@
 = Docs module
 :description: The karatetools-oss-docs module.
 
+// tag::contributing-repo-structure-docs[]
 The documentation module `karatetools-oss-docs` follows standard structure for Antora documentation:
 
 [source,subs="+attributes"]
@@ -23,3 +24,4 @@ This starts `docouture dev`, which builds the site and serves it at
 `http://localhost:5000` with live reload — pass `--port` to use a different
 one. See xref:development.adoc[Development] for the full command set
 (`docouture build`, `docouture doctor`, releasing, publishing).
+// end::contributing-repo-structure-docs[]
