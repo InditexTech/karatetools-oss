@@ -3,6 +3,7 @@ package dev.inditex.karate.console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import de.codeshelf.consoleui.elements.ConfirmChoice;
@@ -64,7 +65,9 @@ public class ConsoleCLI {
     ConsolePrompt consolePrompt = null;
     if (withRealTerminal) {
       try {
-        AnsiConsole.systemInstall();
+        if (!isMacOsArm()) {
+          AnsiConsole.systemInstall();
+        }
         consolePrompt = new ConsolePrompt();
       } catch (final Exception e) {
         log.warn("initializeConsole Exception {}", e.getMessage());
@@ -79,10 +82,21 @@ public class ConsoleCLI {
   public static void restoreConsole() {
     try {
       TerminalFactory.get().restore();
-      AnsiConsole.systemUninstall();
+      if (!isMacOsArm()) {
+        AnsiConsole.systemUninstall();
+      }
     } catch (final Exception e) {
       log.warn("restoreConsole Exception {}", e.getMessage());
     }
+  }
+
+  static boolean isMacOsArm() {
+    return isMacOsArm(System.getProperty("os.name"), System.getProperty("os.arch"));
+  }
+
+  static boolean isMacOsArm(final String osName, final String osArch) {
+    return osName.toLowerCase(Locale.ROOT).contains("mac")
+        && ("aarch64".equalsIgnoreCase(osArch) || "arm64".equalsIgnoreCase(osArch));
   }
 
   /**

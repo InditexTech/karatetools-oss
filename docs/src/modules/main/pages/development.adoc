@@ -1,6 +1,7 @@
 = Development
 :description: Set up a development environment and work on Karate Tools.
 
+// tag::contributing-development-guide[]
 This page explains the process of implementing new features or fixing bugs
 in the Karate Tools ecosystem, and points you at the
 xref:contributing/repo-structure/overview.adoc[repository structure] and the
@@ -38,6 +39,7 @@ The xref:contributing/repo-structure/overview.adoc[repository structure]
 page describes the code structure, to help you find the location of the
 code to add or modify, how to execute and verify the tests, and how to
 update the documentation.
+// end::contributing-development-guide[]
 
 == Environment setup
 
