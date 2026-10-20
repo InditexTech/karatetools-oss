@@ -1,5 +1,6 @@
 = Karate Open Api Generator - Smoke Tests
 
+// tag::open-api-generator-smoke[]
 Karate *Smoke Tests*: Generates *smoke tests* for each of the Open API defined paths and response codes. These tests are meant only to verify the artifact end-points are compliant (response codes and schemas) with their Open API definition.
 
 * The generation steps are the following:
@@ -241,3 +242,4 @@ responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/B
 TIP: The data (params, body) in each of the test data files must be updated to fulfill the test purpose.
 
 NOTE: If the api defines `default` response codes, the `statusCode` of the test data will be set to `null` and will require manual update.
+// end::open-api-generator-smoke[]
