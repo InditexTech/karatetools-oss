@@ -1,5 +1,6 @@
 = Logging
 
+// tag::execution-logging[]
 To be able to see karate HTTP requests and responses (including headers) in the logs the logger lever for `com.intuit.karate` is to be set to `DEBUG`.
 
 Since this is not recommended as default configuration, you can create another logback configuration file, for example `logback-test-debug.xml` with this setting as well as any other Debugging, for example karate tools.
@@ -42,3 +43,4 @@ For example:
 ----
 mvn clean test -Dkarate.env=local -Dkarate.options="..." -Dkarate.report.options="--showLog true" -Dlogback.configurationFile=src/test/resources/logback-test-debug.xml
 ----
+// end::execution-logging[]

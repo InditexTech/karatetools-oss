@@ -1,6 +1,7 @@
 = Boot module
 :description: The karatetools-oss-boot module.
 
+// tag::contributing-repo-structure-boot[]
 The `karatetools-oss-boot` module includes the following packages:
 
 * 📦 `dev.inditex.karate`: *Spring Boot Application*
@@ -27,3 +28,4 @@ IMPORTANT: Any changes made in the Karate Tools *codebase* must be reflected in 
 ....
 include::partial$puml/karatetools-oss-boot-integration-tests.puml[]
 ....
+// end::contributing-repo-structure-boot[]
