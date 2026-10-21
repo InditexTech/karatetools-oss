@@ -1,6 +1,7 @@
 = Runner module
 :description: The karatetools-oss-runner module.
 
+// tag::contributing-repo-structure-runner[]
 The `karatetools-oss-runner` module includes the following packages:
 
 * 📦 `dev.inditex.karate.jwt`: *JWT generator* to create *JWT tokens* for *authentication* and *authorization* purposes in *Karate* tests.
@@ -25,3 +26,4 @@ It also includes the following karate resources:
 ....
 include::partial$puml/karatetools-oss-runner.puml[]
 ....
+// end::contributing-repo-structure-runner[]
