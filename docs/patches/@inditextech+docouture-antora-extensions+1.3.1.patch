@@ -1,0 +1,37 @@
+diff --git a/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js b/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
+--- a/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
++++ b/node_modules/@inditextech/docouture-antora-extensions/lib/redirects.js
+@@ -137,7 +137,12 @@ function resolvePageAlias(page, compiled, realUrls, htmlExtensionStyle, logger)
+       )
+       return undefined
+     }
+-    return { out: { path: outPath }, pub: { url: pubUrl }, rel: { pub: { url: page.pub.url } } }
++    return {
++      out: { path: outPath },
++      pub: { url: pubUrl },
++      rel: { pub: { url: page.pub.url } },
++      src: { component: page.src.component, version: page.src.version, module: page.src.module },
++    }
+   }
+   return undefined
+ }
+@@ -273,5 +278,8 @@
+ function buildUrlAndOutPath(literalPath, htmlExtensionStyle) {
+   const trimmed = literalPath.replace(/^\/+/, '').replace(/\/+$/, '')
++  if (trimmed.endsWith('.html')) {
++    return { pubUrl: '/' + trimmed, outPath: trimmed }
++  }
+   if (htmlExtensionStyle === 'indexify') {
+     return { pubUrl: '/' + trimmed + '/', outPath: trimmed + '/index.html' }
+   }
+diff --git a/node_modules/@inditextech/docouture-antora-extensions/lib/duplicate-latest-version.js b/node_modules/@inditextech/docouture-antora-extensions/lib/duplicate-latest-version.js
+--- a/node_modules/@inditextech/docouture-antora-extensions/lib/duplicate-latest-version.js
++++ b/node_modules/@inditextech/docouture-antora-extensions/lib/duplicate-latest-version.js
+@@ -121,6 +121,7 @@ function cloneFileUnderAlias(file, componentSegment, sourceVersion, siteCatalog, logger, componentName) {
+     const pubUrl = withReplacedVersionSegment(file.pub.url, componentSegment, sourceVersion, ALIAS_SEGMENT, true)
+     if (pubUrl !== undefined) clone.pub = { url: pubUrl }
+   }
++  if (siteCatalog.getFiles().some((existing) => existing.out?.path === outPath)) return false
+   siteCatalog.addFile(clone)
+   return true
+ }
