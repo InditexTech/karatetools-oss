@@ -1,0 +1,14 @@
+code/pom.xml
+  h_5fac3ddbd3d5cb 99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8f9838f776dee6aa5e567c2d551ecf610851c42a",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
