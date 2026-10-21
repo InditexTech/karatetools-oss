@@ -1,10 +1,13 @@
 = Step by step
 :description: A step-by-step guide to contributing to Karate Tools.
 
+// tag::contributing-step-by-step-introduction[]
 This section provides a step-by-step guide to contributing to the Karate Tools.
 
 It is intended to help you get started with the project and to provide you with a clear path to follow as you work on your contribution.
+// end::contributing-step-by-step-introduction[]
 
+// tag::contributing-step-by-step-karatetools-oss[]
 == karatetools-oss
 
 === Identify
@@ -329,3 +332,4 @@ a|
 a|
 image::contributing/steps-kt-oss-github-sync-pull-request.png[role="no-border, zoom-in"]
 |===
+// end::contributing-step-by-step-karatetools-oss[]
