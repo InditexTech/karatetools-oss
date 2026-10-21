@@ -1,5 +1,6 @@
 = Karate Tools Mock Server
 
+// tag::execution-mock-server[]
 Karate Tools include the feature to Start a Karate mock server with two execution modes:
 
 Standalone mode:: mocks shared by all the tests
@@ -55,3 +56,4 @@ The mock server endpoints will be available at the provided port (`-p 58082`), f
 * `http://localhost:58082/items?limit=1`
 * `http://localhost:58082/items/1`
 * ...
+// end::execution-mock-server[]
