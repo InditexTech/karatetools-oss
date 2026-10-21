@@ -1,6 +1,7 @@
 = Generators module
 :description: The karatetools-oss-generators module.
 
+// tag::contributing-repo-structure-generators[]
 The `karatetools-oss-generators` module includes the following packages:
 
 * 📦 `dev.inditex.karate.openapi`: *Open API generator* to create *test scenarios*, *test data* and *external services mocks* from *Open API* specifications.
@@ -11,3 +12,4 @@ The `karatetools-oss-generators` module includes the following packages:
 ....
 include::partial$puml/karatetools-oss-generators.puml[]
 ....
+// end::contributing-repo-structure-generators[]
