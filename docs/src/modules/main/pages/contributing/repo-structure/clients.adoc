@@ -1,6 +1,7 @@
 = Clients module
 :description: The karatetools-oss-clients module.
 
+// tag::contributing-repo-structure-clients[]
 The `karatetools-oss-clients` module includes the following *core* and *support* packages.
 
 The *core* packages are:
@@ -24,3 +25,4 @@ The *support* packages are:
 ....
 include::partial$puml/karatetools-oss-clients.puml[]
 ....
+// end::contributing-repo-structure-clients[]

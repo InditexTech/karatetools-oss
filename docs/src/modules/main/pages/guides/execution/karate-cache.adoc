@@ -1,5 +1,6 @@
 = Karate Cache
 
+// tag::execution-karate-cache[]
 *Karate Tools* includes a *`KarateCache` class* to be able to share variables across tests.
 
 * The KarateCache is included by default by the Karate Tools Archetype and accessible through the global variable `cache`
@@ -22,3 +23,4 @@ Given req.body.XXX = cache.get('var')
 
 Given cache.remove('var')
 ----
+// end::execution-karate-cache[]
