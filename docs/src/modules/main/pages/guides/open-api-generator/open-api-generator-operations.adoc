@@ -1,5 +1,6 @@
 = Karate Open Api Generator - Operations
 
+// tag::open-api-generator-operations[]
 IMPORTANT: The *operations* are the base for the execution of all the tests, so this is a *mandatory* step which should be the *first step of the generation process*.
 
 Karate *Operations*: Generates *operation feature files* and *validation schemas* which will be shared for all tests for each of the Open API defined paths and methods.
@@ -270,3 +271,4 @@ urls:
   xxxxApiRestUrl: "#('http://localhost:' + (karate.properties['APP_PORT'] || 8080) + '/TO_BE_COMPLETED')"
   #karate-utils-new-karate-url-marker (do not remove) - new generated apis urls will be placed here automatically
 ----
+// end::open-api-generator-operations[]
