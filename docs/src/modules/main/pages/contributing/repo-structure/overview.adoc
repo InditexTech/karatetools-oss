@@ -1,6 +1,7 @@
 = Repository structure
 :description: How the Karate Tools Open Source repository is organized.
 
+// tag::contributing-repo-structure-overview[]
 This library is a general purpose library that can be used by any Karate project.
 
 The *Karate Tools* Open Source Repository is organized as follows:
@@ -20,10 +21,12 @@ include::example$contributing/root-tree-callouts.txt[]
 
 The main `code` modules are:
 
+// tag::overview-modules[]
 * 👩‍💻 `karatetools-oss-archetype`: *archetype* to generate a *karate project from scratch* with the necessary *configurations* and *utilities* for the execution of tests.
 
 * 👩‍💻 `karatetools-oss-clients`: *clients* to interact with *relational databases via JDBC (MariaDB and PostgreSQL)*, *MongoDB*, *Kafka* and *JMS (Active MQ and Rabbit MQ)*
 * 👩‍💻 `karatetools-oss-generators`: *generators* of *tests* from *Open API*
+// end::overview-modules[]
 * 👩‍💻 `karatetools-oss-runner`: *karate runner* and all related utilities (*authentication*, *JWT tokens*, *karate base configuration*, *karate utils*, *karate mocks*, *karate cache*, *karate results and reports*, ...)
 
 * 👩‍💻 `karatetools-oss-starter`: *starter* module to include the *generators*, *clients* and *runner* in a Karate project.
@@ -54,3 +57,4 @@ The documentation is defined in the `docs` folder:
 ....
 include::partial$puml/karatetools-oss-modules.puml[]
 ....
+// end::contributing-repo-structure-overview[]
