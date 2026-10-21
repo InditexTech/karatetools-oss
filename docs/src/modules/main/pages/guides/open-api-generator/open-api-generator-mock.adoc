@@ -1,5 +1,6 @@
 = Karate Open Api Generator - Mock Data
 
+// tag::open-api-generator-mock[]
 *Karate Tools Mock Server* is a feature to support the *Mocking external REST APIs*
 
 *Mocking external REST APIs provides:*
@@ -436,3 +437,4 @@ response:
 TIP: The data (path, params, request, response) in each of the mock data files must be updated to fulfill the test purpose.
 
 NOTE: If the api defines `default` response codes, the `responseStatus` of the mock data will be set to `null` and will require manual update.
+// end::open-api-generator-mock[]
