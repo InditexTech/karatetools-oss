@@ -1,0 +1,33 @@
+code/archetype/osv-scanner.toml
+  s_e0cc5d5f69b646::t_943bf84ef82ed3 1-235
+code/generators/osv-scanner.toml
+  s_e0cc5d5f69b646::t_d083c355e28118 1-245
+code/karate-release/osv-scanner.toml
+  s_e0cc5d5f69b646::t_7fe1b5df553396 1-235
+code/openapi-test/osv-scanner.toml
+  s_e0cc5d5f69b646::t_8e841b631defc4 1-235
+code/openapi-test/xxx-api-rest-stable/osv-scanner.toml
+  s_e0cc5d5f69b646::t_3af02688db9912 1-235
+code/openapi-test/xxx-external-api-rest-stable/osv-scanner.toml
+  s_e0cc5d5f69b646::t_dd335c3ed3b25b 1-235
+code/osv-scanner.toml
+  s_e0cc5d5f69b646::t_fe7c88a70eed57 1-235
+code/runner/osv-scanner.toml
+  s_e0cc5d5f69b646::t_c23716858ff07e 1-235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "67c83b39e4baa3b3b034b366065b5088582b6c38",
+  "prompts": {},
+  "sessions": {
+    "s_e0cc5d5f69b646": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ec5678f5effeM05UkAP7QGnFTi",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}

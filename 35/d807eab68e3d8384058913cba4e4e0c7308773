@@ -1,0 +1,60 @@
+docs/src/modules/main/pages/about.adoc
+  h_5fac3ddbd3d5cb 4,17,19,43
+docs/src/modules/main/pages/contributing/repo-structure/archetype.adoc
+  h_5fac3ddbd3d5cb 4,27
+docs/src/modules/main/pages/contributing/repo-structure/boot.adoc
+  h_5fac3ddbd3d5cb 4,31
+docs/src/modules/main/pages/contributing/repo-structure/clients.adoc
+  h_5fac3ddbd3d5cb 4,28
+docs/src/modules/main/pages/contributing/repo-structure/code.adoc
+  h_5fac3ddbd3d5cb 4,88
+docs/src/modules/main/pages/contributing/repo-structure/docs.adoc
+  h_5fac3ddbd3d5cb 4,27
+docs/src/modules/main/pages/contributing/repo-structure/generators.adoc
+  h_5fac3ddbd3d5cb 4,15
+docs/src/modules/main/pages/contributing/repo-structure/karate-test.adoc
+  h_5fac3ddbd3d5cb 4,214
+docs/src/modules/main/pages/contributing/repo-structure/openapi-test.adoc
+  h_5fac3ddbd3d5cb 4,19
+docs/src/modules/main/pages/contributing/repo-structure/overview.adoc
+  h_5fac3ddbd3d5cb 4,24,29,60
+docs/src/modules/main/pages/contributing/repo-structure/runner.adoc
+  h_5fac3ddbd3d5cb 4,29
+docs/src/modules/main/pages/contributing/repo-structure/starter.adoc
+  h_5fac3ddbd3d5cb 4,6
+docs/src/modules/main/pages/contributing/step-by-step.adoc
+  h_5fac3ddbd3d5cb 4,8,10,335
+docs/src/modules/main/pages/development.adoc
+  h_5fac3ddbd3d5cb 4,42
+docs/src/modules/main/pages/guides/execution/karate-cache.adoc
+  h_5fac3ddbd3d5cb 3,26
+docs/src/modules/main/pages/guides/execution/logging.adoc
+  h_5fac3ddbd3d5cb 3,46
+docs/src/modules/main/pages/guides/execution/mock-server.adoc
+  h_5fac3ddbd3d5cb 3,59
+docs/src/modules/main/pages/guides/execution/reports.adoc
+  h_5fac3ddbd3d5cb 3,37
+docs/src/modules/main/pages/guides/open-api-generator/open-api-generator-functional.adoc
+  h_5fac3ddbd3d5cb 5,463
+docs/src/modules/main/pages/guides/open-api-generator/open-api-generator-mock.adoc
+  h_5fac3ddbd3d5cb 3,440
+docs/src/modules/main/pages/guides/open-api-generator/open-api-generator-operations.adoc
+  h_5fac3ddbd3d5cb 3,274
+docs/src/modules/main/pages/guides/open-api-generator/open-api-generator-smoke.adoc
+  h_5fac3ddbd3d5cb 3,245
+docs/src/modules/main/pages/prerequisites.adoc
+  h_5fac3ddbd3d5cb 7,18,20,28
+docs/src/modules/main/pages/quickstart.adoc
+  h_5fac3ddbd3d5cb 8,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "35d807eab68e3d8384058913cba4e4e0c7308773",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}

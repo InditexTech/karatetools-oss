@@ -1,0 +1,21 @@
+code/clients/src/main/java/dev/inditex/karate/kafka/KafkaAbstractClient.java
+  s_f3c20ffd4dabee::t_a856a01835f7bc 13,27-34
+code/clients/src/test/java/dev/inditex/karate/kafka/KafkaAbstractClientTest.java
+  s_f3c20ffd4dabee::t_b908661b573c06 4,25,45-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "476c6c2d36412f6587639582cab628d3246e6faa",
+  "prompts": {},
+  "sessions": {
+    "s_f3c20ffd4dabee": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3b45f7b2-3007-43e5-809c-955a61f1e70b",
+        "model": "copilot/gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}

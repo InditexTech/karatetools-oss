@@ -1,0 +1,19 @@
+docs/package-lock.json
+  s_b8489f799b04ef::t_f272c9f403d4e2 13-17,325-327,334,337,346-348,360-362,377-379,390-392,896-898,2709-2711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "056e5aeb93e82f3c33f4428ae3ab23cbf1935865",
+  "prompts": {},
+  "sessions": {
+    "s_b8489f799b04ef": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ea196d895ffec7grd8UeAjqvCm",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
