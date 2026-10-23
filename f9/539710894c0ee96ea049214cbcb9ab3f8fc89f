@@ -1,0 +1,30 @@
+code/boot/src/test/java/dev/inditex/karate/jms/JMSClientIT.java
+  h_7a1bb3dcd5e5dc 12
+code/clients/pom.xml
+  h_7a1bb3dcd5e5dc 73
+code/clients/src/main/java/dev/inditex/karate/jms/JMSClient.java
+  h_7a1bb3dcd5e5dc 21-30,217,222,253
+code/clients/src/main/java/dev/inditex/karate/jms/factory/ActiveMQClientFactory.java
+  h_7a1bb3dcd5e5dc 5
+code/clients/src/main/java/dev/inditex/karate/jms/factory/JMSClientFactory.java
+  h_7a1bb3dcd5e5dc 5-8
+code/clients/src/test/java/dev/inditex/karate/jms/JMSClientTest.java
+  h_7a1bb3dcd5e5dc 25-34
+code/clients/src/test/java/dev/inditex/karate/jms/factory/ActiveMQClientFactoryTest.java
+  h_7a1bb3dcd5e5dc 12
+code/clients/src/test/java/dev/inditex/karate/jms/factory/JMSClientFactoryTest.java
+  h_7a1bb3dcd5e5dc 17-19,102,116
+code/pom.xml
+  h_7a1bb3dcd5e5dc 153,155,324-325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "f9539710894c0ee96ea049214cbcb9ab3f8fc89f",
+  "prompts": {},
+  "humans": {
+    "h_7a1bb3dcd5e5dc": {
+      "author": "Jose Maria Sanchidrian Martin <josemsmari@ext.inditex.com>"
+    }
+  }
+}
