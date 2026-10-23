@@ -2,7 +2,7 @@ package dev.inditex.karate.jms.factory;
 
 import java.util.Map;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 /**
