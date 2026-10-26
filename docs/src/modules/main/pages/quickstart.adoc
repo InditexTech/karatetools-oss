@@ -5,6 +5,7 @@ In this quickstart, you scaffold a new Karate module from the archetype and
 run its first test. Before you begin, make sure you meet the
 xref:prerequisites.adoc[prerequisites].
 
+// tag::overview-setup[]
 == Step by step
 
 To set up a Karate project for testing a REST artifact, follow these steps:
@@ -20,6 +21,7 @@ To set up a Karate project for testing a REST artifact, follow these steps:
 . Follow the xref:guides/execution/overview.adoc[execution] instructions:
   running, reporting, starting a local application and other utilities
   (KarateCache, ...).
+// end::overview-setup[]
 
 == Examples in this repository
 

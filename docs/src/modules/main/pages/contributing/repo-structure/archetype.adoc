@@ -1,6 +1,7 @@
 = Archetype module
 :description: The karatetools-oss-archetype module.
 
+// tag::contributing-repo-structure-archetype[]
 > What is Archetype?
 > In short, Archetype is a Maven project templating toolkit. An archetype is defined as an original pattern or model from which all other things of the same kind are made.
 
@@ -23,3 +24,4 @@ include::example$contributing/archetype-tree.txt[]
 include::example$contributing/archetype-tree-callouts.txt[]
 
 IMPORTANT: Any changes made in the prototype files and/or processing scripts must be reflected in the corresponding output project tests.
+// end::contributing-repo-structure-archetype[]

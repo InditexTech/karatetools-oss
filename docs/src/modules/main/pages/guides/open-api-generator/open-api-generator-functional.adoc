@@ -2,6 +2,7 @@
 
 :source-highlighter: highlightjs
 
+// tag::open-api-generator-functional[]
 Karate *Functional Test*: Generates *functional tests* for the choosen combination of Open API paths and response codes. These tests are meant to verify the artifact end-points functionalities.
 
 * The generation steps are the following:
@@ -459,3 +460,4 @@ responseMatches: "#(read('classpath:apis/com/mypackage/api/xxx-api-rest-stable/B
 TIP: The data (params, body) in each of the test data files must be updated to fulfill the test purpose.
 
 NOTE: If the api defines `default` response codes, the `statusCode` of the test data will be set to `null` and will require manual update.
+// end::open-api-generator-functional[]
