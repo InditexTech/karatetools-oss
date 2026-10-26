@@ -165,7 +165,7 @@
     <consoleui.version>0.0.13</consoleui.version>
     <!-- Karate Generators - Open Api -->
     <maven-model.version>3.9.16</maven-model.version>
-    <swagger-parser.version>2.1.45</swagger-parser.version>
+    <swagger-parser.version>2.1.48</swagger-parser.version>
     <swagger-inflector.version>3.0.2</swagger-inflector.version>
 
     <!-- Karate Runner - JWTGenerator -->
