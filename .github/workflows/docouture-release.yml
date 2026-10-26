@@ -55,6 +55,18 @@ name: docouture-release
 #      that other workflow actually finishes. Either way this runs exactly
 #      once per merge, just not always at the same moment.
 #
+# Git-flow (versioned only): `sync-prerelease` replaces sync-to-develop.yml
+# for documentation releases from main (that workflow deliberately excludes
+# them). It opens a pull request carrying any main-only documentation changes
+# into the prerelease branch, including the descriptor bump on a forward
+# release and corrections incorporated by a republish. It exits without a PR
+# when the prerelease branch already contains main. The branch name comes
+# from docs/package.json's `docouture.prereleaseBranch`, with
+# `docouture.branching` as the flow signal. It runs before `publish`, but
+# `publish` runs whenever `release` succeeded -- a failed sync turns the run
+# red without blocking the docs. The GitHub App needs `pull-requests: write`
+# and `workflows: write`.
+#
 # Republishing (versioned only): a fix that needs to land on an
 # already-released version overwrites that version's tag — this workflow
 # always force-recreates a tag that already exists, both modes, no separate
@@ -107,6 +119,11 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read # Check out the release branch; pushes use the App token.
+    outputs:
+      branching: ${{ steps.flow.outputs.branching }}
+      prerelease_branch: ${{ steps.flow.outputs.prerelease_branch }}
+      version: ${{ steps.resolve.outputs.version }}
+      bumped: ${{ steps.bump.outputs.bumped }}
     # `docouture new` scaffolds this site's package.json, antora-playbook.yml,
     # docs/antora.yml etc. under docs/ (not the repository root) — see the
     # docs-site-package skill's reference/versioning-modes.md. Every step
@@ -200,15 +217,6 @@ jobs:
       - name: Build docs
         run: npx antora --fetch antora-playbook.local.yml
 
-      # See docouture-pr-verify.yml's own comment: catches raw http(s) links
-      # Antora's own strict mode (runtime.log.failure_level: warn, already
-      # exercised by Build above) can't see. Only a broken EXTERNAL link
-      # fails this step — a broken local one is a warning only, since this
-      # job also builds with antora-playbook.local.yml (see that comment for
-      # why a local link can legitimately look broken here).
-      - name: Check links
-        run: npm run check-links
-
       - name: git identity
         run: |
           git config user.name "github-actions[bot]"
@@ -227,7 +235,7 @@ jobs:
       # level for whichever GitHub App is bypass-listed on this site's rules.
       - name: Git app token
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -268,6 +276,25 @@ jobs:
 
           echo "mode=${mode}" >> "$GITHUB_OUTPUT"
           echo "Detected ${mode} (antora-playbook.yml: ${line})"
+
+      # Git-flow sites synchronize the release branch's post-release version
+      # bump back into the prerelease branch through a pull request.
+      - name: Detect flow
+        id: flow
+        env:
+          MODE: ${{ steps.detect.outputs.mode }}
+        run: |
+          branching=$(node -p "require('./package.json').docouture?.branching ?? ''")
+          prerelease=$(node -p "require('./package.json').docouture?.prereleaseBranch ?? ''")
+
+          if [ "$branching" = "git-flow" ] && [ -z "$prerelease" ] && [ "$MODE" = "versioned" ]; then
+            echo "::error::docs/package.json declares docouture.branching 'git-flow' but no docouture.prereleaseBranch -- run 'docouture upgrade' to add it."
+            exit 1
+          fi
+
+          echo "branching=${branching:-trunk-based}" >> "$GITHUB_OUTPUT"
+          echo "prerelease_branch=${prerelease}" >> "$GITHUB_OUTPUT"
+          echo "Detected flow '${branching:-trunk-based}' (prerelease branch '${prerelease}')"
 
       # Where the target version comes from depends on how this run started:
       # a person typed it (workflow_dispatch) or the merged PR committed it
@@ -447,6 +474,7 @@ jobs:
       # from it would clobber that already-planned next target instead of
       # protecting it.
       - name: Bump release descriptor
+        id: bump
         if: steps.detect.outputs.mode == 'versioned' && steps.check.outputs.existed != 'true'
         env:
           VERSION: ${{ steps.resolve.outputs.version }}
@@ -461,6 +489,7 @@ jobs:
           git commit -m "chore: bump docs/.release-version to ${next}"
           git push origin main
 
+          echo "bumped=true" >> "$GITHUB_OUTPUT"
           echo "docs/.release-version: ${VERSION} → ${next}"
 
       # Rebuild/deploy: called directly here, as a reusable job, rather than
@@ -478,10 +507,94 @@ jobs:
       # (`needs.release.result == 'success'` is already false for a no-op
       # run — see this job's own `if:` above, which makes a run that
       # doesn't match skip rather than succeed).
+  # Git-flow only: synchronize documentation-release changes from the release
+  # branch into the prerelease branch with a reviewable pull request instead
+  # of a direct push. This covers both forward releases and republications.
+  sync-prerelease:
+    name: Sync prerelease branch
+    needs: release
+    if: >-
+      needs.release.result == 'success' &&
+      needs.release.outputs.branching == 'git-flow'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: main
+          persist-credentials: false
+
+      - name: Git app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+
+      - name: Open sync pull request
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_BRANCH: main
+          PRERELEASE_BRANCH: ${{ needs.release.outputs.prerelease_branch }}
+          VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh auth setup-git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if ! git ls-remote --exit-code --heads origin "$PRERELEASE_BRANCH" >/dev/null 2>&1; then
+            echo "::notice title=Sync skipped::The ${PRERELEASE_BRANCH} branch does not exist."
+            exit 0
+          fi
+
+          git fetch --no-tags origin "$RELEASE_BRANCH" "$PRERELEASE_BRANCH"
+          if git merge-base --is-ancestor "origin/${RELEASE_BRANCH}" "origin/${PRERELEASE_BRANCH}"; then
+            echo "::notice title=Sync skipped::${PRERELEASE_BRANCH} already contains ${RELEASE_BRANCH}."
+            exit 0
+          fi
+
+          sync_branch="automated/sync-docs-release-${VERSION}-to-${PRERELEASE_BRANCH}"
+          git switch --force-create "$sync_branch" "origin/${RELEASE_BRANCH}"
+
+          if existing=$(git ls-remote --heads origin "$sync_branch" | cut -f1) && [ -n "$existing" ]; then
+            git push --force-with-lease="refs/heads/${sync_branch}:${existing}" origin "HEAD:refs/heads/${sync_branch}"
+          else
+            git push origin "HEAD:refs/heads/${sync_branch}"
+          fi
+
+          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$sync_branch" --base "$PRERELEASE_BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "Sync PR already open -- branch updated."
+            exit 0
+          fi
+
+          gh pr create --repo "$GITHUB_REPOSITORY" --base "$PRERELEASE_BRANCH" --head "$sync_branch" \
+            --title "Sync docs release ${VERSION} to ${PRERELEASE_BRANCH}" \
+            --body "**Automated pull request** syncing documentation release changes from \`${RELEASE_BRANCH}\` into \`${PRERELEASE_BRANCH}\`."
+
+      - name: Comment on release pull request after failure
+        if: failure() && github.event_name == 'pull_request' && steps.app-token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment "$RELEASE_PR" --repo "$GITHUB_REPOSITORY" \
+            --body "Syncing this docs release to the prerelease branch failed. Docs were still published. See the [workflow log](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+
   publish:
     name: Publish
-    needs: release
-    if: needs.release.result == 'success'
+    needs: [release, sync-prerelease]
+    if: always() && needs.release.result == 'success'
     permissions:
       contents: read # Grant docouture-publish.yml its checkout read access.
     uses: ./.github/workflows/docouture-publish.yml
