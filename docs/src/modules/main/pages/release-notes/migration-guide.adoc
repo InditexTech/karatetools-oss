@@ -1,5 +1,25 @@
 = Karate Tools Migration Guide
 
+== Karate Tools Migration to 6.1.0
+
+To migrate to 6.1.0, update the Karate Tools version property:
+
+* `pom.xml`:
+** `<karatetools.version>6.1.0</karatetools.version>`
+
+* If your project extends or integrates the `karatetools-boot` module:
+** Update Spring Boot from `3.5.14` to `4.1.1`.
+** Update Spring Framework from `6.2.x` to `7.0.9`.
+** Replace `spring-boot-starter-web` with `spring-boot-starter-webmvc`.
+** Update moved Spring Boot imports:
+*** `org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration` to `org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration`
+*** `org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc` to `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc`
+** Run your Spring Boot integration tests after the update.
+
+* If your OpenAPI integration directly uses JAX-RS APIs from the Karate Tools dependency graph:
+** Replace `javax.ws.rs.*` imports with `jakarta.ws.rs.*`.
+** Update `swagger-inflector` from `2.0.17` to `3.0.2` if your project declares it explicitly.
+
 == Karate Tools Migration to 6.0.0 - JDK 25
 
 To migrate to 6.0.0, the following changes must be applied:
