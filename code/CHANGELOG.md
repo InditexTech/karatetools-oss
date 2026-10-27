@@ -7,8 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [#166](https://github.com/InditexTech/karatetools-oss/pull/166) \[Karate-Tools] Pass `github.ref` via `env` in docouture-release instead of interpolating it into `run`
-- [#177](https://github.com/InditexTech/karatetools-oss/pull/177) \[Karate-Tools] Harden the docouture workflows to least-privilege GITHUB_TOKENs
+- [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix OpenAPI generator interactive console on macOS Apple Silicon
+
+- [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility for Karate Tools generated Avro records
+
+- [#110](https://github.com/InditexTech/karatetools-oss/pull/110) \[Karate-Tools] Update the Boot module to Spring Boot 4.1.1 and Spring Framework 7.0.9
+
+- [#100](https://github.com/InditexTech/karatetools-oss/pull/100) \[Karate-Tools] Update Swagger Inflector to 3.0.2 and OpenAPI Generator Maven Plugin to 7.25.0
+
+- [#97](https://github.com/InditexTech/karatetools-oss/pull/97) \[Karate-Tools] Renew the documentation platform with versioned Docouture documentation
+
+- [#208](https://github.com/InditexTech/karatetools-oss/pull/208) \[Karate-Tools] Add temporary, scoped OSV Scanner exceptions for Karate-managed transitive vulnerabilities
 
 ## [6.0.0] - 2026-06-26
 
