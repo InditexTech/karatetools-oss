@@ -43,7 +43,11 @@ jobs:
     permissions:
       contents: read
       pull-requests: read # List the files this pull request changes.
-    if: ${{ github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'docs/release') }}
+    # Same-repository pull requests only: on a fork's pull request GitHub hands
+    # the workflow a read-only GITHUB_TOKEN whatever `permissions:` asks for,
+    # so every `gh pr comment` below would fail the run. Skipping this job
+    # skips the three comment jobs that need it.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && (github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'docs/release')) }}
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
     steps:
