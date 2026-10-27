@@ -47,7 +47,7 @@ name: docouture-kroki-cache-warm
 # so skipping it entirely (rather than a no-op run) is safe by construction.
 on:
   push:
-    branches: ['main*']
+    branches: ['main*', 'develop*']
     paths:
       - 'docs/**'
       - '.github/workflows/docouture-kroki-cache-warm.yml'

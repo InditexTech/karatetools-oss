@@ -83,8 +83,8 @@ jobs:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
           node-version-file: docs/package.json
-          # package.json names npm as its packageManager, which would turn
-          # setup-node's automatic cache on. See the header: no caches here.
+          # package.json names the package manager in `packageManager`, which
+          # would turn setup-node's automatic cache on. See the header: no caches here.
           package-manager-cache: false
 
       - name: Install dependencies
