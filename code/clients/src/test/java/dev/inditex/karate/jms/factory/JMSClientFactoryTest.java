@@ -14,9 +14,9 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -99,7 +99,7 @@ public class JMSClientFactoryTest {
       final JMSContext context = mock(JMSContext.class);
       final String queue = "queue";
       final Map<Object, Object> config = Map.of(JMS_FACTORY, "RabbitMQ", "amqp", "false");
-      final javax.jms.Queue queueDestination = mock(javax.jms.Queue.class);
+      final jakarta.jms.Queue queueDestination = mock(jakarta.jms.Queue.class);
       when(context.createQueue(queue)).thenReturn(queueDestination);
 
       final Destination result = JMSClientFactory.createDestination(context, queue, config);
@@ -113,7 +113,7 @@ public class JMSClientFactoryTest {
       final JMSContext context = mock(JMSContext.class);
       final String queue = "queue";
       final Map<Object, Object> config = Map.of(JMS_FACTORY, "invalid_factory");
-      final javax.jms.Queue queueDestination = mock(javax.jms.Queue.class);
+      final jakarta.jms.Queue queueDestination = mock(jakarta.jms.Queue.class);
       when(context.createQueue(queue)).thenReturn(queueDestination);
 
       final Destination result = JMSClientFactory.createDestination(context, queue, config);

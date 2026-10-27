@@ -18,16 +18,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import javax.jms.BytesMessage;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.JMSProducer;
-import javax.jms.JMSRuntimeException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
+import jakarta.jms.BytesMessage;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSProducer;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Message;
+import jakarta.jms.TextMessage;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -214,12 +214,12 @@ public class JMSClient {
           switch (message) {
             case final TextMessage textMessage -> {
               log.debug("consume() Received TextMessage: {}", textMessage);
-              // javax.jms.TextMessage
+              // jakarta.jms.TextMessage
               jsonMessages.add(parseTextMessage(textMessage));
             }
             case final BytesMessage bytesMessage -> {
               log.debug("consume() Received BytesMessage: {}", bytesMessage);
-              // javax.jms.BytesMessage - raw AMQP message body
+              // jakarta.jms.BytesMessage - raw AMQP message body
               jsonMessages.add(parseBytesMessage(bytesMessage));
             }
             default -> {
@@ -250,7 +250,7 @@ public class JMSClient {
   protected JsonObject parseTextMessage(final TextMessage textMessage) throws JMSException {
     JsonObject messageJSON = null;
     try {
-      // javax.jms.TextMessage
+      // jakarta.jms.TextMessage
       messageJSON = JsonParser.parseString(textMessage.getText()).getAsJsonObject();
     } catch (final Exception e) {
       log.debug("parseMessage() => {}. Parsing as Text", e.getMessage());
