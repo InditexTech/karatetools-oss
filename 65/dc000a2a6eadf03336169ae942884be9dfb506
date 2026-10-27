@@ -1,0 +1,23 @@
+.github/workflows/docouture-publish-prerelease.yml
+  s_d52d2499176902::t_6ce6e882a5e54b 20-23,48
+.github/workflows/docouture-release-preview.yml
+  s_d52d2499176902::t_6deff571b42499 46-50
+AGENTS.md
+  s_d52d2499176902::t_21a4da5bf24e58 44-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "65dc000a2a6eadf03336169ae942884be9dfb506",
+  "prompts": {},
+  "sessions": {
+    "s_d52d2499176902": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "954312a1-0054-49da-bbad-79e0b85769c1",
+        "model": "copilot/gpt-6.1-sol"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
