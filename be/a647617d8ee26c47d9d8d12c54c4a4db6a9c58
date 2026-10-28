@@ -1,0 +1,23 @@
+.github/actions/config-resolver/dist/index.js
+  s_b2db96f1977ef0::t_bb26c4b563559a 16348,16367-16370,16375,19111-19112,19114,19636,19649,19660,19670-19675,26073,26098-26099,26105-26110,26149-26154,26203-26209,26220,26232-26237,26255-26262,26341-26346,26355-26361,26368-26373,26376,26410-26416,26424,26430,26438,26445-26447,26452-26460,26491-26496,26532,26537-26541,26667,26949,27128-27129,32236-32239,32425,32458-32459,38996-39009
+.github/actions/config-resolver/dist/index.js.map
+  s_b2db96f1977ef0::t_0b80968d7a503b 1
+.github/actions/config-resolver/package-lock.json
+  s_b2db96f1977ef0::t_dc3e4f59214130 5108-5110,8779-8781
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "bea647617d8ee26c47d9d8d12c54c4a4db6a9c58",
+  "prompts": {},
+  "sessions": {
+    "s_b2db96f1977ef0": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e9c3d8e9effeGokrTfJnGfNsWi",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
