@@ -31,7 +31,7 @@ on:
       - '.github/workflows/docouture-pr-verify.yml'
 
 # Least-privilege default: this job only checks out the PR's own HEAD,
-# builds it — it never writes to the repository, comments
+# builds it, and checks links — it never writes to the repository, comments
 # on the PR, or otherwise uses GITHUB_TOKEN, so it never needs more than
 # read access. The workflow grants nothing and the job asks for exactly that,
 # the same shape every docouture workflow uses.
