@@ -1,0 +1,26 @@
+code/archetype/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/karate-release/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/openapi-test/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/openapi-test/xxx-api-rest-stable/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/openapi-test/xxx-external-api-rest-stable/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+code/runner/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "82ee357ac2a06468472e8cdbac730212ff71748d",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
