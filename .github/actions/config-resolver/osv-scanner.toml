@@ -1,4 +1,0 @@
-[[IgnoredVulns]]
-id = "GHSA-hp3w-g68c-fv3c"
-ignoreUntil = 2027-04-15
-reason = "sprintf-js@1.0.3 is a transitive development-only Jest/Istanbul dependency. The action does not import it or process untrusted format strings; no patched version exists."

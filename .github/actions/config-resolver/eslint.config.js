@@ -11,7 +11,6 @@ module.exports = [
             ecmaVersion: 2018,
             globals: {
                 ...globals.node,
-                ...globals.jest,
             },
         },
     },
