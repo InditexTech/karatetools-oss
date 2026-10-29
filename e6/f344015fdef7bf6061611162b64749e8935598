@@ -1,0 +1,24 @@
+code/CHANGELOG.md
+  h_5fac3ddbd3d5cb 10-20
+docs/.release-version
+  h_5fac3ddbd3d5cb 1
+docs/antora-playbook.local.yml
+  h_5fac3ddbd3d5cb 108
+docs/antora-playbook.yml
+  h_5fac3ddbd3d5cb 217
+docs/src/modules/main/pages/release-notes/migration-guide.adoc
+  h_5fac3ddbd3d5cb 3-22
+docs/src/modules/main/pages/release-notes/overview.adoc
+  h_5fac3ddbd3d5cb 11-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "e6f344015fdef7bf6061611162b64749e8935598",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
