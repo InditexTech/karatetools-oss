@@ -1,4 +1,9 @@
 [[IgnoredVulns]]
+id = "GHSA-crwc-vw2r-qr6m"
+ignoreUntil = 2027-04-15
+reason = "Accepted risk in #240: OGNL is selected through Karate 1.5.2 and Thymeleaf. No advisory-specific exploit path was demonstrated with the inspected trusted templates and Thymeleaf access controls. Independent upgrades require compatibility validation."
+
+[[IgnoredVulns]]
 id = "GHSA-38f8-5428-x5cv"
 ignoreUntil = 2027-04-15
 reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
@@ -232,4 +237,3 @@ reason = "Transitive dependency selected by Karate 1.5.2. Independent updates re
 id = "GHSA-xxqh-mfjm-7mv9"
 ignoreUntil = 2027-04-15
 reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
-
