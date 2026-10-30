@@ -17,7 +17,10 @@ name: docouture-publish-prerelease
 #      only. In particular this deliberately excludes docs/.release-version:
 #      that file is the ONLY thing docouture-release.yml's own "Bump release
 #      descriptor" step pushes straight to the release branch directly (see
-#      that workflow's own comment on that step) — a bot commit that is not
+#      that workflow's own comment on that step; under git-flow it reaches
+#      this branch later, through the sync pull request that workflow's
+#      `sync-prerelease` job opens, which is an ordinary merge) — a bot
+#      commit that is not
 #      new docs content, and (trunk-based only, where prerelease and release
 #      are the same branch) would otherwise fire this workflow for nothing.
 #
@@ -42,7 +45,7 @@ name: docouture-publish-prerelease
 # explicit secret rather than `secrets: inherit`.
 on:
   push:
-    branches: ['main*']
+    branches: ['develop*']
 
 permissions: {}
 
