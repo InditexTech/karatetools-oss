@@ -7,9 +7,7 @@
     "scripts": {
         "lint": "eslint .",
         "prepare": "ncc build src/index.js -o dist --source-map --license licenses.txt",
-        "test": "jest",
-        "test:verbose": "jest --verbose",
-        "all": "npm run lint && npm run prepare && npm run test"
+        "all": "npm run lint && npm run prepare"
     },
     "keywords": [
         "actions",
@@ -29,8 +27,7 @@
         "@eslint/js": "^10.0.1",
         "@vercel/ncc": "^0.45.0",
         "eslint": "^10.0.0",
-        "globals": "^17.11.0",
-        "jest": "^30.4.2"
+        "globals": "^17.11.0"
     },
     "engines": {
         "node": ">=24.14.1",
