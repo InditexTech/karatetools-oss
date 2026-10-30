@@ -1,0 +1,22 @@
+.github/workflows/code-maven_java-PR_verify.yml
+  h_5fac3ddbd3d5cb 114
+.github/workflows/code-maven_java-build_snapshot.yml
+  h_5fac3ddbd3d5cb 152,283
+.github/workflows/code-maven_java-release-core.yml
+  h_5fac3ddbd3d5cb 322,795
+.github/workflows/code-maven_java-release.yml
+  h_5fac3ddbd3d5cb 167,182
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+  h_5fac3ddbd3d5cb 138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "aeee6529dc0c154392c49d0c5131a23693fbb0ee",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
