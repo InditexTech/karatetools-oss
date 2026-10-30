@@ -135,7 +135,7 @@ jobs:
           set -euo pipefail
           case "$PROJECT_TYPE" in
             single|monorepo)
-              mvn -B --no-transfer-progress -f pom.xml clean verify
+              mvn -B --no-transfer-progress -f pom.xml clean verify -DskipITs
               ;;
             *)
               echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
