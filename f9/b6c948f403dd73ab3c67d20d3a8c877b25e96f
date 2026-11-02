@@ -1,0 +1,16 @@
+.github/actions/config-resolver/osv-scanner.toml
+  h_5fac3ddbd3d5cb 1-4
+code/pom.xml
+  h_5fac3ddbd3d5cb 147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "f9b6c948f403dd73ab3c67d20d3a8c877b25e96f",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
