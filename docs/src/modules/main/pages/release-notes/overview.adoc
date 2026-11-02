@@ -9,7 +9,7 @@ xref:release-notes/migration-guide.adoc[migration guide].
 | Version | Date | Description
 
 | 6.1.0
-| 2026-10-29
+| 2026-11-03
 |
 
 ✔️ Karate Tools - Fixed the *OpenAPI generator interactive console on macOS Apple Silicon*.
@@ -25,6 +25,8 @@ NOTE: If you extend the Boot module or manage its Spring dependencies directly, 
 NOTE: Custom OpenAPI integrations using `javax.ws.rs.*` must migrate to `jakarta.ws.rs.*`.
 
 ✔️ Karate Tools - Renewed the *documentation platform* with versioned Docouture documentation, improved publication flows, historical URL redirects, reusable documentation sections, and hardened release workflows.
+
+✔️ Karate Tools - Updated Java dependencies and Maven tooling, refreshed integration-test containers, restored integration-test execution, and strengthened CI and security scanning.
 
 | 6.0.0
 | 2026-06-26

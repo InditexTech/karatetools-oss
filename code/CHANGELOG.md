@@ -7,17 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix OpenAPI generator interactive console on macOS Apple Silicon
+- [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix the OpenAPI generator interactive console on macOS Apple Silicon
 
-- [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility for Karate Tools generated Avro records
+- [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility with generated Avro records
 
-- [#110](https://github.com/InditexTech/karatetools-oss/pull/110) \[Karate-Tools] Update the Boot module to Spring Boot 4.1.1 and Spring Framework 7.0.9
+- [#110](https://github.com/InditexTech/karatetools-oss/pull/110), [#100](https://github.com/InditexTech/karatetools-oss/pull/100), [#113](https://github.com/InditexTech/karatetools-oss/pull/113) \[Karate-Tools] Upgrade the Boot module to Spring Boot 4 and Spring Framework 7, and modernize the OpenAPI stack
 
-- [#100](https://github.com/InditexTech/karatetools-oss/pull/100), [#113](https://github.com/InditexTech/karatetools-oss/pull/113) \[Karate-Tools] Update Swagger Inflector to 3.0.2 and OpenAPI Generator Maven Plugin to 7.25.0
+- [#97](https://github.com/InditexTech/karatetools-oss/pull/97), [#222](https://github.com/InditexTech/karatetools-oss/pull/222) \[Karate-Tools] Renew the documentation platform with versioned documentation and improved release flows
 
-- [#97](https://github.com/InditexTech/karatetools-oss/pull/97) \[Karate-Tools] Renew the documentation platform with versioned Docouture documentation
-
-- [#208](https://github.com/InditexTech/karatetools-oss/pull/208), [#241](https://github.com/InditexTech/karatetools-oss/pull/241) \[Karate-Tools] Document temporary, scoped OSV risk exceptions for upstream-selected transitive dependencies
+- \[Karate-Tools] Refresh Java dependencies, Maven tooling, and integration-test containers; restore integration-test execution and improve CI and security scanning
 
 ## [6.0.0] - 2026-06-26
 
