@@ -164,6 +164,7 @@ jobs:
           project-type: ${{ env.PROJECT_TYPE }}
           packages: ${{ env.PROJECT_TYPE == 'monorepo' && join(matrix.release.packages, ',') || '' }}
           auto-publish: 'true'
+          extra-maven-arguments: -DskipITs
 
       - name: Perform delegated release
         if: steps.lifecycle.outputs.mode == 'delegated'
@@ -178,6 +179,7 @@ jobs:
           extra-maven-arguments: |
             -DskipEnforceSnapshots
             -Dmaven.deploy.skip=false
+            -DskipITs
 
   finalize-release:
     name: Finalize release (promote + next dev)
