@@ -144,7 +144,7 @@
     <!-- Karate Clients -->
     <!-- Karate Clients - JDBC -->
     <postgresql.version>42.7.12</postgresql.version>
-    <mariadb-java-client.version>3.5.9</mariadb-java-client.version>
+    <mariadb-java-client.version>3.5.11</mariadb-java-client.version>
     <!-- Karate Clients - MongoDB -->
     <mongodb-driver-sync.version>5.8.0</mongodb-driver-sync.version>
     <!-- Karate Clients - JMS -->
