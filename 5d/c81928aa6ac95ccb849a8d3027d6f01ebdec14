@@ -1,0 +1,21 @@
+code/CHANGELOG.md
+  s_aea9da36686262::t_bd4da783647177 10,12,14,16,18
+docs/src/modules/main/pages/release-notes/overview.adoc
+  s_aea9da36686262::t_2b411f6cc9b932 12,29-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "5dc81928aa6ac95ccb849a8d3027d6f01ebdec14",
+  "prompts": {},
+  "sessions": {
+    "s_aea9da36686262": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "6b94cc96-b72c-467c-9c8c-0ba3097ea705",
+        "model": "unknown"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
