@@ -11,11 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility with generated Avro records
 
+- [#169](https://github.com/InditexTech/karatetools-oss/pull/169) \[Karate-Tools] Upgrade the Schema Registry test container to 8.3.2 and improve health checks and credential handling
+
+- [#256](https://github.com/InditexTech/karatetools-oss/pull/256) \[Karate-Tools] Update MariaDB Java Client from 3.5.9 to 3.5.11
+
 - [#110](https://github.com/InditexTech/karatetools-oss/pull/110), [#100](https://github.com/InditexTech/karatetools-oss/pull/100), [#113](https://github.com/InditexTech/karatetools-oss/pull/113) \[Karate-Tools] Upgrade the Boot module to Spring Boot 4 and Spring Framework 7, and modernize the OpenAPI stack
+
+- [#208](https://github.com/InditexTech/karatetools-oss/pull/208) \[Karate-Tools] Remediate Scorecard security findings and document scoped OSV vulnerability exceptions
 
 - [#97](https://github.com/InditexTech/karatetools-oss/pull/97), [#222](https://github.com/InditexTech/karatetools-oss/pull/222) \[Karate-Tools] Renew the documentation platform with versioned documentation and improved release flows
 
-- \[Karate-Tools] Refresh Java dependencies, Maven tooling, and integration-test containers; restore integration-test execution and improve CI and security scanning
+- \[Karate-Tools] Refresh Java dependencies and Maven tooling, and improve CI governance
 
 ## [6.0.0] - 2026-06-26
 
