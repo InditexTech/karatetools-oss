@@ -1,0 +1,14 @@
+code/CHANGELOG.md
+  h_5fac3ddbd3d5cb 14-17,20-21,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "52b9869944567e93ece3c5663a08f8c6ff46c488",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
