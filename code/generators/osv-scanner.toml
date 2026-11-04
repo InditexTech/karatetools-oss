@@ -1,4 +1,14 @@
 [[IgnoredVulns]]
+id = "GHSA-crwc-vw2r-qr6m"
+ignoreUntil = 2027-04-15
+reason = "Accepted risk in #240: OGNL is selected through Karate 1.5.2 and Thymeleaf. No advisory-specific exploit path was demonstrated with the inspected trusted templates and Thymeleaf access controls. Independent upgrades require compatibility validation."
+
+[[IgnoredVulns]]
+id = "GHSA-xxph-c9ww-hj94"
+ignoreUntil = 2027-04-15
+reason = "Accepted risk in #240: Guava is selected through Swagger tooling and also Confluent in the consumer graph. Independent upgrades require compatibility validation. Potential DoS through JMS ObjectMessage native deserialization is explicitly accepted temporarily, not considered fixed."
+
+[[IgnoredVulns]]
 id = "GHSA-38f8-5428-x5cv"
 ignoreUntil = 2027-04-15
 reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
@@ -242,4 +252,3 @@ reason = "Transitive dependency selected by Karate 1.5.2. Independent updates re
 id = "GHSA-xxqh-mfjm-7mv9"
 ignoreUntil = 2027-04-15
 reason = "Transitive dependency selected by Karate 1.5.2. Independent updates require compatibility validation."
-
