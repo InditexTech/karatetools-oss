@@ -1,0 +1,20 @@
+README.md
+  h_5fac3ddbd3d5cb 61-63
+code/pom.xml
+  h_5fac3ddbd3d5cb 154
+docs/src/modules/main/partials/clients/jms-pom-activemq.adoc
+  h_5fac3ddbd3d5cb 13,22-23
+docs/src/modules/main/partials/clients/jms-pom-rabbitmq.adoc
+  h_5fac3ddbd3d5cb 13,22-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "fb9da317b43c6350a66a7a002b2c5610c1f2166b",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
