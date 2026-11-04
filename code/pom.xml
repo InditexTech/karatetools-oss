@@ -151,7 +151,7 @@
     <!-- Karate Clients - JMS - ActiveMQ -->
     <artemis-jakarta-client.version>2.57.0</artemis-jakarta-client.version>
     <!-- Karate Clients - JMS - RabbitMQ -->
-    <!-- 3.X.X : Version for JMS 3.9 -->
+    <!-- 3.X.X : Version for Jakarta Messaging 3.0 -->
     <rabbitmq-jms-client.version>3.9.0</rabbitmq-jms-client.version>
     <!-- Karate Clients - Kafka  -->
     <kafka-clients.version>3.9.2</kafka-clients.version>
