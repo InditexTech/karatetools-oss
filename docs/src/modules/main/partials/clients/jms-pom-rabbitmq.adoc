@@ -10,7 +10,7 @@
     <!-- Karate Clients -->
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - RabbitMQ -->
-    <!-- 2.X.X : Version for JMS 2.0 -->
+    <!-- 3.X.X : Version for Jakarta Messaging 3.0 -->
     <rabbitmq-jms-client.version>X.X.X</rabbitmq-jms-client.version>
   </properties>
 
@@ -19,8 +19,8 @@
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - RabbitMQ -->
     <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>rabbitmq-jms-client</artifactId>
+      <groupId>com.rabbitmq.jms</groupId>
+      <artifactId>rabbitmq-jms</artifactId>
       <version>${rabbitmq-jms-client.version}</version>
     </dependency>
   </dependencies>
