@@ -91,7 +91,7 @@
 
     <!-- Code Format and Style - Checkstyle -->
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-    <com.puppycrawl.tools.checkstyle.version>11.1.0</com.puppycrawl.tools.checkstyle.version>
+    <com.puppycrawl.tools.checkstyle.version>14.4.0</com.puppycrawl.tools.checkstyle.version>
     <maven-checkstyle-plugin.configLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-java-google-style.xml</maven-checkstyle-plugin.configLocation>
     <maven-checkstyle-plugin.suppressionsLocation>${project.basedir}/${project.parent.relativePath}/src/main/config/checkstyle-suppressions.xml</maven-checkstyle-plugin.suppressionsLocation>
 
