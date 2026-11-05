@@ -16,6 +16,10 @@ xref:release-notes/migration-guide.adoc[migration guide].
 
 ✔️ Karate Tools - Improved *Kafka Avro client compatibility* for Karate Tools generated Avro records.
 
+✔️ Karate Tools - Migrated *JMS clients to Jakarta Messaging 3.0* (`javax.jms` to `jakarta.jms`) and updated the ActiveMQ Artemis and RabbitMQ JMS dependencies.
+
+NOTE: Applications that directly use JMS APIs from Karate Tools must migrate their imports and types to `jakarta.jms.*`. See the xref:release-notes/migration-guide.adoc[migration guide].
+
 ✔️ Karate Tools - Updated the *Boot module* to Spring Boot 4.1.1 and Spring Framework 7.
 
 NOTE: If you extend the Boot module or manage its Spring dependencies directly, validate the migration to Spring Boot 4. The module now uses `spring-boot-starter-webmvc` instead of `spring-boot-starter-web`.
@@ -24,9 +28,11 @@ NOTE: If you extend the Boot module or manage its Spring dependencies directly, 
 
 NOTE: Custom OpenAPI integrations using `javax.ws.rs.*` must migrate to `jakarta.ws.rs.*`.
 
+✔️ Karate Tools - Fixed system-property parsing so values are inserted literally.
+
 ✔️ Karate Tools - Renewed the *documentation platform* with versioned Docouture documentation, improved publication flows, historical URL redirects, reusable documentation sections, and hardened release workflows.
 
-✔️ Karate Tools - Updated Java dependencies and Maven tooling, refreshed integration-test containers, restored integration-test execution, and strengthened CI and security scanning.
+✔️ Karate Tools - Updated Java dependencies and Maven tooling, refreshed integration-test containers, and strengthened CI and security scanning.
 
 | 6.0.0
 | 2026-06-26
