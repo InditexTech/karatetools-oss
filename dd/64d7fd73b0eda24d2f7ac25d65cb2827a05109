@@ -1,0 +1,19 @@
+.github/workflows/docouture-release-preview.yml
+  s_0a8eb56c28b2fa::t_54fc55b83f7604 11-16,77-80,180-183,185-190,193-198,211-216,220-233,238-242,245,250,263-264,269-292,305-312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "dd64d7fd73b0eda24d2f7ac25d65cb2827a05109",
+  "prompts": {},
+  "sessions": {
+    "s_0a8eb56c28b2fa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e59008efcffe7uG2vzvHAgVPu9",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
