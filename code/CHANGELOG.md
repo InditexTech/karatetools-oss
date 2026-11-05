@@ -7,9 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix the OpenAPI generator interactive console on macOS Apple Silicon
+
+- [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility with generated Avro records
+
+- [#212](https://github.com/InditexTech/karatetools-oss/pull/212) \[Karate-Tools] Migrate JMS clients to Jakarta Messaging (`jakarta.jms`) and update ActiveMQ Artemis and RabbitMQ JMS dependencies
+
+- [#169](https://github.com/InditexTech/karatetools-oss/pull/169) \[Karate-Tools] Upgrade the Schema Registry test container to 8.3.2 and improve health checks and credential handling
+
+- [#256](https://github.com/InditexTech/karatetools-oss/pull/256) \[Karate-Tools] Update MariaDB Java Client from 3.5.9 to 3.5.11
+
+- [#110](https://github.com/InditexTech/karatetools-oss/pull/110), [#100](https://github.com/InditexTech/karatetools-oss/pull/100), [#113](https://github.com/InditexTech/karatetools-oss/pull/113) \[Karate-Tools] Upgrade the Boot module to Spring Boot 4 and Spring Framework 7, and modernize the OpenAPI stack
+
 - [#194](https://github.com/InditexTech/karatetools-oss/issues/194) \[Karate-Tools] Insert system property values literally in SystemPropertiesParser
+
+- [#208](https://github.com/InditexTech/karatetools-oss/pull/208) \[Karate-Tools] Remediate Scorecard security findings and document scoped OSV vulnerability exceptions
+
+- [#97](https://github.com/InditexTech/karatetools-oss/pull/97), [#222](https://github.com/InditexTech/karatetools-oss/pull/222) \[Karate-Tools] Renew the documentation platform with versioned documentation and improved release flows
+
 - [#166](https://github.com/InditexTech/karatetools-oss/pull/166) \[Karate-Tools] Pass `github.ref` via `env` in docouture-release instead of interpolating it into `run`
+
 - [#177](https://github.com/InditexTech/karatetools-oss/pull/177) \[Karate-Tools] Harden the docouture workflows to least-privilege GITHUB_TOKENs
+
+- \[Karate-Tools] Refresh remaining Java dependencies and Maven tooling, and improve CI governance
 
 ## [6.0.0] - 2026-06-26
 
