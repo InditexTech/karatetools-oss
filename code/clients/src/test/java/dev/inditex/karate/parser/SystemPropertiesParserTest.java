@@ -161,6 +161,7 @@ class SystemPropertiesParserTest {
           Arguments.of("pa$1word"),
           Arguments.of("pa$$word"),
           Arguments.of("C:\\certs\\key"),
+          Arguments.of("abc${user}def"),
           Arguments.of("$"));
     }
 
