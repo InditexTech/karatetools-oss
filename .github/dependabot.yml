@@ -22,6 +22,10 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - kind/internal
+    groups:
+      docouture:
+        patterns:
+          - "@inditextech/docouture-*"
 
   - package-ecosystem: maven
     directory: /code

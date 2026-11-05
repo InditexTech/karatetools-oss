@@ -20,6 +20,11 @@ To migrate to 6.1.0, update the Karate Tools version property:
 ** Replace `javax.ws.rs.*` imports with `jakarta.ws.rs.*`.
 ** Update `swagger-inflector` from `2.0.17` to `3.0.2` if your project declares it explicitly.
 
+* If your application directly uses JMS APIs from the Karate Tools clients:
+** Replace `javax.jms.*` imports and types with `jakarta.jms.*`.
+** If you declare the ActiveMQ Artemis dependency directly, replace `org.apache.activemq:artemis-jms-client` with `org.apache.activemq:artemis-jakarta-client`.
+** If you manage the RabbitMQ JMS client version directly, update it to 3.x; Karate Tools uses `3.9.0`, which supports Jakarta Messaging 3.0.
+
 == Karate Tools Migration to 6.0.0 - JDK 25
 
 To migrate to 6.0.0, the following changes must be applied:
