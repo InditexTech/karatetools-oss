@@ -83,7 +83,7 @@ public class SystemPropertiesParser {
           log.trace("               -> [{},{}]", systemKey, defaultValue);
           final String systemValue = System.getProperty(systemKey, defaultValue);
           log.trace("                    -> [{}]", systemValue);
-          matcher.appendReplacement(sb, systemValue);
+          matcher.appendReplacement(sb, Matcher.quoteReplacement(systemValue));
         }
         matcher.appendTail(sb);
         final String parsedValue = sb.toString();
