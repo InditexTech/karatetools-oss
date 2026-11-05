@@ -1,4 +1,4 @@
 [[IgnoredVulns]]
-id = "GHSA-hp3w-g68c-fv3c"
+id = "GHSA-g3hv-75wg-m249"
 ignoreUntil = 2027-04-15
-reason = "sprintf-js@1.0.3 is a transitive development-only Jest/Istanbul dependency. The action does not import it or process untrusted format strings; no patched version exists."
+reason = "minimatch is a transitive dependency of ESLint and dot-object via glob. Temporarily accept the residual denial-of-service risk pending updates to these direct dependencies that resolve all affected minimatch copies to patched versions; no independent override is applied. Tracked in GH-255."

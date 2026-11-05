@@ -58,9 +58,9 @@ jakarta.annotation:jakarta.annotation-api:3.0.0
 License: Eclipse Public License v1.0 (EPL-1.0)
 License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
 
-jakarta.jms:jakarta.jms-api:2.0.3
-License: Eclipse Public License v1.0 (EPL-1.0)
-License text: THIRD-PARTY-LICENSES/EPL-1.0.txt
+jakarta.jms:jakarta.jms-api:3.1.0
+License: Eclipse Public License v2.0 (EPL-2.0)
+License text: https://www.eclipse.org/legal/epl-2.0/
 
 jakarta.ws.rs:jakarta.ws.rs-api:2.1.6
 License: Eclipse Public License v1.0 (EPL-1.0)

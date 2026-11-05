@@ -10,7 +10,7 @@
     <!-- Karate Clients -->
     <!-- Karate Clients - JMS -->
     <!-- Karate Clients - JMS - ActiveMQ -->
-    <artemis-jms-client.version>X.X.X</artemis-jms-client.version>
+    <artemis-jakarta-client.version>X.X.X</artemis-jakarta-client.version>
   </properties>
 
   <dependencies>
@@ -19,8 +19,8 @@
     <!-- Karate Clients - JMS - ActiveMQ -->
     <dependency>
       <groupId>org.apache.activemq</groupId>
-      <artifactId>artemis-jms-client</artifactId>
-      <version>${artemis-jms-client.version}</version>
+      <artifactId>artemis-jakarta-client</artifactId>
+      <version>${artemis-jakarta-client.version}</version>
     </dependency>
   </dependencies>
 ----
