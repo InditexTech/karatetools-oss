@@ -1,4 +1,5 @@
 {
+  "dependency_ecosystem": "maven",
   "project_type": "monorepo",
   "release": {
     "lifecycle": "delegated",
