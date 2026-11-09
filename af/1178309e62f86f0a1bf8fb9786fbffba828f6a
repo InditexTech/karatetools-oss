@@ -1,0 +1,39 @@
+.github/workflows/code-maven_java-PR_verify.yml
+  s_321a66447d8185::t_b8f53f9803c163 66
+.github/workflows/code-maven_java-build_snapshot.yml
+  s_321a66447d8185::t_78239712de3ba9 89,213,277
+.github/workflows/code-maven_java-release-core.yml
+  s_321a66447d8185::t_4ede38d2993fc8 192,275,930,1041,1180,1202,1249,1456,1495
+.github/workflows/code-maven_java-release.yml
+  s_321a66447d8185::t_d6840e583a988a 119,161,173,215,222
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+  s_321a66447d8185::t_659735238929fa 91,224
+.github/workflows/code-release_preview.yml
+  s_321a66447d8185::t_1656c14251e657 77
+.github/workflows/codeql.yml
+  s_321a66447d8185::t_eae531172a39af 96,102
+.github/workflows/pr-verify.yml
+  s_321a66447d8185::t_12808f11f470c0 31
+.github/workflows/push-verify.yml
+  s_321a66447d8185::t_51e5f01a40f1ad 32
+.github/workflows/scorecard-analysis.yml
+  s_321a66447d8185::t_14134972c64d74 69,76,96,101
+.github/workflows/sync-to-develop.yml
+  s_321a66447d8185::t_5b0d6786e045ee 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "af1178309e62f86f0a1bf8fb9786fbffba828f6a",
+  "prompts": {},
+  "sessions": {
+    "s_321a66447d8185": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "3072a309-82b1-40ea-8573-367fb4af9c8f",
+        "model": "claude-sonnet-5.5"
+      },
+      "human_author": "Ivan Alvarez Sabin <ivanasabi@inditex.com>"
+    }
+  }
+}

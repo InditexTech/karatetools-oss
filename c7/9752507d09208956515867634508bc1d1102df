@@ -1,0 +1,24 @@
+.github/workflows/code-maven_java-PR_verify.yml
+  h_b19ef7e7aefc9f 66
+.github/workflows/code-maven_java-build_snapshot.yml
+  h_b19ef7e7aefc9f 89,213,277
+.github/workflows/code-maven_java-release-core.yml
+  h_b19ef7e7aefc9f 192,275,930,1041,1180,1202,1249,1456,1495
+.github/workflows/code-maven_java-release.yml
+  h_b19ef7e7aefc9f 119,161,173,215,222
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+  h_b19ef7e7aefc9f 91,224
+.github/workflows/sync-to-develop.yml
+  h_b19ef7e7aefc9f 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "c79752507d09208956515867634508bc1d1102df",
+  "prompts": {},
+  "humans": {
+    "h_b19ef7e7aefc9f": {
+      "author": "Ivan Alvarez Sabin <ivanasabi@inditex.com>"
+    }
+  }
+}
