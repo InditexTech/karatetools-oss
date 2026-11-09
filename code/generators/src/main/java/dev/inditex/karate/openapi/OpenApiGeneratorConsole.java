@@ -3,11 +3,11 @@ package dev.inditex.karate.openapi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import dev.inditex.karate.console.ConsoleCLI;
 import dev.inditex.karate.console.ConsoleItem;
@@ -309,8 +309,10 @@ public class OpenApiGeneratorConsole {
           .mapToInt(e -> e.operation().getOperationId() != null ? e.operation().getOperationId().length() : 0).max()
           .orElse(MAX_OP_ID_LENGTH);
       operationFormat = "%-" + maxMethod + OPERATION_STRING_FORMAT + maxPath + OPERATION_STRING_FORMAT + maxOperationId + "s";
-      return values.values().stream().flatMap(Collection::stream)
-          .collect(Collectors.toMap(v -> String.format(operationFormat, v.method(), v.path(), v.operation().getOperationId()), v -> v));
+      // An operation with several tags is listed under each of them: keep it once
+      return values.values().stream().flatMap(Collection::stream).collect(HashMap::new,
+          (map, v) -> map.putIfAbsent(String.format(operationFormat, v.method(), v.path(), v.operation().getOperationId()), v),
+          Map::putAll);
     }
     return Collections.emptyMap();
   }

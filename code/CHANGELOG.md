@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [#271](https://github.com/InditexTech/karatetools-oss/issues/271) \[Karate-Tools] List operations with more than one tag once in the OpenAPI generator
+
 - [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix the OpenAPI generator interactive console on macOS Apple Silicon
 
 - [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility with generated Avro records
