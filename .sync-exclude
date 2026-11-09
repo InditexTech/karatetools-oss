@@ -4,3 +4,9 @@
 # One normalized relative path per line. Lines in this file are not reconciled by InditexTech CI governance.
 CONTRIBUTING.md
 code/.tool-versions
+.github/workflows/code-maven_java-PR_verify.yml
+.github/workflows/code-maven_java-build_snapshot.yml
+.github/workflows/code-maven_java-release-core.yml
+.github/workflows/code-maven_java-release.yml
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+.github/workflows/sync-to-develop.yml
