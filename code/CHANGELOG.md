@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#110](https://github.com/InditexTech/karatetools-oss/pull/110), [#100](https://github.com/InditexTech/karatetools-oss/pull/100), [#113](https://github.com/InditexTech/karatetools-oss/pull/113) \[Karate-Tools] Upgrade the Boot module to Spring Boot 4 and Spring Framework 7, and modernize the OpenAPI stack
 
+- [#273](https://github.com/InditexTech/karatetools-oss/issues/273) \[Karate-Tools] Upgrade Brotli4j to 1.24.0 to remediate CVE-2026-111497
+
 - [#194](https://github.com/InditexTech/karatetools-oss/issues/194) \[Karate-Tools] Insert system property values literally in SystemPropertiesParser
 
 - [#208](https://github.com/InditexTech/karatetools-oss/pull/208) \[Karate-Tools] Remediate Scorecard security findings and document scoped OSV vulnerability exceptions
