@@ -1,0 +1,23 @@
+code/CHANGELOG.md
+  s_7a187d6e3be77d::t_8a711ce794bc9d 10
+code/pom.xml
+  s_7a187d6e3be77d::t_69d15a07c88456 106,184-188
+code/runner/src/test/java/dev/inditex/karate/test/BrotliCompressionTest.java
+  s_7a187d6e3be77d::t_f58879962f8b57 1-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "2381bc9954f114e76761eec313a323cc9ca78d9e",
+  "prompts": {},
+  "sessions": {
+    "s_7a187d6e3be77d": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "fa847490-c5d1-48d1-9ed3-27e09cae52ac",
+        "model": "unknown"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
