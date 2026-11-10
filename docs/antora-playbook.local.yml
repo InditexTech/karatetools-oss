@@ -105,7 +105,7 @@ asciidoc:
     kroki-diagram-types: mermaid,plantuml,bpmn,excalidraw
     # Same as the real antora-playbook.yml — see its own comment.
     karatetools-package: dev.inditex.karate
-    karatetools-version: 6.0.0
+    karatetools-version: 6.1.0
     karatetools-unit-coverage-threshold: 90%
     karatetools-mutation-coverage-threshold: 90%
     karatetools-integration-coverage-threshold: 80%
