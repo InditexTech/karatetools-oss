@@ -1,0 +1,21 @@
+docs/antora-playbook.yml
+  s_aea9da36686262::t_8556ada69bbcba 26-28,34,79,430-431,433,435,437,439,441,443,445
+docs/test/antora-extensions.test.cjs
+  s_aea9da36686262::t_fd2239288062c0 2,4,48,53,90-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "e335c25238e4eacef8bf65d37168a0a3d11d955e",
+  "prompts": {},
+  "sessions": {
+    "s_aea9da36686262": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "6b94cc96-b72c-467c-9c8c-0ba3097ea705",
+        "model": "unknown"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
