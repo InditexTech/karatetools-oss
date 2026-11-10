@@ -76,7 +76,7 @@
     <link rel="prev" href="../../additional-information-overview/">
     <link rel="next" href="../migration-guide/">
     <meta name="description" content="Highlights of every Karate Tools release.">
-    <meta name="generator" content="Antora 3.2.0">
+    <meta name="generator" content="Antora 3.2.1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -866,6 +866,21 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2026-11-10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✔️ Karate Tools - Fixed the <strong>OpenAPI generator interactive console on macOS Apple Silicon</strong>.</p>
+<p class="tableblock">✔️ Karate Tools - Improved <strong>Kafka Avro client compatibility</strong> for Karate Tools generated Avro records.</p>
+<p class="tableblock">✔️ Karate Tools - Migrated <strong>JMS clients to Jakarta Messaging 3.0</strong> (<code>javax.jms</code> to <code>jakarta.jms</code>) and updated the ActiveMQ Artemis and RabbitMQ JMS dependencies.</p>
+<p class="tableblock">NOTE: Applications that directly use JMS APIs from Karate Tools must migrate their imports and types to <code>jakarta.jms.<strong></code>. See the <a href="../migration-guide/" class="xref page">migration guide</a>.</p>
+<p class="tableblock">✔️ Karate Tools - Updated the *Boot module</strong> to Spring Boot 4.1.1 and Spring Framework 7.</p>
+<p class="tableblock">NOTE: If you extend the Boot module or manage its Spring dependencies directly, validate the migration to Spring Boot 4. The module now uses <code>spring-boot-starter-webmvc</code> instead of <code>spring-boot-starter-web</code>.</p>
+<p class="tableblock">✔️ Karate Tools - Updated <strong>OpenAPI tooling</strong> (<code>swagger-inflector</code> 2.0.17 &#8594; 3.0.2 and <code>openapi-generator-maven-plugin</code> 7.12.0 &#8594; 7.25.0).</p>
+<p class="tableblock">NOTE: Custom OpenAPI integrations using <code>javax.ws.rs.<strong></code> must migrate to <code>jakarta.ws.rs.</strong></code>.</p>
+<p class="tableblock">✔️ Karate Tools - Fixed system-property parsing so values are inserted literally.</p>
+<p class="tableblock">✔️ Karate Tools - Renewed the <strong>documentation platform</strong> with versioned Docouture documentation, improved publication flows, historical URL redirects, reusable documentation sections, and hardened release workflows.</p>
+<p class="tableblock">✔️ Karate Tools - Updated Java dependencies and Maven tooling, refreshed integration-test containers, and strengthened CI and security scanning.</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">6.0.0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2026-06-26</p></td>

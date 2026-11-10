@@ -75,7 +75,7 @@
     <link rel="canonical" href="https://inditextech.github.io/karatetools-oss/6.0.0/main/release-notes/migration-guide/">
     <link rel="prev" href="../overview/">
     <link rel="next" href="../../contributing-overview/">
-    <meta name="generator" content="Antora 3.2.0">
+    <meta name="generator" content="Antora 3.2.1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -847,6 +847,89 @@
 </aside>
 
 <article class="doc">
+<div class="sect1">
+<h2 id="karate-tools-migration-to-6-1-0"><a class="anchor" href="#karate-tools-migration-to-6-1-0"></a>Karate Tools Migration to 6.1.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To migrate to 6.1.0, update the Karate Tools version property:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>pom.xml</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;karatetools.version&gt;6.1.0&lt;/karatetools.version&gt;</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your project extends or integrates the <code>karatetools-boot</code> module:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Update Spring Boot from <code>3.5.14</code> to <code>4.1.1</code>.</p>
+</li>
+<li>
+<p>Update Spring Framework from <code>6.2.x</code> to <code>7.0.9</code>.</p>
+</li>
+<li>
+<p>Replace <code>spring-boot-starter-web</code> with <code>spring-boot-starter-webmvc</code>.</p>
+</li>
+<li>
+<p>Update moved Spring Boot imports:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration</code> to <code>org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration</code></p>
+</li>
+<li>
+<p><code>org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</code> to <code>org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Run your Spring Boot integration tests after the update.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your OpenAPI integration directly uses JAX-RS APIs from the Karate Tools dependency graph:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>javax.ws.rs.<strong></code> imports with <code>jakarta.ws.rs.</strong></code>.</p>
+</li>
+<li>
+<p>Update <code>swagger-inflector</code> from <code>2.0.17</code> to <code>3.0.2</code> if your project declares it explicitly.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your application directly uses JMS APIs from the Karate Tools clients:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>javax.jms.<strong></code> imports and types with <code>jakarta.jms.</strong></code>.</p>
+</li>
+<li>
+<p>If you declare the ActiveMQ Artemis dependency directly, replace <code>org.apache.activemq:artemis-jms-client</code> with <code>org.apache.activemq:artemis-jakarta-client</code>.</p>
+</li>
+<li>
+<p>If you manage the RabbitMQ JMS client version directly, update it to 3.x; Karate Tools uses <code>3.9.0</code>, which supports Jakarta Messaging 3.0.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="karate-tools-migration-to-6-0-0-jdk-25"><a class="anchor" href="#karate-tools-migration-to-6-0-0-jdk-25"></a>Karate Tools Migration to 6.0.0 - JDK 25</h2>
 <div class="sectionbody">
