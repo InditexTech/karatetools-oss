@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict')
+const { readFileSync } = require('node:fs')
 const { test } = require('node:test')
+const { load } = require('js-yaml')
 const registerRedirects = require('@inditextech/docouture-antora-extensions/lib/redirects')
 const registerDuplicateLatestVersion = require('@inditextech/docouture-antora-extensions/lib/duplicate-latest-version')
 
@@ -43,12 +45,12 @@ function createPage(name) {
   }
 }
 
-function produceRedirects(rules) {
+function produceRedirects(rules, pages = [createPage('clients'), createPage('about')]) {
   const context = createContext()
   const siteCatalog = createSiteCatalog()
   registerRedirects(context, rules)
   context.handlers.get('navigationBuilt')({
-    contentCatalog: { getPages: () => [createPage('clients'), createPage('about')] },
+    contentCatalog: { getPages: () => pages },
     siteCatalog,
     playbook: {
       site: { url: 'https://example.com' },
@@ -83,6 +85,34 @@ test('extensionless redirects keep indexified directory URLs', () => {
     'legacy/about/index.html',
     'legacy/clients/index.html',
   ])
+})
+
+test('historical playbook redirects preserve legacy URLs and target ROOT pages', () => {
+  const playbook = load(readFileSync(`${__dirname}/../antora-playbook.yml`, 'utf8'))
+  const { redirects } = playbook.antora.extensions.find(
+    (extension) => extension.require === '@inditextech/docouture-antora-extensions'
+  )
+  const versions = ['4.0.0', '5.0.0', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.4.0', '6.0.0']
+  const rules = versions.map((version) => {
+    const rule = redirects.find((entry) => entry.from === `/karatetools-oss/karatetools-oss/${version}/**`)
+    assert.ok(rule, `Missing legacy redirect for ${version}`)
+    assert.equal(rule.to, `/${version}/**`)
+    return rule
+  })
+  const pages = versions.map((version) => ({
+    src: { component: 'ROOT', version, module: 'clients' },
+    pub: { url: `/${version}/clients/jms/` },
+    out: { path: `${version}/clients/jms/index.html` },
+    contents: Buffer.from('JMS'),
+  }))
+  const aliases = produceRedirects(rules, pages)
+
+  assert.equal(aliases.length, versions.length)
+  for (const [index, version] of versions.entries()) {
+    assert.equal(aliases[index].out.path, `karatetools-oss/karatetools-oss/${version}/clients/jms/index.html`)
+    assert.equal(aliases[index].src.component, 'ROOT')
+    assert.ok(aliases[index].contents.toString().includes(`/${version}/clients/jms/`))
+  }
 })
 
 test('latest duplication preserves an existing redirect and copies unrelated pages', () => {
