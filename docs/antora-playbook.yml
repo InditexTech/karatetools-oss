@@ -23,31 +23,15 @@ site:
   # url: https://<org>.github.io/<repo>
   # url: https://docs.example.com
   #
-  # A second /<component-name>/ segment additionally appears in a page's own
-  # path if that page's component isn't Antora's reserved `ROOT` (docouture
-  # new's "extra URL path segment" question, or `--url-segment`, default
-  # off/ROOT). Two components coexist in this multi-source build (see
-  # content.sources below), by design, deliberately NOT sharing one name:
-  #   - `karatetools-oss` — every docs/v4.0.0-docs/v5.4.0 tag (frozen,
-  #     never rewritten) plus docs/v6.0.0 as first republished. Carries that
-  #     second segment, producing this exact site.url's own already-live
-  #     doubled shape for those specific versions — confirmed against
-  #     production, not a bug to fix here — see docs/src/antora.yml's own
-  #     comment on `name` for why this component is kept, frozen, rather
-  #     than migrated.
-  #   - `ROOT` — `develop` (prerelease) and every version cut from it from
-  #     here on (docs/v6.0.0's next republish onward), contributing no
-  #     second segment: a clean /<version>/... This is a deliberate split,
-  #     not an oversight — it forks the version dropdown, old and new
-  #     versions no longer share one continuous switcher.
+  # Prerelease and historical tags use the ROOT component, so page paths
+  # start at /<version>/ without an additional component-name segment.
+  # Redirects below preserve the former doubled-component URLs.
   url: https://inditextech.github.io/karatetools-oss
   # `ROOT::index.adoc` — component `ROOT` (docs/src/antora.yml's `name`,
   # see above), default/ROOT module (the double colon), `index.adoc` inside
   # it (modules/ROOT/pages/index.adoc). Always resolves against whichever
   # version Antora picks as this component's own latest, same as any other
-  # xref/site.start_page reference — never the frozen `karatetools-oss`
-  # component's own start page, which has none of its own configured here
-  # and is only ever reached via the version dropdown or a direct link.
+  # xref/site.start_page reference.
   start_page: ROOT::index.adoc
   # Side-menu brand mark (nav-brand.hbs) and browser tab icon (head-icons.hbs)
   # — placeholder artwork under supplemental-ui/, wired via
@@ -92,8 +76,7 @@ content:
       branches: [develop]
       tags: ['docs/v*']
       # The 7 pre-docouture release tags (docs/v4.0.0-docs/v5.4.0) predate this
-      # site's antora.yml carrying a `version:` key at all, and will never
-      # gain one themselves (left untouched deliberately, not republished).
+      # site's antora.yml carrying a `version:` key, so they need an override.
       # Antora's own component descriptor loader hard-fails ("antora.yml is
       # missing a version") if a source passes no version override at all —
       # this map is that override, read only when `version` is absent from
@@ -214,7 +197,7 @@ asciidoc:
     # not styling. Update karatetools-version on an actual product release,
     # independently of this docs site's own (unrelated) version/prerelease.
     karatetools-package: dev.inditex.karate
-    karatetools-version: 6.0.0
+    karatetools-version: 6.1.0
     karatetools-unit-coverage-threshold: 90%
     karatetools-mutation-coverage-threshold: 90%
     karatetools-integration-coverage-threshold: 80%
@@ -444,26 +427,8 @@ antora:
           to: '/6.0.0/main/contributing/repo-structure/docs/'
         - from: '/karatetools-oss/latest/contributing/step-by-step.html'
           to: '/6.0.0/main/contributing/step-by-step/'
-        # --- old release tags (docs/v4.0.0-docs/v5.4.0, plus 6.0.0 once its
-        # own component switches to ROOT): drops the doubled
-        # /karatetools-oss/karatetools-oss/ segment these versions are
-        # currently actually published under (verified live). A uniform,
-        # 1:1 rename per version — nothing folds, module/page names stay
-        # identical — so `**` is safe here (unlike the prerelease/latest
-        # groups above, whose content itself was restructured). Deliberately
-        # one rule per literal version number, not a shared /*/** pattern:
-        # the matcher only sees each page's own pub.url string, with no
-        # notion of "component", so a generic first-segment wildcard would
-        # also match docs/v6.0.0's still-`karatetools-oss` pages (until its
-        # own retag lands) and prerelease's real ROOT pages, producing
-        # bogus stubs neither this list nor a real bookmark ever needs.
-        #
-        # The 6.0.0 entry only resolves once docs/v6.0.0 is itself
-        # retagged onto the ROOT component (see docs/src/antora.yml's own
-        # comment, and branch feature/GH-150-remove-the-karatetool) — its
-        # `to` targets no real page before that lands, and (under
-        # runtime.log.failure_level) fails the build until it does. Land
-        # this entry only once that retag has merged, not before.
+        # Historical tags now use ROOT. Preserve the old doubled-component
+        # bookmarks while keeping their original module and page names.
         - from: '/karatetools-oss/karatetools-oss/4.0.0/**'
           to: '/4.0.0/**'
         - from: '/karatetools-oss/karatetools-oss/5.0.0/**'

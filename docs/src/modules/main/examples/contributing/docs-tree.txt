@@ -5,7 +5,7 @@ docs
 ├── node_modules <3>
 ├── package-lock.json <4>
 ├── package.json <4>
-├── scripts <5>
+├── test <5>
 ├── src <6>
 │   ├── antora.yml <7>
 │   └── modules <8>

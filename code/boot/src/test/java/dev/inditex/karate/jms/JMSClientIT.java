@@ -9,7 +9,7 @@ import java.util.Map;
 import dev.inditex.karate.KarateTestUtils;
 import dev.inditex.karate.docker.DockerComposeTestConfiguration;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;

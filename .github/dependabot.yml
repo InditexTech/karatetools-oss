@@ -22,6 +22,10 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - kind/internal
+    groups:
+      docouture:
+        patterns:
+          - "@inditextech/docouture-*"
 
   - package-ecosystem: maven
     directory: /code
@@ -55,6 +59,30 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - kind/internal
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
+    # Actions used by workflows governed by InditexTech CI governance; their
+    # versions are managed by the governance sync, never by Dependabot.
+    ignore:
+      - dependency-name: "InditexTech/gh-actions/*"
+      - dependency-name: "SonarSource/sonarqube-scan-action"
+      - dependency-name: "actions/checkout"
+      - dependency-name: "actions/create-github-app-token"
+      - dependency-name: "actions/download-artifact"
+      - dependency-name: "actions/setup-java"
+      - dependency-name: "actions/upload-artifact"
+      - dependency-name: "asdf-vm/actions/install"
+      - dependency-name: "fsfe/reuse-action"
+      - dependency-name: "github/codeql-action/analyze"
+      - dependency-name: "github/codeql-action/init"
+      - dependency-name: "github/codeql-action/upload-sarif"
+      - dependency-name: "newrelic/repolinter-action"
+      - dependency-name: "ossf/scorecard-action"
+      - dependency-name: "release-flow/keep-a-changelog-action"
+      - dependency-name: "reviewdog/action-actionlint"
+      - dependency-name: "webiny/action-conventional-commits"
 
   - package-ecosystem: docker-compose
     directory: /code/boot/src/test/resources/compose

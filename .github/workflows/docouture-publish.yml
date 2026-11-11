@@ -78,13 +78,13 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           # Reads engines.node from docs/package.json — no separate version
           # file to keep in sync.
           node-version-file: docs/package.json
-          # package.json names npm as its packageManager, which would turn
-          # setup-node's automatic cache on. See the header: no caches here.
+          # package.json names the package manager in `packageManager`, which
+          # would turn setup-node's automatic cache on. See the header: no caches here.
           package-manager-cache: false
 
       - name: Install dependencies
@@ -96,15 +96,6 @@ jobs:
       # no image cache.
       - name: Build
         run: npm run build
-
-      # See docouture-pr-verify.yml's own comment: Antora's strict mode already
-      # catches broken cross-references during Build above; check-links
-      # (package.json's own script, see scripts/check-links.mjs) covers what
-      # it can't — raw http(s) links in content — before this site actually
-      # gets published. Only a broken EXTERNAL link fails this step; a
-      # broken local one is a warning only.
-      - name: Check links
-        run: npm run check-links
 
       # Mints an installation token for a GitHub App that's on this repo's
       # branch-ruleset bypass list, if `gh-pages` is protected by one
@@ -119,7 +110,7 @@ jobs:
       # branch push needs.
       - name: Git app token
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
