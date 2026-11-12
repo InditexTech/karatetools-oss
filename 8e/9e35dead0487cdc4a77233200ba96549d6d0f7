@@ -1,0 +1,25 @@
+.github/workflows/code-maven_java-build_snapshot.yml
+  s_0204f3fb835684::t_f620bd0407f7db 142-149,284
+.github/workflows/code-maven_java-release-core.yml
+  s_0204f3fb835684::t_b824a6b6e0e9ff 76-81,336-443,451,453-454,456,513-514,516-522,526-548,552-565,567-568,570,575,607,666-672,1365-1371,1410
+.github/workflows/code-maven_java-release.yml
+  s_0204f3fb835684::t_2b69b9aac6fc79 44-45,163,175,202-203
+.github/workflows/code-maven_java-sonarcloud-analysis.yml
+  s_0204f3fb835684::t_6336141725f588 223-235,251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "8e9e35dead0487cdc4a77233200ba96549d6d0f7",
+  "prompts": {},
+  "sessions": {
+    "s_0204f3fb835684": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "16709cc7-84f9-4072-8662-90ab2bf7d0f8",
+        "model": "claude-sonnet-5.5"
+      },
+      "human_author": "Ivan Alvarez Sabin <ivanasabi@inditex.com>"
+    }
+  }
+}
