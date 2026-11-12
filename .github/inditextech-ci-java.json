@@ -2,6 +2,16 @@
   "dependency_ecosystem": "maven",
   "project_type": "monorepo",
   "release": {
+    "artifacts": [
+      "clients/target/karatetools-clients-?.?.?.jar",
+      "generators/target/karatetools-generators-?.?.?.jar",
+      "runner/target/karatetools-runner-?.?.?.jar",
+      "starter/target/karatetools-starter-?.?.?.jar",
+      "boot/target/karatetools-boot-?.?.?.jar",
+      "archetype/target/karatetools-archetype-?.?.?.jar",
+      "openapi-test/xxx-api-rest-stable/target/xxx-api-rest-stable-?.?.?.jar",
+      "openapi-test/xxx-external-api-rest-stable/target/xxx-external-api-rest-stable-?.?.?.jar"
+    ],
     "lifecycle": "delegated",
     "packages": [
       "karatetools-clients",
@@ -9,7 +19,11 @@
       "karatetools-runner",
       "karatetools-starter",
       "karatetools-boot",
-      "karatetools-archetype"
+      "karatetools-archetype",
+      "xxx-api-rest-stable",
+      "xxx-external-api-rest-stable",
+      "jacoco-report-aggregate",
+      "karate-release"
     ],
     "strategy": "locked-step"
   },
