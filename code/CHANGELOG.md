@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.0] - 2026-11-12
+
 - [#219](https://github.com/InditexTech/karatetools-oss/pull/219) \[Karate-Tools] Fix the OpenAPI generator interactive console on macOS Apple Silicon
 
 - [#186](https://github.com/InditexTech/karatetools-oss/pull/186) \[Karate-Tools] Improve Kafka Avro client compatibility with generated Avro records
@@ -27,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#166](https://github.com/InditexTech/karatetools-oss/pull/166) \[Karate-Tools] Pass `github.ref` via `env` in docouture-release instead of interpolating it into `run`
 
-- [#177](https://github.com/InditexTech/karatetools-oss/pull/177) \[Karate-Tools] Harden the docouture workflows to least-privilege GITHUB_TOKENs
+- [#177](https://github.com/InditexTech/karatetools-oss/pull/177) \[Karate-Tools] Harden the docouture workflows to least-privilege GITHUB\_TOKENs
 
 - \[Karate-Tools] Refresh remaining Java dependencies and Maven tooling, and improve CI governance
 
@@ -84,7 +86,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First Open Source Release
 
-[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/6.0.0...HEAD
+[Unreleased]: https://github.com/InditexTech/karatetools-oss/compare/6.1.0...HEAD
+
+[6.1.0]: https://github.com/InditexTech/karatetools-oss/compare/6.0.0...6.1.0
 
 [6.0.0]: https://github.com/InditexTech/karatetools-oss/compare/5.4.0...6.0.0
 
