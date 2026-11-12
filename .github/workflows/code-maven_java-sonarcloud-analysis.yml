@@ -220,6 +220,19 @@ jobs:
             echo "SONAR_COVERAGE_PATHS=${sonar_coverage}"
           } >> "$GITHUB_ENV"
 
+      - name: Resolve SonarCloud project version
+        run: |
+          project_version="$(git for-each-ref --sort=refname --sort=-creatordate \
+            --format='%(refname:lstrip=2)' refs/tags \
+            | grep -E '^([A-Za-z0-9][A-Za-z0-9._-]*-)?v?[0-9]+\.[0-9]+\.[0-9]+$' \
+            | head -n 1 || true)"
+          if [[ -n "$project_version" ]]; then
+            echo "SONAR_PROJECT_VERSION_ARG=-Dsonar.projectVersion=${project_version}" >> "$GITHUB_ENV"
+          else
+            echo "::notice title=SonarCloud project version::No release tag found; the analysis runs without sonar.projectVersion."
+            echo "SONAR_PROJECT_VERSION_ARG=" >> "$GITHUB_ENV"
+          fi
+
       - name: Run SonarCloud analysis
         uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
         env:
@@ -235,3 +248,4 @@ jobs:
             -Dsonar.java.binaries=${{ env.SONAR_JAVA_BINARIES }}
             -Dsonar.java.test.binaries=${{ env.SONAR_JAVA_TEST_BINARIES }}
             -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.SONAR_COVERAGE_PATHS }}
+            ${{ env.SONAR_PROJECT_VERSION_ARG }}
