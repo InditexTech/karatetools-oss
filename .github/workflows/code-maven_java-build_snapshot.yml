@@ -139,7 +139,14 @@ jobs:
           publish_snapshot=false
           if [[ "$snapshot_optin" == "true" && "$GITHUB_EVENT_NAME" == "push" ]]; then
             committer_email="$(git -C "$GITHUB_WORKSPACE" show -s --format=%ae HEAD)"
-            if [[ "$committer_email" == *"[bot]@users.noreply.github.com" ]]; then
+            head_subject="$(git -C "$GITHUB_WORKSPACE" show -s --format=%s HEAD)"
+            # Release commits are signed by the organization release identity,
+            # not a [bot] account, so the release lane is also recognized by
+            # subject: the governed prepare/next-development commits and the
+            # maven-release-plugin commits of the delegated lifecycle.
+            if [[ "$committer_email" == *"[bot]@users.noreply.github.com" \
+              || "$head_subject" == "[java-release] "* \
+              || "$head_subject" == "[maven-release-plugin] "* ]]; then
               echo "::notice title=Snapshot skipped::Release-bot commit does not need a snapshot."
             else
               publish_snapshot=true
@@ -274,7 +281,7 @@ jobs:
       - name: Deploy snapshot to Maven Central
         env:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
-        uses: InditexTech/gh-actions/maven-central@ab7978dfa118776238a6982e445707a1ae6c0668 # v1.2.0
+        uses: InditexTech/gh-actions/maven-central@484e732cf8d137af27b62210d865e2100ef97aa5 # v1.2.1
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           project-type: ${{ env.PROJECT_TYPE }}

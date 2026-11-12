@@ -41,6 +41,8 @@ jobs:
       release_type: ${{ inputs.release_type }}
     secrets:
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      CI_GPG_SECRET_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+      CI_GPG_SECRET_KEY_PASSWORD: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
 
   publish-maven-central:
     name: Publish ${{ matrix.release.tag }} to Maven Central
@@ -158,7 +160,7 @@ jobs:
         if: steps.lifecycle.outputs.mode != 'delegated'
         env:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
-        uses: InditexTech/gh-actions/maven-central@ab7978dfa118776238a6982e445707a1ae6c0668 # v1.2.0
+        uses: InditexTech/gh-actions/maven-central@484e732cf8d137af27b62210d865e2100ef97aa5 # v1.2.1
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           project-type: ${{ env.PROJECT_TYPE }}
@@ -170,7 +172,7 @@ jobs:
         if: steps.lifecycle.outputs.mode == 'delegated'
         env:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
-        uses: InditexTech/gh-actions/maven-central@ab7978dfa118776238a6982e445707a1ae6c0668 # v1.2.0
+        uses: InditexTech/gh-actions/maven-central@484e732cf8d137af27b62210d865e2100ef97aa5 # v1.2.1
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           project-type: ${{ env.PROJECT_TYPE }}
@@ -197,6 +199,8 @@ jobs:
       staged_tag_ref: ${{ needs.release-core.outputs.staged_tag_ref }}
     secrets:
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      CI_GPG_SECRET_KEY: ${{ secrets.CI_GPG_SECRET_KEY }}
+      CI_GPG_SECRET_KEY_PASSWORD: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
 
   github-release:
     name: Create GitHub Release ${{ matrix.release.tag }}

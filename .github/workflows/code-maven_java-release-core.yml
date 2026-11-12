@@ -73,6 +73,12 @@ on:
     secrets:
       APP_PRIVATE_KEY:
         required: true
+      CI_GPG_SECRET_KEY:
+        description: Armored GPG secret key signing release commits and tags.
+        required: false
+      CI_GPG_SECRET_KEY_PASSWORD:
+        description: Passphrase protecting CI_GPG_SECRET_KEY.
+        required: false
 
 permissions:
   actions: read
@@ -327,6 +333,114 @@ jobs:
               ;;
           esac
 
+      - name: Resolve release type
+        id: release-type
+        if: steps.lifecycle.outputs.mode != 'delegated'
+        env:
+          DEVELOPMENT_FLOW: ${{ vars.DEVELOPMENT_FLOW }}
+          RELEASE_LABELS: ${{ steps.release-context.outputs.release_labels }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case ",$RELEASE_LABELS," in
+            *",release-type/major,"*) release_bump="major" ;;
+            *",release-type/minor,"*) release_bump="minor" ;;
+            *",release-type/hotfix,"*|*",release-type/multi-hotfix,"*|*",release-type/patch,"*)
+              release_bump="patch"
+              ;;
+            *)
+              if [[ "$DEVELOPMENT_FLOW" == "trunk-based-development" ]]; then
+                release_bump="minor"
+              else
+                echo "::error title=Missing release type::git-flow releases require a release-type label."
+                exit 1
+              fi
+              ;;
+          esac
+
+          echo "release_bump=$release_bump" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve release packages
+        id: release-packages
+        if: steps.lifecycle.outputs.mode != 'delegated'
+        env:
+          JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
+          artifact_id() {
+            printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
+          }
+          read_version() {
+            if [[ -n "$1" ]]; then
+              mvn -q -B --no-transfer-progress -f pom.xml -pl ":$1" \
+                help:evaluate -Dexpression=project.version -DforceStdout
+            else
+              mvn -q -B --no-transfer-progress -f pom.xml \
+                help:evaluate -Dexpression=project.version -DforceStdout
+            fi
+          }
+          read_artifact() {
+            mvn -q -B --no-transfer-progress -f pom.xml \
+              help:evaluate -Dexpression=project.artifactId -DforceStdout
+          }
+
+          if [[ "$PROJECT_TYPE" == "single" ]]; then
+            release_strategy=single
+            artifact="$(read_artifact)"
+            declared="$(read_version "")"
+            modules="$(jq -cn --arg artifact "$artifact" '[$artifact]')"
+            packages="$(jq -cn --arg name "$artifact" --arg declared "$declared" \
+              '[{name: $name, "tag-prefix": "", "declared-version": $declared}]')"
+          elif [[ "$PROJECT_TYPE" == "monorepo" ]]; then
+            release_strategy="$(jq -er '.release.strategy' "$descriptor")"
+            entries="$RUNNER_TEMP/java-release-version-packages.jsonl"
+            : > "$entries"
+            while IFS= read -r package; do
+              module="$(artifact_id "$package")"
+              declared="$(read_version "$module")"
+              jq -cn --arg module "$module" --arg declared "$declared" \
+                '{module: $module, declared: $declared}' >> "$entries"
+            done < <(jq -er '.release.packages[]' "$descriptor")
+            modules="$(jq -cs 'map(.module)' "$entries")"
+            case "$release_strategy" in
+              independent)
+                packages="$(jq -cs 'map({name: .module, "tag-prefix": "\(.module)-", "declared-version": .declared})' "$entries")"
+                ;;
+              locked-step)
+                packages="$(jq -cs '[{name: (map(.module) | join(", ")), "tag-prefix": "", "declared-version": .[0].declared}]' "$entries")"
+                ;;
+              *)
+                echo "::error title=Invalid release strategy::.release.strategy must be locked-step or independent."
+                exit 1
+                ;;
+            esac
+          else
+            echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
+            exit 1
+          fi
+
+          {
+            echo "strategy=$release_strategy"
+            echo "modules=$modules"
+            echo "packages=$packages"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Compute release version
+        id: release-version
+        if: steps.lifecycle.outputs.mode != 'delegated'
+        uses: InditexTech/gh-actions/release-version@ab7978dfa118776238a6982e445707a1ae6c0668 # v1.2.0
+        with:
+          release-type: ${{ steps.release-type.outputs.release_bump }}
+          tag-format: bare
+          strategy: ${{ steps.release-packages.outputs.strategy }}
+          packages: ${{ steps.release-packages.outputs.packages }}
+          dev-suffix: '-SNAPSHOT'
+
       - name: Plan release metadata
         id: release-plan
         if: steps.lifecycle.outputs.mode != 'delegated'
@@ -334,10 +448,12 @@ jobs:
           JAVA_HOME: ${{ steps.jdk.outputs.java_home }}
           APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           BASELINE_BRANCH: ${{ steps.release-context.outputs.baseline_branch }}
-          DEVELOPMENT_FLOW: ${{ vars.DEVELOPMENT_FLOW }}
+          COMPUTED_RELEASES: ${{ steps.release-version.outputs.releases }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          RELEASE_LABELS: ${{ steps.release-context.outputs.release_labels }}
+          RELEASE_BUMP: ${{ steps.release-type.outputs.release_bump }}
+          RELEASE_MODULES: ${{ steps.release-packages.outputs.modules }}
           RELEASE_REF: ${{ steps.release-context.outputs.release_ref }}
+          RELEASE_STRATEGY: ${{ steps.release-packages.outputs.strategy }}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         shell: bash
         run: |
@@ -345,9 +461,7 @@ jobs:
 
           gh auth setup-git
 
-          descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
           records_file="$RUNNER_TEMP/java-release-records.jsonl"
-          modules_file="$RUNNER_TEMP/java-release-modules.txt"
           source_commit="$(git rev-parse "$RELEASE_REF^{commit}")"
           expected_ref="refs/heads/$BASELINE_BRANCH"
           remote_line="$(git ls-remote --exit-code origin "$expected_ref")"
@@ -373,26 +487,6 @@ jobs:
             resume="true"
           fi
 
-          case ",$RELEASE_LABELS," in
-            *",release-type/major,"*) release_bump="major" ;;
-            *",release-type/minor,"*) release_bump="minor" ;;
-            *",release-type/hotfix,"*|*",release-type/multi-hotfix,"*|*",release-type/patch,"*)
-              release_bump="patch"
-              ;;
-            *)
-              if [[ "$DEVELOPMENT_FLOW" == "trunk-based-development" ]]; then
-                release_bump="minor"
-              else
-                echo "::error title=Missing release type::git-flow releases require a release-type label."
-                exit 1
-              fi
-              ;;
-          esac
-
-          artifact_id() {
-            printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
-          }
-          strip_snapshot() { printf '%s' "${1%-SNAPSHOT}"; }
           # Resolve declared Maven artifactIds through the reactor.
           read_version() {
             if [[ -n "$1" ]]; then
@@ -402,25 +496,6 @@ jobs:
               mvn -q -B --no-transfer-progress -f pom.xml \
                 help:evaluate -Dexpression=project.version -DforceStdout
             fi
-          }
-          read_artifact() {
-            if [[ -n "$1" ]]; then
-              mvn -q -B --no-transfer-progress -f pom.xml -pl ":$1" \
-                help:evaluate -Dexpression=project.artifactId -DforceStdout
-            else
-              mvn -q -B --no-transfer-progress -f pom.xml \
-                help:evaluate -Dexpression=project.artifactId -DforceStdout
-            fi
-          }
-          bump_semver() {
-            local major minor patch
-            IFS=. read -r major minor patch <<< "$1"
-            case "$2" in
-              major) major=$((major + 1)); minor=0; patch=0 ;;
-              minor) minor=$((minor + 1)); patch=0 ;;
-              patch) patch=$((patch + 1)) ;;
-            esac
-            printf '%s.%s.%s' "$major" "$minor" "$patch"
           }
           set_version() {
             if [[ -n "$2" ]]; then
@@ -435,69 +510,69 @@ jobs:
                 -DnewVersion="$1" -DgenerateBackupPoms=false
             fi
           }
-
-          if [[ "$PROJECT_TYPE" == "single" ]]; then
-            release_strategy=single
-            printf '%s\n' "$(read_artifact "")" > "$modules_file"
-          elif [[ "$PROJECT_TYPE" == "monorepo" ]]; then
-            release_strategy="$(jq -er '.release.strategy' "$descriptor")"
-            : > "$modules_file"
-            while IFS= read -r package; do
-              printf '%s\n' "$(artifact_id "$package")" >> "$modules_file"
-            done < <(jq -er '.release.packages[]' "$descriptor")
-          else
-            echo "::error title=Invalid project type::PROJECT_TYPE must be single or monorepo."
+          release_mismatch() {
+            echo "::error title=Release version mismatch::$1"
             exit 1
-          fi
+          }
+
+          release_strategy="$RELEASE_STRATEGY"
+          modules=()
+          while IFS= read -r module; do
+            modules+=("$module")
+          done < <(jq -r '.[]' <<< "$RELEASE_MODULES")
 
           write_records() {
             : > "$records_file"
-            if [[ "$release_strategy" == "single" ]]; then
-              artifact="$(<"$modules_file")"
-              version="$(strip_snapshot "$(read_version "")")"
-              next_dev="$(bump_semver "$version" "$release_bump")-SNAPSHOT"
-              jq -cn \
-                --arg artifact "$artifact" \
-                --arg version "$version" \
-                --arg tag "$version" \
-                --arg next_dev "$next_dev" \
-                '{packages: [$artifact], version: $version, tag: $tag, next_dev: $next_dev}' >> "$records_file"
+            if ! jq -e '
+              type == "array" and length > 0 and
+              all(.[];
+                (.version | type == "string" and test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) and
+                (.next_dev | type == "string" and test("^[0-9]+\\.[0-9]+\\.[0-9]+-SNAPSHOT$")))
+            ' <<< "$COMPUTED_RELEASES" > /dev/null; then
+              release_mismatch "The release-version action returned no strict X.Y.Z release and X.Y.Z-SNAPSHOT next development versions."
+            fi
+
+            if [[ "$release_strategy" == "independent" ]]; then
+              if [[ "$(jq 'length' <<< "$COMPUTED_RELEASES")" -ne "${#modules[@]}" ]]; then
+                release_mismatch "The release-version action must return one record per released package."
+              fi
+              index=0
+              for module in "${modules[@]}"; do
+                record="$(jq -c --argjson index "$index" '.[$index]' <<< "$COMPUTED_RELEASES")"
+                version="$(jq -r '.version' <<< "$record")"
+                if [[ "$(jq -r '.tag' <<< "$record")" != "${module}-${version}" ]]; then
+                  release_mismatch "The computed tag of '$module' is not '${module}-${version}'."
+                fi
+                jq -c --arg module "$module" '. + {packages: [$module]}' <<< "$record" >> "$records_file"
+                index=$((index + 1))
+              done
               return
             fi
 
-            if [[ "$release_strategy" == "locked-step" ]]; then
-              modules=()
-              while IFS= read -r module; do
-                modules+=("$module")
-              done < "$modules_file"
-              versions=()
+            if [[ "$(jq 'length' <<< "$COMPUTED_RELEASES")" -ne 1 ]]; then
+              release_mismatch "A $release_strategy release takes exactly one computed record."
+            fi
+            record="$(jq -c '.[0]' <<< "$COMPUTED_RELEASES")"
+            version="$(jq -r '.version' <<< "$record")"
+            if [[ "$(jq -r '.tag' <<< "$record")" != "$version" ]]; then
+              release_mismatch "The computed tag is not '$version'."
+            fi
+            if [[ "$release_strategy" == "single" ]]; then
+              jq -c --arg module "${modules[0]}" '. + {packages: [$module]}' <<< "$record" >> "$records_file"
+              return
+            fi
+            if [[ "$(jq -r '.first_release' <<< "$record")" == "true" ]]; then
+              declared=()
               for module in "${modules[@]}"; do
-                versions+=("$(strip_snapshot "$(read_version "$module")")")
+                declared_version="$(read_version "$module")"
+                declared+=("${declared_version%-SNAPSHOT}")
               done
-              if [[ "$(printf '%s\n' "${versions[@]}" | sort -u | wc -l | tr -d ' ')" -ne 1 ]]; then
+              if [[ "$(printf '%s\n' "${declared[@]}" | sort -u | wc -l | tr -d ' ')" -ne 1 ]]; then
                 echo "::error title=Invalid locked-step reactor::All release modules must share the same version."
                 exit 1
               fi
-              version="${versions[0]}"
-              next_dev="$(bump_semver "$version" "$release_bump")-SNAPSHOT"
-              jq -cn \
-                --arg version "$version" \
-                --arg tag "$version" \
-                --arg next_dev "$next_dev" \
-                '{packages: [], version: $version, tag: $tag, next_dev: $next_dev}' >> "$records_file"
-              return
             fi
-
-            while IFS= read -r module; do
-              version="$(strip_snapshot "$(read_version "$module")")"
-              next_dev="$(bump_semver "$version" "$release_bump")-SNAPSHOT"
-              jq -cn \
-                --arg module "$module" \
-                --arg version "$version" \
-                --arg tag "${module}-${version}" \
-                --arg next_dev "$next_dev" \
-                '{packages: [$module], version: $version, tag: $tag, next_dev: $next_dev}' >> "$records_file"
-            done < "$modules_file"
+            jq -c '. + {packages: []}' <<< "$record" >> "$records_file"
           }
 
           if [[ "$resume" == "false" ]]; then
@@ -529,7 +604,7 @@ jobs:
 
             primary_version="$(jq -r '.[0].version' <<< "$releases")"
             echo "RELEASE_VERSION=$primary_version" >> "$GITHUB_ENV"
-            echo "RELEASE_BUMP=$release_bump" >> "$GITHUB_ENV"
+            echo "RELEASE_BUMP=$RELEASE_BUMP" >> "$GITHUB_ENV"
           else
             write_records
             releases="$(jq -cs . "$records_file")"
@@ -588,6 +663,13 @@ jobs:
             rm -f "$tmp"
           fi
 
+      - name: Configure release git signing
+        uses: InditexTech/gh-actions/configure-release-git@ca5ff3f7d69ee5a3cb026ac5585d680f083d8f7b
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          gpg-secret-key: ${{ secrets.CI_GPG_SECRET_KEY }}
+          gpg-passphrase: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
+
       - name: Commit and stage release
         if: steps.release-plan.outputs.resume != 'true' && steps.lifecycle.outputs.mode != 'delegated'
         id: release-commit
@@ -606,8 +688,6 @@ jobs:
             echo "::error title=Missing release metadata::Versioning did not produce changes to commit."
             exit 1
           fi
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
           git commit -m "[java-release] Prepare release"
 
           while IFS= read -r record; do
@@ -718,8 +798,6 @@ jobs:
         run: |
           set -euo pipefail
           gh auth setup-git
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
 
           git -C "$GITHUB_WORKSPACE" checkout -B "$BASELINE_BRANCH"
 
@@ -1284,6 +1362,13 @@ jobs:
           set -euo pipefail
           echo "java_home=$(asdf where java)" >> "$GITHUB_OUTPUT"
 
+      - name: Configure release git signing
+        uses: InditexTech/gh-actions/configure-release-git@ca5ff3f7d69ee5a3cb026ac5585d680f083d8f7b
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          gpg-secret-key: ${{ secrets.CI_GPG_SECRET_KEY }}
+          gpg-passphrase: ${{ secrets.CI_GPG_SECRET_KEY_PASSWORD }}
+
       - name: Promote the release to the default branch
         id: promote
         env:
@@ -1299,8 +1384,6 @@ jobs:
         run: |
           set -euo pipefail
           gh auth setup-git
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
 
           git fetch --no-tags origin "+${STAGING_REF}:refs/ci-governance/staged" 2>/dev/null || true
           if [[ "$(git ls-remote origin "$EXPECTED_REF" | cut -f1)" == "$PROMOTE_COMMIT" ]]; then
@@ -1324,7 +1407,7 @@ jobs:
               echo "::error title=Tag conflict::$tag already exists."
               exit 1
             fi
-            git tag -a "$tag" -m "Release $version" "$RELEASE_COMMIT"
+            git tag -s "$tag" -m "Release $version" "$RELEASE_COMMIT"
             tag_refs+=("refs/tags/$tag")
           done < <(jq -c '.[]' <<< "$RELEASES")
 
@@ -1347,8 +1430,6 @@ jobs:
         run: |
           set -euo pipefail
           gh auth setup-git
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
 
           descriptor="$GITHUB_WORKSPACE/.github/inditextech-ci-java.json"
           release_mode="$(jq -r '.release.lifecycle // "govern-inject"' "$descriptor")"
