@@ -35,8 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#291](https://github.com/InditexTech/karatetools-oss/issues/291) \[Karate-Tools] Fix the release publication to Maven Central so that every module is resolved by its artifactId and the same artifacts as 6.0.0 are published
 
-- \[Karate-Tools] Refresh remaining Java dependencies and Maven tooling, and improve CI governance
-
 ## [6.0.0] - 2026-06-26
 
 - [#71](https://github.com/InditexTech/karatetools-oss/issues/71) \[Karate-Tools] JDK 25
