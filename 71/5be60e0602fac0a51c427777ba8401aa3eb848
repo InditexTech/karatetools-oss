@@ -1,0 +1,14 @@
+docs/src/modules/main/pages/release-notes/overview.adoc
+  h_5fac3ddbd3d5cb 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "715be60e0602fac0a51c427777ba8401aa3eb848",
+  "prompts": {},
+  "humans": {
+    "h_5fac3ddbd3d5cb": {
+      "author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
