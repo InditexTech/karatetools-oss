@@ -61,9 +61,7 @@ updates:
           - 'github/codeql-action/*'
     ignore:
       - dependency-name: 'InditexTech/gh-actions/*'
-      - dependency-name: 'SonarSource/sonarqube-scan-action'
       - dependency-name: 'actions/checkout'
-      - dependency-name: 'actions/create-github-app-token'
       - dependency-name: 'actions/download-artifact'
       - dependency-name: 'actions/setup-java'
       - dependency-name: 'actions/upload-artifact'
@@ -74,6 +72,5 @@ updates:
       - dependency-name: 'github/codeql-action/upload-sarif'
       - dependency-name: 'newrelic/repolinter-action'
       - dependency-name: 'ossf/scorecard-action'
-      - dependency-name: 'release-flow/keep-a-changelog-action'
       - dependency-name: 'reviewdog/action-actionlint'
       - dependency-name: 'webiny/action-conventional-commits'

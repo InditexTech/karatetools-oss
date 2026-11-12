@@ -13,6 +13,16 @@
       "dependency_ecosystem": "maven",
       "project_type": "monorepo",
       "release": {
+        "artifacts": [
+          "clients/target/karatetools-clients-?.?.?.jar",
+          "generators/target/karatetools-generators-?.?.?.jar",
+          "runner/target/karatetools-runner-?.?.?.jar",
+          "starter/target/karatetools-starter-?.?.?.jar",
+          "boot/target/karatetools-boot-?.?.?.jar",
+          "archetype/target/karatetools-archetype-?.?.?.jar",
+          "openapi-test/xxx-api-rest-stable/target/xxx-api-rest-stable-?.?.?.jar",
+          "openapi-test/xxx-external-api-rest-stable/target/xxx-external-api-rest-stable-?.?.?.jar"
+        ],
         "lifecycle": "delegated",
         "packages": [
           "karatetools-clients",
@@ -20,7 +30,11 @@
           "karatetools-runner",
           "karatetools-starter",
           "karatetools-boot",
-          "karatetools-archetype"
+          "karatetools-archetype",
+          "xxx-api-rest-stable",
+          "xxx-external-api-rest-stable",
+          "jacoco-report-aggregate",
+          "karate-release"
         ],
         "strategy": "locked-step"
       },
@@ -30,7 +44,7 @@
   "creation_year": 2026,
   "integrity": {
     "algorithm": "hmac-sha256",
-    "signature": "9ca361a942a216e4f54eb9fb1330f6f27fbee96034e2692529b2dff57cf1b1e8"
+    "signature": "0d3194861dfd39c74d067a39428ff825ef3d3175c405fe5002009b3876561be5"
   },
   "managed_by": "InditexTech CI governance",
   "managed_paths": {
@@ -39,8 +53,8 @@
     ".github/ISSUE_TEMPLATE/3-other.yml": "5a839b39a98704036210dee498146f51bd5a6c057228685680e02004ff063a9a",
     ".github/ISSUE_TEMPLATE/config.yml": "10e5dee4d49aa9e7792ceb4c986160c61f95da1ba00a64bf06e5f1f636cd17ec",
     ".github/PULL_REQUEST_TEMPLATE.md": "23a0b0ac79a9020ccac9c013582a01f86e2df2ae7f914673583b9a3368313041",
-    ".github/dependabot.yml": "49413c0f812cc55139a74f0750adc7582e23037ad134c87d943e4bb0fd742664",
-    ".github/inditextech-ci-java.json": "30139b040ef2876e50b107191e19c278166601fd03879c2d840462916d6603bd",
+    ".github/dependabot.yml": "5302319ae0507b4b3b9777ac26160a2a53581495035bca4c5d7a6f149e21f24d",
+    ".github/inditextech-ci-java.json": "7a1aaaab9a8a5b39448e5bf679c0fbaf3fa5e80547f608ded10ff3b0f8a3565f",
     ".github/workflows/code-release_preview.yml": "efc26d15cde4f7e675b9cc9922851ed904942ec65ef742b7ba06fb2423f9d39d",
     ".github/workflows/codeql.yml": "b4ef9dfddd7b28387b669d48a4228225dc1d6dc76f98d21b65dd4a324d228ad5",
     ".github/workflows/pr-verify.yml": "5628d1d93c09cb761602fcfc3857c325e2dc542cadc159a1edad58d1818d0de0",
