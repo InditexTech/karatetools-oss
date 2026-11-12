@@ -9,7 +9,7 @@ xref:release-notes/migration-guide.adoc[migration guide].
 | Version | Date | Description
 
 | 6.1.0
-| 2026-11-11
+| 2026-11-12
 |
 
 ✔️ Karate Tools - Fixed the *OpenAPI generator interactive console on macOS Apple Silicon*.
