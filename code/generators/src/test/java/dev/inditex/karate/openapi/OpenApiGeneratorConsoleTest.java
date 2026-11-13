@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import dev.inditex.karate.console.ConsoleCLI;
 import dev.inditex.karate.console.ConsoleTestUtils;
+import dev.inditex.karate.openapi.data.OpenApiParser;
 import dev.inditex.karate.openapi.data.OpenApiParser.OperationPath;
 
 import de.codeshelf.consoleui.elements.ConfirmChoice.ConfirmationValue;
@@ -324,6 +325,22 @@ class OpenApiGeneratorConsoleTest {
       assertThat(result).isEqualTo(List.of(ExampleBasicApiMother.getShowItemByIdOperation(),
           ExampleBasicApiMother.getListItemsOperation(),
           ExampleBasicApiMother.getCreateItemsOperation()));
+    }
+
+    @Test
+    void when_operation_has_several_tags_expect_it_once() throws NoSuchFieldException, SecurityException {
+      final var openApi = ExampleBasicApiMother.getOpenApi();
+      openApi.getPaths().get("/items/{itemId}").getGet().setTags(List.of("BasicApi", "Admin"));
+      final HashMap<String, PromtResultItemIF> mockPrompts = new HashMap<>();
+      mockPrompts.put(OpenApiGeneratorConsole.OPEN_API_GENERATOR_OPERATIONS_ID, new CheckboxResult(new HashSet<>(Set.of(""))));
+      ConsoleTestUtils.initConsoleWithMockPrompts(mockPrompts, true);
+
+      final var result = OpenApiGeneratorConsole.promptOperations(OpenApiParser.getOperationsByTag(openApi));
+
+      assertThat(result).extracting(operation -> operation.operation().getOperationId()).containsExactlyInAnyOrder(
+          ExampleBasicApiMother.getShowItemByIdOperationId(),
+          ExampleBasicApiMother.getListItemsOperationId(),
+          ExampleBasicApiMother.getCreateItemsOperationId());
     }
   }
 
