@@ -72,7 +72,7 @@
 
 <title>Karate Tools Migration Guide | InditexTech Karate Tools</title>
 
-    <link rel="canonical" href="https://inditextech.github.io/karatetools-oss/6.0.0/main/release-notes/migration-guide/">
+    <link rel="canonical" href="https://inditextech.github.io/karatetools-oss/6.1.0/main/release-notes/migration-guide/">
     <link rel="prev" href="../overview/">
     <link rel="next" href="../../contributing-overview/">
     <meta name="generator" content="Antora 3.2.1">
@@ -116,7 +116,7 @@
 
 <div class="page-versions">
   <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--latest version-menu-toggle" title="Show other versions of page" aria-expanded="false">
-    <span class="dt-tag__label">6.0.0</span>
+    <span class="dt-tag__label">6.1.0</span>
     <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
   </button>
   <div class="version-menu">
@@ -125,9 +125,12 @@
       <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
     </a>
     <span class="version is-current" aria-current="page">
-      <span class="version__label">6.0.0</span>
+      <span class="version__label">6.1.0</span>
       <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
           </span>
+    <a class="version" href="../../../../6.0.0/main/release-notes/migration-guide/">
+      <span class="version__label">6.0.0</span>
+    </a>
     <a class="version is-missing" href="../../../../5.4.0/HOME/">
       <span class="version__label">5.4.0</span>
     </a>
@@ -168,7 +171,7 @@
   </div>
 </header>
 
-<dialog id="search-dialog" class="search-dialog" aria-label="Search" data-search-index="ROOT-6.0.0.json">
+<dialog id="search-dialog" class="search-dialog" aria-label="Search" data-search-index="ROOT-6.1.0.json">
   <div class="dt-overlay dt-overlay--visible search-dialog__overlay">
     <div class="dt-overlay__content"></div>
     <div class="dt-modal dt-modal--small search-dialog__panel">
@@ -225,7 +228,7 @@
 
 <div class="body">
 
-<div id="side-menu" class="side-menu" data-component="ROOT" data-version="6.0.0" data-module="main">
+<div id="side-menu" class="side-menu" data-component="ROOT" data-version="6.1.0" data-module="main">
   <div class="side-menu__header">
     <div class="side-menu__header-start">
       <img class="side-menu__header-logo side-menu__header-logo--light" src="../../../../_/product-logo.png" width="24" height="24" alt="">
@@ -777,7 +780,7 @@
 
 <div class="page-versions">
   <button type="button" class="dt-tag dt-tag--solid dt-tag--selected header-toolbar__version header-toolbar__version--latest version-menu-toggle" title="Show other versions of page" aria-expanded="false">
-    <span class="dt-tag__label">6.0.0</span>
+    <span class="dt-tag__label">6.1.0</span>
     <span class="dt-tag__icon"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-chevron-down"></use></svg></span>
   </button>
   <div class="version-menu">
@@ -786,9 +789,12 @@
       <span class="dt-label dt-label--orange"><span class="dt-label__content">Prerelease</span></span>
     </a>
     <span class="version is-current" aria-current="page">
-      <span class="version__label">6.0.0</span>
+      <span class="version__label">6.1.0</span>
       <span class="dt-label dt-label--green"><span class="dt-label__content">Latest</span></span>
           </span>
+    <a class="version" href="../../../../6.0.0/main/release-notes/migration-guide/">
+      <span class="version__label">6.0.0</span>
+    </a>
     <a class="version is-missing" href="../../../../5.4.0/HOME/">
       <span class="version__label">5.4.0</span>
     </a>
@@ -847,6 +853,89 @@
 </aside>
 
 <article class="doc">
+<div class="sect1">
+<h2 id="karate-tools-migration-to-6-1-0"><a class="anchor" href="#karate-tools-migration-to-6-1-0"></a>Karate Tools Migration to 6.1.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To migrate to 6.1.0, update the Karate Tools version property:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>pom.xml</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;karatetools.version&gt;6.1.0&lt;/karatetools.version&gt;</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your project extends or integrates the <code>karatetools-boot</code> module:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Update Spring Boot from <code>3.5.14</code> to <code>4.1.1</code>.</p>
+</li>
+<li>
+<p>Update Spring Framework from <code>6.2.x</code> to <code>7.0.9</code>.</p>
+</li>
+<li>
+<p>Replace <code>spring-boot-starter-web</code> with <code>spring-boot-starter-webmvc</code>.</p>
+</li>
+<li>
+<p>Update moved Spring Boot imports:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration</code> to <code>org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration</code></p>
+</li>
+<li>
+<p><code>org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</code> to <code>org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Run your Spring Boot integration tests after the update.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your OpenAPI integration directly uses JAX-RS APIs from the Karate Tools dependency graph:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>javax.ws.rs.<strong></code> imports with <code>jakarta.ws.rs.</strong></code>.</p>
+</li>
+<li>
+<p>Update <code>swagger-inflector</code> from <code>2.0.17</code> to <code>3.0.2</code> if your project declares it explicitly.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If your application directly uses JMS APIs from the Karate Tools clients:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>javax.jms.<strong></code> imports and types with <code>jakarta.jms.</strong></code>.</p>
+</li>
+<li>
+<p>If you declare the ActiveMQ Artemis dependency directly, replace <code>org.apache.activemq:artemis-jms-client</code> with <code>org.apache.activemq:artemis-jakarta-client</code>.</p>
+</li>
+<li>
+<p>If you manage the RabbitMQ JMS client version directly, update it to 3.x; Karate Tools uses <code>3.9.0</code>, which supports Jakarta Messaging 3.0.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="karate-tools-migration-to-6-0-0-jdk-25"><a class="anchor" href="#karate-tools-migration-to-6-0-0-jdk-25"></a>Karate Tools Migration to 6.0.0 - JDK 25</h2>
 <div class="sectionbody">
@@ -1014,7 +1103,7 @@
       </div>
       <div class="page-footer__contribute-buttons">
 
-<a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-action page-footer__propose-change" href="https://github.com/InditexTech/karatetools-oss/blob/docs/v6.0.0/docs/src/modules/main/pages/release-notes/migration-guide.adoc">
+<a class="dt-button dt-button--ghost dt-button--icon-and-label dt-button--icon-action page-footer__propose-change" href="https://github.com/InditexTech/karatetools-oss/blob/docs/v6.1.0/docs/src/modules/main/pages/release-notes/migration-guide.adoc">
   <span class="dt-button__content">
     Propose a change
     <span class="dt-button__icon dt-button__icon-action"><svg class="dt-icon" aria-hidden="true" focusable="false"><use href="../../../../_/img/icons.svg#icon-external-link"></use></svg></span>
