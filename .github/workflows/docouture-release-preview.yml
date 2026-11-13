@@ -20,10 +20,17 @@ name: docouture-release-preview
 # tag before merging, not after.
 #
 # Reuses docouture-release.yml's own "Detect mode" (grep antora-playbook.yml's
-# content.sources[] tags) and "Resolve version" (stable, or
-# docs/.release-version's contents) logic verbatim — see that workflow's own
-# comments, and the docs-site-package skill's reference/versioning-modes.md,
-# for the full mechanism.
+# content.sources[] tags) logic verbatim — see that workflow's own comments,
+# and the docs-site-package skill's reference/versioning-modes.md, for the full
+# mechanism.
+#
+# The version depends on the site's `docouture.versionSource`
+# (docs/package.json), read here with `node` (preinstalled on the runner):
+# `descriptor` (default) reads docs/.release-version in bash and installs
+# nothing; `github-release` follows the code release or republishes the highest
+# published stable Release for a docs-only pull request; `tag-bump` resolves the
+# next version from the docs tags. Both install the project's CLI and ask
+# `docouture release resolve` for the target version.
 #
 # Docouture hardening: pinned actions, no persisted checkout credentials,
 # no third-party path filter (the pull request's own file list comes from the
@@ -53,7 +60,7 @@ jobs:
     # the workflow a read-only GITHUB_TOKEN whatever `permissions:` asks for,
     # so every `gh pr comment` below would fail the run. Skipping this job
     # skips the three comment jobs that need it.
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && (github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'docs/release')) }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && (github.event.pull_request.draft == false || (contains(github.event.pull_request.labels.*.name, 'docs/release') || contains(github.event.pull_request.labels.*.name, 'docs/release-minor') || contains(github.event.pull_request.labels.*.name, 'docs/release-major'))) }}
     outputs:
       detected: ${{ steps.changes.outputs.paths }}
     steps:
@@ -77,7 +84,7 @@ jobs:
     # With a code release (`release-type/*` without `skip-release`) the job also
     # runs when the pull request touches no docs, to explain that the docs follow
     # the code release.
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'docs/release') && (needs.check-changes-in-paths.outputs.detected == 'true' || (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release'))) }}
+    if: ${{ (contains(github.event.pull_request.labels.*.name, 'docs/release') || contains(github.event.pull_request.labels.*.name, 'docs/release-minor') || contains(github.event.pull_request.labels.*.name, 'docs/release-major')) && (needs.check-changes-in-paths.outputs.detected == 'true' || (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -118,30 +125,88 @@ jobs:
           echo "mode=${mode}" >> "$GITHUB_OUTPUT"
           echo "Detected ${mode} (antora-playbook.yml: ${line})"
 
-      # Standalone always targets 'stable'; versioned reads the plain-text
-      # docs/.release-version this PR is expected to have committed — same
-      # source docouture-release.yml's pull_request trigger reads (there is no
-      # workflow_dispatch input to fall back to here, since this workflow
-      # only ever runs on pull_request).
+      - name: Read version source
+        id: source
+        run: |
+          source=$(node -p "require('./package.json').docouture?.versionSource ?? 'descriptor'")
+
+          case "$source" in
+            descriptor | github-release | tag-bump) ;;
+            *)
+              echo "::error::docs/package.json declares docouture.versionSource '${source}' — expected descriptor, github-release or tag-bump."
+              exit 1
+              ;;
+          esac
+
+          echo "source=${source}" >> "$GITHUB_OUTPUT"
+          echo "Version source: ${source}"
+
+      # `tag-bump` (semver ordering of the docs/v* tags) and `github-release`
+      # (highest published Release) need the project's own CLI here;
+      # `descriptor` installs nothing.
+      - name: Setup Node
+        if: steps.source.outputs.source != 'descriptor'
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: docs/package.json
+          package-manager-cache: false
+
+      - name: Install dependencies
+        if: steps.source.outputs.source != 'descriptor'
+        run: npm ci
+
+      # Standalone always targets 'stable'. Versioned depends on the source:
+      # `descriptor` reads the plain-text docs/.release-version this PR is
+      # expected to have committed — same source docouture-release.yml's
+      # pull_request trigger reads (there is no workflow_dispatch input to fall
+      # back to here); `github-release` has no version until the code release
+      # publishes, or, for a docs-only `docs/release` PR, the highest published
+      # Release (asked of `docouture release resolve`, like `tag-bump`);
+      # `tag-bump` asks `docouture release resolve` using the tags
+      # from the REST API (checkout keeps no credentials, and is shallow).
       - name: Resolve version
         id: resolve
         env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
           MODE: ${{ steps.detect.outputs.mode }}
+          SOURCE: ${{ steps.source.outputs.source }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          HAS_RELEASE_TYPE: ${{ (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) && 'true' || 'false' }}
         run: |
-          if [ "$MODE" = "versioned" ]; then
+          error=""
+          if [ "$MODE" != "versioned" ]; then
+            version="stable"
+            tag="docs/stable"
+          elif [ "$SOURCE" = "github-release" ] && [ "$HAS_RELEASE_TYPE" = "true" ]; then
+            version=""
+            tag=""
+          elif [ "$SOURCE" = "github-release" ]; then
+            releases=$(gh api --paginate "repos/${REPOSITORY}/releases" --jq '.[] | select(.draft | not) | select(.prerelease | not) | .tag_name' | paste -sd, -)
+            resolved=$(npx docouture release resolve --mode versioned --event pull_request --labels "$LABELS" --releases "$releases" --report)
+            version=$(printf '%s\n' "$resolved" | sed -n 's/^version=//p')
+            tag=$(printf '%s\n' "$resolved" | sed -n 's/^tag=//p')
+            error=$(printf '%s\n' "$resolved" | sed -n 's/^error=//p')
+          elif [ "$SOURCE" = "tag-bump" ]; then
+            tags=$(gh api --paginate "repos/${REPOSITORY}/git/matching-refs/tags/docs/v" --jq '.[].ref | ltrimstr("refs/tags/")' | paste -sd, -)
+            resolved=$(npx docouture release resolve --mode versioned --event pull_request --labels "$LABELS" --tags "$tags" --report)
+            version=$(printf '%s\n' "$resolved" | sed -n 's/^version=//p')
+            tag=$(printf '%s\n' "$resolved" | sed -n 's/^tag=//p')
+            error=$(printf '%s\n' "$resolved" | sed -n 's/^error=//p')
+          else
             if [ -f .release-version ]; then
               version=$(tr -d '[:space:]' < .release-version)
             else
               version=""
             fi
             tag="docs/v${version}"
-          else
-            version="stable"
-            tag="docs/stable"
           fi
 
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          {
+            echo "version=${version}"
+            echo "tag=${tag}"
+            echo "error=${error}"
+          } >> "$GITHUB_OUTPUT"
 
       # Asks the REST API rather than `git ls-remote`: checkout keeps no
       # credentials, and an unauthenticated ls-remote against a private
@@ -174,8 +239,10 @@ jobs:
           REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           MODE: ${{ steps.detect.outputs.mode }}
+          SOURCE: ${{ steps.source.outputs.source }}
           VERSION: ${{ steps.resolve.outputs.version }}
           TAG: ${{ steps.resolve.outputs.tag }}
+          ERROR: ${{ steps.resolve.outputs.error }}
           EXISTED: ${{ steps.check.outputs.existed }}
           # A code release is also pending (`release-type/*` without
           # `skip-release`), so docouture-release.yml defers the docs release to
@@ -188,7 +255,39 @@ jobs:
             FAIL_TIMING="If you merge it as it is, the docs release will fail."
           fi
 
-          if [ "$MODE" = "versioned" ] && [ -z "$VERSION" ]; then
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "github-release" ] && [ "$HAS_RELEASE_TYPE" = "true" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "
+          ### :information_source: The docs are released with the code release
+          This site's docs version source is \`github-release\`: the docs site is published when the code release publishes a GitHub Release, never when a Pull Request merges. No version can be shown here, and the \`docs/release\` label does **not** release the docs on merge.
+
+          - **If the code release publishes a GitHub Release:** nothing else to do. Remove the \`docs/release\` label.
+          - **If it does not** (the release fails, stays a draft, or is marked pre-release): the docs will not be released. Start \`docouture-release\` manually from the Actions tab with an explicit version."
+            exit 0
+          fi
+
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "tag-bump" ] && [ -n "$ERROR" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "
+          ### :x: Docs release will fail: no version to bump from
+          This site's docs version source is \`tag-bump\`, but no \`docs/v*\` tag exists yet to bump from.
+
+          ${FAIL_TIMING}
+
+          **Before merging:** release the first version manually with \`docouture-release\` from the Actions tab, giving an explicit version such as \`1.0.0\`."
+            exit 0
+          fi
+
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "github-release" ] && [ -n "$ERROR" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "
+          ### :x: Docs release will fail: no published Release to republish
+          This site's docs version source is \`github-release\`, and no published stable GitHub Release was found (a Release matching \`docouture.versionSourcePrefix\` when one is set). A docs-only \`docs/release\` Pull Request republishes the docs at the highest published Release.
+
+          ${FAIL_TIMING}
+
+          **Before merging:** publish a Release first, or release the docs manually with \`docouture-release\` from the Actions tab, giving an explicit version."
+            exit 0
+          fi
+
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "descriptor" ] && [ -z "$VERSION" ]; then
             gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "
           ### :x: Docs release will fail: no target version
           This site uses versioned docs, so a docs release needs to know which version to publish. This Pull Request has the \`docs/release\` label but no \`docs/.release-version\` file.
@@ -206,7 +305,7 @@ jobs:
           # whole point of a preview: docouture-release.yml checks the same
           # thing, but only finds out after the PR has already merged.
           SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$'
-          if [ "$MODE" = "versioned" ] && ! [[ "$VERSION" =~ $SEMVER_RE ]]; then
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "descriptor" ] && ! [[ "$VERSION" =~ $SEMVER_RE ]]; then
             gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "
           ### :x: Docs release will fail: invalid version
           \`docs/.release-version\` contains \`${VERSION}\`, which is not a valid version. Use a SemVer version such as \`1.2.0\` or \`1.2.0-rc.1\`, with no leading \`v\` and no two-part version like \`1.2\`. See https://semver.org.
@@ -237,9 +336,21 @@ jobs:
 
           ### :warning: This tag already exists
           \`${TAG}\` has already been published. ${REPLACE_WHEN}"
-            if [ "$MODE" = "versioned" ]; then
+            if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "descriptor" ]; then
               MESSAGE="${MESSAGE} If that is not what you want, change the version in \`docs/.release-version\`."
             fi
+          fi
+
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "github-release" ] && [ "$HAS_RELEASE_TYPE" != "true" ]; then
+            MESSAGE="${MESSAGE}
+
+          This republishes the highest published stable GitHub Release (matching \`docouture.versionSourcePrefix\` when one is set), **if this Pull Request merged now**. It can change if another Release publishes first."
+          fi
+
+          if [ "$MODE" = "versioned" ] && [ "$SOURCE" = "tag-bump" ]; then
+            MESSAGE="${MESSAGE}
+
+          This is the version released **if this Pull Request merged now**: the latest \`docs/v*\` tag plus the bump its labels select. It can change if another docs release lands first."
           fi
 
           gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "$MESSAGE"
@@ -247,7 +358,7 @@ jobs:
   release-preview-no-docs-changes:
     name: Add PR comment with configuration management information
     needs: check-changes-in-paths
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'docs/release') && needs.check-changes-in-paths.outputs.detected == 'false' && !(contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
+    if: ${{ (contains(github.event.pull_request.labels.*.name, 'docs/release') || contains(github.event.pull_request.labels.*.name, 'docs/release-minor') || contains(github.event.pull_request.labels.*.name, 'docs/release-major')) && needs.check-changes-in-paths.outputs.detected == 'false' && !(contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -266,7 +377,7 @@ jobs:
   release-preview-no-release-label:
     name: Add PR comment with release information
     needs: check-changes-in-paths
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'docs/release') && needs.check-changes-in-paths.outputs.detected == 'true' && github.event.pull_request.draft == false && !(contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
+    if: ${{ !(contains(github.event.pull_request.labels.*.name, 'docs/release') || contains(github.event.pull_request.labels.*.name, 'docs/release-minor') || contains(github.event.pull_request.labels.*.name, 'docs/release-major')) && needs.check-changes-in-paths.outputs.detected == 'true' && github.event.pull_request.draft == false && !(contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -289,7 +400,7 @@ jobs:
   release-preview-code-release:
     name: Add PR comment with code release information
     needs: check-changes-in-paths
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'docs/release') && needs.check-changes-in-paths.outputs.detected == 'true' && github.event.pull_request.draft == false && (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
+    if: ${{ !(contains(github.event.pull_request.labels.*.name, 'docs/release') || contains(github.event.pull_request.labels.*.name, 'docs/release-minor') || contains(github.event.pull_request.labels.*.name, 'docs/release-major')) && needs.check-changes-in-paths.outputs.detected == 'true' && github.event.pull_request.draft == false && (contains(join(github.event.pull_request.labels.*.name, ', '), 'release-type/') && !contains(github.event.pull_request.labels.*.name, 'skip-release')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
