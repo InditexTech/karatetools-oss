@@ -1,0 +1,33 @@
+docs/package-lock.json
+  s_aea9da36686262::t_223d508333d128 13-17,325-327,334,346-348,360-362,377-379,390-392,2141-2143,3980-3982,3988,3996-3998,4046-4048
+docs/package.json
+  s_aea9da36686262::t_8d06449939a327 18-22,29
+.github/workflows/docouture-pr-verify.yml
+  s_aea9da36686262::t_43906bef39d45a 126
+.github/workflows/docouture-release-preview.yml
+  s_aea9da36686262::t_16a8ccfb48f0ce 23-33,63,87,128-166,170-171,173-175,177-196,205-209,242,245,258-290,308,339,344-355,361,380,403
+.github/workflows/docouture-release.yml
+  s_aea9da36686262::t_5ead55ecf8a141 58-68,92-94,139,166-168,295-303,305-306,308-311,314-330,334,337-339,341,343-349,352-354,356-363,366,368-369,371-372,376-378,478,491,521
+AGENTS.md
+  s_aea9da36686262::t_de1308241c3e09 80-81,92
+docs/src/modules/main/pages/contributing/step-by-step.adoc
+  s_aea9da36686262::t_5485f004bb42a8 300-307
+docs/test/docouture-release.test.cjs
+  s_aea9da36686262::t_3e1eb5a066d469 1-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "833eb91c66495bee15cd1d0dad144eddb7a6506a",
+  "prompts": {},
+  "sessions": {
+    "s_aea9da36686262": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "6b94cc96-b72c-467c-9c8c-0ba3097ea705",
+        "model": "unknown"
+      },
+      "human_author": "Vanesa López Beade <vanesalbe@ext.inditex.com>"
+    }
+  }
+}
