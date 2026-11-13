@@ -1581,9 +1581,16 @@
 </div>
 </li>
 <li>
-<p>Documentation is versioned separately - see the <code>docouture-docs-versioning</code> skill
-(<code>docs/.release-version</code> + the <code>docs/release</code> label on its own pull request)
-rather than a label on this code release pull request.</p>
+<p>Documentation uses <code>docouture.versionSource: github-release</code> and is published
+automatically at the version of the published stable GitHub Release.
+Do not add <code>docs/release</code> to a code release pull request.</p>
+</li>
+<li>
+<p>To republish documentation without releasing Java again, merge a documentation-only
+pull request into <code>main</code> with the <code>docs/release</code> label and no <code>release-type/*</code> label.
+This republishes the highest published stable GitHub Release and replaces its
+<code>docs/vX.Y.Z</code> tag. Check the Docouture release preview before merging.
+No <code>docs/.release-version</code> file, descriptor bump, or documentation sync pull request is needed.</p>
 </li>
 </ol>
 </div>
