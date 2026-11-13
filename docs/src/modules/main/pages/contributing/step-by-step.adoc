@@ -297,9 +297,14 @@ a|
 * `release-type/major`: Defines the version as a major increment (x+1.y.z).
 * `release-type/minor`: Defines the version as a minor increment (x.y+1.z).
 * `release-type/patch`: Defines the version as a patch increment (x.y.z+1).
-.. Documentation is versioned separately - see the `docouture-docs-versioning` skill
-(`docs/.release-version` + the `docs/release` label on its own pull request)
-rather than a label on this code release pull request.
+.. Documentation uses `docouture.versionSource: github-release` and is published
+automatically at the version of the published stable GitHub Release.
+Do not add `docs/release` to a code release pull request.
+.. To republish documentation without releasing Java again, merge a documentation-only
+pull request into `main` with the `docs/release` label and no `release-type/*` label.
+This republishes the highest published stable GitHub Release and replaces its
+`docs/vX.Y.Z` tag. Check the Docouture release preview before merging.
+No `docs/.release-version` file, descriptor bump, or documentation sync pull request is needed.
 a|
 image::contributing/steps-kt-oss-github-release-pull-request.png[role="no-border, zoom-in"]
 image::contributing/steps-kt-oss-github-release-labels.png[role="no-border, zoom-in"]
